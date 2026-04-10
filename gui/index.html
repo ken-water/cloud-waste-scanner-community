@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Waste Scanner Pro</title>
+    <style>
+      html,
+      body,
+      #root {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      html {
+        background: #020617;
+      }
+
+      body {
+        background: #020617;
+        color: #e2e8f0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      #boot-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #020617;
+        color: #cbd5e1;
+        font-size: 14px;
+        letter-spacing: 0.02em;
+        z-index: 9999;
+      }
+
+      #boot-screen::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        border-radius: 9999px;
+        border: 2px solid rgba(148, 163, 184, 0.35);
+        border-top-color: #818cf8;
+        margin-right: 10px;
+        animation: cws-spin 0.8s linear infinite;
+      }
+
+      @keyframes cws-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
+      (function applyBootTheme() {
+        try {
+          var root = document.documentElement;
+          var savedTheme = localStorage.getItem("theme") || "dark";
+          if (savedTheme === "dark") {
+            root.classList.add("dark");
+          } else {
+            root.classList.remove("dark");
+            root.style.background = "#f8fafc";
+            document.body && (document.body.style.background = "#f8fafc");
+          }
+
+          var size = localStorage.getItem("fontSize") || "medium";
+          if (size === "small") root.style.fontSize = "16px";
+          else if (size === "large") root.style.fontSize = "20px";
+          else root.style.fontSize = "18px";
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="boot-screen">Loading Cloud Waste Scanner...</div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #e2e8f0;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #e2e8f0;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 9999px;
+    border: 2px solid #e2e8f0;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+
+  .dark * {
+    scrollbar-color: #475569 #0f172a;
+  }
+
+  .dark *::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+
+  .dark *::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-color: #0f172a;
+  }
+
+  .dark *::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+}
+
+@layer components {
+  @media (max-width: 1279px) {
+    .cws-app-shell {
+      font-size: 0.95rem;
+    }
+
+    .cws-app-sidebar {
+      width: 14.5rem;
+    }
+
+    .cws-menu-button {
+      padding: 0.65rem 0.75rem;
+    }
+
+    .cws-menu-label {
+      font-size: 0.92rem;
+      line-height: 1.2rem;
+    }
+
+    .cws-page-shell {
+      padding: 1.25rem;
+    }
+
+    .cws-page-shell-inner {
+      gap: 1.25rem;
+    }
+
+    .cws-page-header h1 {
+      font-size: 1.75rem;
+      line-height: 2.1rem;
+    }
+
+    .cws-page-header-actions {
+      max-width: 100%;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .cws-page-header-actions > * {
+      flex-shrink: 0;
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .cws-app-shell {
+      font-size: 0.92rem;
+    }
+
+    .cws-app-sidebar {
+      width: 13.75rem;
+    }
+
+    .cws-nav-group-title {
+      letter-spacing: 0.14em;
+    }
+
+    .cws-page-shell {
+      padding: 1rem;
+    }
+
+    .cws-page-header h1 {
+      font-size: 1.5rem;
+      line-height: 1.9rem;
+    }
+  }
+}

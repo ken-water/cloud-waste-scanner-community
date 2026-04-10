@@ -1,0 +1,17 @@
+[package]
+name = "cloud-waste-scanner-cli"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cloud-waste-scanner-core = { path = "../core" }
+tokio = { version = "1.0", features = ["full"] }
+clap = { version = "4.4", features = ["derive"] }
+aws-config = "1.0"
+aws-sdk-ec2 = "1.0"
+aws-sdk-elasticloadbalancingv2 = "1.0"
+aws-sdk-cloudwatch = "1.0"
+aws-sdk-rds = "1.0"
+comfy-table = "7.1"
+anyhow = "1.0"
+directories = "5.0"
