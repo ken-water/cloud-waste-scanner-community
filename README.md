@@ -2,13 +2,11 @@
 
 Local-first cloud waste scanning for operators who want source-visible, production-usable tooling.
 
-[![Sponsor](https://img.shields.io/badge/Sponsor-Buy%20us%20a%20coffee-ffdd00?logo=githubsponsors&logoColor=black)](https://github.com/sponsors/ken-water)
-
 ## Repository Scope
 
 This repository is the **Community Edition**.
 
-Current version: `2.9.13`
+Current version: `2.9.15`
 
 - Community is local-first and production-usable.
 - No hosted license activation is required for core local workflows.
@@ -36,7 +34,6 @@ If Cloud Waste Scanner helps your team, you can support ongoing maintenance and 
 
 - Sponsor on GitHub: https://github.com/sponsors/ken-water
 - Buy us a coffee: https://github.com/sponsors/ken-water
-- Every coffee directly supports bug fixes, provider coverage updates, and release operations.
 
 ## Development
 

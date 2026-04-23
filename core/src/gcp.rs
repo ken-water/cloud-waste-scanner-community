@@ -462,6 +462,86 @@ impl GcpScanner {
         Ok(wastes)
     }
 
+    pub async fn scan_gke_node_pools(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://container.googleapis.com/v1/projects/{}/locations/-/clusters",
+            self.creds.project_id
+        );
+
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+
+        let clusters = json
+            .get("clusters")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+
+        for cluster in clusters {
+            let cluster_name = cluster
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown-cluster");
+            let location = cluster
+                .get("location")
+                .or_else(|| cluster.get("zone"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("global");
+
+            if let Some(node_pools) = cluster.get("nodePools").and_then(|v| v.as_array()) {
+                for pool in node_pools {
+                    let pool_name = pool
+                        .get("name")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown-pool");
+                    let count = pool
+                        .get("initialNodeCount")
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(0);
+                    let machine_type = pool
+                        .get("config")
+                        .and_then(|v| v.get("machineType"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown");
+                    let disk_gb = pool
+                        .get("config")
+                        .and_then(|v| v.get("diskSizeGb"))
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(0);
+                    let autoscaling_enabled = pool
+                        .get("autoscaling")
+                        .and_then(|v| v.get("enabled"))
+                        .and_then(|v| v.as_bool())
+                        .unwrap_or(false);
+
+                    if count > 0 && !autoscaling_enabled {
+                        let savings = (count as f64) * 18.0 + (disk_gb as f64) * 0.05;
+                        wastes.push(WastedResource {
+                            id: format!("{}/{}", cluster_name, pool_name),
+                            provider: "GCP".to_string(),
+                            region: location.to_string(),
+                            resource_type: "K8s Node Pool (GKE)".to_string(),
+                            details: format!(
+                                "GKE pool '{}' in cluster '{}' has {} baseline node(s), machine '{}', autoscaling disabled. Review min-size and rightsize policy.",
+                                pool_name, cluster_name, count, machine_type
+                            ),
+                            estimated_monthly_cost: savings,
+                            action_type: "RIGHTSIZE".to_string(),
+                        });
+                    }
+                }
+            }
+        }
+
+        Ok(wastes)
+    }
+
     pub async fn delete_disk(&self, _region: &str, _name: &str) -> Result<()> {
         Ok(())
     }
@@ -492,6 +572,9 @@ impl CloudProvider for GcpScanner {
                     results.extend(r);
                 }
             }
+        }
+        if let Ok(r) = self.scan_gke_node_pools().await {
+            results.extend(r);
         }
         Ok(results)
     }

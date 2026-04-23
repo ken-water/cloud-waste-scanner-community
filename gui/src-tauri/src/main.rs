@@ -8033,9 +8033,9 @@ fn rule_enabled(rule_set: &Option<HashSet<String>>, rule_id: &str) -> bool {
 fn estimate_rule_step_count(provider: &str, enabled_rules: Option<&HashSet<String>>) -> usize {
     let provider_key = provider.to_ascii_lowercase();
     let default_count = match provider_key.as_str() {
-        "aws" => 12,
-        "azure" => 8,
-        "gcp" => 5,
+        "aws" => 13,
+        "azure" => 9,
+        "gcp" => 6,
         _ => 6,
     };
 
@@ -8729,6 +8729,21 @@ async fn run_scan(
                     "logs:DescribeLogGroups"
                 );
             }
+            if rule_enabled(&enabled_rules, "aws_eks_node_idle") {
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step,
+                        total: total_steps,
+                        message: format!("AWS {}: Reviewing EKS Node Baseline...", p),
+                    },
+                );
+                track_aws!(
+                    scanner.scan_eks_idle_nodes(),
+                    "eks_node",
+                    "ec2:DescribeInstances+cloudwatch:GetMetricStatistics"
+                );
+            }
         } else {
             attempted_scan_checks += 1;
             failed_scan_checks += 1;
@@ -9101,6 +9116,33 @@ async fn run_scan(
                             &conn,
                         );
                     }
+                    if rule_enabled(&enabled_rules, "azure_aks_nodepool_review") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "Azure {}: Reviewing AKS Node Pools...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_aks_node_pools().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "aks_nodepool",
+                            "containerservice/managedClusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
                 }
             }
             "gcp" => {
@@ -9252,6 +9294,30 @@ async fn run_scan(
                             &p.name,
                             "storage_lifecycle",
                             "storage/buckets:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "gcp_gke_nodepool_review") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!("GCP {}: Reviewing GKE Node Pools...", p.name),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_gke_node_pools().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "gke_nodepool",
+                            "container/clusters:list",
                             &profile_proxy_mode,
                             &profile_proxy_url,
                             &conn,

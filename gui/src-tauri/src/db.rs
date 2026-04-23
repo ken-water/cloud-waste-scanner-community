@@ -432,6 +432,13 @@ async fn seed_scan_rules(pool: &Pool<Sqlite>) -> Result<(), String> {
             "Detect log groups with oversized retention cost.",
             "{}",
         ),
+        (
+            "aws_eks_node_idle",
+            "aws",
+            "EKS Node Baseline Review",
+            "Detect EKS-tagged nodes with sustained low utilization for node-group rightsizing review.",
+            r#"{"cpu_threshold": 2.0}"#,
+        ),
         // Azure
         (
             "azure_vm_idle",
@@ -489,6 +496,13 @@ async fn seed_scan_rules(pool: &Pool<Sqlite>) -> Result<(), String> {
             "Detect Blob containers/storage accounts missing lifecycle policies.",
             "{}",
         ),
+        (
+            "azure_aks_nodepool_review",
+            "azure",
+            "AKS Node Pool Baseline Review",
+            "Detect AKS node pools with high baseline or scaling floor for rightsizing review.",
+            "{}",
+        ),
         // GCP
         (
             "gcp_vm_idle",
@@ -523,6 +537,13 @@ async fn seed_scan_rules(pool: &Pool<Sqlite>) -> Result<(), String> {
             "gcp",
             "Cloud Storage without Lifecycle",
             "Detect Cloud Storage buckets missing lifecycle policies.",
+            "{}",
+        ),
+        (
+            "gcp_gke_nodepool_review",
+            "gcp",
+            "GKE Node Pool Baseline Review",
+            "Detect GKE node pools with fixed baseline capacity and disabled autoscaling.",
             "{}",
         ),
         // Alibaba

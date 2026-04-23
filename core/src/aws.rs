@@ -930,6 +930,82 @@ impl Scanner {
         Ok(wastes)
     }
 
+    pub async fn scan_eks_idle_nodes(&self) -> Result<Vec<WastedResource>> {
+        let mut wastes = Vec::new();
+        let days = self.policy.lookback_days;
+        let cpu_limit = self.policy.cpu_percent;
+
+        let resp = self
+            .ec2_client
+            .describe_instances()
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("instance-state-name")
+                    .values("running")
+                    .build(),
+            )
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("tag-key")
+                    .values("eks:cluster-name")
+                    .build(),
+            )
+            .send()
+            .await?;
+
+        for reservation in resp.reservations.unwrap_or_default() {
+            for instance in reservation.instances.unwrap_or_default() {
+                let instance_id = instance.instance_id.unwrap_or_default();
+                if instance_id.is_empty() {
+                    continue;
+                }
+
+                let mut cluster_name = "unknown".to_string();
+                if let Some(tags) = instance.tags {
+                    for tag in tags {
+                        if tag.key.as_deref() == Some("eks:cluster-name") {
+                            if let Some(value) = tag.value {
+                                if !value.trim().is_empty() {
+                                    cluster_name = value;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                let max_cpu = self
+                    .get_max_metric("AWS/EC2", "CPUUtilization", "InstanceId", &instance_id, days)
+                    .await
+                    .unwrap_or(0.0);
+
+                if max_cpu < cpu_limit {
+                    let instance_type = instance
+                        .instance_type
+                        .as_ref()
+                        .map(|v| v.as_str())
+                        .unwrap_or("unknown");
+                    let savings = Self::estimate_instance_monthly_cost(instance_type) * 0.35;
+
+                    wastes.push(WastedResource {
+                        id: instance_id,
+                        provider: "AWS".to_string(),
+                        region: self.region.clone(),
+                        resource_type: "K8s Node (EKS)".to_string(),
+                        details: format!(
+                            "EKS cluster '{}' node with low utilization (Max CPU {:.1}% over {}d). Review node-group rightsize/drain plan.",
+                            cluster_name, max_cpu, days
+                        ),
+                        estimated_monthly_cost: savings,
+                        action_type: "RIGHTSIZE".to_string(),
+                    });
+                }
+            }
+        }
+
+        Ok(wastes)
+    }
+
     pub async fn delete_volume(&self, volume_id: &str) -> Result<()> {
         self.ec2_client
             .delete_volume()
@@ -1047,6 +1123,9 @@ impl CloudProvider for Scanner {
         if let Ok(mut r) = self.scan_s3_buckets().await {
             all_results.append(&mut r);
         } // S3 Scanning
+        if let Ok(mut r) = self.scan_eks_idle_nodes().await {
+            all_results.append(&mut r);
+        }
         Ok(all_results)
     }
 }
