@@ -25,6 +25,7 @@ pub mod huawei;
 pub mod ibm;
 pub mod idrive;
 pub mod ionos;
+pub mod k8s;
 pub mod leaseweb;
 pub mod linode;
 pub mod lyve;

@@ -3401,7 +3401,7 @@ export function Settings({
                             value={apiAccessToken}
                             onChange={e => setApiAccessToken(e.target.value)}
                         />
-                        <p className="text-base text-slate-500 mt-2">Non-local callers must send <code>Authorization: Bearer &lt;api_access_token&gt;</code>. API is Pro-only in trial mode.</p>
+                        <p className="text-base text-slate-500 mt-2">Non-local callers must send <code>Authorization: Bearer &lt;api_access_token&gt;</code>. Community Local API is available when enabled; keep the bearer token private.</p>
                     </div>
 
                     <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start gap-3">

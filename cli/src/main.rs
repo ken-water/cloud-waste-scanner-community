@@ -143,6 +143,7 @@ async fn main() -> anyhow::Result<()> {
             resource_type: "EBS Volume".to_string(),
             details: "100 GB (gp3)".to_string(),
             estimated_monthly_cost: 8.0,
+            action_type: "DELETE".to_string(),
         });
         wastes.push(WastedResource {
             id: "1.2.3.4".to_string(),
@@ -151,6 +152,7 @@ async fn main() -> anyhow::Result<()> {
             resource_type: "Elastic IP".to_string(),
             details: "Unattached".to_string(),
             estimated_monthly_cost: 3.6,
+            action_type: "DELETE".to_string(),
         });
         wastes.push(WastedResource {
             id: "snap-mock-1".to_string(),
@@ -159,6 +161,7 @@ async fn main() -> anyhow::Result<()> {
             resource_type: "EBS Snapshot".to_string(),
             details: "500 GB, 45 days old".to_string(),
             estimated_monthly_cost: 25.0,
+            action_type: "ARCHIVE".to_string(),
         });
         wastes.push(WastedResource {
             id: "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/mock-lb/50dc6c495c0c9188".to_string(),
@@ -167,6 +170,7 @@ async fn main() -> anyhow::Result<()> {
             resource_type: "Load Balancer".to_string(),
             details: "No Target Groups attached (mock-lb)".to_string(),
             estimated_monthly_cost: 16.20,
+            action_type: "DELETE".to_string(),
         });
         wastes.push(WastedResource {
             id: "rds-snap-manual-2023".to_string(),
@@ -175,6 +179,7 @@ async fn main() -> anyhow::Result<()> {
             resource_type: "RDS Manual Snapshot".to_string(),
             details: "200 GB, 120 days old".to_string(),
             estimated_monthly_cost: 19.0,
+            action_type: "ARCHIVE".to_string(),
         });
         wastes.push(WastedResource {
             id: "/aws/lambda/old-function".to_string(),
@@ -183,6 +188,7 @@ async fn main() -> anyhow::Result<()> {
             resource_type: "CloudWatch Log Group".to_string(),
             details: "5.50 GB, Never Expire".to_string(),
             estimated_monthly_cost: 0.165,
+            action_type: "ARCHIVE".to_string(),
         });
     } else {
         // Initial setup to discover regions

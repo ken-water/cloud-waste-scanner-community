@@ -217,6 +217,40 @@ struct AzureSnapshotProperties {
 }
 
 impl AzureScanner {
+    fn vm_size_monthly_cost(vm_size: &str) -> f64 {
+        if vm_size.starts_with("Standard_B") {
+            25.0
+        } else if vm_size.starts_with("Standard_D") {
+            80.0
+        } else if vm_size.starts_with("Standard_E") || vm_size.starts_with("Standard_F") {
+            120.0
+        } else {
+            65.0
+        }
+    }
+
+    fn has_owner_like_tag(tags: Option<&serde_json::Map<String, Value>>) -> bool {
+        tags.map(|m| {
+            m.keys().any(|k| {
+                let key = k.to_ascii_lowercase();
+                key == "owner"
+                    || key == "team"
+                    || key == "cost-center"
+                    || key == "cost_center"
+                    || key == "service"
+                    || key == "application"
+                    || key == "app"
+            })
+        })
+        .unwrap_or(false)
+    }
+
+    fn aks_vm_size_is_large(vm_size: &str) -> bool {
+        vm_size.starts_with("Standard_D")
+            || vm_size.starts_with("Standard_E")
+            || vm_size.starts_with("Standard_F")
+    }
+
     fn is_running_instance_view(instance_view: Option<&AzureVmInstanceView>) -> bool {
         instance_view
             .map(|v| v.statuses.iter().any(|s| s.code == "PowerState/running"))
@@ -707,10 +741,7 @@ impl AzureScanner {
                             .get("vmSize")
                             .and_then(|v| v.as_str())
                             .unwrap_or("unknown");
-                        let mode = pool
-                            .get("mode")
-                            .and_then(|v| v.as_str())
-                            .unwrap_or("User");
+                        let mode = pool.get("mode").and_then(|v| v.as_str()).unwrap_or("User");
                         let count = pool.get("count").and_then(|v| v.as_i64()).unwrap_or(0);
                         let min_count = pool.get("minCount").and_then(|v| v.as_i64()).unwrap_or(0);
                         let autoscaling = pool
@@ -718,7 +749,8 @@ impl AzureScanner {
                             .and_then(|v| v.as_bool())
                             .unwrap_or(false);
 
-                        let should_flag = (count > 2 && !autoscaling) || (autoscaling && min_count > 1);
+                        let should_flag =
+                            (count > 2 && !autoscaling) || (autoscaling && min_count > 1);
                         if should_flag {
                             let savings = (count.max(1) as f64) * 20.0;
                             wastes.push(WastedResource {
@@ -739,6 +771,325 @@ impl AzureScanner {
             }
         }
 
+        Ok(wastes)
+    }
+
+    pub async fn scan_aks_nodepool_floor_risk(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://management.azure.com/subscriptions/{}/providers/Microsoft.ContainerService/managedClusters?api-version=2024-02-01",
+            self.subscription_id
+        );
+
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+        if let Some(clusters) = json.get("value").and_then(|v| v.as_array()) {
+            for cluster in clusters {
+                let cluster_name = cluster
+                    .get("name")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("unknown-cluster");
+                let region = cluster
+                    .get("location")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("global");
+
+                if let Some(agent_pools) = cluster
+                    .get("properties")
+                    .and_then(|v| v.get("agentPoolProfiles"))
+                    .and_then(|v| v.as_array())
+                {
+                    for pool in agent_pools {
+                        let pool_name = pool
+                            .get("name")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("nodepool");
+                        let vm_size = pool
+                            .get("vmSize")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("unknown");
+                        let count = pool.get("count").and_then(|v| v.as_i64()).unwrap_or(0);
+                        let min_count = pool.get("minCount").and_then(|v| v.as_i64()).unwrap_or(0);
+                        let autoscaling = pool
+                            .get("enableAutoScaling")
+                            .and_then(|v| v.as_bool())
+                            .unwrap_or(false);
+
+                        if (autoscaling && min_count > 1) || (!autoscaling && count > 2) {
+                            let effective_floor = if autoscaling {
+                                min_count.max(1)
+                            } else {
+                                count.max(1)
+                            };
+                            let savings =
+                                effective_floor as f64 * Self::vm_size_monthly_cost(vm_size) * 0.25;
+                            wastes.push(WastedResource {
+                                id: format!("{}/{}", cluster_name, pool_name),
+                                provider: "Azure".to_string(),
+                                region: region.to_string(),
+                                resource_type: "K8s NodeFloor Risk (AKS)".to_string(),
+                                details: format!(
+                                    "AKS pool '{}' in '{}' has cost floor {} (autoscaling={}, minCount={}). Review baseline node-floor.",
+                                    pool_name, cluster_name, count, autoscaling, min_count
+                                ),
+                                estimated_monthly_cost: savings,
+                                action_type: "RIGHTSIZE".to_string(),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_aks_orphan_pv_disks(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://management.azure.com/subscriptions/{}/providers/Microsoft.Compute/disks?api-version=2023-04-02",
+            self.subscription_id
+        );
+
+        let res = self
+            .client
+            .get(&url)
+            .bearer_auth(token.clone())
+            .send()
+            .await?;
+        if !res.status().is_success() {
+            return Ok(vec![]);
+        }
+        let list: AzureDiskList = res.json().await?;
+
+        let mut wastes = Vec::new();
+        for disk in list.value {
+            if disk.properties.disk_state != "Unattached" {
+                continue;
+            }
+
+            let disk_id_lower = disk.name.to_lowercase();
+            let is_k8s_like = disk_id_lower.contains("kubernetes")
+                || disk_id_lower.contains("aks-")
+                || disk_id_lower.contains("pvc");
+            if !is_k8s_like {
+                continue;
+            }
+
+            let cost = disk.properties.disk_size_gb as f64 * 0.15;
+            wastes.push(WastedResource {
+                id: disk.name,
+                provider: "Azure".to_string(),
+                region: disk.location,
+                resource_type: "K8s Orphan PV (AKS)".to_string(),
+                details: format!(
+                    "Unattached AKS/Kubernetes-like managed disk ({}GB). Review stale PV/PVC mappings.",
+                    disk.properties.disk_size_gb
+                ),
+                estimated_monthly_cost: cost,
+                action_type: "DELETE".to_string(),
+            });
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_aks_orphan_public_ips(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://management.azure.com/subscriptions/{}/providers/Microsoft.Network/publicIPAddresses?api-version=2023-04-01",
+            self.subscription_id
+        );
+
+        let res = self.client.get(&url).bearer_auth(token).send().await?;
+        if !res.status().is_success() {
+            return Ok(vec![]);
+        }
+        let json: Value = res.json().await?;
+        let mut wastes = Vec::new();
+        if let Some(items) = json.get("value").and_then(|v| v.as_array()) {
+            for ip in items {
+                let is_unbound = ip
+                    .get("properties")
+                    .and_then(|p| p.get("ipConfiguration"))
+                    .is_none();
+                if !is_unbound {
+                    continue;
+                }
+                let name = ip.get("name").and_then(|v| v.as_str()).unwrap_or("");
+                let id = ip.get("id").and_then(|v| v.as_str()).unwrap_or("");
+                let name_lower = name.to_ascii_lowercase();
+                let id_lower = id.to_ascii_lowercase();
+                let is_k8s_like = name_lower.contains("kubernetes")
+                    || name_lower.contains("aks-")
+                    || id_lower.contains("microsoft.containerservice")
+                    || id_lower.contains("/managedclusters/");
+                if !is_k8s_like {
+                    continue;
+                }
+                let region = ip
+                    .get("location")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("global")
+                    .to_string();
+                wastes.push(WastedResource {
+                    id: name.to_string(),
+                    provider: "Azure".to_string(),
+                    region,
+                    resource_type: "K8s Orphan IP (AKS)".to_string(),
+                    details: "Unattached AKS/Kubernetes-like Public IP. Review stale Service LoadBalancer lifecycle."
+                        .to_string(),
+                    estimated_monthly_cost: 3.65,
+                    action_type: "DELETE".to_string(),
+                });
+            }
+        }
+        Ok(wastes)
+    }
+
+    pub async fn scan_aks_missing_owner_tags(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://management.azure.com/subscriptions/{}/providers/Microsoft.ContainerService/managedClusters?api-version=2024-02-01",
+            self.subscription_id
+        );
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+        if let Some(clusters) = json.get("value").and_then(|v| v.as_array()) {
+            for cluster in clusters {
+                let cluster_name = cluster
+                    .get("name")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("unknown-cluster");
+                let region = cluster
+                    .get("location")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("global");
+                if let Some(agent_pools) = cluster
+                    .get("properties")
+                    .and_then(|v| v.get("agentPoolProfiles"))
+                    .and_then(|v| v.as_array())
+                {
+                    for pool in agent_pools {
+                        let pool_name = pool
+                            .get("name")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("nodepool");
+                        let vm_size = pool
+                            .get("vmSize")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("unknown");
+                        let node_count = pool
+                            .get("count")
+                            .and_then(|v| v.as_i64())
+                            .unwrap_or(1)
+                            .max(1);
+                        let tags = pool.get("tags").and_then(|v| v.as_object());
+                        if Self::has_owner_like_tag(tags) {
+                            continue;
+                        }
+                        wastes.push(WastedResource {
+                            id: format!("{}/{}", cluster_name, pool_name),
+                            provider: "Azure".to_string(),
+                            region: region.to_string(),
+                            resource_type: "K8s Ownership Gap (AKS)".to_string(),
+                            details: format!(
+                                "AKS node pool '{}' in '{}' has no owner/team/cost tag. Add tags for team chargeback and governance.",
+                                pool_name, cluster_name
+                            ),
+                            estimated_monthly_cost: node_count as f64
+                                * Self::vm_size_monthly_cost(vm_size)
+                                * 0.10,
+                            action_type: "RIGHTSIZE".to_string(),
+                        });
+                    }
+                }
+            }
+        }
+        Ok(wastes)
+    }
+
+    pub async fn scan_aks_requests_limits_drift_proxy(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://management.azure.com/subscriptions/{}/providers/Microsoft.ContainerService/managedClusters?api-version=2024-02-01",
+            self.subscription_id
+        );
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+        if let Some(clusters) = json.get("value").and_then(|v| v.as_array()) {
+            for cluster in clusters {
+                let cluster_name = cluster
+                    .get("name")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("unknown-cluster");
+                let region = cluster
+                    .get("location")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("global");
+                if let Some(agent_pools) = cluster
+                    .get("properties")
+                    .and_then(|v| v.get("agentPoolProfiles"))
+                    .and_then(|v| v.as_array())
+                {
+                    for pool in agent_pools {
+                        let pool_name = pool
+                            .get("name")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("nodepool");
+                        let vm_size = pool
+                            .get("vmSize")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("unknown");
+                        let count = pool
+                            .get("count")
+                            .and_then(|v| v.as_i64())
+                            .unwrap_or(1)
+                            .max(1);
+                        let min_count = pool.get("minCount").and_then(|v| v.as_i64()).unwrap_or(0);
+                        let max_count = pool
+                            .get("maxCount")
+                            .and_then(|v| v.as_i64())
+                            .unwrap_or(count);
+                        let autoscaling = pool
+                            .get("enableAutoScaling")
+                            .and_then(|v| v.as_bool())
+                            .unwrap_or(false);
+
+                        let floor = if autoscaling { min_count.max(1) } else { count };
+                        let scale_span = (max_count - floor).max(0);
+                        if Self::aks_vm_size_is_large(vm_size) && floor >= 2 && scale_span <= 2 {
+                            let est_monthly = floor as f64 * Self::vm_size_monthly_cost(vm_size);
+                            wastes.push(WastedResource {
+                                id: format!("{}/{}", cluster_name, pool_name),
+                                provider: "Azure".to_string(),
+                                region: region.to_string(),
+                                resource_type: "K8s Requests/Limits Drift Proxy (AKS)".to_string(),
+                                details: format!(
+                                    "AKS pool '{}' in '{}' keeps floor {} on vm '{}' with narrow scale span {}. Review pod requests/limits and autoscaling envelope.",
+                                    pool_name, cluster_name, floor, vm_size, scale_span
+                                ),
+                                estimated_monthly_cost: est_monthly * 0.20,
+                                action_type: "RIGHTSIZE".to_string(),
+                            });
+                        }
+                    }
+                }
+            }
+        }
         Ok(wastes)
     }
 
@@ -792,6 +1143,21 @@ impl CloudProvider for AzureScanner {
         if let Ok(r) = self.scan_aks_node_pools().await {
             results.extend(r);
         }
+        if let Ok(r) = self.scan_aks_nodepool_floor_risk().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_aks_orphan_pv_disks().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_aks_orphan_public_ips().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_aks_missing_owner_tags().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_aks_requests_limits_drift_proxy().await {
+            results.extend(r);
+        }
         Ok(results)
     }
 }
@@ -825,5 +1191,33 @@ mod tests {
         assert!(AzureScanner::should_flag_snapshot(&old_time, cutoff));
         assert!(!AzureScanner::should_flag_snapshot(&fresh_time, cutoff));
         assert!(!AzureScanner::should_flag_snapshot("not-a-time", cutoff));
+    }
+
+    #[test]
+    fn vm_size_monthly_cost_uses_expected_bands() {
+        assert_eq!(AzureScanner::vm_size_monthly_cost("Standard_B2s"), 25.0);
+        assert_eq!(AzureScanner::vm_size_monthly_cost("Standard_D4s_v5"), 80.0);
+        assert_eq!(AzureScanner::vm_size_monthly_cost("Standard_E4s_v5"), 120.0);
+        assert_eq!(AzureScanner::vm_size_monthly_cost("Custom_VM"), 65.0);
+    }
+
+    #[test]
+    fn owner_like_tag_helper_matches_expected_patterns() {
+        let tags = serde_json::json!({
+            "owner": "platform",
+            "env": "prod"
+        });
+        assert!(AzureScanner::has_owner_like_tag(tags.as_object()));
+        let tags = serde_json::json!({
+            "env": "prod"
+        });
+        assert!(!AzureScanner::has_owner_like_tag(tags.as_object()));
+    }
+
+    #[test]
+    fn aks_large_vm_helper_matches_expected_patterns() {
+        assert!(AzureScanner::aks_vm_size_is_large("Standard_D4s_v5"));
+        assert!(AzureScanner::aks_vm_size_is_large("Standard_E4s_v5"));
+        assert!(!AzureScanner::aks_vm_size_is_large("Standard_B2s"));
     }
 }

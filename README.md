@@ -6,7 +6,7 @@ Local-first cloud waste scanning for operators who want source-visible, producti
 
 This repository is the **Community Edition**.
 
-Current version: `2.9.15`
+Current version: `2.9.17`
 
 - Community is local-first and production-usable.
 - No hosted license activation is required for core local workflows.

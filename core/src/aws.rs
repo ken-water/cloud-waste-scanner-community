@@ -6,7 +6,7 @@ use aws_sdk_rds::Client as RdsClient;
 use aws_sdk_s3::error::ProvideErrorMetadata;
 use aws_sdk_s3::Client as S3Client;
 use chrono::{Duration, Utc};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::models::{Policy, ResourceMetric, ScanPolicy, WastedResource};
 use crate::policy::evaluate;
@@ -74,6 +74,31 @@ impl Scanner {
             "standard" => 0.05,
             _ => 0.08,
         }
+    }
+
+    fn is_k8s_pv_tag_key(tag_key: &str) -> bool {
+        tag_key.starts_with("kubernetes.io/created-for/pv/")
+            || tag_key.starts_with("kubernetes.io/created-for/pvc/")
+            || tag_key.starts_with("kubernetes.io/cluster/")
+    }
+
+    fn is_k8s_identity_tag_key(tag_key: &str) -> bool {
+        let key = tag_key.to_ascii_lowercase();
+        key == "owner"
+            || key == "team"
+            || key == "cost-center"
+            || key == "cost_center"
+            || key == "service"
+            || key == "application"
+            || key == "app"
+    }
+
+    fn is_large_k8s_node_instance(instance_type: &str) -> bool {
+        instance_type.starts_with("m")
+            || instance_type.starts_with("c")
+            || instance_type.starts_with("r")
+            || instance_type.starts_with("x")
+            || instance_type.starts_with("z")
     }
 
     // Helper to get max metric
@@ -975,7 +1000,13 @@ impl Scanner {
                 }
 
                 let max_cpu = self
-                    .get_max_metric("AWS/EC2", "CPUUtilization", "InstanceId", &instance_id, days)
+                    .get_max_metric(
+                        "AWS/EC2",
+                        "CPUUtilization",
+                        "InstanceId",
+                        &instance_id,
+                        days,
+                    )
                     .await
                     .unwrap_or(0.0);
 
@@ -1000,6 +1031,388 @@ impl Scanner {
                         action_type: "RIGHTSIZE".to_string(),
                     });
                 }
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_eks_nodegroup_floor_risk(&self) -> Result<Vec<WastedResource>> {
+        let mut wastes = Vec::new();
+        let days = self.policy.lookback_days;
+        let cpu_limit = self.policy.cpu_percent;
+
+        let resp = self
+            .ec2_client
+            .describe_instances()
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("instance-state-name")
+                    .values("running")
+                    .build(),
+            )
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("tag-key")
+                    .values("eks:cluster-name")
+                    .build(),
+            )
+            .send()
+            .await?;
+
+        // Key: cluster/nodegroup -> (node_count, sum_cpu, estimated_monthly_sum)
+        let mut grouped: HashMap<String, (usize, f64, f64)> = HashMap::new();
+
+        for reservation in resp.reservations.unwrap_or_default() {
+            for instance in reservation.instances.unwrap_or_default() {
+                let instance_id = instance.instance_id.unwrap_or_default();
+                if instance_id.is_empty() {
+                    continue;
+                }
+
+                let instance_type = instance
+                    .instance_type
+                    .as_ref()
+                    .map(|v| v.as_str())
+                    .unwrap_or("unknown");
+                let mut cluster_name = "unknown-cluster".to_string();
+                let mut nodegroup_name = "unknown-nodegroup".to_string();
+                if let Some(tags) = instance.tags {
+                    for tag in tags {
+                        if tag.key.as_deref() == Some("eks:cluster-name") {
+                            if let Some(value) = tag.value.clone() {
+                                if !value.trim().is_empty() {
+                                    cluster_name = value;
+                                }
+                            }
+                        }
+                        if tag.key.as_deref() == Some("eks:nodegroup-name") {
+                            if let Some(value) = tag.value {
+                                if !value.trim().is_empty() {
+                                    nodegroup_name = value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                let max_cpu = self
+                    .get_max_metric(
+                        "AWS/EC2",
+                        "CPUUtilization",
+                        "InstanceId",
+                        &instance_id,
+                        days,
+                    )
+                    .await
+                    .unwrap_or(0.0);
+
+                let key = format!("{}/{}", cluster_name, nodegroup_name);
+                let entry = grouped.entry(key).or_insert((0, 0.0, 0.0));
+                entry.0 += 1;
+                entry.1 += max_cpu;
+                entry.2 += Self::estimate_instance_monthly_cost(instance_type);
+            }
+        }
+
+        for (group_key, (node_count, sum_cpu, est_monthly)) in grouped {
+            if node_count < 3 {
+                continue;
+            }
+            let avg_cpu = sum_cpu / node_count as f64;
+            if avg_cpu < (cpu_limit * 2.0).max(5.0) {
+                wastes.push(WastedResource {
+                    id: group_key.clone(),
+                    provider: "AWS".to_string(),
+                    region: self.region.clone(),
+                    resource_type: "K8s NodeGroup (EKS)".to_string(),
+                    details: format!(
+                        "Node group '{}' has {} running nodes with low average CPU ({:.1}% over {}d). Review baseline node-group floor.",
+                        group_key, node_count, avg_cpu, days
+                    ),
+                    estimated_monthly_cost: est_monthly * 0.30,
+                    action_type: "RIGHTSIZE".to_string(),
+                });
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_eks_orphan_pv_volumes(&self) -> Result<Vec<WastedResource>> {
+        let mut wastes = Vec::new();
+        let resp = self
+            .ec2_client
+            .describe_volumes()
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("status")
+                    .values("available")
+                    .build(),
+            )
+            .send()
+            .await?;
+
+        if let Some(volumes) = resp.volumes {
+            for vol in volumes {
+                let tags = vol.tags.unwrap_or_default();
+                let has_k8s_pv_tag = tags.iter().any(|tag| {
+                    tag.key
+                        .as_deref()
+                        .map(Self::is_k8s_pv_tag_key)
+                        .unwrap_or(false)
+                });
+                if !has_k8s_pv_tag {
+                    continue;
+                }
+
+                let id = vol.volume_id.unwrap_or_default();
+                let size = vol.size.unwrap_or(0);
+                let vol_type = vol
+                    .volume_type
+                    .map(|t| t.as_str().to_string())
+                    .unwrap_or_else(|| "standard".to_string());
+
+                let cost = size as f64 * Self::ebs_price_per_gb(&vol_type);
+                wastes.push(WastedResource {
+                    id,
+                    provider: "AWS".to_string(),
+                    region: self.region.clone(),
+                    resource_type: "K8s Orphan PV (EKS)".to_string(),
+                    details: format!(
+                        "Unattached Kubernetes-tagged volume ({} GB, {}). Review stale PVC/PV cleanup.",
+                        size, vol_type
+                    ),
+                    estimated_monthly_cost: cost,
+                    action_type: "DELETE".to_string(),
+                });
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_eks_orphan_enis(&self) -> Result<Vec<WastedResource>> {
+        let mut wastes = Vec::new();
+        let resp = self
+            .ec2_client
+            .describe_network_interfaces()
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("status")
+                    .values("available")
+                    .build(),
+            )
+            .send()
+            .await?;
+
+        if let Some(enis) = resp.network_interfaces {
+            for eni in enis {
+                let id = eni.network_interface_id.unwrap_or_default();
+                if id.is_empty() {
+                    continue;
+                }
+
+                let description = eni.description.unwrap_or_default();
+                let desc_lower = description.to_ascii_lowercase();
+                let has_k8s_desc = desc_lower.contains("eks")
+                    || desc_lower.contains("kubernetes")
+                    || desc_lower.contains("aws-k8s");
+
+                let tags = eni.tag_set.unwrap_or_default();
+                let has_k8s_tag = tags.iter().any(|tag| {
+                    tag.key
+                        .as_deref()
+                        .map(Self::is_k8s_pv_tag_key)
+                        .unwrap_or(false)
+                });
+
+                if !has_k8s_desc && !has_k8s_tag {
+                    continue;
+                }
+
+                wastes.push(WastedResource {
+                    id,
+                    provider: "AWS".to_string(),
+                    region: self.region.clone(),
+                    resource_type: "K8s Orphan ENI (EKS)".to_string(),
+                    details: format!(
+                        "Available network interface with Kubernetes/EKS footprint ('{}'). Review stale CNI attachment lifecycle.",
+                        description
+                    ),
+                    estimated_monthly_cost: 3.0,
+                    action_type: "DELETE".to_string(),
+                });
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_eks_missing_owner_tags(&self) -> Result<Vec<WastedResource>> {
+        let mut wastes = Vec::new();
+        let resp = self
+            .ec2_client
+            .describe_instances()
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("instance-state-name")
+                    .values("running")
+                    .build(),
+            )
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("tag-key")
+                    .values("eks:cluster-name")
+                    .build(),
+            )
+            .send()
+            .await?;
+
+        for reservation in resp.reservations.unwrap_or_default() {
+            for instance in reservation.instances.unwrap_or_default() {
+                let id = instance.instance_id.unwrap_or_default();
+                if id.is_empty() {
+                    continue;
+                }
+                let instance_type = instance
+                    .instance_type
+                    .as_ref()
+                    .map(|v| v.as_str())
+                    .unwrap_or("unknown");
+
+                let tags = instance.tags.unwrap_or_default();
+                let has_owner_tag = tags.iter().any(|tag| {
+                    tag.key
+                        .as_deref()
+                        .map(Self::is_k8s_identity_tag_key)
+                        .unwrap_or(false)
+                });
+                if has_owner_tag {
+                    continue;
+                }
+
+                let cluster_name = tags
+                    .iter()
+                    .find(|t| t.key.as_deref() == Some("eks:cluster-name"))
+                    .and_then(|t| t.value.as_deref())
+                    .unwrap_or("unknown-cluster");
+
+                wastes.push(WastedResource {
+                    id,
+                    provider: "AWS".to_string(),
+                    region: self.region.clone(),
+                    resource_type: "K8s Ownership Gap (EKS)".to_string(),
+                    details: format!(
+                        "EKS node in cluster '{}' has no owner/team/cost tag. Add ownership tags to enable namespace/team chargeback.",
+                        cluster_name
+                    ),
+                    estimated_monthly_cost: Self::estimate_instance_monthly_cost(instance_type)
+                        * 0.10,
+                    action_type: "RIGHTSIZE".to_string(),
+                });
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_eks_requests_limits_drift_proxy(&self) -> Result<Vec<WastedResource>> {
+        let mut wastes = Vec::new();
+        let days = self.policy.lookback_days;
+
+        let resp = self
+            .ec2_client
+            .describe_instances()
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("instance-state-name")
+                    .values("running")
+                    .build(),
+            )
+            .filters(
+                aws_sdk_ec2::types::Filter::builder()
+                    .name("tag-key")
+                    .values("eks:cluster-name")
+                    .build(),
+            )
+            .send()
+            .await?;
+
+        // key -> (nodes, sum_cpu, sum_monthly_cost, large_node_count)
+        let mut grouped: HashMap<String, (usize, f64, f64, usize)> = HashMap::new();
+        for reservation in resp.reservations.unwrap_or_default() {
+            for instance in reservation.instances.unwrap_or_default() {
+                let instance_id = instance.instance_id.unwrap_or_default();
+                if instance_id.is_empty() {
+                    continue;
+                }
+                let instance_type = instance
+                    .instance_type
+                    .as_ref()
+                    .map(|v| v.as_str())
+                    .unwrap_or("unknown");
+
+                let mut cluster_name = "unknown-cluster".to_string();
+                let mut nodegroup_name = "unknown-nodegroup".to_string();
+                if let Some(tags) = instance.tags {
+                    for tag in tags {
+                        if tag.key.as_deref() == Some("eks:cluster-name") {
+                            if let Some(value) = tag.value.clone() {
+                                if !value.trim().is_empty() {
+                                    cluster_name = value;
+                                }
+                            }
+                        }
+                        if tag.key.as_deref() == Some("eks:nodegroup-name") {
+                            if let Some(value) = tag.value {
+                                if !value.trim().is_empty() {
+                                    nodegroup_name = value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                let max_cpu = self
+                    .get_max_metric(
+                        "AWS/EC2",
+                        "CPUUtilization",
+                        "InstanceId",
+                        &instance_id,
+                        days,
+                    )
+                    .await
+                    .unwrap_or(0.0);
+                let key = format!("{}/{}", cluster_name, nodegroup_name);
+                let entry = grouped.entry(key).or_insert((0, 0.0, 0.0, 0));
+                entry.0 += 1;
+                entry.1 += max_cpu;
+                entry.2 += Self::estimate_instance_monthly_cost(instance_type);
+                if Self::is_large_k8s_node_instance(instance_type) {
+                    entry.3 += 1;
+                }
+            }
+        }
+
+        for (group_key, (node_count, sum_cpu, est_monthly, large_nodes)) in grouped {
+            if node_count < 2 || large_nodes == 0 {
+                continue;
+            }
+            let avg_cpu = sum_cpu / node_count as f64;
+            if avg_cpu <= 12.0 {
+                wastes.push(WastedResource {
+                    id: group_key.clone(),
+                    provider: "AWS".to_string(),
+                    region: self.region.clone(),
+                    resource_type: "K8s Requests/Limits Drift Proxy (EKS)".to_string(),
+                    details: format!(
+                        "Node group '{}' runs {} node(s) ({} large class) with low avg CPU {:.1}% over {}d. Review pod requests/limits and binpack policy.",
+                        group_key, node_count, large_nodes, avg_cpu, days
+                    ),
+                    estimated_monthly_cost: est_monthly * 0.20,
+                    action_type: "RIGHTSIZE".to_string(),
+                });
             }
         }
 
@@ -1126,6 +1539,21 @@ impl CloudProvider for Scanner {
         if let Ok(mut r) = self.scan_eks_idle_nodes().await {
             all_results.append(&mut r);
         }
+        if let Ok(mut r) = self.scan_eks_nodegroup_floor_risk().await {
+            all_results.append(&mut r);
+        }
+        if let Ok(mut r) = self.scan_eks_orphan_pv_volumes().await {
+            all_results.append(&mut r);
+        }
+        if let Ok(mut r) = self.scan_eks_orphan_enis().await {
+            all_results.append(&mut r);
+        }
+        if let Ok(mut r) = self.scan_eks_missing_owner_tags().await {
+            all_results.append(&mut r);
+        }
+        if let Ok(mut r) = self.scan_eks_requests_limits_drift_proxy().await {
+            all_results.append(&mut r);
+        }
         Ok(all_results)
     }
 }
@@ -1174,5 +1602,34 @@ mod tests {
         assert_eq!(Scanner::ebs_price_per_gb("io2"), 0.125);
         assert_eq!(Scanner::ebs_price_per_gb("standard"), 0.05);
         assert_eq!(Scanner::ebs_price_per_gb("unknown"), 0.08);
+    }
+
+    #[test]
+    fn k8s_pv_tag_key_helper_matches_expected_patterns() {
+        assert!(Scanner::is_k8s_pv_tag_key(
+            "kubernetes.io/created-for/pv/name"
+        ));
+        assert!(Scanner::is_k8s_pv_tag_key(
+            "kubernetes.io/created-for/pvc/namespace"
+        ));
+        assert!(Scanner::is_k8s_pv_tag_key("kubernetes.io/cluster/demo"));
+        assert!(!Scanner::is_k8s_pv_tag_key("Name"));
+    }
+
+    #[test]
+    fn k8s_identity_tag_helper_matches_expected_patterns() {
+        assert!(Scanner::is_k8s_identity_tag_key("owner"));
+        assert!(Scanner::is_k8s_identity_tag_key("team"));
+        assert!(Scanner::is_k8s_identity_tag_key("cost-center"));
+        assert!(Scanner::is_k8s_identity_tag_key("application"));
+        assert!(!Scanner::is_k8s_identity_tag_key("environment"));
+    }
+
+    #[test]
+    fn large_k8s_instance_helper_matches_expected_patterns() {
+        assert!(Scanner::is_large_k8s_node_instance("m6i.large"));
+        assert!(Scanner::is_large_k8s_node_instance("c7g.xlarge"));
+        assert!(Scanner::is_large_k8s_node_instance("r6a.2xlarge"));
+        assert!(!Scanner::is_large_k8s_node_instance("t3.medium"));
     }
 }

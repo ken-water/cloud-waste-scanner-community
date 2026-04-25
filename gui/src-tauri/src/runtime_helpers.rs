@@ -4,7 +4,7 @@ use serde_json::Value;
 use std::collections::HashSet;
 
 pub(crate) fn trial_gate_message() -> String {
-    "Trial mode does not include Local API access. Upgrade to Pro to enable API automation."
+    "Community Local API is disabled by current runtime policy. Enable Local API in Settings and restart the application."
         .to_string()
 }
 
@@ -355,7 +355,7 @@ pub(crate) fn summarize_for_trial(results: &[WastedResource]) -> Vec<WastedResou
         region: "-".to_string(),
         resource_type: "Estimated Waste".to_string(),
         details: format!(
-            "Potential waste found across your selected accounts. Upgrade to Pro to view exact resource IDs and remediation actions ({} findings hidden).",
+            "Potential waste found across your selected accounts. Community mode keeps detailed findings local on this machine ({} findings).",
             results.len()
         ),
         estimated_monthly_cost: total_savings,
@@ -382,6 +382,24 @@ pub(crate) fn validate_scan_request(payload: &super::ApiScanRequest) -> Result<(
         let trimmed = region.trim();
         if !trimmed.is_empty() {
             validate_ascii_input("aws_region", trimmed, super::API_MAX_OPTIONAL_FIELD_LEN)?;
+        }
+    }
+
+    if let Some(path) = payload.kubeconfig_path.as_deref() {
+        let trimmed = path.trim();
+        if !trimmed.is_empty() {
+            validate_ascii_input(
+                "kubeconfig_path",
+                trimmed,
+                super::API_MAX_OPTIONAL_FIELD_LEN,
+            )?;
+        }
+    }
+
+    if let Some(context) = payload.kube_context.as_deref() {
+        let trimmed = context.trim();
+        if !trimmed.is_empty() {
+            validate_ascii_input("kube_context", trimmed, super::API_MAX_OPTIONAL_FIELD_LEN)?;
         }
     }
 
@@ -650,6 +668,9 @@ mod tests {
             selected_accounts: Some(vec!["aws-prod".to_string()]),
             demo_mode: Some(false),
             report_emails: Some(vec!["ops@example.com".to_string()]),
+            include_kubernetes: Some(true),
+            kubeconfig_path: Some("/home/ken/.kube/config".to_string()),
+            kube_context: Some("prod".to_string()),
         };
         assert!(validate_scan_request(&ok).is_ok());
 
@@ -683,8 +704,8 @@ mod tests {
     #[test]
     fn trial_gate_message_mentions_local_api_upgrade_requirement() {
         let text = trial_gate_message();
-        assert!(text.contains("Local API access"));
-        assert!(text.contains("Upgrade to Pro"));
+        assert!(text.contains("Local API"));
+        assert!(text.contains("Settings"));
     }
 
     #[test]
@@ -700,6 +721,11 @@ mod tests {
         assert!(validate_scan_request(&payload).is_err());
 
         payload.selected_accounts = Some(vec!["aws-生产".to_string()]);
+        assert!(validate_scan_request(&payload).is_err());
+
+        payload.selected_accounts = None;
+        payload.include_kubernetes = Some(true);
+        payload.kube_context = Some("prod-集群".to_string());
         assert!(validate_scan_request(&payload).is_err());
     }
 

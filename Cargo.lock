@@ -1124,6 +1124,7 @@ dependencies = [
  "aws-sdk-ec2",
  "aws-sdk-elasticloadbalancingv2",
  "aws-sdk-rds",
+ "aws-sdk-s3",
  "clap",
  "cloud-waste-scanner-core",
  "comfy-table",
@@ -1155,6 +1156,7 @@ dependencies = [
  "serde",
  "serde-xml-rs",
  "serde_json",
+ "serde_yaml_ng",
  "sha1",
  "sha2",
  "sqlx",
@@ -1166,7 +1168,7 @@ dependencies = [
 
 [[package]]
 name = "cloud-waste-scanner-gui"
-version = "2.9.15"
+version = "2.9.17"
 dependencies = [
  "aws-config",
  "aws-sdk-cloudwatch",
@@ -1516,27 +1518,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.114",
-]
-
-[[package]]
-name = "cws-backend-vps"
-version = "0.1.0"
-dependencies = [
- "axum",
- "base64 0.22.1",
- "chrono",
- "dotenvy",
- "ed25519-dalek",
- "hmac",
- "maxminddb",
- "reqwest 0.11.27",
- "serde",
- "serde_json",
- "sha2",
- "sqlx",
- "tokio",
- "tower-http 0.5.2",
- "uuid",
 ]
 
 [[package]]
@@ -3011,15 +2992,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "469fb0b9cefa57e3ef31275ee7cacb78f2fdca44e4765491884a2b119d4eb130"
 
 [[package]]
-name = "ipnetwork"
-version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4088d739b183546b239688ddbc79891831df421773df95e236daf7867866d355"
-dependencies = [
- "serde",
-]
-
-[[package]]
 name = "iri-string"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3327,18 +3299,6 @@ name = "matchit"
 version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e7465ac9959cc2b1404e8e2367b43684a6d13790fe23056cc8c6c5a6b7bcb94"
-
-[[package]]
-name = "maxminddb"
-version = "0.23.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe2ba61113f9f7a9f0e87c519682d39c43a6f3f79c2cc42c3ba3dda83b1fa334"
-dependencies = [
- "ipnetwork",
- "log",
- "memchr",
- "serde",
-]
 
 [[package]]
 name = "md-5"
@@ -5140,6 +5100,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_yaml_ng"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b4db627b98b36d4203a7b458cf3573730f2bb591b28871d916dfa9efabfd41f"
+dependencies = [
+ "indexmap 2.13.0",
+ "itoa",
+ "ryu",
+ "serde",
+ "unsafe-libyaml",
+]
+
+[[package]]
 name = "serialize-to-javascript"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6526,6 +6499,12 @@ name = "unicode_categories"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39ec24b3121d976906ece63c9daad25b85969647682eee313cb5779fdd69e14e"
+
+[[package]]
+name = "unsafe-libyaml"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "673aac59facbab8a9007c7f6108d11f63b603f7cabff99fabf650fea5c32b861"
 
 [[package]]
 name = "untrusted"

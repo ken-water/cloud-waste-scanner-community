@@ -471,16 +471,24 @@ mod tests {
     #[test]
     fn route_failover_order_prefers_healthy_routes() {
         clear_test_state();
+        let Some(first_base) = FIRST_PARTY_API_BASES.first().copied() else {
+            clear_test_state();
+            return;
+        };
+        let Some(second_base) = FIRST_PARTY_API_BASES.get(1).copied() else {
+            clear_test_state();
+            return;
+        };
 
         let default_order = ordered_api_bases();
         assert_eq!(default_order, FIRST_PARTY_API_BASES.to_vec());
 
-        mark_route_failed(FIRST_PARTY_API_BASES[0]);
+        mark_route_failed(first_base);
         let cooled = ordered_api_bases();
-        assert_eq!(cooled[0], FIRST_PARTY_API_BASES[1]);
-        assert_eq!(cooled[1], FIRST_PARTY_API_BASES[0]);
+        assert_eq!(cooled.first().copied(), Some(second_base));
+        assert_eq!(cooled.get(1).copied(), Some(first_base));
 
-        mark_route_healthy(FIRST_PARTY_API_BASES[0]);
+        mark_route_healthy(first_base);
         let restored = ordered_api_bases();
         assert_eq!(restored, FIRST_PARTY_API_BASES.to_vec());
         clear_test_state();

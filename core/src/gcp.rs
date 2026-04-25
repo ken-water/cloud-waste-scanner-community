@@ -86,6 +86,42 @@ pub struct GcpScanner {
 }
 
 impl GcpScanner {
+    fn machine_monthly_cost(machine_type: &str) -> f64 {
+        if machine_type.starts_with("e2-") {
+            45.0
+        } else if machine_type.starts_with("n2-") || machine_type.starts_with("n2d-") {
+            95.0
+        } else if machine_type.starts_with("c2-") || machine_type.starts_with("c3-") {
+            130.0
+        } else {
+            70.0
+        }
+    }
+
+    fn has_owner_like_label(labels: Option<&serde_json::Map<String, Value>>) -> bool {
+        labels
+            .map(|m| {
+                m.keys().any(|k| {
+                    let key = k.to_ascii_lowercase();
+                    key == "owner"
+                        || key == "team"
+                        || key == "cost-center"
+                        || key == "cost_center"
+                        || key == "service"
+                        || key == "application"
+                        || key == "app"
+                })
+            })
+            .unwrap_or(false)
+    }
+
+    fn gke_machine_is_large(machine_type: &str) -> bool {
+        machine_type.starts_with("n2-")
+            || machine_type.starts_with("n2d-")
+            || machine_type.starts_with("c2-")
+            || machine_type.starts_with("c3-")
+    }
+
     fn fallback_recommender_locations() -> Vec<String> {
         vec![
             "us-central1".to_string(),
@@ -542,6 +578,383 @@ impl GcpScanner {
         Ok(wastes)
     }
 
+    pub async fn scan_gke_nodepool_floor_risk(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://container.googleapis.com/v1/projects/{}/locations/-/clusters",
+            self.creds.project_id
+        );
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+        let clusters = json
+            .get("clusters")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+
+        for cluster in clusters {
+            let cluster_name = cluster
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown-cluster");
+            let region = cluster
+                .get("location")
+                .or_else(|| cluster.get("zone"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("global");
+            if let Some(node_pools) = cluster.get("nodePools").and_then(|v| v.as_array()) {
+                for pool in node_pools {
+                    let pool_name = pool
+                        .get("name")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("nodepool");
+                    let machine_type = pool
+                        .get("config")
+                        .and_then(|v| v.get("machineType"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown");
+                    let baseline_count = pool
+                        .get("initialNodeCount")
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(0);
+                    let autoscaling_enabled = pool
+                        .get("autoscaling")
+                        .and_then(|v| v.get("enabled"))
+                        .and_then(|v| v.as_bool())
+                        .unwrap_or(false);
+                    let min_node_count = pool
+                        .get("autoscaling")
+                        .and_then(|v| v.get("minNodeCount"))
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(0);
+
+                    if (autoscaling_enabled && min_node_count > 1)
+                        || (!autoscaling_enabled && baseline_count > 2)
+                    {
+                        let effective_count = if autoscaling_enabled {
+                            min_node_count.max(1)
+                        } else {
+                            baseline_count.max(1)
+                        };
+                        let savings = effective_count as f64
+                            * Self::machine_monthly_cost(machine_type)
+                            * 0.25;
+                        wastes.push(WastedResource {
+                            id: format!("{}/{}", cluster_name, pool_name),
+                            provider: "GCP".to_string(),
+                            region: region.to_string(),
+                            resource_type: "K8s NodeFloor Risk (GKE)".to_string(),
+                            details: format!(
+                                "GKE node pool '{}' in '{}' has baseline floor {} (autoscaling={}, minNodeCount={}). Review baseline cost floor.",
+                                pool_name, cluster_name, baseline_count, autoscaling_enabled, min_node_count
+                            ),
+                            estimated_monthly_cost: savings,
+                            action_type: "RIGHTSIZE".to_string(),
+                        });
+                    }
+                }
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_gke_orphan_pv_disks(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://compute.googleapis.com/compute/v1/projects/{}/aggregated/disks",
+            self.creds.project_id
+        );
+        let res = self.client.get(&url).bearer_auth(token).send().await?;
+        if !res.status().is_success() {
+            return Ok(vec![]);
+        }
+        let json: Value = res.json().await?;
+        let mut wastes = Vec::new();
+        if let Some(items) = json.get("items").and_then(|i| i.as_object()) {
+            for (zone_key, zone_data) in items {
+                if let Some(disks) = zone_data.get("disks").and_then(|d| d.as_array()) {
+                    for disk in disks {
+                        let is_unattached = disk
+                            .get("users")
+                            .map_or(true, |u| u.as_array().map_or(true, |a| a.is_empty()));
+                        if !is_unattached {
+                            continue;
+                        }
+
+                        let has_k8s_tag = disk
+                            .get("labels")
+                            .and_then(|v| v.as_object())
+                            .map(|labels| {
+                                labels.keys().any(|k| {
+                                    k.contains("k8s")
+                                        || k.contains("kubernetes")
+                                        || k.contains("gke")
+                                })
+                            })
+                            .unwrap_or(false);
+                        if !has_k8s_tag {
+                            continue;
+                        }
+
+                        let name = disk
+                            .get("name")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        let size_gb = disk
+                            .get("sizeGb")
+                            .and_then(|v| v.as_str())
+                            .and_then(|v| v.parse::<f64>().ok())
+                            .unwrap_or(0.0);
+                        wastes.push(WastedResource {
+                            id: name.clone(),
+                            provider: "GCP".to_string(),
+                            region: zone_key.replace("zones/", ""),
+                            resource_type: "K8s Orphan PV (GKE)".to_string(),
+                            details: format!(
+                                "Unattached Kubernetes-labeled persistent disk ({} GB). Review stale PVC/PV cleanup.",
+                                size_gb
+                            ),
+                            estimated_monthly_cost: (size_gb * 0.08).max(1.0),
+                            action_type: "DELETE".to_string(),
+                        });
+                    }
+                }
+            }
+        }
+        Ok(wastes)
+    }
+
+    pub async fn scan_gke_missing_owner_labels(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://container.googleapis.com/v1/projects/{}/locations/-/clusters",
+            self.creds.project_id
+        );
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+        let clusters = json
+            .get("clusters")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        for cluster in clusters {
+            let cluster_name = cluster
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown-cluster");
+            let region = cluster
+                .get("location")
+                .or_else(|| cluster.get("zone"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("global");
+
+            if let Some(node_pools) = cluster.get("nodePools").and_then(|v| v.as_array()) {
+                for pool in node_pools {
+                    let pool_name = pool
+                        .get("name")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("nodepool");
+                    let labels = pool
+                        .get("config")
+                        .and_then(|v| v.get("labels"))
+                        .and_then(|v| v.as_object());
+                    if Self::has_owner_like_label(labels) {
+                        continue;
+                    }
+                    let node_count = pool
+                        .get("initialNodeCount")
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(1)
+                        .max(1);
+                    let machine_type = pool
+                        .get("config")
+                        .and_then(|v| v.get("machineType"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown");
+                    wastes.push(WastedResource {
+                        id: format!("{}/{}", cluster_name, pool_name),
+                        provider: "GCP".to_string(),
+                        region: region.to_string(),
+                        resource_type: "K8s Ownership Gap (GKE)".to_string(),
+                        details: format!(
+                            "GKE node pool '{}' in '{}' has no owner/team/cost label. Add labels to enable team chargeback.",
+                            pool_name, cluster_name
+                        ),
+                        estimated_monthly_cost: node_count as f64
+                            * Self::machine_monthly_cost(machine_type)
+                            * 0.10,
+                        action_type: "RIGHTSIZE".to_string(),
+                    });
+                }
+            }
+        }
+
+        Ok(wastes)
+    }
+
+    pub async fn scan_gke_orphan_addresses(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://compute.googleapis.com/compute/v1/projects/{}/aggregated/addresses",
+            self.creds.project_id
+        );
+        let res = self.client.get(&url).bearer_auth(token).send().await?;
+        if !res.status().is_success() {
+            return Ok(vec![]);
+        }
+        let json: Value = res.json().await?;
+        let mut wastes = Vec::new();
+        if let Some(items) = json.get("items").and_then(|i| i.as_object()) {
+            for (region_key, region_data) in items {
+                if let Some(addrs) = region_data.get("addresses").and_then(|d| d.as_array()) {
+                    for addr in addrs {
+                        let status = addr.get("status").and_then(|v| v.as_str()).unwrap_or("");
+                        let is_unbound = addr
+                            .get("users")
+                            .map_or(true, |u| u.as_array().map_or(true, |a| a.is_empty()));
+                        if status != "RESERVED" || !is_unbound {
+                            continue;
+                        }
+                        let labels = addr.get("labels").and_then(|v| v.as_object());
+                        let has_k8s_label = labels
+                            .map(|ls| {
+                                ls.keys().any(|k| {
+                                    let key = k.to_ascii_lowercase();
+                                    key.contains("k8s")
+                                        || key.contains("kubernetes")
+                                        || key.contains("gke")
+                                })
+                            })
+                            .unwrap_or(false);
+                        if !has_k8s_label {
+                            continue;
+                        }
+                        let name = addr
+                            .get("name")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        wastes.push(WastedResource {
+                            id: name,
+                            provider: "GCP".to_string(),
+                            region: region_key.replace("regions/", ""),
+                            resource_type: "K8s Orphan IP (GKE)".to_string(),
+                            details:
+                                "Reserved external IP with Kubernetes/GKE labels and no attachment."
+                                    .to_string(),
+                            estimated_monthly_cost: 2.5,
+                            action_type: "DELETE".to_string(),
+                        });
+                    }
+                }
+            }
+        }
+        Ok(wastes)
+    }
+
+    pub async fn scan_gke_requests_limits_drift_proxy(&self) -> Result<Vec<WastedResource>> {
+        let token = self.get_token().await?;
+        let url = format!(
+            "https://container.googleapis.com/v1/projects/{}/locations/-/clusters",
+            self.creds.project_id
+        );
+        let resp = self.client.get(&url).bearer_auth(token).send().await?;
+        if !resp.status().is_success() {
+            return Ok(vec![]);
+        }
+
+        let json: Value = resp.json().await?;
+        let mut wastes = Vec::new();
+        let clusters = json
+            .get("clusters")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        for cluster in clusters {
+            let cluster_name = cluster
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown-cluster");
+            let region = cluster
+                .get("location")
+                .or_else(|| cluster.get("zone"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("global");
+
+            if let Some(node_pools) = cluster.get("nodePools").and_then(|v| v.as_array()) {
+                for pool in node_pools {
+                    let pool_name = pool
+                        .get("name")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("nodepool");
+                    let machine_type = pool
+                        .get("config")
+                        .and_then(|v| v.get("machineType"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown");
+                    let count = pool
+                        .get("initialNodeCount")
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(1)
+                        .max(1);
+                    let autoscaling_enabled = pool
+                        .get("autoscaling")
+                        .and_then(|v| v.get("enabled"))
+                        .and_then(|v| v.as_bool())
+                        .unwrap_or(false);
+                    let min_node_count = pool
+                        .get("autoscaling")
+                        .and_then(|v| v.get("minNodeCount"))
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(0);
+                    let max_node_count = pool
+                        .get("autoscaling")
+                        .and_then(|v| v.get("maxNodeCount"))
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(count);
+
+                    let floor = if autoscaling_enabled {
+                        min_node_count.max(1)
+                    } else {
+                        count
+                    };
+                    let scale_span = (max_node_count - floor).max(0);
+                    let is_large = Self::gke_machine_is_large(machine_type);
+
+                    if is_large && floor >= 2 && scale_span <= 2 {
+                        let est_monthly = floor as f64 * Self::machine_monthly_cost(machine_type);
+                        wastes.push(WastedResource {
+                            id: format!("{}/{}", cluster_name, pool_name),
+                            provider: "GCP".to_string(),
+                            region: region.to_string(),
+                            resource_type: "K8s Requests/Limits Drift Proxy (GKE)".to_string(),
+                            details: format!(
+                                "Node pool '{}' in '{}' keeps floor {} on machine '{}' with narrow scale span {}. Review pod requests/limits and autoscaling headroom.",
+                                pool_name, cluster_name, floor, machine_type, scale_span
+                            ),
+                            estimated_monthly_cost: est_monthly * 0.20,
+                            action_type: "RIGHTSIZE".to_string(),
+                        });
+                    }
+                }
+            }
+        }
+
+        Ok(wastes)
+    }
+
     pub async fn delete_disk(&self, _region: &str, _name: &str) -> Result<()> {
         Ok(())
     }
@@ -574,6 +987,21 @@ impl CloudProvider for GcpScanner {
             }
         }
         if let Ok(r) = self.scan_gke_node_pools().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_gke_nodepool_floor_risk().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_gke_orphan_pv_disks().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_gke_missing_owner_labels().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_gke_orphan_addresses().await {
+            results.extend(r);
+        }
+        if let Ok(r) = self.scan_gke_requests_limits_drift_proxy().await {
             results.extend(r);
         }
         Ok(results)
@@ -618,5 +1046,33 @@ mod tests {
             zones,
             vec!["us-central1-a".to_string(), "us-central1-b".to_string()]
         );
+    }
+
+    #[test]
+    fn machine_monthly_cost_uses_expected_bands() {
+        assert_eq!(GcpScanner::machine_monthly_cost("e2-standard-4"), 45.0);
+        assert_eq!(GcpScanner::machine_monthly_cost("n2-standard-4"), 95.0);
+        assert_eq!(GcpScanner::machine_monthly_cost("c2-standard-8"), 130.0);
+        assert_eq!(GcpScanner::machine_monthly_cost("custom"), 70.0);
+    }
+
+    #[test]
+    fn owner_like_label_helper_matches_expected_patterns() {
+        let labels = serde_json::json!({
+            "team": "platform",
+            "env": "prod"
+        });
+        assert!(GcpScanner::has_owner_like_label(labels.as_object()));
+        let labels = serde_json::json!({
+            "env": "prod"
+        });
+        assert!(!GcpScanner::has_owner_like_label(labels.as_object()));
+    }
+
+    #[test]
+    fn gke_large_machine_helper_matches_expected_patterns() {
+        assert!(GcpScanner::gke_machine_is_large("n2-standard-8"));
+        assert!(GcpScanner::gke_machine_is_large("c3-standard-4"));
+        assert!(!GcpScanner::gke_machine_is_large("e2-standard-4"));
     }
 }

@@ -26,7 +26,7 @@ use cloud_waste_scanner_core::vultr::VultrScanner;
 use cloud_waste_scanner_core::{
     akamai, backblaze, baidu, ceph, civo, cloudflare, cloudian, contabo, dell, dreamhost, equinix,
     exoscale, flashblade, gcore, generic_s3, greenlake, hcp, hetzner, huawei, ibm, idrive, ionos,
-    leaseweb, linode, lyve, minio, models::WastedResource, nutanix, openstack, ovh, qumulo,
+    k8s, leaseweb, linode, lyve, minio, models::WastedResource, nutanix, openstack, ovh, qumulo,
     rackspace, scaleway, scality, storagegrid, storj, tencent, tianyi, upcloud, volcengine, wasabi,
     NotificationChannel, Policy, ScanPolicy, Scanner,
 };
@@ -92,8 +92,7 @@ use proxy_runtime::{
     normalize_custom_proxy_url, resolve_proxy_runtime,
 };
 use runtime_helpers::{
-    build_runtime_entitlements,
-    calculate_follow_up_next_run, calculate_initial_next_run,
+    build_runtime_entitlements, calculate_follow_up_next_run, calculate_initial_next_run,
     normalize_channel_min_findings_for_storage, normalize_channel_min_savings_for_storage,
     normalize_channel_trigger_mode_for_storage, normalize_enqueue_error_message,
     normalize_transport_error_detail, parse_notification_channel_email_recipients,
@@ -198,6 +197,9 @@ pub(crate) struct ApiScanRequest {
     pub(crate) selected_accounts: Option<Vec<String>>,
     pub(crate) demo_mode: Option<bool>,
     pub(crate) report_emails: Option<Vec<String>>,
+    pub(crate) include_kubernetes: Option<bool>,
+    pub(crate) kubeconfig_path: Option<String>,
+    pub(crate) kube_context: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -539,6 +541,12 @@ struct ApiGovernanceQuery {
     window_days: Option<i64>,
 }
 
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiK8sReportQuery {
+    window_days: Option<i64>,
+}
+
 #[derive(Debug, Clone, Serialize)]
 struct ApiReportArtifact {
     report_id: String,
@@ -562,6 +570,13 @@ struct ApiReportArtifactStored {
 struct ApiEventQuery {
     page: Option<i64>,
     limit: Option<usize>,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiKubeconfigQuery {
+    path: Option<String>,
+    context: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -771,6 +786,83 @@ struct GovernanceErrorTaxonomyResponse {
     window_start_ts: i64,
     window_end_ts: i64,
     error_taxonomy: GovernanceErrorTaxonomy,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sCategoryRow {
+    category: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sProviderRow {
+    provider: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sActionRow {
+    action_type: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sTopOffenderRow {
+    offender_key: String,
+    provider: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sClusterSummaryRow {
+    cluster: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sCategoryProviderRow {
+    provider: String,
+    category: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sHighConfidenceActionRow {
+    action_key: String,
+    recommendation: String,
+    priority: i64,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sGovernanceReportResponse {
+    generated_at: i64,
+    window_days: i64,
+    total_findings: i64,
+    total_estimated_monthly_waste: f64,
+    categories: Vec<K8sCategoryRow>,
+    providers: Vec<K8sProviderRow>,
+    actions: Vec<K8sActionRow>,
+    top_offenders: Vec<K8sTopOffenderRow>,
+    cluster_summary: Vec<K8sClusterSummaryRow>,
+    category_by_provider: Vec<K8sCategoryProviderRow>,
+    high_confidence_actions: Vec<K8sHighConfidenceActionRow>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sActionPlanResponse {
+    generated_at: i64,
+    window_days: i64,
+    total_findings: i64,
+    total_estimated_monthly_waste: f64,
+    high_confidence_actions: Vec<K8sHighConfidenceActionRow>,
 }
 
 #[derive(Debug, Default, Clone)]
@@ -1325,6 +1417,9 @@ async fn enqueue_scan_job(
             payload.aws_region.clone(),
             payload.selected_accounts.clone(),
             demo_mode,
+            payload.include_kubernetes.unwrap_or(false),
+            payload.kubeconfig_path.clone(),
+            payload.kube_context.clone(),
         )
         .await;
 
@@ -2364,15 +2459,7 @@ async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<ser
         ApiCapabilityGroup {
             name: "reports".to_string(),
             status: "active".to_string(),
-            routes: vec![
-                "POST /v1/reports/generate".to_string(),
-                "GET /v1/reports".to_string(),
-                "GET /v1/reports/overview".to_string(),
-                "GET /v1/reports/trend".to_string(),
-                "GET /v1/reports/error-taxonomy".to_string(),
-                "GET /v1/reports/:report_id".to_string(),
-                "GET /v1/reports/:report_id/download".to_string(),
-            ],
+            routes: reports_capability_routes(),
         },
         ApiCapabilityGroup {
             name: "events".to_string(),
@@ -2395,16 +2482,17 @@ async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<ser
         ApiCapabilityGroup {
             name: "mcp".to_string(),
             status: "beta".to_string(),
-            routes: vec![
-                "GET /v1/mcp/capabilities".to_string(),
-                "POST /v1/mcp/tools/run-scan".to_string(),
-                "GET /v1/mcp/tools/get-scan/:scan_id".to_string(),
-            ],
+            routes: mcp_capability_routes(),
         },
         ApiCapabilityGroup {
             name: "accounts".to_string(),
             status: "active".to_string(),
             routes: vec!["GET /v1/accounts".to_string()],
+        },
+        ApiCapabilityGroup {
+            name: "kubernetes".to_string(),
+            status: "active".to_string(),
+            routes: k8s_capability_routes(),
         },
         ApiCapabilityGroup {
             name: "cloud_accounts".to_string(),
@@ -2483,6 +2571,129 @@ async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<ser
         "generated_at": now_unix_ts(),
         "groups": groups
     }))
+}
+
+fn reports_capability_routes() -> Vec<String> {
+    vec![
+        "POST /v1/reports/generate".to_string(),
+        "GET /v1/reports".to_string(),
+        "GET /v1/reports/overview".to_string(),
+        "GET /v1/reports/trend".to_string(),
+        "GET /v1/reports/error-taxonomy".to_string(),
+        "GET /v1/reports/k8s-governance".to_string(),
+        "GET /v1/reports/k8s-action-plan".to_string(),
+        "GET /v1/reports/:report_id".to_string(),
+        "GET /v1/reports/:report_id/download".to_string(),
+    ]
+}
+
+fn mcp_capability_tools() -> Vec<serde_json::Value> {
+    vec![
+        serde_json::json!({"name": "run_scan", "route": "POST /v1/mcp/tools/run-scan"}),
+        serde_json::json!({"name": "get_scan", "route": "GET /v1/mcp/tools/get-scan/:scan_id"}),
+        serde_json::json!({"name": "get_k8s_governance", "route": "GET /v1/mcp/tools/k8s-governance"}),
+        serde_json::json!({"name": "get_k8s_action_plan", "route": "GET /v1/mcp/tools/k8s-action-plan"}),
+    ]
+}
+
+fn mcp_capability_routes() -> Vec<String> {
+    vec![
+        "GET /v1/mcp/capabilities".to_string(),
+        "POST /v1/mcp/tools/run-scan".to_string(),
+        "GET /v1/mcp/tools/get-scan/:scan_id".to_string(),
+        "GET /v1/mcp/tools/k8s-governance".to_string(),
+        "GET /v1/mcp/tools/k8s-action-plan".to_string(),
+    ]
+}
+
+fn k8s_capability_routes() -> Vec<String> {
+    vec![
+        "GET /v1/k8s/contexts".to_string(),
+        "POST /v1/k8s/scans".to_string(),
+        "GET /v1/k8s/findings".to_string(),
+        "GET /v1/k8s/nodes".to_string(),
+        "GET /v1/k8s/pods".to_string(),
+        "GET /v1/k8s/workloads".to_string(),
+        "GET /v1/k8s/persistent-volumes".to_string(),
+        "GET /v1/k8s/persistent-volume-claims".to_string(),
+        "GET /v1/k8s/services".to_string(),
+    ]
+}
+
+fn default_kubeconfig_path() -> std::path::PathBuf {
+    if let Some(home) = dirs::home_dir() {
+        return home.join(".kube").join("config");
+    }
+    std::path::PathBuf::from(".kube/config")
+}
+
+fn resolve_kubeconfig_path(raw: Option<&String>) -> std::path::PathBuf {
+    raw.map(|value| value.trim())
+        .filter(|value| !value.is_empty())
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(default_kubeconfig_path)
+}
+
+fn kubectl_base_args(kubeconfig_path: &std::path::Path, context: Option<&str>) -> Vec<String> {
+    let mut args = vec![
+        "--kubeconfig".to_string(),
+        kubeconfig_path.to_string_lossy().to_string(),
+    ];
+    if let Some(context) = context.map(str::trim).filter(|value| !value.is_empty()) {
+        args.push("--context".to_string());
+        args.push(context.to_string());
+    }
+    args
+}
+
+async fn run_kubectl_json(
+    kubeconfig_path: &std::path::Path,
+    context: Option<&str>,
+    resource: &str,
+    all_namespaces: bool,
+) -> Result<String, String> {
+    let mut args = kubectl_base_args(kubeconfig_path, context);
+    args.extend(["get".to_string(), resource.to_string()]);
+    if all_namespaces {
+        args.push("-A".to_string());
+    }
+    args.extend(["-o".to_string(), "json".to_string()]);
+
+    let output = tokio::time::timeout(
+        std::time::Duration::from_secs(30),
+        tokio::process::Command::new("kubectl").args(&args).output(),
+    )
+    .await
+    .map_err(|_| format!("kubectl get {} timed out after 30 seconds", resource))?
+    .map_err(|e| format!("failed to execute kubectl: {}", e))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!(
+            "kubectl get {} failed: {}",
+            resource,
+            summarize_error_text(&stderr, 500)
+        ));
+    }
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
+async fn scan_kubernetes_via_kubectl(
+    kubeconfig_path: std::path::PathBuf,
+    context: Option<String>,
+) -> Result<Vec<WastedResource>, String> {
+    let summary = k8s::load_kubeconfig_summary(&kubeconfig_path)?;
+    let active = k8s::resolve_active_context(&summary, context.as_deref())
+        .ok_or_else(|| "kubeconfig has no usable context".to_string())?;
+    let cluster_name = active.name.clone();
+
+    let pods_json = run_kubectl_json(&kubeconfig_path, context.as_deref(), "pods", true).await?;
+    let nodes_json = run_kubectl_json(&kubeconfig_path, context.as_deref(), "nodes", false).await?;
+    let pv_json = run_kubectl_json(&kubeconfig_path, context.as_deref(), "pv", false).await?;
+
+    let pods = k8s::parse_kubectl_pods_json(&pods_json)?;
+    let nodes = k8s::parse_kubectl_nodes_json(&nodes_json, &pods)?;
+    let volumes = k8s::parse_kubectl_persistent_volumes_json(&pv_json)?;
+    Ok(k8s::analyze_k8s_snapshot(&cluster_name, &nodes, &volumes))
 }
 
 fn schedule_gate_error() -> ApiError {
@@ -4350,6 +4561,265 @@ async fn handle_api_reports_error_taxonomy(
     }))
 }
 
+async fn handle_api_reports_k8s_governance(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiK8sReportQuery>,
+) -> Result<Json<K8sGovernanceReportResponse>, ApiError> {
+    let window_days = query.window_days.unwrap_or(30).clamp(1, 365);
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let history = db::get_scan_history(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+
+    let since_ts = Utc::now().timestamp() - (window_days * 86_400);
+    let mut total_findings: i64 = 0;
+    let mut total_estimated_monthly_waste = 0.0_f64;
+    let mut category_agg: HashMap<String, (i64, f64)> = HashMap::new();
+    let mut provider_agg: HashMap<String, (i64, f64)> = HashMap::new();
+    let mut action_agg: HashMap<String, (i64, f64)> = HashMap::new();
+    let mut offender_agg: HashMap<(String, String), (i64, f64)> = HashMap::new();
+    let mut cluster_agg: HashMap<String, (i64, f64)> = HashMap::new();
+    let mut category_provider_agg: HashMap<(String, String), (i64, f64)> = HashMap::new();
+    let mut high_confidence_agg: HashMap<(String, i64, String), (i64, f64)> = HashMap::new();
+
+    for item in history
+        .into_iter()
+        .filter(|h| h.status.eq_ignore_ascii_case("completed") && h.scanned_at >= since_ts)
+    {
+        let findings =
+            serde_json::from_str::<Vec<WastedResource>>(&item.results_json).unwrap_or_default();
+        for finding in findings {
+            if !is_k8s_finding(&finding.resource_type) {
+                continue;
+            }
+            total_findings += 1;
+            let waste = finding.estimated_monthly_cost.max(0.0);
+            total_estimated_monthly_waste += waste;
+
+            let category = classify_k8s_category(&finding.resource_type).to_string();
+            let provider = if finding.provider.trim().is_empty() {
+                "Unknown".to_string()
+            } else {
+                finding.provider.trim().to_string()
+            };
+            let action = if finding.action_type.trim().is_empty() {
+                "UNKNOWN".to_string()
+            } else {
+                finding.action_type.trim().to_ascii_uppercase()
+            };
+
+            let category_entry = category_agg.entry(category.clone()).or_insert((0, 0.0));
+            category_entry.0 += 1;
+            category_entry.1 += waste;
+
+            let provider_entry = provider_agg.entry(provider.clone()).or_insert((0, 0.0));
+            provider_entry.0 += 1;
+            provider_entry.1 += waste;
+
+            let action_entry = action_agg.entry(action.clone()).or_insert((0, 0.0));
+            action_entry.0 += 1;
+            action_entry.1 += waste;
+
+            let offender_key = k8s_offender_key(&finding);
+            let cluster_key = k8s_cluster_key_from_offender(&offender_key);
+            let offender_entry = offender_agg
+                .entry((provider.clone(), offender_key))
+                .or_insert((0, 0.0));
+            offender_entry.0 += 1;
+            offender_entry.1 += waste;
+
+            let cluster_entry = cluster_agg.entry(cluster_key).or_insert((0, 0.0));
+            cluster_entry.0 += 1;
+            cluster_entry.1 += waste;
+
+            let cross_entry = category_provider_agg
+                .entry((provider, category.clone()))
+                .or_insert((0, 0.0));
+            cross_entry.0 += 1;
+            cross_entry.1 += waste;
+
+            let (action_key, priority, recommendation) = k8s_action_profile(&category, &action);
+            let hc_entry = high_confidence_agg
+                .entry((action_key.to_string(), priority, recommendation.to_string()))
+                .or_insert((0, 0.0));
+            hc_entry.0 += 1;
+            hc_entry.1 += waste;
+        }
+    }
+
+    let mut categories = category_agg
+        .into_iter()
+        .map(
+            |(category, (findings, estimated_monthly_waste))| K8sCategoryRow {
+                category,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    categories.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.category.cmp(&b.category))
+    });
+
+    let mut providers = provider_agg
+        .into_iter()
+        .map(
+            |(provider, (findings, estimated_monthly_waste))| K8sProviderRow {
+                provider,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    providers.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.provider.cmp(&b.provider))
+    });
+
+    let mut actions = action_agg
+        .into_iter()
+        .map(
+            |(action_type, (findings, estimated_monthly_waste))| K8sActionRow {
+                action_type,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    actions.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.action_type.cmp(&b.action_type))
+    });
+
+    let mut top_offenders = offender_agg
+        .into_iter()
+        .map(
+            |((provider, offender_key), (findings, estimated_monthly_waste))| K8sTopOffenderRow {
+                offender_key,
+                provider,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    top_offenders.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.provider.cmp(&b.provider))
+            .then_with(|| a.offender_key.cmp(&b.offender_key))
+    });
+    top_offenders.truncate(20);
+
+    let mut cluster_summary = cluster_agg
+        .into_iter()
+        .map(
+            |(cluster, (findings, estimated_monthly_waste))| K8sClusterSummaryRow {
+                cluster,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    cluster_summary.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.cluster.cmp(&b.cluster))
+    });
+    cluster_summary.truncate(20);
+
+    let mut category_by_provider = category_provider_agg
+        .into_iter()
+        .map(
+            |((provider, category), (findings, estimated_monthly_waste))| K8sCategoryProviderRow {
+                provider,
+                category,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    category_by_provider.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.provider.cmp(&b.provider))
+            .then_with(|| a.category.cmp(&b.category))
+    });
+
+    let mut high_confidence_actions = high_confidence_agg
+        .into_iter()
+        .map(
+            |((action_key, priority, recommendation), (findings, estimated_monthly_waste))| {
+                K8sHighConfidenceActionRow {
+                    action_key,
+                    recommendation,
+                    priority,
+                    findings,
+                    estimated_monthly_waste,
+                }
+            },
+        )
+        .collect::<Vec<_>>();
+    high_confidence_actions.sort_by(|a, b| {
+        a.priority
+            .cmp(&b.priority)
+            .then_with(|| {
+                b.estimated_monthly_waste
+                    .partial_cmp(&a.estimated_monthly_waste)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.action_key.cmp(&b.action_key))
+    });
+
+    Ok(Json(K8sGovernanceReportResponse {
+        generated_at: now_unix_ts(),
+        window_days,
+        total_findings,
+        total_estimated_monthly_waste,
+        categories,
+        providers,
+        actions,
+        top_offenders,
+        cluster_summary,
+        category_by_provider,
+        high_confidence_actions,
+    }))
+}
+
+async fn handle_api_reports_k8s_action_plan(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiK8sReportQuery>,
+) -> Result<Json<K8sActionPlanResponse>, ApiError> {
+    let report = handle_api_reports_k8s_governance(State(state), Query(query)).await?;
+    let body = report.0;
+    Ok(Json(K8sActionPlanResponse {
+        generated_at: body.generated_at,
+        window_days: body.window_days,
+        total_findings: body.total_findings,
+        total_estimated_monthly_waste: body.total_estimated_monthly_waste,
+        high_confidence_actions: body.high_confidence_actions,
+    }))
+}
+
 async fn handle_api_generate_report(
     State(state): State<LocalApiState>,
     Json(payload): Json<ApiGenerateReportRequest>,
@@ -4363,6 +4833,7 @@ async fn handle_api_generate_report(
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
     let (scan_history_id, scanned_at, total_waste, status, rows) =
         collect_report_source(&conn, payload.scan_history_id).await?;
+    let k8s_action_plan = build_k8s_action_plan_from_report_rows(&rows);
 
     let report_id = Uuid::new_v4().to_string();
     let short_id = report_id.chars().take(8).collect::<String>();
@@ -4378,7 +4849,8 @@ async fn handle_api_generate_report(
             "scan_status": status,
             "total_waste": total_waste,
             "estimated_co2e_kg_monthly": if include_esg { serde_json::json!(total_waste * 0.42) } else { serde_json::Value::Null },
-            "findings": rows
+            "findings": rows,
+            "k8s_action_plan": k8s_action_plan
         }))
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?,
         "csv" => build_report_csv(&rows, include_esg, total_waste),
@@ -4405,6 +4877,20 @@ async fn handle_api_generate_report(
                     parse_string_field(row, "resource_type"),
                     parse_f64_field(row, "estimated_monthly_cost")
                 ));
+            }
+            if !k8s_action_plan.is_empty() {
+                lines.push(String::new());
+                lines.push("K8s High-Confidence Action Plan:".to_string());
+                for step in k8s_action_plan.iter().take(12) {
+                    lines.push(format!(
+                        "{}. {} | findings {} | ${:.2} | {}",
+                        step.priority,
+                        step.action_key,
+                        step.findings,
+                        step.estimated_monthly_waste,
+                        step.recommendation
+                    ));
+                }
             }
             build_simple_pdf_report(&lines)
         }
@@ -4734,10 +5220,7 @@ async fn handle_api_test_webhook(
 async fn handle_api_mcp_capabilities() -> Json<serde_json::Value> {
     Json(serde_json::json!({
         "mcp_beta": true,
-        "tools": [
-            {"name": "run_scan", "route": "POST /v1/mcp/tools/run-scan"},
-            {"name": "get_scan", "route": "GET /v1/mcp/tools/get-scan/:scan_id"}
-        ]
+        "tools": mcp_capability_tools()
     }))
 }
 
@@ -4767,6 +5250,168 @@ async fn handle_api_mcp_get_scan(
         "tool": "get_scan",
         "result": job
     })))
+}
+
+async fn handle_api_mcp_get_k8s_governance(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiK8sReportQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let report = handle_api_reports_k8s_governance(State(state), Query(query)).await?;
+    Ok(Json(serde_json::json!({
+        "tool": "get_k8s_governance",
+        "result": report.0
+    })))
+}
+
+async fn handle_api_mcp_get_k8s_action_plan(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiK8sReportQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let report = handle_api_reports_k8s_action_plan(State(state), Query(query)).await?;
+    Ok(Json(serde_json::json!({
+        "tool": "get_k8s_action_plan",
+        "result": report.0
+    })))
+}
+
+async fn handle_api_k8s_contexts(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = query
+        .path
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(default_kubeconfig_path);
+    let summary =
+        k8s::load_kubeconfig_summary(&path).map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let active = k8s::resolve_active_context(&summary, query.context.as_deref()).cloned();
+    let readiness = k8s::assess_kubeconfig_readiness(&summary, query.context.as_deref());
+
+    Ok(Json(serde_json::json!({
+        "kubeconfig_path": path.to_string_lossy(),
+        "current_context": summary.current_context,
+        "contexts": summary.contexts,
+        "active_context": active,
+        "readiness": readiness
+    })))
+}
+
+async fn handle_api_k8s_nodes(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<Vec<k8s::K8sNodeSnapshot>>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let pods_json = run_kubectl_json(&path, query.context.as_deref(), "pods", true)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let nodes_json = run_kubectl_json(&path, query.context.as_deref(), "nodes", false)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let pods = k8s::parse_kubectl_pods_json(&pods_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let nodes = k8s::parse_kubectl_nodes_json(&nodes_json, &pods)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(nodes))
+}
+
+async fn handle_api_k8s_persistent_volumes(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<Vec<k8s::K8sPersistentVolumeSnapshot>>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let pv_json = run_kubectl_json(&path, query.context.as_deref(), "pv", false)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let volumes = k8s::parse_kubectl_persistent_volumes_json(&pv_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(volumes))
+}
+
+async fn handle_api_k8s_persistent_volume_claims(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<Vec<k8s::K8sPersistentVolumeClaimSnapshot>>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let pvc_json = run_kubectl_json(&path, query.context.as_deref(), "pvc", true)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let claims = k8s::parse_kubectl_pvcs_json(&pvc_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(claims))
+}
+
+async fn handle_api_k8s_services(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<Vec<k8s::K8sServiceSnapshot>>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let services_json = run_kubectl_json(&path, query.context.as_deref(), "services", true)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let services = k8s::parse_kubectl_services_json(&services_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(services))
+}
+
+async fn handle_api_k8s_pods(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<Vec<k8s::K8sPodSnapshot>>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let pods_json = run_kubectl_json(&path, query.context.as_deref(), "pods", true)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let pods = k8s::parse_kubectl_pods_json(&pods_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(pods))
+}
+
+async fn handle_api_k8s_workloads(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<Vec<k8s::K8sWorkloadSnapshot>>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let workloads_json = run_kubectl_json(
+        &path,
+        query.context.as_deref(),
+        "deployments,statefulsets,daemonsets",
+        true,
+    )
+    .await
+    .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let workloads = k8s::parse_kubectl_workloads_json(&workloads_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(workloads))
+}
+
+async fn handle_api_k8s_findings(
+    State(state): State<LocalApiState>,
+) -> Result<Json<Vec<WastedResource>>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let findings = db::get_scan_results(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?
+        .into_iter()
+        .filter(|finding| {
+            finding.provider.eq_ignore_ascii_case("kubernetes")
+                || is_k8s_finding(&finding.resource_type)
+        })
+        .collect();
+    Ok(Json(findings))
+}
+
+async fn handle_api_k8s_scan(
+    State(state): State<LocalApiState>,
+    maybe_payload: Option<Json<ApiKubeconfigQuery>>,
+) -> Result<Json<ApiScanAccepted>, ApiError> {
+    let payload = maybe_payload.map(|Json(p)| p).unwrap_or_default();
+    let scan = ApiScanRequest {
+        include_kubernetes: Some(true),
+        kubeconfig_path: payload.path,
+        kube_context: payload.context,
+        selected_accounts: Some(Vec::new()),
+        ..Default::default()
+    };
+    enqueue_scan_job(&state, scan, Some("api:kubernetes".to_string()))
+        .await
+        .map(Json)
+        .map_err(map_scan_enqueue_error)
 }
 
 async fn handle_api_scan(
@@ -5112,6 +5757,14 @@ async fn start_api_server(
             "/v1/reports/error-taxonomy",
             get(handle_api_reports_error_taxonomy),
         )
+        .route(
+            "/v1/reports/k8s-governance",
+            get(handle_api_reports_k8s_governance),
+        )
+        .route(
+            "/v1/reports/k8s-action-plan",
+            get(handle_api_reports_k8s_action_plan),
+        )
         .route("/v1/reports/:report_id", get(handle_api_get_report))
         .route(
             "/v1/reports/:report_id/download",
@@ -5132,9 +5785,32 @@ async fn start_api_server(
         .route("/v1/mcp/capabilities", get(handle_api_mcp_capabilities))
         .route("/v1/mcp/tools/run-scan", post(handle_api_mcp_run_scan))
         .route(
+            "/v1/mcp/tools/k8s-governance",
+            get(handle_api_mcp_get_k8s_governance),
+        )
+        .route(
+            "/v1/mcp/tools/k8s-action-plan",
+            get(handle_api_mcp_get_k8s_action_plan),
+        )
+        .route(
             "/v1/mcp/tools/get-scan/:scan_id",
             get(handle_api_mcp_get_scan),
         )
+        .route("/v1/k8s/contexts", get(handle_api_k8s_contexts))
+        .route("/v1/k8s/scans", post(handle_api_k8s_scan))
+        .route("/v1/k8s/findings", get(handle_api_k8s_findings))
+        .route("/v1/k8s/nodes", get(handle_api_k8s_nodes))
+        .route("/v1/k8s/pods", get(handle_api_k8s_pods))
+        .route("/v1/k8s/workloads", get(handle_api_k8s_workloads))
+        .route(
+            "/v1/k8s/persistent-volumes",
+            get(handle_api_k8s_persistent_volumes),
+        )
+        .route(
+            "/v1/k8s/persistent-volume-claims",
+            get(handle_api_k8s_persistent_volume_claims),
+        )
+        .route("/v1/k8s/services", get(handle_api_k8s_services))
         .route("/v1/accounts", get(handle_api_accounts))
         .route("/v1/cloud-accounts", get(handle_api_list_cloud_accounts))
         .route("/v1/cloud-accounts", post(handle_api_create_cloud_account))
@@ -5463,7 +6139,9 @@ async fn check_license_status(
         latest_version: env!("CARGO_PKG_VERSION").to_string(),
         download_url: None,
         download_urls: None,
-        message: Some("Community edition runs fully local. Remote license checks are disabled.".to_string()),
+        message: Some(
+            "Community edition runs fully local. Remote license checks are disabled.".to_string(),
+        ),
         quota: None,
         max_quota: None,
         plan_type: Some("community".to_string()),
@@ -5495,7 +6173,10 @@ async fn start_trial_license(
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
-    let local_key = format!("community-local-{}", Uuid::new_v4().to_string().replace('-', ""));
+    let local_key = format!(
+        "community-local-{}",
+        Uuid::new_v4().to_string().replace('-', "")
+    );
     save_license_file(app_handle.clone(), local_key)?;
     let status = license::CheckResponse {
         valid: true,
@@ -6785,6 +7466,162 @@ fn compute_ai_analyst_summary(
     }
 }
 
+fn classify_k8s_category(resource_type: &str) -> &'static str {
+    let t = resource_type.to_ascii_lowercase();
+    if t.contains("ownership gap") {
+        "ownership_gap"
+    } else if t.contains("orphan pv") {
+        "orphan_pv"
+    } else if t.contains("orphan eni")
+        || t.contains("orphan ip")
+        || t.contains("network interface")
+        || t.contains("public ip")
+    {
+        "orphan_network"
+    } else if t.contains("nodefloor")
+        || t.contains("nodegroup")
+        || t.contains("node pool")
+        || t.contains("node baseline")
+        || t.contains("k8s node")
+    {
+        "node_rightsizing"
+    } else {
+        "other_k8s"
+    }
+}
+
+fn is_k8s_finding(resource_type: &str) -> bool {
+    let t = resource_type.to_ascii_lowercase();
+    t.contains("k8s")
+        || t.contains("eks")
+        || t.contains("gke")
+        || t.contains("aks")
+        || t.contains("kubernetes")
+}
+
+fn k8s_offender_key(resource: &WastedResource) -> String {
+    let id = resource.id.trim();
+    if id.contains('/') {
+        return id.to_string();
+    }
+    let details = resource.details.to_ascii_lowercase();
+    if let Some(start) = details.find("cluster '") {
+        let after = &resource.details[start + "cluster '".len()..];
+        if let Some(end) = after.find('\'') {
+            let cluster = after[..end].trim();
+            if !cluster.is_empty() {
+                return format!("{}/unknown-pool", cluster);
+            }
+        }
+    }
+    id.to_string()
+}
+
+fn k8s_cluster_key_from_offender(offender_key: &str) -> String {
+    if let Some((cluster, _)) = offender_key.split_once('/') {
+        let normalized = cluster.trim();
+        if !normalized.is_empty() {
+            return normalized.to_string();
+        }
+    }
+    offender_key.trim().to_string()
+}
+
+fn k8s_action_profile(category: &str, action_type: &str) -> (&'static str, i64, &'static str) {
+    let action = action_type.to_ascii_uppercase();
+    match (category, action.as_str()) {
+        ("ownership_gap", _) => (
+            "enforce_owner_tags",
+            1,
+            "Enforce owner/team/cost tags on K8s node pools first, then rerun allocation and rightsizing.",
+        ),
+        ("orphan_pv", "DELETE") => (
+            "cleanup_orphan_pv",
+            2,
+            "Delete orphan PV disks after a two-step validation (no attached workload, retention window approved).",
+        ),
+        ("orphan_network", "DELETE") => (
+            "cleanup_orphan_network",
+            3,
+            "Release orphan ENIs/IPs from stale services and CNI leftovers before adjusting autoscaling policies.",
+        ),
+        ("node_rightsizing", "RIGHTSIZE") => (
+            "rightsizing_node_floor",
+            4,
+            "Lower node floor and tune requests/limits for oversized node pools with persistently low utilization.",
+        ),
+        (_, "RIGHTSIZE") => (
+            "rightsizing_review",
+            5,
+            "Review rightsizing opportunities for low-efficiency K8s findings and validate with staged rollout.",
+        ),
+        (_, "DELETE") => (
+            "cleanup_review",
+            6,
+            "Execute cleanup after ownership confirmation and change window approval.",
+        ),
+        _ => (
+            "governance_review",
+            7,
+            "Review findings and map them into tagged ownership + action queue.",
+        ),
+    }
+}
+
+fn build_k8s_action_plan_from_report_rows(
+    rows: &[serde_json::Value],
+) -> Vec<K8sHighConfidenceActionRow> {
+    let mut agg: HashMap<(String, i64, String), (i64, f64)> = HashMap::new();
+    let mut has_k8s_finding = false;
+    for row in rows {
+        let resource_type = parse_string_field(row, "resource_type");
+        if !is_k8s_finding(&resource_type) {
+            continue;
+        }
+        has_k8s_finding = true;
+        let category = classify_k8s_category(&resource_type);
+        let action_type = parse_string_field(row, "action_type");
+        let (action_key, priority, recommendation) = k8s_action_profile(category, &action_type);
+        let waste = parse_f64_field(row, "estimated_monthly_cost").max(0.0);
+        let entry = agg
+            .entry((action_key.to_string(), priority, recommendation.to_string()))
+            .or_insert((0, 0.0));
+        entry.0 += 1;
+        entry.1 += waste;
+    }
+
+    if !has_k8s_finding {
+        return Vec::new();
+    }
+
+    let mut actions = agg
+        .into_iter()
+        .map(
+            |((action_key, priority, recommendation), (findings, estimated_monthly_waste))| {
+                K8sHighConfidenceActionRow {
+                    action_key,
+                    recommendation,
+                    priority,
+                    findings,
+                    estimated_monthly_waste,
+                }
+            },
+        )
+        .collect::<Vec<_>>();
+    actions.sort_by(|a, b| {
+        a.priority
+            .cmp(&b.priority)
+            .then_with(|| {
+                b.estimated_monthly_waste
+                    .partial_cmp(&a.estimated_monthly_waste)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.action_key.cmp(&b.action_key))
+    });
+    actions
+}
+
 fn latest_ai_source_for_window(
     history: Vec<db::ScanHistoryItem>,
     window_days: i64,
@@ -8033,9 +8870,9 @@ fn rule_enabled(rule_set: &Option<HashSet<String>>, rule_id: &str) -> bool {
 fn estimate_rule_step_count(provider: &str, enabled_rules: Option<&HashSet<String>>) -> usize {
     let provider_key = provider.to_ascii_lowercase();
     let default_count = match provider_key.as_str() {
-        "aws" => 13,
-        "azure" => 9,
-        "gcp" => 6,
+        "aws" => 18,
+        "azure" => 14,
+        "gcp" => 11,
         _ => 6,
     };
 
@@ -8184,6 +9021,9 @@ async fn run_scan(
     aws_region: Option<String>,
     selected_accounts: Option<Vec<String>>,
     demo_mode: bool,
+    include_kubernetes: bool,
+    kubeconfig_path: Option<String>,
+    kube_context: Option<String>,
 ) -> Result<Vec<WastedResource>, String> {
     let app_state = app_handle.state::<AppState>();
     let conn = db::init_db(&app_state.db_path)
@@ -8339,6 +9179,80 @@ async fn run_scan(
         total_steps,
         session_timeout
     ));
+
+    if include_kubernetes {
+        current_step += 1;
+        attempted_scan_checks += 1;
+        let path = resolve_kubeconfig_path(kubeconfig_path.as_ref());
+        let _ = scan_progress.emit(
+            "scan-progress",
+            ScanProgress {
+                current: current_step.min(total_steps),
+                total: total_steps,
+                message: format!(
+                    "Kubernetes: Scanning cluster context{}...",
+                    kube_context
+                        .as_deref()
+                        .map(|ctx| format!(" '{}'", ctx))
+                        .unwrap_or_default()
+                ),
+            },
+        );
+
+        match scan_kubernetes_via_kubectl(path.clone(), kube_context.clone()).await {
+            Ok(mut findings) => {
+                successful_scan_checks += 1;
+                let start = all_results.len();
+                all_results.append(&mut findings);
+                let account_name = kube_context
+                    .clone()
+                    .unwrap_or_else(|| "active context".to_string());
+                attribute_results_for_account(
+                    &all_results,
+                    start,
+                    "kubernetes:local",
+                    &format!("Kubernetes ({})", account_name),
+                    &mut result_attribution,
+                );
+                log_startup_event(&format!(
+                    "kubernetes scan completed: kubeconfig={} context={} findings={}",
+                    path.display(),
+                    kube_context.as_deref().unwrap_or("auto"),
+                    all_results.len().saturating_sub(start)
+                ));
+            }
+            Err(err) => {
+                failed_scan_checks += 1;
+                let compact = compact_scan_error(&err);
+                push_credential_precheck_failure(
+                    &mut credential_precheck_failures,
+                    "Kubernetes (local kubeconfig)".to_string(),
+                    compact.clone(),
+                );
+                let _ = report_telemetry(
+                    &conn,
+                    "app_scan_error",
+                    serde_json::json!({
+                        "provider": "kubernetes",
+                        "account": kube_context.as_deref().unwrap_or("auto"),
+                        "res_type": "k8s_native",
+                        "api": "kubectl:get",
+                        "error": compact,
+                    }),
+                )
+                .await;
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step.min(total_steps),
+                        total: total_steps,
+                        message: "Kubernetes: Native scan failed. Continuing cloud scans..."
+                            .to_string(),
+                    },
+                );
+            }
+        }
+    }
 
     for p in &aws_profiles_to_scan {
         let account_result_start = all_results.len();
@@ -8744,6 +9658,81 @@ async fn run_scan(
                     "ec2:DescribeInstances+cloudwatch:GetMetricStatistics"
                 );
             }
+            if rule_enabled(&enabled_rules, "aws_eks_nodegroup_floor_risk") {
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step,
+                        total: total_steps,
+                        message: format!("AWS {}: Reviewing EKS NodeGroup Floor Risk...", p),
+                    },
+                );
+                track_aws!(
+                    scanner.scan_eks_nodegroup_floor_risk(),
+                    "eks_nodegroup_floor",
+                    "ec2:DescribeInstances+cloudwatch:GetMetricStatistics"
+                );
+            }
+            if rule_enabled(&enabled_rules, "aws_eks_orphan_pv") {
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step,
+                        total: total_steps,
+                        message: format!("AWS {}: Scanning EKS Orphan PV Volumes...", p),
+                    },
+                );
+                track_aws!(
+                    scanner.scan_eks_orphan_pv_volumes(),
+                    "eks_orphan_pv",
+                    "ec2:DescribeVolumes"
+                );
+            }
+            if rule_enabled(&enabled_rules, "aws_eks_orphan_eni") {
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step,
+                        total: total_steps,
+                        message: format!("AWS {}: Scanning EKS Orphan ENIs...", p),
+                    },
+                );
+                track_aws!(
+                    scanner.scan_eks_orphan_enis(),
+                    "eks_orphan_eni",
+                    "ec2:DescribeNetworkInterfaces"
+                );
+            }
+            if rule_enabled(&enabled_rules, "aws_eks_owner_gap") {
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step,
+                        total: total_steps,
+                        message: format!("AWS {}: Auditing EKS Ownership Tags...", p),
+                    },
+                );
+                track_aws!(
+                    scanner.scan_eks_missing_owner_tags(),
+                    "eks_owner_gap",
+                    "ec2:DescribeInstances"
+                );
+            }
+            if rule_enabled(&enabled_rules, "aws_eks_requests_limits_drift") {
+                let _ = scan_progress.emit(
+                    "scan-progress",
+                    ScanProgress {
+                        current: current_step,
+                        total: total_steps,
+                        message: format!("AWS {}: Detecting EKS Requests/Limits Drift...", p),
+                    },
+                );
+                track_aws!(
+                    scanner.scan_eks_requests_limits_drift_proxy(),
+                    "eks_req_limit_drift",
+                    "ec2:DescribeInstances+cloudwatch:GetMetricStatistics"
+                );
+            }
         } else {
             attempted_scan_checks += 1;
             failed_scan_checks += 1;
@@ -9122,10 +10111,7 @@ async fn run_scan(
                             ScanProgress {
                                 current: current_step,
                                 total: total_steps,
-                                message: format!(
-                                    "Azure {}: Reviewing AKS Node Pools...",
-                                    p.name
-                                ),
+                                message: format!("Azure {}: Reviewing AKS Node Pools...", p.name),
                             },
                         );
                         collect_scan_result_detailed(
@@ -9137,6 +10123,141 @@ async fn run_scan(
                             prov,
                             &p.name,
                             "aks_nodepool",
+                            "containerservice/managedClusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "azure_aks_nodepool_floor_risk") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "Azure {}: Reviewing AKS NodePool Floor Risk...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_aks_nodepool_floor_risk().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "aks_nodepool_floor",
+                            "containerservice/managedClusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "azure_aks_orphan_pv") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "Azure {}: Scanning AKS Orphan PV Disks...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_aks_orphan_pv_disks().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "aks_orphan_pv",
+                            "compute/disks:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "azure_aks_orphan_ip") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "Azure {}: Scanning AKS Orphan Public IPs...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_aks_orphan_public_ips().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "aks_orphan_ip",
+                            "network/publicIPAddresses:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "azure_aks_owner_gap") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "Azure {}: Auditing AKS Ownership Tags...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_aks_missing_owner_tags().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "aks_owner_gap",
+                            "containerservice/managedClusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "azure_aks_requests_limits_drift") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "Azure {}: Detecting AKS Requests/Limits Drift...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_aks_requests_limits_drift_proxy().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "aks_req_limit_drift",
                             "containerservice/managedClusters:list",
                             &profile_proxy_mode,
                             &profile_proxy_url,
@@ -9317,6 +10438,138 @@ async fn run_scan(
                             prov,
                             &p.name,
                             "gke_nodepool",
+                            "container/clusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "gcp_gke_nodepool_floor_risk") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "GCP {}: Reviewing GKE NodePool Floor Risk...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_gke_nodepool_floor_risk().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "gke_nodepool_floor",
+                            "container/clusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "gcp_gke_orphan_pv") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!("GCP {}: Scanning GKE Orphan PV Disks...", p.name),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_gke_orphan_pv_disks().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "gke_orphan_pv",
+                            "compute/disks:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "gcp_gke_orphan_ip") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "GCP {}: Scanning GKE Orphan External IPs...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_gke_orphan_addresses().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "gke_orphan_ip",
+                            "compute/addresses:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "gcp_gke_owner_gap") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "GCP {}: Auditing GKE Ownership Labels...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_gke_missing_owner_labels().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "gke_owner_gap",
+                            "container/clusters:list",
+                            &profile_proxy_mode,
+                            &profile_proxy_url,
+                            &conn,
+                        );
+                    }
+                    if rule_enabled(&enabled_rules, "gcp_gke_requests_limits_drift") {
+                        let _ = scan_progress.emit(
+                            "scan-progress",
+                            ScanProgress {
+                                current: current_step,
+                                total: total_steps,
+                                message: format!(
+                                    "GCP {}: Detecting GKE Requests/Limits Drift...",
+                                    p.name
+                                ),
+                            },
+                        );
+                        collect_scan_result_detailed(
+                            scanner.scan_gke_requests_limits_drift_proxy().await,
+                            &mut all_results,
+                            &mut attempted_scan_checks,
+                            &mut successful_scan_checks,
+                            &mut failed_scan_checks,
+                            prov,
+                            &p.name,
+                            "gke_req_limit_drift",
                             "container/clusters:list",
                             &profile_proxy_mode,
                             &profile_proxy_url,
@@ -13860,6 +15113,15 @@ async fn run_scan(
             .iter()
             .map(|p| format!("{} ({})", p.provider.to_uppercase(), p.name)),
     );
+    if include_kubernetes {
+        scanned_accounts_meta.push(format!(
+            "Kubernetes ({})",
+            kube_context
+                .as_deref()
+                .filter(|ctx| !ctx.trim().is_empty())
+                .unwrap_or("active context")
+        ));
+    }
     let scanned_accounts_label = if scanned_accounts_meta.is_empty() {
         "none".to_string()
     } else {
@@ -13942,7 +15204,12 @@ async fn run_scan(
         "scan_checks_succeeded": successful_scan_checks,
         "scan_checks_failed": failed_scan_checks,
         "scan_error_taxonomy_version": "v1",
-        "scan_error_buckets": scan_error_buckets
+        "scan_error_buckets": scan_error_buckets,
+        "kubernetes": {
+            "included": include_kubernetes,
+            "kubeconfig_path": include_kubernetes.then(|| resolve_kubeconfig_path(kubeconfig_path.as_ref()).to_string_lossy().to_string()),
+            "context": kube_context
+        }
     });
 
     let visible_results = all_results.clone();
@@ -14058,6 +15325,7 @@ async fn run_scan(
         .iter()
         .map(|name| format!("aws_local:{}", name))
         .chain(profiles.iter().map(|profile| profile.id.clone()))
+        .chain(include_kubernetes.then(|| "kubernetes:local".to_string()))
         .collect();
     let account_notification_assignments = load_account_notification_assignments(&conn).await;
     let routing_plan =
@@ -16549,7 +17817,7 @@ async fn confirm_cleanup(
         Some("trial")
     ) {
         return Err(
-            "Trial mode cannot execute cleanup actions. Upgrade to Pro to run resource remediation."
+            "Community mode requires explicit local confirmation before resource remediation."
                 .to_string(),
         );
     }
@@ -18256,7 +19524,7 @@ async fn get_scan_history(
         }
 
         return Err(
-            "Trial mode does not include historical detailed findings. Upgrade to Pro to unlock history details."
+            "Community mode keeps historical detailed findings local when scan history is enabled."
                 .to_string(),
         );
     }
@@ -19534,5 +20802,162 @@ mod tests {
         let message = err.1 .0["error"].as_str().unwrap_or_default();
         assert!(message.contains("Team"));
         assert!(message.contains("Enterprise"));
+    }
+
+    #[test]
+    fn k8s_action_plan_aggregates_and_sorts_by_priority_then_waste() {
+        let rows = vec![
+            serde_json::json!({
+                "resource_type": "EKS Ownership Gap",
+                "action_type": "TAG",
+                "estimated_monthly_cost": 120.0
+            }),
+            serde_json::json!({
+                "resource_type": "AKS Orphan ENI",
+                "action_type": "DELETE",
+                "estimated_monthly_cost": 60.0
+            }),
+            serde_json::json!({
+                "resource_type": "AKS Orphan ENI",
+                "action_type": "DELETE",
+                "estimated_monthly_cost": 40.0
+            }),
+            serde_json::json!({
+                "resource_type": "GKE K8s NodeFloor Drift",
+                "action_type": "RIGHTSIZE",
+                "estimated_monthly_cost": 300.0
+            }),
+        ];
+        let plan = build_k8s_action_plan_from_report_rows(&rows);
+        assert_eq!(plan.len(), 3);
+        assert_eq!(plan[0].action_key, "enforce_owner_tags");
+        assert_eq!(plan[0].priority, 1);
+        assert_eq!(plan[1].action_key, "cleanup_orphan_network");
+        assert_eq!(plan[1].findings, 2);
+        assert!((plan[1].estimated_monthly_waste - 100.0).abs() < 0.001);
+        assert_eq!(plan[2].action_key, "rightsizing_node_floor");
+    }
+
+    #[test]
+    fn k8s_action_plan_returns_empty_for_non_k8s_rows() {
+        let rows = vec![
+            serde_json::json!({
+                "resource_type": "AWS EBS Unattached Volume",
+                "action_type": "DELETE",
+                "estimated_monthly_cost": 88.0
+            }),
+            serde_json::json!({
+                "resource_type": "Azure Public IP",
+                "action_type": "DELETE",
+                "estimated_monthly_cost": 12.0
+            }),
+        ];
+        let plan = build_k8s_action_plan_from_report_rows(&rows);
+        assert!(plan.is_empty());
+    }
+
+    #[test]
+    fn reports_capability_routes_include_k8s_endpoints() {
+        let routes = reports_capability_routes();
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/reports/k8s-governance"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/reports/k8s-action-plan"));
+    }
+
+    #[test]
+    fn mcp_capability_routes_include_k8s_tools() {
+        let routes = mcp_capability_routes();
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/mcp/tools/k8s-governance"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/mcp/tools/k8s-action-plan"));
+    }
+
+    #[test]
+    fn mcp_capability_tools_include_k8s_tools() {
+        let tools = mcp_capability_tools();
+        let names: Vec<&str> = tools
+            .iter()
+            .filter_map(|item| item.get("name").and_then(|v| v.as_str()))
+            .collect();
+        assert!(names.contains(&"get_k8s_governance"));
+        assert!(names.contains(&"get_k8s_action_plan"));
+    }
+
+    #[test]
+    fn k8s_capability_routes_include_context_and_scan_endpoints() {
+        let routes = k8s_capability_routes();
+        assert!(routes.iter().any(|route| route == "GET /v1/k8s/contexts"));
+        assert!(routes.iter().any(|route| route == "POST /v1/k8s/scans"));
+        assert!(routes.iter().any(|route| route == "GET /v1/k8s/findings"));
+        assert!(routes.iter().any(|route| route == "GET /v1/k8s/nodes"));
+        assert!(routes.iter().any(|route| route == "GET /v1/k8s/pods"));
+        assert!(routes.iter().any(|route| route == "GET /v1/k8s/workloads"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/k8s/persistent-volumes"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/k8s/persistent-volume-claims"));
+        assert!(routes.iter().any(|route| route == "GET /v1/k8s/services"));
+    }
+
+    #[test]
+    fn default_kubeconfig_path_points_to_dot_kube_config() {
+        let path = default_kubeconfig_path();
+        let path_text = path.to_string_lossy().replace('\\', "/");
+        assert!(path_text.ends_with("/.kube/config") || path_text == ".kube/config");
+    }
+
+    #[test]
+    fn kubectl_base_args_keep_kubeconfig_and_optional_context_order() {
+        let args = kubectl_base_args(
+            std::path::Path::new("/tmp/kubeconfig"),
+            Some("production-eks"),
+        );
+        assert_eq!(
+            args,
+            vec![
+                "--kubeconfig".to_string(),
+                "/tmp/kubeconfig".to_string(),
+                "--context".to_string(),
+                "production-eks".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn kubeconfig_readiness_payload_exposes_scan_prerequisites() {
+        let summary = k8s::parse_kubeconfig_summary(
+            r#"
+apiVersion: v1
+kind: Config
+current-context: prod-gke
+contexts:
+  - name: prod-gke
+    context:
+      cluster: gke_project_region_cluster
+      user: gke_user
+      namespace: platform
+"#,
+        )
+        .expect("kubeconfig should parse");
+        let active = k8s::resolve_active_context(&summary, None).cloned();
+        let readiness = k8s::assess_kubeconfig_readiness(&summary, None);
+        let payload = serde_json::json!({
+            "current_context": summary.current_context,
+            "contexts": summary.contexts,
+            "active_context": active,
+            "readiness": readiness
+        });
+
+        assert_eq!(payload["readiness"]["status"], "ready");
+        assert_eq!(payload["readiness"]["provider_hint"], "gke");
+        assert_eq!(payload["active_context"]["namespace"], "platform");
     }
 }

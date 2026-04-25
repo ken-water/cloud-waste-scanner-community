@@ -181,12 +181,15 @@ mod tests {
     }
 
     #[test]
-    fn resolve_effective_license_key_from_text_trims_and_rejects_empty_values() {
+    fn resolve_effective_license_key_from_text_trims_and_defaults_empty_values() {
         assert_eq!(
             resolve_effective_license_key_from_text("  signed-key  ").expect("trim key"),
             "signed-key"
         );
-        assert!(resolve_effective_license_key_from_text("  ").is_err());
+        assert_eq!(
+            resolve_effective_license_key_from_text("  ").expect("default key"),
+            "community-local"
+        );
     }
 
     #[test]

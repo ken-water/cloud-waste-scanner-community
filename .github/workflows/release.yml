@@ -1,4 +1,4 @@
-name: Release Pro App
+name: Release Community App
 
 on:
   workflow_dispatch: # Manual trigger only (Save Quota)
