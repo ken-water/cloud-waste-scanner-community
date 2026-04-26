@@ -1,0 +1,16 @@
+{
+  "name": "@cloud-waste-scanner/client",
+  "version": "2.9.18",
+  "private": true,
+  "description": "TypeScript client for the Cloud Waste Scanner local API",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.0"
+  }
+}

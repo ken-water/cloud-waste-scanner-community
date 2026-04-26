@@ -51,6 +51,7 @@ use axum_server::tls_rustls::RustlsConfig;
 use base64::Engine as _;
 use chrono::{TimeZone, Utc};
 use futures_util::StreamExt;
+use hmac::{Hmac, Mac};
 use license::LicenseType;
 use license_runtime::{
     fetch_runtime_license_policy, persist_runtime_plan_type_from_status, read_runtime_plan_type,
@@ -63,6 +64,7 @@ use notification_runtime::{
 };
 use rcgen::generate_simple_self_signed;
 use serde::{Deserialize, Serialize};
+use sha2::Sha256;
 use sqlx::{Pool, Sqlite};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::io::Write;
@@ -213,14 +215,18 @@ struct ApiScanAccepted {
 #[serde(default)]
 struct ApiScanListQuery {
     status: Option<String>,
+    cursor: Option<String>,
     limit: Option<usize>,
+    envelope: Option<bool>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
 #[serde(default)]
 struct ApiHistoryQuery {
     status: Option<String>,
+    cursor: Option<String>,
     limit: Option<usize>,
+    envelope: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -532,7 +538,9 @@ struct ApiGenerateReportRequest {
 #[serde(default)]
 struct ApiReportListQuery {
     format: Option<String>,
+    cursor: Option<String>,
     limit: Option<usize>,
+    envelope: Option<bool>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -568,8 +576,10 @@ struct ApiReportArtifactStored {
 #[derive(Debug, Clone, Deserialize, Default)]
 #[serde(default)]
 struct ApiEventQuery {
+    cursor: Option<String>,
     page: Option<i64>,
     limit: Option<usize>,
+    envelope: Option<bool>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -587,6 +597,10 @@ struct ApiWebhookConfig {
     events: Vec<String>,
     is_active: bool,
     created_at: i64,
+    #[serde(default)]
+    has_secret: bool,
+    #[serde(default)]
+    secret: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -596,6 +610,7 @@ struct ApiWebhookCreateRequest {
     url: String,
     events: Option<Vec<String>>,
     is_active: Option<bool>,
+    secret: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -634,9 +649,283 @@ pub(crate) struct ApiSchedule {
 }
 
 type ApiError = (StatusCode, Json<serde_json::Value>);
+type HmacSha256 = Hmac<Sha256>;
 
 fn api_error(status: StatusCode, message: impl Into<String>) -> ApiError {
     (status, Json(serde_json::json!({ "error": message.into() })))
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiListQuery {
+    status: Option<String>,
+    format: Option<String>,
+    cursor: Option<String>,
+    limit: Option<usize>,
+    page: Option<i64>,
+    envelope: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ApiPageMeta {
+    limit: usize,
+    next_cursor: Option<String>,
+    has_more: bool,
+}
+
+fn should_return_envelope(query: &ApiListQuery) -> bool {
+    query.envelope.unwrap_or(false) || query.cursor.is_some()
+}
+
+fn parse_cursor(cursor: Option<&String>) -> usize {
+    cursor
+        .and_then(|value| value.trim().parse::<usize>().ok())
+        .unwrap_or(0)
+}
+
+fn paginate_vec<T: Clone>(
+    items: Vec<T>,
+    cursor: Option<&String>,
+    limit: usize,
+) -> (Vec<T>, ApiPageMeta) {
+    let start = parse_cursor(cursor).min(items.len());
+    let end = start.saturating_add(limit).min(items.len());
+    let has_more = end < items.len();
+    let page = items[start..end].to_vec();
+    (
+        page,
+        ApiPageMeta {
+            limit,
+            next_cursor: has_more.then(|| end.to_string()),
+            has_more,
+        },
+    )
+}
+
+fn api_page_response<T: Serialize>(items: Vec<T>, meta: ApiPageMeta) -> serde_json::Value {
+    serde_json::json!({
+        "items": items,
+        "page": meta,
+    })
+}
+
+fn sign_webhook_payload(secret: &str, timestamp: i64, body: &str) -> Option<String> {
+    if secret.trim().is_empty() {
+        return None;
+    }
+    let mut mac = HmacSha256::new_from_slice(secret.as_bytes()).ok()?;
+    mac.update(format!("{}.{}", timestamp, body).as_bytes());
+    Some(format!(
+        "sha256={}",
+        hex::encode(mac.finalize().into_bytes())
+    ))
+}
+
+fn api_path_for_openapi(path: &str) -> String {
+    path.split('/')
+        .map(|part| {
+            if let Some(name) = part.strip_prefix(':') {
+                format!("{{{}}}", name)
+            } else {
+                part.to_string()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("/")
+}
+
+fn api_route_specs() -> Vec<(&'static str, &'static str, &'static str)> {
+    vec![
+        ("GET", "/status", "Health and runtime metadata"),
+        (
+            "GET",
+            "/v1/openapi.json",
+            "Machine-readable OpenAPI 3.1 schema",
+        ),
+        (
+            "GET",
+            "/v1/meta/capabilities",
+            "Capability groups and route inventory",
+        ),
+        (
+            "GET",
+            "/v1/meta/error-model",
+            "Error envelope and retry semantics",
+        ),
+        (
+            "GET",
+            "/v1/meta/compatibility",
+            "API versioning and deprecation policy",
+        ),
+        ("GET", "/v1/settings/general", "General runtime settings"),
+        (
+            "PATCH",
+            "/v1/settings/general",
+            "Update general runtime settings",
+        ),
+        (
+            "GET",
+            "/v1/settings/network",
+            "Network and local API settings",
+        ),
+        (
+            "PATCH",
+            "/v1/settings/network",
+            "Update network and local API settings",
+        ),
+        (
+            "GET",
+            "/v1/settings/scan-policy",
+            "Global and provider scan policy settings",
+        ),
+        (
+            "PATCH",
+            "/v1/settings/scan-policy",
+            "Update scan policy settings",
+        ),
+        (
+            "GET",
+            "/v1/settings/license",
+            "Local license-derived policy snapshot",
+        ),
+        (
+            "GET",
+            "/v1/scans",
+            "List scan jobs with optional cursor pagination",
+        ),
+        ("POST", "/v1/scans", "Create an asynchronous scan job"),
+        ("GET", "/v1/scans/:scan_id", "Get one scan job"),
+        ("GET", "/v1/scans/:scan_id/progress", "Get scan progress"),
+        ("POST", "/v1/scans/:scan_id/cancel", "Cancel a scan"),
+        (
+            "GET",
+            "/v1/findings",
+            "List current findings with optional cursor pagination",
+        ),
+        ("GET", "/v1/findings/handled", "List handled resource IDs"),
+        (
+            "POST",
+            "/v1/findings/:resource_id/handled",
+            "Mark a finding handled",
+        ),
+        (
+            "GET",
+            "/v1/scan-history",
+            "List scan history with optional cursor pagination",
+        ),
+        (
+            "GET",
+            "/v1/scan-history/:history_id",
+            "Get scan history detail",
+        ),
+        (
+            "DELETE",
+            "/v1/scan-history/:history_id",
+            "Delete scan history detail",
+        ),
+        ("POST", "/v1/reports/generate", "Generate a report artifact"),
+        (
+            "GET",
+            "/v1/reports",
+            "List report artifacts with optional cursor pagination",
+        ),
+        ("GET", "/v1/reports/overview", "Governance overview report"),
+        ("GET", "/v1/reports/trend", "Trend report"),
+        ("GET", "/v1/reports/error-taxonomy", "Error taxonomy report"),
+        (
+            "GET",
+            "/v1/reports/k8s-governance",
+            "Kubernetes governance report",
+        ),
+        (
+            "GET",
+            "/v1/reports/k8s-action-plan",
+            "Kubernetes action plan",
+        ),
+        ("GET", "/v1/reports/:report_id", "Get report metadata"),
+        (
+            "GET",
+            "/v1/reports/:report_id/download",
+            "Download report bytes",
+        ),
+        (
+            "GET",
+            "/v1/events",
+            "List local API/audit events with cursor pagination",
+        ),
+        ("GET", "/v1/events/types", "List event type names"),
+        ("GET", "/v1/webhooks", "List webhook subscriptions"),
+        (
+            "POST",
+            "/v1/webhooks",
+            "Create webhook subscription with optional HMAC secret",
+        ),
+        (
+            "DELETE",
+            "/v1/webhooks/:webhook_id",
+            "Delete webhook subscription",
+        ),
+        (
+            "POST",
+            "/v1/webhooks/:webhook_id/test",
+            "Send signed webhook test event",
+        ),
+        ("GET", "/v1/mcp/capabilities", "MCP tool inventory"),
+        ("POST", "/v1/mcp/tools/run-scan", "MCP run scan tool"),
+        (
+            "GET",
+            "/v1/mcp/tools/get-scan/:scan_id",
+            "MCP get scan tool",
+        ),
+        (
+            "GET",
+            "/v1/mcp/tools/settings",
+            "MCP settings snapshot tool",
+        ),
+        (
+            "PATCH",
+            "/v1/mcp/tools/settings/general",
+            "MCP update general settings tool",
+        ),
+        (
+            "PATCH",
+            "/v1/mcp/tools/scan-policy",
+            "MCP update scan policy tool",
+        ),
+        ("GET", "/v1/mcp/tools/reports", "MCP list reports tool"),
+        (
+            "GET",
+            "/v1/mcp/tools/reports/:report_id",
+            "MCP get report metadata tool",
+        ),
+        (
+            "GET",
+            "/v1/mcp/tools/k8s-governance",
+            "MCP Kubernetes governance tool",
+        ),
+        (
+            "GET",
+            "/v1/mcp/tools/k8s-action-plan",
+            "MCP Kubernetes action plan tool",
+        ),
+        ("GET", "/v1/k8s/contexts", "List kubeconfig contexts"),
+        ("POST", "/v1/k8s/scans", "Run Kubernetes-only local scan"),
+        ("GET", "/v1/k8s/findings", "List Kubernetes findings"),
+        ("GET", "/v1/k8s/nodes", "List Kubernetes nodes"),
+        ("GET", "/v1/k8s/pods", "List Kubernetes pods"),
+        ("GET", "/v1/k8s/workloads", "List Kubernetes workloads"),
+        (
+            "GET",
+            "/v1/k8s/persistent-volumes",
+            "List Kubernetes PersistentVolumes",
+        ),
+        (
+            "GET",
+            "/v1/k8s/persistent-volume-claims",
+            "List Kubernetes PersistentVolumeClaims",
+        ),
+        ("GET", "/v1/k8s/services", "List Kubernetes services"),
+    ]
 }
 
 #[derive(Debug, Serialize)]
@@ -2421,6 +2710,51 @@ async fn handle_api_status(State(state): State<LocalApiState>) -> Json<serde_jso
     }))
 }
 
+async fn handle_api_openapi(State(state): State<LocalApiState>) -> Json<serde_json::Value> {
+    let mut paths = serde_json::Map::new();
+    for (method, path, summary) in api_route_specs() {
+        let openapi_path = api_path_for_openapi(path);
+        let entry = paths
+            .entry(openapi_path)
+            .or_insert_with(|| serde_json::json!({}));
+        if let Some(map) = entry.as_object_mut() {
+            map.insert(
+                method.to_ascii_lowercase(),
+                serde_json::json!({
+                    "summary": summary,
+                    "security": if path == "/status" { serde_json::json!([]) } else { serde_json::json!([{"bearerAuth": []}]) },
+                    "responses": {
+                        "200": {"description": "OK"},
+                        "400": {"description": "Bad request"},
+                        "401": {"description": "Unauthorized"},
+                        "404": {"description": "Not found"},
+                        "429": {"description": "Rate limited"},
+                        "500": {"description": "Internal error"}
+                    }
+                }),
+            );
+        }
+    }
+    Json(serde_json::json!({
+        "openapi": "3.1.0",
+        "info": {
+            "title": "Cloud Waste Scanner Local API",
+            "version": state.app_version,
+            "description": "Local-first Cloud Waste Scanner API. Cloud credentials and scan results stay on the operator machine."
+        },
+        "servers": [{"url": if state.tls_enabled { format!("https://{}:{}", state.bind_host, state.port) } else { format!("http://{}:{}", state.bind_host, state.port) }}],
+        "components": {
+            "securitySchemes": {
+                "bearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer"
+                }
+            }
+        },
+        "paths": paths
+    }))
+}
+
 async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<serde_json::Value> {
     let schedules_enabled = local_api_schedule_entitled(&state).await;
     let mut groups = vec![
@@ -2429,8 +2763,10 @@ async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<ser
             status: "active".to_string(),
             routes: vec![
                 "GET /status".to_string(),
+                "GET /v1/openapi.json".to_string(),
                 "GET /v1/meta/capabilities".to_string(),
                 "GET /v1/meta/error-model".to_string(),
+                "GET /v1/meta/compatibility".to_string(),
             ],
         },
         ApiCapabilityGroup {
@@ -2591,6 +2927,11 @@ fn mcp_capability_tools() -> Vec<serde_json::Value> {
     vec![
         serde_json::json!({"name": "run_scan", "route": "POST /v1/mcp/tools/run-scan"}),
         serde_json::json!({"name": "get_scan", "route": "GET /v1/mcp/tools/get-scan/:scan_id"}),
+        serde_json::json!({"name": "get_settings", "route": "GET /v1/mcp/tools/settings"}),
+        serde_json::json!({"name": "update_general_settings", "route": "PATCH /v1/mcp/tools/settings/general"}),
+        serde_json::json!({"name": "update_scan_policy", "route": "PATCH /v1/mcp/tools/scan-policy"}),
+        serde_json::json!({"name": "list_reports", "route": "GET /v1/mcp/tools/reports"}),
+        serde_json::json!({"name": "get_report", "route": "GET /v1/mcp/tools/reports/:report_id"}),
         serde_json::json!({"name": "get_k8s_governance", "route": "GET /v1/mcp/tools/k8s-governance"}),
         serde_json::json!({"name": "get_k8s_action_plan", "route": "GET /v1/mcp/tools/k8s-action-plan"}),
     ]
@@ -2601,6 +2942,11 @@ fn mcp_capability_routes() -> Vec<String> {
         "GET /v1/mcp/capabilities".to_string(),
         "POST /v1/mcp/tools/run-scan".to_string(),
         "GET /v1/mcp/tools/get-scan/:scan_id".to_string(),
+        "GET /v1/mcp/tools/settings".to_string(),
+        "PATCH /v1/mcp/tools/settings/general".to_string(),
+        "PATCH /v1/mcp/tools/scan-policy".to_string(),
+        "GET /v1/mcp/tools/reports".to_string(),
+        "GET /v1/mcp/tools/reports/:report_id".to_string(),
         "GET /v1/mcp/tools/k8s-governance".to_string(),
         "GET /v1/mcp/tools/k8s-action-plan".to_string(),
     ]
@@ -2723,6 +3069,30 @@ async fn local_api_schedule_entitled(state: &LocalApiState) -> bool {
     let app_state = state.app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     schedule_entitled_for_runtime_plan(runtime_plan.as_deref())
+}
+
+async fn handle_api_compatibility() -> Json<serde_json::Value> {
+    Json(serde_json::json!({
+        "api_version": "v1",
+        "stability": "additive",
+        "compatibility_policy": {
+            "breaking_changes": "Breaking changes require a new major API namespace.",
+            "additive_changes": "New fields, routes, query parameters, and enum values may be added within v1.",
+            "deprecated_routes": [],
+            "minimum_notice_days": 90,
+            "pagination": {
+                "legacy_array_default": true,
+                "envelope_opt_in": "Use envelope=true or cursor to receive {items,page}.",
+                "cursor_field": "page.next_cursor"
+            },
+            "webhook_signing": {
+                "algorithm": "HMAC-SHA256",
+                "headers": ["X-CWS-Event", "X-CWS-Timestamp", "X-CWS-Signature"],
+                "signed_payload": "timestamp + '.' + raw_json_body",
+                "replay_window_seconds": 300
+            }
+        }
+    }))
 }
 
 async fn handle_api_error_model() -> Json<serde_json::Value> {
@@ -4003,7 +4373,7 @@ async fn handle_api_get_scan(
 async fn handle_api_list_scans(
     State(state): State<LocalApiState>,
     Query(query): Query<ApiScanListQuery>,
-) -> Result<Json<Vec<ApiScanJob>>, ApiError> {
+) -> Result<Json<serde_json::Value>, ApiError> {
     let status_filter = query
         .status
         .as_deref()
@@ -4017,8 +4387,21 @@ async fn handle_api_list_scans(
         items.retain(|job| job.status == status);
     }
     items.sort_by(|a, b| b.created_at.cmp(&a.created_at));
-    items.truncate(limit);
-    Ok(Json(items))
+    if should_return_envelope(&ApiListQuery {
+        status: query.status,
+        cursor: query.cursor.clone(),
+        limit: query.limit,
+        envelope: query.envelope,
+        ..Default::default()
+    }) {
+        let (page_items, meta) = paginate_vec(items, query.cursor.as_ref(), limit);
+        Ok(Json(api_page_response(page_items, meta)))
+    } else {
+        items.truncate(limit);
+        Ok(Json(
+            serde_json::to_value(items).unwrap_or_else(|_| serde_json::json!([])),
+        ))
+    }
 }
 
 fn build_scan_progress_snapshot(job: &ApiScanJob) -> ApiScanProgressSnapshot {
@@ -4177,15 +4560,25 @@ fn map_scan_history_detail(item: db::ScanHistoryItem) -> ApiScanHistoryDetail {
 
 async fn handle_api_list_findings(
     State(state): State<LocalApiState>,
-) -> Result<Json<Vec<WastedResource>>, ApiError> {
+    Query(query): Query<ApiListQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    let findings = db::get_scan_results(&conn)
+    let mut findings = db::get_scan_results(&conn)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    Ok(Json(findings))
+    let limit = query.limit.unwrap_or(50).clamp(1, 250);
+    if should_return_envelope(&query) {
+        let (page_items, meta) = paginate_vec(findings, query.cursor.as_ref(), limit);
+        Ok(Json(api_page_response(page_items, meta)))
+    } else {
+        findings.truncate(limit);
+        Ok(Json(
+            serde_json::to_value(findings).unwrap_or_else(|_| serde_json::json!([])),
+        ))
+    }
 }
 
 async fn handle_api_list_handled_findings(
@@ -4236,7 +4629,7 @@ async fn handle_api_mark_finding_handled(
 async fn handle_api_list_scan_history(
     State(state): State<LocalApiState>,
     Query(query): Query<ApiHistoryQuery>,
-) -> Result<Json<Vec<ApiScanHistorySummary>>, ApiError> {
+) -> Result<Json<serde_json::Value>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -4255,14 +4648,27 @@ async fn handle_api_list_scan_history(
     }
 
     history.sort_by(|a, b| b.scanned_at.cmp(&a.scanned_at));
-    history.truncate(query.limit.unwrap_or(50).clamp(1, 200));
-
-    Ok(Json(
-        history
-            .into_iter()
-            .map(map_scan_history_summary)
-            .collect::<Vec<_>>(),
-    ))
+    let mapped = history
+        .into_iter()
+        .map(map_scan_history_summary)
+        .collect::<Vec<_>>();
+    let limit = query.limit.unwrap_or(50).clamp(1, 200);
+    if should_return_envelope(&ApiListQuery {
+        status: query.status,
+        cursor: query.cursor.clone(),
+        limit: query.limit,
+        envelope: query.envelope,
+        ..Default::default()
+    }) {
+        let (page_items, meta) = paginate_vec(mapped, query.cursor.as_ref(), limit);
+        Ok(Json(api_page_response(page_items, meta)))
+    } else {
+        let mut items = mapped;
+        items.truncate(limit);
+        Ok(Json(
+            serde_json::to_value(items).unwrap_or_else(|_| serde_json::json!([])),
+        ))
+    }
 }
 
 async fn handle_api_get_scan_history_item(
@@ -4936,7 +5342,7 @@ async fn handle_api_generate_report(
 async fn handle_api_list_reports(
     State(state): State<LocalApiState>,
     Query(query): Query<ApiReportListQuery>,
-) -> Result<Json<Vec<ApiReportArtifact>>, ApiError> {
+) -> Result<Json<serde_json::Value>, ApiError> {
     let format_filter = query
         .format
         .as_deref()
@@ -4953,8 +5359,21 @@ async fn handle_api_list_reports(
         items.retain(|item| item.format == format);
     }
     items.sort_by(|a, b| b.created_at.cmp(&a.created_at));
-    items.truncate(limit);
-    Ok(Json(items))
+    if should_return_envelope(&ApiListQuery {
+        format: query.format,
+        cursor: query.cursor.clone(),
+        limit: query.limit,
+        envelope: query.envelope,
+        ..Default::default()
+    }) {
+        let (page_items, meta) = paginate_vec(items, query.cursor.as_ref(), limit);
+        Ok(Json(api_page_response(page_items, meta)))
+    } else {
+        items.truncate(limit);
+        Ok(Json(
+            serde_json::to_value(items).unwrap_or_else(|_| serde_json::json!([])),
+        ))
+    }
 }
 
 async fn handle_api_get_report(
@@ -5003,6 +5422,19 @@ async fn load_api_webhooks(conn: &sqlx::Pool<sqlx::Sqlite>) -> Vec<ApiWebhookCon
         .await
         .unwrap_or_else(|_| "[]".to_string());
     serde_json::from_str::<Vec<ApiWebhookConfig>>(&raw).unwrap_or_default()
+}
+
+fn redact_api_webhook(mut hook: ApiWebhookConfig) -> ApiWebhookConfig {
+    hook.has_secret = hook
+        .secret
+        .as_ref()
+        .is_some_and(|value| !value.trim().is_empty());
+    hook.secret = None;
+    hook
+}
+
+fn redact_api_webhooks(hooks: Vec<ApiWebhookConfig>) -> Vec<ApiWebhookConfig> {
+    hooks.into_iter().map(redact_api_webhook).collect()
 }
 
 async fn save_api_webhooks(
@@ -5061,6 +5493,10 @@ async fn dispatch_scan_webhooks(
         "error": error,
         "timestamp": now_unix_ts()
     });
+    let payload_body = match serde_json::to_string(&payload) {
+        Ok(body) => body,
+        Err(_) => return,
+    };
 
     let client = match reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(8))
@@ -5082,26 +5518,66 @@ async fn dispatch_scan_webhooks(
         {
             continue;
         }
-        let _ = client.post(&hook.url).json(&payload).send().await;
+        let mut request = client
+            .post(&hook.url)
+            .header("Content-Type", "application/json")
+            .header("X-CWS-Event", event)
+            .header(
+                "X-CWS-Timestamp",
+                payload["timestamp"]
+                    .as_i64()
+                    .unwrap_or_default()
+                    .to_string(),
+            );
+        if let Some(signature) = hook.secret.as_deref().and_then(|secret| {
+            sign_webhook_payload(
+                secret,
+                payload["timestamp"].as_i64().unwrap_or_default(),
+                &payload_body,
+            )
+        }) {
+            request = request.header("X-CWS-Signature", signature);
+        }
+        let _ = request.body(payload_body.clone()).send().await;
     }
 }
 
 async fn handle_api_list_events(
     State(state): State<LocalApiState>,
     Query(query): Query<ApiEventQuery>,
-) -> Result<Json<Vec<db::AuditLog>>, ApiError> {
+) -> Result<Json<serde_json::Value>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
 
-    let page = query.page.unwrap_or(1).max(1);
+    let page = query
+        .cursor
+        .as_ref()
+        .and_then(|cursor| cursor.parse::<i64>().ok())
+        .or(query.page)
+        .unwrap_or(1)
+        .max(1);
     let limit = query.limit.unwrap_or(50).clamp(1, 200) as i64;
     let offset = (page - 1) * limit;
     let logs = db::get_audit_logs(&conn, None, None, limit, offset)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    Ok(Json(logs))
+    if query.envelope.unwrap_or(false) || query.cursor.is_some() {
+        let has_more = logs.len() as i64 == limit;
+        Ok(Json(api_page_response(
+            logs,
+            ApiPageMeta {
+                limit: limit as usize,
+                next_cursor: has_more.then(|| (page + 1).to_string()),
+                has_more,
+            },
+        )))
+    } else {
+        Ok(Json(
+            serde_json::to_value(logs).unwrap_or_else(|_| serde_json::json!([])),
+        ))
+    }
 }
 
 async fn handle_api_event_types() -> Json<serde_json::Value> {
@@ -5122,7 +5598,7 @@ async fn handle_api_list_webhooks(
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    Ok(Json(load_api_webhooks(&conn).await))
+    Ok(Json(redact_api_webhooks(load_api_webhooks(&conn).await)))
 }
 
 async fn handle_api_create_webhook(
@@ -5142,6 +5618,12 @@ async fn handle_api_create_webhook(
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())
         .unwrap_or_else(|| "webhook".to_string());
+    let secret = payload
+        .secret
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string);
     let hook = ApiWebhookConfig {
         id: Uuid::new_v4().to_string(),
         name,
@@ -5149,6 +5631,8 @@ async fn handle_api_create_webhook(
         events: normalize_webhook_events(payload.events),
         is_active: payload.is_active.unwrap_or(true),
         created_at: now_unix_ts(),
+        has_secret: secret.is_some(),
+        secret,
     };
 
     let app_state = state.app_handle.state::<AppState>();
@@ -5158,7 +5642,7 @@ async fn handle_api_create_webhook(
     let mut hooks = load_api_webhooks(&conn).await;
     hooks.push(hook.clone());
     save_api_webhooks(&conn, &hooks).await?;
-    Ok(Json(hook))
+    Ok(Json(redact_api_webhook(hook)))
 }
 
 async fn handle_api_delete_webhook(
@@ -5200,13 +5684,27 @@ async fn handle_api_test_webhook(
         "timestamp": now_unix_ts(),
         "message": "Cloud Waste Scanner webhook test"
     });
-
-    let response = reqwest::Client::builder()
+    let payload_body = serde_json::to_string(&payload)
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    let timestamp = payload["timestamp"].as_i64().unwrap_or_default();
+    let mut request = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(8))
         .build()
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
         .post(&hook.url)
-        .json(&payload)
+        .header("Content-Type", "application/json")
+        .header("X-CWS-Event", "webhook.test")
+        .header("X-CWS-Timestamp", timestamp.to_string());
+    if let Some(signature) = hook
+        .secret
+        .as_deref()
+        .and_then(|secret| sign_webhook_payload(secret, timestamp, &payload_body))
+    {
+        request = request.header("X-CWS-Signature", signature);
+    }
+
+    let response = request
+        .body(payload_body)
         .send()
         .await
         .map_err(|e| api_error(StatusCode::BAD_REQUEST, e.to_string()))?;
@@ -5249,6 +5747,68 @@ async fn handle_api_mcp_get_scan(
     Ok(Json(serde_json::json!({
         "tool": "get_scan",
         "result": job
+    })))
+}
+
+async fn handle_api_mcp_get_settings(
+    State(state): State<LocalApiState>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(serde_json::json!({
+        "tool": "get_settings",
+        "result": {
+            "general": read_api_settings_general(&conn).await,
+            "network": read_api_settings_network(&conn, &state).await,
+            "scan_policy": read_api_settings_scan_policy(&conn).await,
+            "license": read_api_settings_license(&state, &conn).await
+        }
+    })))
+}
+
+async fn handle_api_mcp_update_general_settings(
+    State(state): State<LocalApiState>,
+    Json(payload): Json<ApiSettingsGeneralPatchRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let result = handle_api_patch_settings_general(State(state), Json(payload)).await?;
+    Ok(Json(serde_json::json!({
+        "tool": "update_general_settings",
+        "result": result.0
+    })))
+}
+
+async fn handle_api_mcp_update_scan_policy(
+    State(state): State<LocalApiState>,
+    Json(payload): Json<ApiSettingsScanPolicyPatchRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let result = handle_api_patch_settings_scan_policy(State(state), Json(payload)).await?;
+    Ok(Json(serde_json::json!({
+        "tool": "update_scan_policy",
+        "result": result.0
+    })))
+}
+
+async fn handle_api_mcp_list_reports(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiReportListQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let reports = handle_api_list_reports(State(state), Query(query)).await?;
+    Ok(Json(serde_json::json!({
+        "tool": "list_reports",
+        "result": reports.0
+    })))
+}
+
+async fn handle_api_mcp_get_report(
+    State(state): State<LocalApiState>,
+    AxumPath(report_id): AxumPath<String>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let report = handle_api_get_report(State(state), AxumPath(report_id)).await?;
+    Ok(Json(serde_json::json!({
+        "tool": "get_report",
+        "result": report.0
     })))
 }
 
@@ -5703,8 +6263,10 @@ async fn start_api_server(
 
     let app = Router::new()
         .route("/status", get(handle_api_status))
+        .route("/v1/openapi.json", get(handle_api_openapi))
         .route("/v1/meta/capabilities", get(handle_api_capabilities))
         .route("/v1/meta/error-model", get(handle_api_error_model))
+        .route("/v1/meta/compatibility", get(handle_api_compatibility))
         .route("/v1/settings/general", get(handle_api_settings_general))
         .route(
             "/v1/settings/general",
@@ -5795,6 +6357,20 @@ async fn start_api_server(
         .route(
             "/v1/mcp/tools/get-scan/:scan_id",
             get(handle_api_mcp_get_scan),
+        )
+        .route("/v1/mcp/tools/settings", get(handle_api_mcp_get_settings))
+        .route(
+            "/v1/mcp/tools/settings/general",
+            patch(handle_api_mcp_update_general_settings),
+        )
+        .route(
+            "/v1/mcp/tools/scan-policy",
+            patch(handle_api_mcp_update_scan_policy),
+        )
+        .route("/v1/mcp/tools/reports", get(handle_api_mcp_list_reports))
+        .route(
+            "/v1/mcp/tools/reports/:report_id",
+            get(handle_api_mcp_get_report),
         )
         .route("/v1/k8s/contexts", get(handle_api_k8s_contexts))
         .route("/v1/k8s/scans", post(handle_api_k8s_scan))
@@ -20879,6 +21455,23 @@ mod tests {
     }
 
     #[test]
+    fn mcp_capability_routes_include_settings_reports_and_policy_tools() {
+        let routes = mcp_capability_routes();
+        for expected in [
+            "GET /v1/mcp/tools/settings",
+            "PATCH /v1/mcp/tools/settings/general",
+            "PATCH /v1/mcp/tools/scan-policy",
+            "GET /v1/mcp/tools/reports",
+            "GET /v1/mcp/tools/reports/:report_id",
+        ] {
+            assert!(
+                routes.iter().any(|route| route == expected),
+                "missing {expected}"
+            );
+        }
+    }
+
+    #[test]
     fn mcp_capability_tools_include_k8s_tools() {
         let tools = mcp_capability_tools();
         let names: Vec<&str> = tools
@@ -20887,6 +21480,11 @@ mod tests {
             .collect();
         assert!(names.contains(&"get_k8s_governance"));
         assert!(names.contains(&"get_k8s_action_plan"));
+        assert!(names.contains(&"get_settings"));
+        assert!(names.contains(&"update_general_settings"));
+        assert!(names.contains(&"update_scan_policy"));
+        assert!(names.contains(&"list_reports"));
+        assert!(names.contains(&"get_report"));
     }
 
     #[test]
@@ -20905,6 +21503,53 @@ mod tests {
             .iter()
             .any(|route| route == "GET /v1/k8s/persistent-volume-claims"));
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/services"));
+    }
+
+    #[test]
+    fn openapi_route_specs_include_expansion_track_endpoints() {
+        let routes = api_route_specs();
+        assert!(routes
+            .iter()
+            .any(|(method, path, _)| *method == "GET" && *path == "/v1/openapi.json"));
+        assert!(routes
+            .iter()
+            .any(|(method, path, _)| *method == "GET" && *path == "/v1/meta/compatibility"));
+        assert!(routes
+            .iter()
+            .any(|(method, path, _)| *method == "PATCH" && *path == "/v1/mcp/tools/scan-policy"));
+        assert_eq!(
+            api_path_for_openapi("/v1/scans/:scan_id/progress"),
+            "/v1/scans/{scan_id}/progress"
+        );
+    }
+
+    #[test]
+    fn cursor_pagination_envelope_reports_next_cursor() {
+        let (items, meta) = paginate_vec(vec![1, 2, 3, 4], Some(&"1".to_string()), 2);
+        assert_eq!(items, vec![2, 3]);
+        assert_eq!(meta.next_cursor.as_deref(), Some("3"));
+        assert!(meta.has_more);
+
+        let (last_items, last_meta) = paginate_vec(vec![1, 2, 3], Some(&"2".to_string()), 2);
+        assert_eq!(last_items, vec![3]);
+        assert!(last_meta.next_cursor.is_none());
+        assert!(!last_meta.has_more);
+    }
+
+    #[test]
+    fn webhook_signatures_are_stable_and_prefixed() {
+        let signature = sign_webhook_payload("secret", 123, r#"{"event":"scan.completed"}"#)
+            .expect("signature");
+        assert!(signature.starts_with("sha256="));
+        assert_eq!(
+            signature,
+            sign_webhook_payload("secret", 123, r#"{"event":"scan.completed"}"#).unwrap()
+        );
+        assert_ne!(
+            signature,
+            sign_webhook_payload("secret", 124, r#"{"event":"scan.completed"}"#).unwrap()
+        );
+        assert!(sign_webhook_payload("", 123, "{}").is_none());
     }
 
     #[test]

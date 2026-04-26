@@ -1168,7 +1168,7 @@ dependencies = [
 
 [[package]]
 name = "cloud-waste-scanner-gui"
-version = "2.9.17"
+version = "2.9.18"
 dependencies = [
  "aws-config",
  "aws-sdk-cloudwatch",
@@ -1184,11 +1184,14 @@ dependencies = [
  "dirs 5.0.1",
  "ed25519-dalek",
  "futures-util",
+ "hex",
+ "hmac",
  "rcgen",
  "reqwest 0.11.27",
  "rust-ini",
  "serde",
  "serde_json",
+ "sha2",
  "sqlx",
  "tauri",
  "tauri-build",

@@ -6,7 +6,7 @@ Local-first cloud waste scanning for operators who want source-visible, producti
 
 This repository is the **Community Edition**.
 
-Current version: `2.9.17`
+Current version: `2.9.18`
 
 - Community is local-first and production-usable.
 - No hosted license activation is required for core local workflows.
@@ -27,6 +27,16 @@ This repository previously contained Pro-era documentation and release metadata.
 - Local-first execution: credentials remain on the operator machine.
 - Read-only scanning by default.
 - Evidence-oriented outputs for operator and finance review.
+
+## Local API and SDKs
+
+Community includes a local HTTP API for automation around scans, findings, reports, Kubernetes/container waste checks, and governance evidence.
+
+- OpenAPI export: `GET /v1/openapi.json`
+- Compatibility policy: `GET /v1/meta/compatibility`
+- Cursor pagination: add `envelope=true&limit=50&cursor=<next_cursor>` to supported list endpoints.
+- Webhook signing: `X-CWS-Signature` uses `HMAC-SHA256(secret, "<timestamp>.<raw_json_body>")`.
+- SDKs: see `sdks/python` and `sdks/typescript`.
 
 ## Support This Project
 
