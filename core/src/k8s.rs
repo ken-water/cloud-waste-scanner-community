@@ -76,6 +76,7 @@ pub struct K8sServiceSnapshot {
     pub service_type: String,
     pub selector_count: usize,
     pub load_balancer_ingress_count: usize,
+    pub owner_hint: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -87,6 +88,7 @@ pub struct K8sWorkloadSnapshot {
     pub ready_replicas: i64,
     pub requested_cpu_millicores: i64,
     pub requested_memory_mib: i64,
+    pub owner_hint: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -327,6 +329,85 @@ pub fn analyze_k8s_persistent_volumes(
         .collect()
 }
 
+pub fn analyze_k8s_workloads(
+    cluster_name: &str,
+    workloads: &[K8sWorkloadSnapshot],
+) -> Vec<WastedResource> {
+    workloads
+        .iter()
+        .filter_map(|workload| {
+            if workload.replicas <= 1 || workload.ready_replicas >= workload.replicas {
+                return None;
+            }
+            let missing = workload.replicas.saturating_sub(workload.ready_replicas);
+            let requested_cpu = workload.requested_cpu_millicores.max(0) * missing;
+            let requested_memory = workload.requested_memory_mib.max(0) * missing;
+            if requested_cpu < 500 && requested_memory < 1024 {
+                return None;
+            }
+            let estimated = ((requested_cpu as f64 / 1000.0) * 18.0
+                + (requested_memory as f64 / 1024.0) * 6.0)
+                .max(5.0);
+            Some(WastedResource {
+                id: format!(
+                    "{}/workload/{}/{}/{}",
+                    cluster_name, workload.namespace, workload.kind, workload.name
+                ),
+                resource_type: "K8s Workload Replica Drift".to_string(),
+                estimated_monthly_cost: estimated,
+                details: format!(
+                    "{} '{}' in namespace '{}'{} declares {} replicas but only {} are ready. Review failed rollout, stale HPA target, or over-reserved requests.",
+                    workload.kind,
+                    workload.name,
+                    workload.namespace,
+                    owner_detail(workload.owner_hint.as_deref()),
+                    workload.replicas,
+                    workload.ready_replicas
+                ),
+                provider: "kubernetes".to_string(),
+                region: workload.namespace.clone(),
+                action_type: "INVESTIGATE".to_string(),
+            })
+        })
+        .collect()
+}
+
+pub fn analyze_k8s_services(
+    cluster_name: &str,
+    services: &[K8sServiceSnapshot],
+) -> Vec<WastedResource> {
+    services
+        .iter()
+        .filter_map(|service| {
+            if !service.service_type.eq_ignore_ascii_case("loadbalancer") {
+                return None;
+            }
+            if service.selector_count > 0 && service.load_balancer_ingress_count > 0 {
+                return None;
+            }
+            Some(WastedResource {
+                id: format!(
+                    "{}/service/{}/{}",
+                    cluster_name, service.namespace, service.name
+                ),
+                resource_type: "K8s LoadBalancer Review".to_string(),
+                estimated_monthly_cost: 18.0,
+                details: format!(
+                    "LoadBalancer service '{}' in namespace '{}'{} has {} selectors and {} ingress records. Verify whether the cloud load balancer is still needed.",
+                    service.name,
+                    service.namespace,
+                    owner_detail(service.owner_hint.as_deref()),
+                    service.selector_count,
+                    service.load_balancer_ingress_count
+                ),
+                provider: "kubernetes".to_string(),
+                region: service.namespace.clone(),
+                action_type: "INVESTIGATE".to_string(),
+            })
+        })
+        .collect()
+}
+
 pub fn parse_cpu_to_millicores(raw: &str) -> i64 {
     let trimmed = raw.trim();
     if trimmed.is_empty() {
@@ -393,6 +474,24 @@ fn metadata_label(value: &Value, key: &str) -> Option<String> {
         .get(key)?
         .as_str()
         .map(|s| s.to_string())
+}
+
+fn metadata_owner_hint(value: &Value) -> Option<String> {
+    [
+        "owner",
+        "team",
+        "cost-center",
+        "app.kubernetes.io/part-of",
+        "app.kubernetes.io/name",
+    ]
+    .iter()
+    .find_map(|key| metadata_label(value, key))
+}
+
+fn owner_detail(owner_hint: Option<&str>) -> String {
+    owner_hint
+        .map(|owner| format!(" owned by '{}'", owner))
+        .unwrap_or_default()
 }
 
 pub fn parse_kubectl_pods_json(input: &str) -> Result<Vec<K8sPodSnapshot>, String> {
@@ -495,6 +594,7 @@ pub fn parse_kubectl_services_json(input: &str) -> Result<Vec<K8sServiceSnapshot
                 .to_string(),
             selector_count,
             load_balancer_ingress_count,
+            owner_hint: metadata_owner_hint(item),
         });
     }
     Ok(services)
@@ -545,6 +645,7 @@ pub fn parse_kubectl_workloads_json(input: &str) -> Result<Vec<K8sWorkloadSnapsh
                 .unwrap_or(0),
             requested_cpu_millicores: cpu,
             requested_memory_mib: memory,
+            owner_hint: metadata_owner_hint(item),
         });
     }
     Ok(workloads)
@@ -634,9 +735,13 @@ pub fn analyze_k8s_snapshot(
     cluster_name: &str,
     nodes: &[K8sNodeSnapshot],
     volumes: &[K8sPersistentVolumeSnapshot],
+    workloads: &[K8sWorkloadSnapshot],
+    services: &[K8sServiceSnapshot],
 ) -> Vec<WastedResource> {
     let mut findings = analyze_k8s_nodes(cluster_name, nodes);
     findings.extend(analyze_k8s_persistent_volumes(cluster_name, volumes));
+    findings.extend(analyze_k8s_workloads(cluster_name, workloads));
+    findings.extend(analyze_k8s_services(cluster_name, services));
     findings
 }
 
@@ -872,6 +977,8 @@ contexts:
                 storage_class: Some("gp3".to_string()),
                 volume_handle: Some("vol-123".to_string()),
             }],
+            &[],
+            &[],
         );
         assert_eq!(findings.len(), 2);
         assert!(findings
@@ -906,5 +1013,43 @@ contexts:
         assert_eq!(workloads[0].kind, "Deployment");
         assert_eq!(workloads[0].replicas, 3);
         assert_eq!(workloads[0].requested_cpu_millicores, 250);
+    }
+
+    #[test]
+    fn analyze_k8s_workloads_flags_replica_drift_with_reserved_requests() {
+        let findings = analyze_k8s_workloads(
+            "prod",
+            &[K8sWorkloadSnapshot {
+                namespace: "payments".to_string(),
+                name: "api".to_string(),
+                kind: "Deployment".to_string(),
+                replicas: 4,
+                ready_replicas: 1,
+                requested_cpu_millicores: 750,
+                requested_memory_mib: 1024,
+                owner_hint: Some("finops".to_string()),
+            }],
+        );
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].resource_type, "K8s Workload Replica Drift");
+        assert_eq!(findings[0].region, "payments");
+    }
+
+    #[test]
+    fn analyze_k8s_services_flags_loadbalancer_without_active_shape() {
+        let findings = analyze_k8s_services(
+            "prod",
+            &[K8sServiceSnapshot {
+                namespace: "edge".to_string(),
+                name: "old-api".to_string(),
+                service_type: "LoadBalancer".to_string(),
+                selector_count: 0,
+                load_balancer_ingress_count: 1,
+                owner_hint: Some("platform".to_string()),
+            }],
+        );
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].resource_type, "K8s LoadBalancer Review");
+        assert_eq!(findings[0].region, "edge");
     }
 }

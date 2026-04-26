@@ -1,6 +1,6 @@
 [package]
 name = "cloud-waste-scanner-gui"
-version= "2.9.18"
+version= "2.9.19"
 edition = "2021"
 
 [build-dependencies]

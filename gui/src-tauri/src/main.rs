@@ -2976,7 +2976,17 @@ fn default_kubeconfig_path() -> std::path::PathBuf {
 fn resolve_kubeconfig_path(raw: Option<&String>) -> std::path::PathBuf {
     raw.map(|value| value.trim())
         .filter(|value| !value.is_empty())
-        .map(std::path::PathBuf::from)
+        .map(|value| {
+            if value == "~" {
+                return dirs::home_dir().unwrap_or_else(|| std::path::PathBuf::from(value));
+            }
+            if let Some(rest) = value.strip_prefix("~/") {
+                if let Some(home) = dirs::home_dir() {
+                    return home.join(rest);
+                }
+            }
+            std::path::PathBuf::from(value)
+        })
         .unwrap_or_else(default_kubeconfig_path)
 }
 
@@ -3035,11 +3045,28 @@ async fn scan_kubernetes_via_kubectl(
     let pods_json = run_kubectl_json(&kubeconfig_path, context.as_deref(), "pods", true).await?;
     let nodes_json = run_kubectl_json(&kubeconfig_path, context.as_deref(), "nodes", false).await?;
     let pv_json = run_kubectl_json(&kubeconfig_path, context.as_deref(), "pv", false).await?;
+    let workloads_json = run_kubectl_json(
+        &kubeconfig_path,
+        context.as_deref(),
+        "deployments,statefulsets,daemonsets",
+        true,
+    )
+    .await?;
+    let services_json =
+        run_kubectl_json(&kubeconfig_path, context.as_deref(), "services", true).await?;
 
     let pods = k8s::parse_kubectl_pods_json(&pods_json)?;
     let nodes = k8s::parse_kubectl_nodes_json(&nodes_json, &pods)?;
     let volumes = k8s::parse_kubectl_persistent_volumes_json(&pv_json)?;
-    Ok(k8s::analyze_k8s_snapshot(&cluster_name, &nodes, &volumes))
+    let workloads = k8s::parse_kubectl_workloads_json(&workloads_json)?;
+    let services = k8s::parse_kubectl_services_json(&services_json)?;
+    Ok(k8s::analyze_k8s_snapshot(
+        &cluster_name,
+        &nodes,
+        &volumes,
+        &workloads,
+        &services,
+    ))
 }
 
 fn schedule_gate_error() -> ApiError {
@@ -21556,6 +21583,15 @@ mod tests {
     fn default_kubeconfig_path_points_to_dot_kube_config() {
         let path = default_kubeconfig_path();
         let path_text = path.to_string_lossy().replace('\\', "/");
+        assert!(path_text.ends_with("/.kube/config") || path_text == ".kube/config");
+    }
+
+    #[test]
+    fn resolve_kubeconfig_path_expands_home_shorthand() {
+        let raw = "~/.kube/config".to_string();
+        let path = resolve_kubeconfig_path(Some(&raw));
+        let path_text = path.to_string_lossy().replace('\\', "/");
+        assert!(!path_text.starts_with("~/"));
         assert!(path_text.ends_with("/.kube/config") || path_text == ".kube/config");
     }
 

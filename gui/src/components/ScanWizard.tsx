@@ -30,6 +30,9 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
   const [step, setStep] = useState<Step>("select");
   const [profiles, setProfiles] = useState<CloudProfile[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [includeKubernetes, setIncludeKubernetes] = useState(false);
+  const [kubeconfigPath, setKubeconfigPath] = useState("~/.kube/config");
+  const [kubeContext, setKubeContext] = useState("");
   
   // Config
   const [timeout, setTimeout] = useState(10);
@@ -45,6 +48,9 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
       loadProfiles();
       setStep("select");
       setSelectedIds([]);
+      setIncludeKubernetes(false);
+      setKubeconfigPath("~/.kube/config");
+      setKubeContext("");
       setError(null);
     }
   }, [isOpen]);
@@ -117,7 +123,7 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
   }
 
   async function handleStartScan() {
-    if (selectedIds.length === 0) return;
+    if (selectedIds.length === 0 && !includeKubernetes) return;
     setStep("scanning");
     setError(null);
     setScanProgress({ current: 0, total: 10, message: "Starting scan..." });
@@ -165,7 +171,10 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
         awsProfile: null, 
         awsRegion: null,
         selectedAccounts: demoMode ? null : selectedIds,
-        demoMode: demoMode
+        demoMode: demoMode,
+        includeKubernetes,
+        kubeconfigPath: includeKubernetes ? kubeconfigPath : null,
+        kubeContext: includeKubernetes && kubeContext.trim() ? kubeContext.trim() : null
       });
       
       onScanComplete(results);
@@ -246,12 +255,32 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
                         <div className="text-center py-8 text-slate-400">No accounts found. Please add one in Configuration.</div>
                     )}
                 </div>
+                {!demoMode && (
+                    <div
+                        onClick={() => {
+                            setError(null);
+                            setIncludeKubernetes(!includeKubernetes);
+                        }}
+                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between group ${includeKubernetes ? 'border-emerald-600 bg-emerald-50/60 dark:bg-emerald-900/20' : 'border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-slate-600'}`}
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className={`p-3 rounded-lg ${includeKubernetes ? 'bg-emerald-100 text-emerald-700 dark:text-emerald-300' : 'bg-slate-100 text-slate-500'}`}>
+                                <Cloud className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="font-bold text-slate-900 dark:text-white">Kubernetes Local Cluster</p>
+                                <p className="text-base text-slate-500">Read-only kubectl scan for nodes, workloads, PV/PVC, and services.</p>
+                            </div>
+                        </div>
+                        {includeKubernetes && <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />}
+                    </div>
+                )}
                 <button 
                     onClick={goToConfigure}
-                    disabled={selectedIds.length === 0}
+                    disabled={selectedIds.length === 0 && !includeKubernetes}
                     className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold flex items-center justify-center hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 >
-                    Next Step {selectedIds.length > 0 && `(${selectedIds.length})`} <ChevronRight className="w-5 h-5 ml-1" />
+                    Next Step {(selectedIds.length > 0 || includeKubernetes) && `(${selectedIds.length + (includeKubernetes ? 1 : 0)})`} <ChevronRight className="w-5 h-5 ml-1" />
                 </button>
             </div>
         )}
@@ -293,6 +322,35 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
                         </div>
                     </div>
                 </div>
+
+                {includeKubernetes && (
+                    <div className="bg-emerald-50/70 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 space-y-3">
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Kubernetes Scan</h3>
+                            <p className="text-base text-slate-600 dark:text-slate-300">
+                                Runs locally through kubectl with your read-only kubeconfig. Credentials and cluster data stay on this machine.
+                            </p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Kubeconfig Path</label>
+                            <input
+                                value={kubeconfigPath}
+                                onChange={(event) => setKubeconfigPath(event.target.value)}
+                                placeholder="~/.kube/config"
+                                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">Context (optional)</label>
+                            <input
+                                value={kubeContext}
+                                onChange={(event) => setKubeContext(event.target.value)}
+                                placeholder="Leave blank to use current-context"
+                                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono text-sm"
+                            />
+                        </div>
+                    </div>
+                )}
 
                 <div>
                     <div className="flex justify-between mb-2">
