@@ -14,7 +14,7 @@ const FeedbackManager = lazy(() => import("./components/FeedbackManager").then((
 const SettingsHubScreen = lazy(() => import("./components/SettingsHubScreen").then((mod) => ({ default: mod.SettingsHubScreen })));
 const SystemLogsScreen = lazy(() => import("./components/SystemLogsScreen").then((mod) => ({ default: mod.SystemLogsScreen })));
 const SupportHubScreen = lazy(() => import("./components/SupportHubScreen").then((mod) => ({ default: mod.SupportHubScreen })));
-const AiAnalystScreen = lazy(() => import("./components/AiAnalystScreen").then((mod) => ({ default: mod.AiAnalystScreen })));
+const AiDeviceScanScreen = lazy(() => import("./components/AiDeviceScanScreen").then((mod) => ({ default: mod.AiDeviceScanScreen })));
 const AiSettingsScreen = lazy(() => import("./components/AiSettingsScreen").then((mod) => ({ default: mod.AiSettingsScreen })));
 
 function App() {
@@ -102,7 +102,7 @@ function App() {
           {activeTab === 'overview' && <Dashboard onNavigate={handleNavigate} />}
           {activeTab === 'governance' && <GovernanceScreen />}
           {activeTab === 'health_metrics' && <MonitorScreen />}
-          {activeTab === 'ai_analyst' && <AiAnalystScreen onNavigate={handleNavigate} />}
+          {activeTab === 'ai_analyst' && <AiDeviceScanScreen />}
           {activeTab === 'current_findings' && <ResourcesTable initialFilter={activeTabParams} />}
           {activeTab === 'resource_inventory' && <ProviderResourcesScreen />}
           {activeTab === 'history' && <HistoryScreen />}

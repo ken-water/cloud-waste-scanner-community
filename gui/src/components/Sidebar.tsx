@@ -54,7 +54,7 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
       items: [
         { id: 'governance', label: 'Governance', icon: Building2 },
         { id: 'health_metrics', label: 'Health Metrics', icon: Activity },
-        { id: 'ai_analyst', label: 'AI Analyst', icon: Bot },
+        { id: 'ai_analyst', label: 'AI Device Scan', icon: Bot },
       ],
     },
     {
@@ -64,7 +64,7 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
         { id: 'accounts', label: 'Accounts', icon: Cloud },
         { id: 'notifications', label: 'Notifications', icon: Bell },
         { id: 'network_proxy', label: 'Proxy Profiles', icon: Network },
-        { id: 'ai_settings', label: 'AI Settings', icon: Bot },
+        { id: 'ai_settings', label: 'AI Runtime Settings', icon: Bot },
         { id: 'local_api', label: 'Local API', icon: Monitor },
         { id: 'preferences', label: 'Preferences', icon: Settings },
       ],

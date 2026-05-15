@@ -42,8 +42,8 @@ const groups = [
       },
       {
         id: "ai_settings",
-        label: "AI Settings",
-        description: "Set local-only AI posture now and prepare endpoint/model policy for future wording assistants.",
+        label: "AI Runtime Settings",
+        description: "Configure local GPU runtime scan posture and optional external endpoint policy.",
         icon: Bot,
       },
       {

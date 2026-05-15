@@ -41,8 +41,8 @@ export function AiSettingsScreen() {
   return (
       <PageShell maxWidthClassName="max-w-6xl" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300 transition-colors dark:text-slate-100">
         <PageHeader
-          title="AI Settings"
-          subtitle="Define how AI Analyst should behave. The current implementation computes trusted local summaries first and does not require any external model."
+          title="AI Runtime Settings"
+          subtitle="Define how local AI device utilization scanning should behave. Current runtime scan and recommendations are local-first and do not require external models."
           icon={<Bot className="h-6 w-6" />}
           actions={
             <button
