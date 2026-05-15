@@ -9,10 +9,7 @@ on:
         default: 'macos-latest'
         type: choice
         options:
-          - all
           - macos-latest
-          - ubuntu-22.04
-          - windows-latest
   # push:
   #   tags:
   #     - 'v*'
@@ -27,10 +24,6 @@ jobs:
         include:
           - platform: 'macos-latest'
             args: '--target universal-apple-darwin --bundles dmg'
-          - platform: 'ubuntu-22.04'
-            args: '--bundles deb,appimage,rpm'
-          - platform: 'windows-latest'
-            args: '--bundles nsis,msi'
 
     runs-on: ${{ matrix.platform }}
     steps:
