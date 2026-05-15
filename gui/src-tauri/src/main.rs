@@ -24,11 +24,11 @@ use cloud_waste_scanner_core::linode::LinodeScanner;
 use cloud_waste_scanner_core::oracle::OracleScanner;
 use cloud_waste_scanner_core::vultr::VultrScanner;
 use cloud_waste_scanner_core::{
-    akamai, backblaze, baidu, ceph, civo, cloudflare, cloudian, contabo, dell, dreamhost, equinix,
-    exoscale, flashblade, gcore, generic_s3, greenlake, hcp, hetzner, huawei, ibm, idrive, ionos,
-    k8s, leaseweb, linode, lyve, minio, models::WastedResource, nutanix, openstack, ovh, qumulo,
-    rackspace, scaleway, scality, storagegrid, storj, tencent, tianyi, upcloud, volcengine, wasabi,
-    NotificationChannel, Policy, ScanPolicy, Scanner,
+    ai_runtime, akamai, backblaze, baidu, ceph, civo, cloudflare, cloudian, contabo, dell,
+    dreamhost, equinix, exoscale, flashblade, gcore, generic_s3, greenlake, hcp, hetzner, huawei,
+    ibm, idrive, ionos, k8s, leaseweb, linode, lyve, minio, models::WastedResource, nutanix,
+    openstack, ovh, qumulo, rackspace, scaleway, scality, storagegrid, storj, tencent, tianyi,
+    upcloud, volcengine, wasabi, NotificationChannel, Policy, ScanPolicy, Scanner,
 };
 
 use ai_analyst_runtime::{answer_local_question, AiAnalystLocalAnswer};
@@ -202,6 +202,7 @@ pub(crate) struct ApiScanRequest {
     pub(crate) include_kubernetes: Option<bool>,
     pub(crate) kubeconfig_path: Option<String>,
     pub(crate) kube_context: Option<String>,
+    pub(crate) include_ai_runtime: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -556,6 +557,61 @@ struct ApiK8sReportQuery {
 }
 
 #[derive(Debug, Clone, Serialize)]
+struct K8sGpuNodeRow {
+    node: String,
+    allocatable_gpus: f64,
+    requested_gpus: f64,
+    limits_gpus: f64,
+    request_ratio_pct: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct K8sGpuSummaryResponse {
+    kubeconfig_path: String,
+    context: Option<String>,
+    nodes: Vec<K8sGpuNodeRow>,
+    totals: K8sGpuNodeRow,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiAiReportQuery {
+    window_days: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct AiCategoryRow {
+    category: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct AiProviderRow {
+    provider: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct AiRecommendationRow {
+    recommendation: String,
+    findings: i64,
+    estimated_monthly_waste: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct AiGovernanceReportResponse {
+    generated_at: i64,
+    window_days: i64,
+    total_findings: i64,
+    total_estimated_monthly_waste: f64,
+    categories: Vec<AiCategoryRow>,
+    providers: Vec<AiProviderRow>,
+    recommendations: Vec<AiRecommendationRow>,
+}
+
+#[derive(Debug, Clone, Serialize)]
 struct ApiReportArtifact {
     report_id: String,
     format: String,
@@ -587,6 +643,12 @@ struct ApiEventQuery {
 struct ApiKubeconfigQuery {
     path: Option<String>,
     context: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiAiRuntimeQuery {
+    include_recommendations: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -842,6 +904,11 @@ fn api_route_specs() -> Vec<(&'static str, &'static str, &'static str)> {
             "/v1/reports/k8s-action-plan",
             "Kubernetes action plan",
         ),
+        (
+            "GET",
+            "/v1/reports/ai-governance",
+            "AI runtime governance report",
+        ),
         ("GET", "/v1/reports/:report_id", "Get report metadata"),
         (
             "GET",
@@ -911,6 +978,11 @@ fn api_route_specs() -> Vec<(&'static str, &'static str, &'static str)> {
         ("GET", "/v1/k8s/contexts", "List kubeconfig contexts"),
         ("POST", "/v1/k8s/scans", "Run Kubernetes-only local scan"),
         ("GET", "/v1/k8s/findings", "List Kubernetes findings"),
+        (
+            "GET",
+            "/v1/k8s/gpu-summary",
+            "Summarize Kubernetes GPU allocatable/requested/limits",
+        ),
         ("GET", "/v1/k8s/nodes", "List Kubernetes nodes"),
         ("GET", "/v1/k8s/pods", "List Kubernetes pods"),
         ("GET", "/v1/k8s/workloads", "List Kubernetes workloads"),
@@ -925,6 +997,14 @@ fn api_route_specs() -> Vec<(&'static str, &'static str, &'static str)> {
             "List Kubernetes PersistentVolumeClaims",
         ),
         ("GET", "/v1/k8s/services", "List Kubernetes services"),
+        ("GET", "/v1/ai/devices", "List local AI runtime devices"),
+        ("POST", "/v1/ai/scans", "Run local AI runtime scan"),
+        ("GET", "/v1/ai/findings", "List AI runtime findings"),
+        (
+            "GET",
+            "/v1/ai/recommendations",
+            "List AI runtime recommendations",
+        ),
     ]
 }
 
@@ -1709,6 +1789,7 @@ async fn enqueue_scan_job(
             payload.include_kubernetes.unwrap_or(false),
             payload.kubeconfig_path.clone(),
             payload.kube_context.clone(),
+            payload.include_ai_runtime.unwrap_or(false),
         )
         .await;
 
@@ -2831,6 +2912,11 @@ async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<ser
             routes: k8s_capability_routes(),
         },
         ApiCapabilityGroup {
+            name: "ai_runtime".to_string(),
+            status: "active".to_string(),
+            routes: ai_runtime_capability_routes(),
+        },
+        ApiCapabilityGroup {
             name: "cloud_accounts".to_string(),
             status: "active".to_string(),
             routes: vec![
@@ -2918,6 +3004,7 @@ fn reports_capability_routes() -> Vec<String> {
         "GET /v1/reports/error-taxonomy".to_string(),
         "GET /v1/reports/k8s-governance".to_string(),
         "GET /v1/reports/k8s-action-plan".to_string(),
+        "GET /v1/reports/ai-governance".to_string(),
         "GET /v1/reports/:report_id".to_string(),
         "GET /v1/reports/:report_id/download".to_string(),
     ]
@@ -2957,12 +3044,22 @@ fn k8s_capability_routes() -> Vec<String> {
         "GET /v1/k8s/contexts".to_string(),
         "POST /v1/k8s/scans".to_string(),
         "GET /v1/k8s/findings".to_string(),
+        "GET /v1/k8s/gpu-summary".to_string(),
         "GET /v1/k8s/nodes".to_string(),
         "GET /v1/k8s/pods".to_string(),
         "GET /v1/k8s/workloads".to_string(),
         "GET /v1/k8s/persistent-volumes".to_string(),
         "GET /v1/k8s/persistent-volume-claims".to_string(),
         "GET /v1/k8s/services".to_string(),
+    ]
+}
+
+fn ai_runtime_capability_routes() -> Vec<String> {
+    vec![
+        "GET /v1/ai/devices".to_string(),
+        "POST /v1/ai/scans".to_string(),
+        "GET /v1/ai/findings".to_string(),
+        "GET /v1/ai/recommendations".to_string(),
     ]
 }
 
@@ -2988,6 +3085,17 @@ fn resolve_kubeconfig_path(raw: Option<&String>) -> std::path::PathBuf {
             std::path::PathBuf::from(value)
         })
         .unwrap_or_else(default_kubeconfig_path)
+}
+
+fn parse_k8s_gpu_quantity(raw: &str) -> f64 {
+    let value = raw.trim();
+    if value.is_empty() {
+        return 0.0;
+    }
+    if let Some(num) = value.strip_suffix('m') {
+        return num.trim().parse::<f64>().unwrap_or(0.0) / 1000.0;
+    }
+    value.parse::<f64>().unwrap_or(0.0)
 }
 
 fn kubectl_base_args(kubeconfig_path: &std::path::Path, context: Option<&str>) -> Vec<String> {
@@ -3067,6 +3175,79 @@ async fn scan_kubernetes_via_kubectl(
         &workloads,
         &services,
     ))
+}
+
+async fn probe_ai_devices_via_nvidia_smi() -> Result<Vec<ai_runtime::AiDeviceSnapshot>, String> {
+    let args = [
+        "--query-gpu=index,name,utilization.gpu,memory.used,memory.total,power.draw,temperature.gpu",
+        "--format=csv,noheader,nounits",
+    ];
+    let output = tokio::time::timeout(
+        std::time::Duration::from_secs(20),
+        tokio::process::Command::new("nvidia-smi")
+            .args(args)
+            .output(),
+    )
+    .await
+    .map_err(|_| "nvidia-smi probe timed out after 20 seconds".to_string())?
+    .map_err(|e| format!("failed to execute nvidia-smi: {}", e))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!(
+            "nvidia-smi probe failed: {}",
+            summarize_error_text(&stderr, 500)
+        ));
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let devices = ai_runtime::parse_nvidia_smi_csv(&stdout);
+    if devices.is_empty() {
+        return Err("no GPU devices parsed from nvidia-smi output".to_string());
+    }
+    Ok(devices)
+}
+
+async fn probe_ai_devices_via_rocm_smi() -> Result<Vec<ai_runtime::AiDeviceSnapshot>, String> {
+    let args = [
+        "--showuse",
+        "--showmemuse",
+        "--showtemp",
+        "--showpower",
+        "--json",
+    ];
+    let output = tokio::time::timeout(
+        std::time::Duration::from_secs(20),
+        tokio::process::Command::new("rocm-smi").args(args).output(),
+    )
+    .await
+    .map_err(|_| "rocm-smi probe timed out after 20 seconds".to_string())?
+    .map_err(|e| format!("failed to execute rocm-smi: {}", e))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!(
+            "rocm-smi probe failed: {}",
+            summarize_error_text(&stderr, 500)
+        ));
+    }
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let devices = ai_runtime::parse_rocm_smi_json(&stdout);
+    if devices.is_empty() {
+        return Err("no GPU devices parsed from rocm-smi output".to_string());
+    }
+    Ok(devices)
+}
+
+async fn probe_ai_devices() -> Result<(String, Vec<ai_runtime::AiDeviceSnapshot>), String> {
+    match probe_ai_devices_via_nvidia_smi().await {
+        Ok(devices) => Ok(("nvidia-smi".to_string(), devices)),
+        Err(nvidia_err) => match probe_ai_devices_via_rocm_smi().await {
+            Ok(devices) => Ok(("rocm-smi".to_string(), devices)),
+            Err(rocm_err) => Err(format!(
+                "GPU probe failed for both nvidia-smi and rocm-smi. nvidia-smi: {}; rocm-smi: {}",
+                nvidia_err, rocm_err
+            )),
+        },
+    }
 }
 
 fn schedule_gate_error() -> ApiError {
@@ -5253,6 +5434,151 @@ async fn handle_api_reports_k8s_action_plan(
     }))
 }
 
+fn classify_ai_category(resource_type: &str) -> &'static str {
+    let t = resource_type.to_ascii_lowercase();
+    if t.contains("idle gpu") {
+        "idle_gpu"
+    } else if t.contains("stranded gpu memory") {
+        "memory_stranded"
+    } else if t.contains("power inefficiency") {
+        "power_inefficient"
+    } else {
+        "other_ai_runtime"
+    }
+}
+
+fn ai_recommendation_text(category: &str) -> &'static str {
+    match category {
+        "idle_gpu" => "Reclaim idle GPU windows and shift low-priority jobs to batch windows.",
+        "memory_stranded" => {
+            "Match GPU memory footprint and compute profile to smaller or more suitable shapes."
+        }
+        "power_inefficient" => "Apply power/thermal guardrails for low-throughput workloads.",
+        _ => "Review AI runtime findings and map to owner + execution queue.",
+    }
+}
+
+async fn handle_api_reports_ai_governance(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiAiReportQuery>,
+) -> Result<Json<AiGovernanceReportResponse>, ApiError> {
+    let window_days = query.window_days.unwrap_or(30).clamp(1, 365);
+    let since_ts = Utc::now().timestamp() - (window_days * 86_400);
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let history = db::get_scan_history(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+
+    let mut total_findings: i64 = 0;
+    let mut total_estimated_monthly_waste = 0.0_f64;
+    let mut category_agg: HashMap<String, (i64, f64)> = HashMap::new();
+    let mut provider_agg: HashMap<String, (i64, f64)> = HashMap::new();
+    let mut recommendation_agg: HashMap<String, (i64, f64)> = HashMap::new();
+
+    for item in history
+        .into_iter()
+        .filter(|h| h.status.eq_ignore_ascii_case("completed") && h.scanned_at >= since_ts)
+    {
+        let findings =
+            serde_json::from_str::<Vec<WastedResource>>(&item.results_json).unwrap_or_default();
+        for finding in findings {
+            let provider = finding.provider.to_ascii_lowercase();
+            if provider != "ai-runtime" {
+                continue;
+            }
+            total_findings += 1;
+            let waste = finding.estimated_monthly_cost.max(0.0);
+            total_estimated_monthly_waste += waste;
+
+            let category = classify_ai_category(&finding.resource_type).to_string();
+            let category_entry = category_agg.entry(category.clone()).or_insert((0, 0.0));
+            category_entry.0 += 1;
+            category_entry.1 += waste;
+
+            let provider_name = if finding.provider.trim().is_empty() {
+                "ai-runtime".to_string()
+            } else {
+                finding.provider.trim().to_string()
+            };
+            let provider_entry = provider_agg.entry(provider_name).or_insert((0, 0.0));
+            provider_entry.0 += 1;
+            provider_entry.1 += waste;
+
+            let recommendation = ai_recommendation_text(&category).to_string();
+            let rec_entry = recommendation_agg.entry(recommendation).or_insert((0, 0.0));
+            rec_entry.0 += 1;
+            rec_entry.1 += waste;
+        }
+    }
+
+    let mut categories = category_agg
+        .into_iter()
+        .map(
+            |(category, (findings, estimated_monthly_waste))| AiCategoryRow {
+                category,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    categories.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.category.cmp(&b.category))
+    });
+
+    let mut providers = provider_agg
+        .into_iter()
+        .map(
+            |(provider, (findings, estimated_monthly_waste))| AiProviderRow {
+                provider,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    providers.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.provider.cmp(&b.provider))
+    });
+
+    let mut recommendations = recommendation_agg
+        .into_iter()
+        .map(
+            |(recommendation, (findings, estimated_monthly_waste))| AiRecommendationRow {
+                recommendation,
+                findings,
+                estimated_monthly_waste,
+            },
+        )
+        .collect::<Vec<_>>();
+    recommendations.sort_by(|a, b| {
+        b.estimated_monthly_waste
+            .partial_cmp(&a.estimated_monthly_waste)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| b.findings.cmp(&a.findings))
+            .then_with(|| a.recommendation.cmp(&b.recommendation))
+    });
+
+    Ok(Json(AiGovernanceReportResponse {
+        generated_at: now_unix_ts(),
+        window_days,
+        total_findings,
+        total_estimated_monthly_waste,
+        categories,
+        providers,
+        recommendations,
+    }))
+}
+
 async fn handle_api_generate_report(
     State(state): State<LocalApiState>,
     Json(payload): Json<ApiGenerateReportRequest>,
@@ -5899,6 +6225,147 @@ async fn handle_api_k8s_nodes(
     Ok(Json(nodes))
 }
 
+async fn handle_api_k8s_gpu_summary(
+    Query(query): Query<ApiKubeconfigQuery>,
+) -> Result<Json<K8sGpuSummaryResponse>, ApiError> {
+    let path = resolve_kubeconfig_path(query.path.as_ref());
+    let nodes_json = run_kubectl_json(&path, query.context.as_deref(), "nodes", false)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let pods_json = run_kubectl_json(&path, query.context.as_deref(), "pods", true)
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+
+    let nodes_value: serde_json::Value = serde_json::from_str(&nodes_json).map_err(|e| {
+        api_error(
+            StatusCode::BAD_REQUEST,
+            format!("invalid nodes json: {}", e),
+        )
+    })?;
+    let pods_value: serde_json::Value = serde_json::from_str(&pods_json)
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, format!("invalid pods json: {}", e)))?;
+
+    let mut rows: HashMap<String, K8sGpuNodeRow> = HashMap::new();
+    if let Some(items) = nodes_value.get("items").and_then(|v| v.as_array()) {
+        for item in items {
+            let node_name = item
+                .pointer("/metadata/name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown-node")
+                .to_string();
+            let allocatable = item
+                .pointer("/status/allocatable")
+                .and_then(|v| v.as_object())
+                .cloned()
+                .unwrap_or_default();
+            let nvidia = allocatable
+                .get("nvidia.com/gpu")
+                .and_then(|v| v.as_str())
+                .map(parse_k8s_gpu_quantity)
+                .unwrap_or(0.0);
+            let amd = allocatable
+                .get("amd.com/gpu")
+                .and_then(|v| v.as_str())
+                .map(parse_k8s_gpu_quantity)
+                .unwrap_or(0.0);
+            rows.insert(
+                node_name.clone(),
+                K8sGpuNodeRow {
+                    node: node_name,
+                    allocatable_gpus: nvidia + amd,
+                    requested_gpus: 0.0,
+                    limits_gpus: 0.0,
+                    request_ratio_pct: 0.0,
+                },
+            );
+        }
+    }
+
+    if let Some(items) = pods_value.get("items").and_then(|v| v.as_array()) {
+        for item in items {
+            let node_name = item
+                .pointer("/spec/nodeName")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string();
+            if node_name.is_empty() {
+                continue;
+            }
+            let Some(row) = rows.get_mut(&node_name) else {
+                continue;
+            };
+            let Some(containers) = item.pointer("/spec/containers").and_then(|v| v.as_array())
+            else {
+                continue;
+            };
+            for container in containers {
+                if let Some(req) = container
+                    .pointer("/resources/requests")
+                    .and_then(|v| v.as_object())
+                {
+                    row.requested_gpus += req
+                        .get("nvidia.com/gpu")
+                        .and_then(|v| v.as_str())
+                        .map(parse_k8s_gpu_quantity)
+                        .unwrap_or(0.0);
+                    row.requested_gpus += req
+                        .get("amd.com/gpu")
+                        .and_then(|v| v.as_str())
+                        .map(parse_k8s_gpu_quantity)
+                        .unwrap_or(0.0);
+                }
+                if let Some(limits) = container
+                    .pointer("/resources/limits")
+                    .and_then(|v| v.as_object())
+                {
+                    row.limits_gpus += limits
+                        .get("nvidia.com/gpu")
+                        .and_then(|v| v.as_str())
+                        .map(parse_k8s_gpu_quantity)
+                        .unwrap_or(0.0);
+                    row.limits_gpus += limits
+                        .get("amd.com/gpu")
+                        .and_then(|v| v.as_str())
+                        .map(parse_k8s_gpu_quantity)
+                        .unwrap_or(0.0);
+                }
+            }
+        }
+    }
+
+    let mut nodes = rows.into_values().collect::<Vec<_>>();
+    nodes.sort_by(|a, b| a.node.cmp(&b.node));
+    for row in &mut nodes {
+        row.request_ratio_pct = if row.allocatable_gpus <= 0.0 {
+            0.0
+        } else {
+            ((row.requested_gpus / row.allocatable_gpus) * 100.0).clamp(0.0, 999.0)
+        };
+    }
+    let totals_alloc = nodes.iter().map(|n| n.allocatable_gpus).sum::<f64>();
+    let totals_req = nodes.iter().map(|n| n.requested_gpus).sum::<f64>();
+    let totals_lim = nodes.iter().map(|n| n.limits_gpus).sum::<f64>();
+    let totals_ratio = if totals_alloc <= 0.0 {
+        0.0
+    } else {
+        ((totals_req / totals_alloc) * 100.0).clamp(0.0, 999.0)
+    };
+    let totals = K8sGpuNodeRow {
+        node: "TOTAL".to_string(),
+        allocatable_gpus: totals_alloc,
+        requested_gpus: totals_req,
+        limits_gpus: totals_lim,
+        request_ratio_pct: totals_ratio,
+    };
+
+    Ok(Json(K8sGpuSummaryResponse {
+        kubeconfig_path: path.to_string_lossy().to_string(),
+        context: query.context,
+        nodes,
+        totals,
+    }))
+}
+
 async fn handle_api_k8s_persistent_volumes(
     Query(query): Query<ApiKubeconfigQuery>,
 ) -> Result<Json<Vec<k8s::K8sPersistentVolumeSnapshot>>, ApiError> {
@@ -5996,6 +6463,60 @@ async fn handle_api_k8s_scan(
         ..Default::default()
     };
     enqueue_scan_job(&state, scan, Some("api:kubernetes".to_string()))
+        .await
+        .map(Json)
+        .map_err(map_scan_enqueue_error)
+}
+
+async fn handle_api_ai_devices() -> Result<Json<Vec<ai_runtime::AiDeviceSnapshot>>, ApiError> {
+    let (_, devices) = probe_ai_devices()
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(devices))
+}
+
+async fn handle_api_ai_findings() -> Result<Json<Vec<WastedResource>>, ApiError> {
+    let (_, devices) = probe_ai_devices()
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    Ok(Json(ai_runtime::analyze_ai_devices(&devices)))
+}
+
+async fn handle_api_ai_recommendations(
+    Query(query): Query<ApiAiRuntimeQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (probe, devices) = probe_ai_devices()
+        .await
+        .map_err(|e| api_error(StatusCode::BAD_REQUEST, e))?;
+    let findings = ai_runtime::analyze_ai_devices(&devices);
+    let include_recommendations = query.include_recommendations.unwrap_or(true);
+    let recommendations = if include_recommendations {
+        ai_runtime::build_ai_recommendations(&devices, &findings)
+    } else {
+        Vec::new()
+    };
+
+    Ok(Json(serde_json::json!({
+        "devices": devices,
+        "findings": findings,
+        "recommendations": recommendations,
+        "probe": probe,
+        "ai_utilization_score": {
+            "score": ai_utilization_score_from_findings(&recommendations),
+            "basis": "100 - weighted finding pressure"
+        }
+    })))
+}
+
+async fn handle_api_ai_scan(
+    State(state): State<LocalApiState>,
+) -> Result<Json<ApiScanAccepted>, ApiError> {
+    let scan = ApiScanRequest {
+        include_ai_runtime: Some(true),
+        selected_accounts: Some(Vec::new()),
+        ..Default::default()
+    };
+    enqueue_scan_job(&state, scan, Some("api:ai-runtime".to_string()))
         .await
         .map(Json)
         .map_err(map_scan_enqueue_error)
@@ -6354,6 +6875,10 @@ async fn start_api_server(
             "/v1/reports/k8s-action-plan",
             get(handle_api_reports_k8s_action_plan),
         )
+        .route(
+            "/v1/reports/ai-governance",
+            get(handle_api_reports_ai_governance),
+        )
         .route("/v1/reports/:report_id", get(handle_api_get_report))
         .route(
             "/v1/reports/:report_id/download",
@@ -6402,6 +6927,7 @@ async fn start_api_server(
         .route("/v1/k8s/contexts", get(handle_api_k8s_contexts))
         .route("/v1/k8s/scans", post(handle_api_k8s_scan))
         .route("/v1/k8s/findings", get(handle_api_k8s_findings))
+        .route("/v1/k8s/gpu-summary", get(handle_api_k8s_gpu_summary))
         .route("/v1/k8s/nodes", get(handle_api_k8s_nodes))
         .route("/v1/k8s/pods", get(handle_api_k8s_pods))
         .route("/v1/k8s/workloads", get(handle_api_k8s_workloads))
@@ -6414,6 +6940,10 @@ async fn start_api_server(
             get(handle_api_k8s_persistent_volume_claims),
         )
         .route("/v1/k8s/services", get(handle_api_k8s_services))
+        .route("/v1/ai/devices", get(handle_api_ai_devices))
+        .route("/v1/ai/scans", post(handle_api_ai_scan))
+        .route("/v1/ai/findings", get(handle_api_ai_findings))
+        .route("/v1/ai/recommendations", get(handle_api_ai_recommendations))
         .route("/v1/accounts", get(handle_api_accounts))
         .route("/v1/cloud-accounts", get(handle_api_list_cloud_accounts))
         .route("/v1/cloud-accounts", post(handle_api_create_cloud_account))
@@ -8102,6 +8632,14 @@ fn is_k8s_finding(resource_type: &str) -> bool {
         || t.contains("kubernetes")
 }
 
+fn ai_utilization_score_from_findings(recommendations: &[ai_runtime::AiRecommendation]) -> i64 {
+    if recommendations.is_empty() {
+        return 100;
+    }
+    let penalty = (recommendations.len() as i64) * 12;
+    (100 - penalty).clamp(25, 100)
+}
+
 fn k8s_offender_key(resource: &WastedResource) -> String {
     let id = resource.id.trim();
     if id.contains('/') {
@@ -9627,6 +10165,7 @@ async fn run_scan(
     include_kubernetes: bool,
     kubeconfig_path: Option<String>,
     kube_context: Option<String>,
+    include_ai_runtime: bool,
 ) -> Result<Vec<WastedResource>, String> {
     let app_state = app_handle.state::<AppState>();
     let conn = db::init_db(&app_state.db_path)
@@ -9853,6 +10392,61 @@ async fn run_scan(
                             .to_string(),
                     },
                 );
+            }
+        }
+    }
+
+    if include_ai_runtime {
+        current_step += 1;
+        attempted_scan_checks += 1;
+        let _ = scan_progress.emit(
+            "scan-progress",
+            ScanProgress {
+                current: current_step.min(total_steps),
+                total: total_steps,
+                message: "AI Runtime: Probing local GPU devices...".to_string(),
+            },
+        );
+        match probe_ai_devices().await {
+            Ok((probe_name, devices)) => {
+                successful_scan_checks += 1;
+                let mut ai_findings = ai_runtime::analyze_ai_devices(&devices);
+                let start = all_results.len();
+                all_results.append(&mut ai_findings);
+                attribute_results_for_account(
+                    &all_results,
+                    start,
+                    "ai-runtime:local",
+                    "AI Runtime (local)",
+                    &mut result_attribution,
+                );
+                log_startup_event(&format!(
+                    "ai runtime scan completed: probe={} devices={} findings={}",
+                    probe_name,
+                    devices.len(),
+                    all_results.len().saturating_sub(start)
+                ));
+            }
+            Err(err) => {
+                failed_scan_checks += 1;
+                let compact = compact_scan_error(&err);
+                push_credential_precheck_failure(
+                    &mut credential_precheck_failures,
+                    "AI Runtime (local GPU)".to_string(),
+                    compact.clone(),
+                );
+                let _ = report_telemetry(
+                    &conn,
+                    "app_scan_error",
+                    serde_json::json!({
+                        "provider": "ai-runtime",
+                        "account": "local",
+                        "res_type": "gpu_runtime",
+                        "api": "nvidia-smi",
+                        "error": compact,
+                    }),
+                )
+                .await;
             }
         }
     }
@@ -15725,6 +16319,9 @@ async fn run_scan(
                 .unwrap_or("active context")
         ));
     }
+    if include_ai_runtime {
+        scanned_accounts_meta.push("AI Runtime (local GPU)".to_string());
+    }
     let scanned_accounts_label = if scanned_accounts_meta.is_empty() {
         "none".to_string()
     } else {
@@ -15812,6 +16409,10 @@ async fn run_scan(
             "included": include_kubernetes,
             "kubeconfig_path": include_kubernetes.then(|| resolve_kubeconfig_path(kubeconfig_path.as_ref()).to_string_lossy().to_string()),
             "context": kube_context
+        },
+        "ai_runtime": {
+            "included": include_ai_runtime,
+            "probe": "nvidia-smi"
         }
     });
 
@@ -15929,6 +16530,7 @@ async fn run_scan(
         .map(|name| format!("aws_local:{}", name))
         .chain(profiles.iter().map(|profile| profile.id.clone()))
         .chain(include_kubernetes.then(|| "kubernetes:local".to_string()))
+        .chain(include_ai_runtime.then(|| "ai-runtime:local".to_string()))
         .collect();
     let account_notification_assignments = load_account_notification_assignments(&conn).await;
     let routing_plan =
@@ -21468,6 +22070,9 @@ mod tests {
         assert!(routes
             .iter()
             .any(|route| route == "GET /v1/reports/k8s-action-plan"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/reports/ai-governance"));
     }
 
     #[test]
@@ -21520,6 +22125,9 @@ mod tests {
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/contexts"));
         assert!(routes.iter().any(|route| route == "POST /v1/k8s/scans"));
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/findings"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/k8s/gpu-summary"));
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/nodes"));
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/pods"));
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/workloads"));
@@ -21530,6 +22138,17 @@ mod tests {
             .iter()
             .any(|route| route == "GET /v1/k8s/persistent-volume-claims"));
         assert!(routes.iter().any(|route| route == "GET /v1/k8s/services"));
+    }
+
+    #[test]
+    fn ai_runtime_capability_routes_include_core_endpoints() {
+        let routes = ai_runtime_capability_routes();
+        assert!(routes.iter().any(|route| route == "GET /v1/ai/devices"));
+        assert!(routes.iter().any(|route| route == "POST /v1/ai/scans"));
+        assert!(routes.iter().any(|route| route == "GET /v1/ai/findings"));
+        assert!(routes
+            .iter()
+            .any(|route| route == "GET /v1/ai/recommendations"));
     }
 
     #[test]
@@ -21548,6 +22167,13 @@ mod tests {
             api_path_for_openapi("/v1/scans/:scan_id/progress"),
             "/v1/scans/{scan_id}/progress"
         );
+    }
+
+    #[test]
+    fn parse_k8s_gpu_quantity_supports_integer_and_millicores_format() {
+        assert!((parse_k8s_gpu_quantity("2") - 2.0).abs() < 0.0001);
+        assert!((parse_k8s_gpu_quantity("500m") - 0.5).abs() < 0.0001);
+        assert!((parse_k8s_gpu_quantity("bad") - 0.0).abs() < 0.0001);
     }
 
     #[test]

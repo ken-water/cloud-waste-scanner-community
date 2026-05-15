@@ -1,3 +1,4 @@
+pub mod ai_runtime;
 pub mod akamai;
 pub mod alibaba;
 pub mod aws;
