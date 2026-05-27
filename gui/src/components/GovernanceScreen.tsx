@@ -104,6 +104,18 @@ interface GovernanceStatsResponse {
   error_taxonomy: GovernanceErrorTaxonomy;
 }
 
+interface OrgUnitLifecycleRow {
+  org_unit_id: string;
+  org_unit_name: string;
+  detected: number;
+  triaged: number;
+  assigned: number;
+  in_progress: number;
+  verified: number;
+  closed: number;
+  total: number;
+}
+
 function formatUtcDateTime(ts: number | null | undefined): string {
   if (!ts) return "-";
   const date = new Date(ts * 1000);
@@ -152,6 +164,7 @@ export function GovernanceScreen() {
   const [error, setError] = useState<string | null>(null);
   const [copyHint, setCopyHint] = useState<string>("");
   const [data, setData] = useState<GovernanceStatsResponse | null>(null);
+  const [orgLifecycleRows, setOrgLifecycleRows] = useState<OrgUnitLifecycleRow[]>([]);
   const { format: formatCurrency } = useCurrency();
 
   const loadGovernance = useCallback(async (silent = false) => {
@@ -161,11 +174,15 @@ export function GovernanceScreen() {
     setError(null);
     try {
       const isDemo = localStorage.getItem("cws_is_demo_mode") === "true";
-      const res = await invoke<GovernanceStatsResponse>("get_governance_stats", {
-        windowDays,
-        demoMode: isDemo,
-      });
+      const [res, orgRows] = await Promise.all([
+        invoke<GovernanceStatsResponse>("get_governance_stats", {
+          windowDays,
+          demoMode: isDemo,
+        }),
+        invoke<OrgUnitLifecycleRow[]>("get_org_unit_lifecycle_summary").catch(() => []),
+      ]);
       setData(res);
+      setOrgLifecycleRows(orgRows || []);
     } catch (err) {
       setError(String(err));
     } finally {
@@ -957,6 +974,43 @@ export function GovernanceScreen() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-800/50 overflow-auto">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <Building2 className="h-5 w-5 text-indigo-500" />
+          Org Lifecycle Summary
+        </h3>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Department-level lifecycle distribution for ownership execution.</p>
+        <table className="mt-4 min-w-full text-sm">
+          <thead className="text-slate-500 uppercase text-xs">
+            <tr>
+              <th className="text-left py-2 pr-4">Org Unit</th>
+              <th className="text-left py-2 pr-4">Detected</th>
+              <th className="text-left py-2 pr-4">Assigned</th>
+              <th className="text-left py-2 pr-4">In Progress</th>
+              <th className="text-left py-2 pr-4">Closed</th>
+              <th className="text-left py-2">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orgLifecycleRows.length === 0 && (
+              <tr>
+                <td colSpan={6} className="py-4 text-slate-400">No org lifecycle data available.</td>
+              </tr>
+            )}
+            {orgLifecycleRows.map((row) => (
+              <tr key={row.org_unit_id} className="border-t border-slate-100 dark:border-slate-800">
+                <td className="py-2 pr-4 font-semibold text-slate-900 dark:text-white">{row.org_unit_name}</td>
+                <td className="py-2 pr-4 text-slate-700 dark:text-slate-300">{row.detected}</td>
+                <td className="py-2 pr-4 text-slate-700 dark:text-slate-300">{row.assigned}</td>
+                <td className="py-2 pr-4 text-slate-700 dark:text-slate-300">{row.in_progress}</td>
+                <td className="py-2 pr-4 text-emerald-700 dark:text-emerald-300">{row.closed}</td>
+                <td className="py-2 text-slate-700 dark:text-slate-300">{row.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
