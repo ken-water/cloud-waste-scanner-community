@@ -550,6 +550,25 @@ struct ApiFindingOwnerUpsertRequest {
 
 #[derive(Debug, Clone, Deserialize, Default)]
 #[serde(default)]
+struct ApiDeactivateOwnerRequest {
+    transfer_to_owner_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ApiOrgUnitLifecycleRow {
+    org_unit_id: String,
+    org_unit_name: String,
+    detected: i64,
+    triaged: i64,
+    assigned: i64,
+    in_progress: i64,
+    verified: i64,
+    closed: i64,
+    total: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
 struct ApiOrgUnitUpsertRequest {
     id: String,
     name: String,
@@ -5166,6 +5185,7 @@ async fn handle_api_upsert_org_unit(
 async fn handle_api_deactivate_finding_owner(
     State(state): State<LocalApiState>,
     AxumPath(owner_id): AxumPath<String>,
+    Json(payload): Json<ApiDeactivateOwnerRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let owner_id = owner_id.trim().to_string();
     if owner_id.is_empty() {
@@ -5175,13 +5195,122 @@ async fn handle_api_deactivate_finding_owner(
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let open_count = db::count_open_findings_for_owner(&conn, &owner_id)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let mut migrated = 0_i64;
+    if open_count > 0 {
+        let to_owner_id = payload
+            .transfer_to_owner_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| {
+                api_error(
+                    StatusCode::CONFLICT,
+                    "owner has open findings; transfer_to_owner_id is required before deactivation",
+                )
+            })?;
+        if to_owner_id == owner_id {
+            return Err(api_error(
+                StatusCode::BAD_REQUEST,
+                "transfer_to_owner_id must be different from owner_id",
+            ));
+        }
+        let owners = db::list_finding_owners(&conn)
+            .await
+            .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+        let target_ok = owners
+            .iter()
+            .any(|owner| owner.id == to_owner_id && owner.is_active);
+        if !target_ok {
+            return Err(api_error(
+                StatusCode::BAD_REQUEST,
+                "transfer_to_owner_id not found or inactive",
+            ));
+        }
+        migrated = db::reassign_open_findings_owner(&conn, &owner_id, &to_owner_id, now_unix_ts())
+            .await
+            .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    }
     db::set_finding_owner_active(&conn, &owner_id, false, now_unix_ts())
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
     Ok(Json(serde_json::json!({
         "id": owner_id,
-        "is_active": false
+        "is_active": false,
+        "migrated_open_findings": migrated
     })))
+}
+
+async fn handle_api_org_unit_lifecycle_summary(
+    State(state): State<LocalApiState>,
+) -> Result<Json<Vec<ApiOrgUnitLifecycleRow>>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let owners = db::list_finding_owners(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let org_units = db::list_org_units(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let lifecycle = db::list_finding_lifecycle(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+
+    let owner_org_map: HashMap<String, String> = owners
+        .iter()
+        .filter_map(|owner| {
+            owner
+                .org_unit_id
+                .as_ref()
+                .map(|org| (owner.id.clone(), org.clone()))
+        })
+        .collect();
+    let org_name_map: HashMap<String, String> = org_units
+        .iter()
+        .map(|unit| (unit.id.clone(), unit.name.clone()))
+        .collect();
+
+    let mut acc: HashMap<String, ApiOrgUnitLifecycleRow> = HashMap::new();
+    for row in lifecycle {
+        let org_id = row
+            .owner_id
+            .as_ref()
+            .and_then(|owner_id| owner_org_map.get(owner_id))
+            .cloned()
+            .unwrap_or_else(|| "unassigned-org".to_string());
+        let org_name = org_name_map
+            .get(&org_id)
+            .cloned()
+            .unwrap_or_else(|| "Unassigned".to_string());
+        let entry = acc.entry(org_id.clone()).or_insert(ApiOrgUnitLifecycleRow {
+            org_unit_id: org_id,
+            org_unit_name: org_name,
+            detected: 0,
+            triaged: 0,
+            assigned: 0,
+            in_progress: 0,
+            verified: 0,
+            closed: 0,
+            total: 0,
+        });
+        entry.total += 1;
+        match row.status.as_str() {
+            "detected" => entry.detected += 1,
+            "triaged" => entry.triaged += 1,
+            "assigned" => entry.assigned += 1,
+            "in_progress" => entry.in_progress += 1,
+            "verified" => entry.verified += 1,
+            "closed" => entry.closed += 1,
+            _ => {}
+        }
+    }
+    let mut rows: Vec<ApiOrgUnitLifecycleRow> = acc.into_values().collect();
+    rows.sort_by(|a, b| b.total.cmp(&a.total).then_with(|| a.org_unit_name.cmp(&b.org_unit_name)));
+    Ok(Json(rows))
 }
 
 async fn handle_api_list_scan_history(
@@ -7211,6 +7340,10 @@ async fn start_api_server(
         .route(
             "/v1/finding-owners/:owner_id/deactivate",
             post(handle_api_deactivate_finding_owner),
+        )
+        .route(
+            "/v1/reports/org-lifecycle-summary",
+            get(handle_api_org_unit_lifecycle_summary),
         )
         .route(
             "/v1/findings/handled",
@@ -21528,6 +21661,110 @@ async fn assign_finding_owner_record(
 }
 
 #[tauri::command]
+async fn deactivate_finding_owner_record(
+    app_handle: tauri::AppHandle,
+    owner_id: String,
+    transfer_to_owner_id: Option<String>,
+) -> Result<serde_json::Value, String> {
+    let owner_id = owner_id.trim().to_string();
+    if owner_id.is_empty() {
+        return Err("owner_id is required".to_string());
+    }
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let open_count = db::count_open_findings_for_owner(&conn, &owner_id).await?;
+    let mut migrated = 0_i64;
+    if open_count > 0 {
+        let to_owner = transfer_to_owner_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| {
+                "owner has open findings; transfer_to_owner_id is required before deactivation"
+                    .to_string()
+            })?;
+        if to_owner == owner_id {
+            return Err("transfer_to_owner_id must be different from owner_id".to_string());
+        }
+        let owners = db::list_finding_owners(&conn).await?;
+        if !owners
+            .iter()
+            .any(|owner| owner.id == to_owner && owner.is_active)
+        {
+            return Err("transfer_to_owner_id not found or inactive".to_string());
+        }
+        migrated = db::reassign_open_findings_owner(&conn, &owner_id, &to_owner, now_unix_ts()).await?;
+    }
+    db::set_finding_owner_active(&conn, &owner_id, false, now_unix_ts()).await?;
+    Ok(serde_json::json!({
+        "id": owner_id,
+        "is_active": false,
+        "migrated_open_findings": migrated
+    }))
+}
+
+#[tauri::command]
+async fn get_org_unit_lifecycle_summary(
+    app_handle: tauri::AppHandle,
+) -> Result<Vec<ApiOrgUnitLifecycleRow>, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let owners = db::list_finding_owners(&conn).await?;
+    let org_units = db::list_org_units(&conn).await?;
+    let lifecycle = db::list_finding_lifecycle(&conn).await?;
+
+    let owner_org_map: HashMap<String, String> = owners
+        .iter()
+        .filter_map(|owner| owner.org_unit_id.as_ref().map(|org| (owner.id.clone(), org.clone())))
+        .collect();
+    let org_name_map: HashMap<String, String> = org_units
+        .iter()
+        .map(|unit| (unit.id.clone(), unit.name.clone()))
+        .collect();
+    let mut acc: HashMap<String, ApiOrgUnitLifecycleRow> = HashMap::new();
+    for row in lifecycle {
+        let org_id = row
+            .owner_id
+            .as_ref()
+            .and_then(|owner_id| owner_org_map.get(owner_id))
+            .cloned()
+            .unwrap_or_else(|| "unassigned-org".to_string());
+        let org_name = org_name_map
+            .get(&org_id)
+            .cloned()
+            .unwrap_or_else(|| "Unassigned".to_string());
+        let entry = acc.entry(org_id.clone()).or_insert(ApiOrgUnitLifecycleRow {
+            org_unit_id: org_id,
+            org_unit_name: org_name,
+            detected: 0,
+            triaged: 0,
+            assigned: 0,
+            in_progress: 0,
+            verified: 0,
+            closed: 0,
+            total: 0,
+        });
+        entry.total += 1;
+        match row.status.as_str() {
+            "detected" => entry.detected += 1,
+            "triaged" => entry.triaged += 1,
+            "assigned" => entry.assigned += 1,
+            "in_progress" => entry.in_progress += 1,
+            "verified" => entry.verified += 1,
+            "closed" => entry.closed += 1,
+            _ => {}
+        }
+    }
+    let mut rows: Vec<ApiOrgUnitLifecycleRow> = acc.into_values().collect();
+    rows.sort_by(|a, b| b.total.cmp(&a.total).then_with(|| a.org_unit_name.cmp(&b.org_unit_name)));
+    Ok(rows)
+}
+
+#[tauri::command]
 async fn get_account_rules_config(
     app_handle: tauri::AppHandle,
     account_id: String,
@@ -22486,6 +22723,8 @@ fn main() {
             list_org_unit_records,
             upsert_org_unit_record,
             assign_finding_owner_record,
+            deactivate_finding_owner_record,
+            get_org_unit_lifecycle_summary,
             get_account_rules_config,
             get_provider_rules_config,
             update_account_rule_config

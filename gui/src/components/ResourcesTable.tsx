@@ -83,6 +83,8 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [ownerForm, setOwnerForm] = useState({ id: "", display_name: "", email: "" });
   const [ownerOrgUnitId, setOwnerOrgUnitId] = useState<string>("");
   const [orgForm, setOrgForm] = useState({ id: "", name: "", parent_id: "" });
+  const [deactivateOwnerId, setDeactivateOwnerId] = useState<string>("");
+  const [transferOwnerId, setTransferOwnerId] = useState<string>("");
   const [assigningId, setAssigningId] = useState<string>("");
   const [assigningOwnerId, setAssigningOwnerId] = useState<string>("");
 
@@ -235,6 +237,26 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       showActionNotice(`Org unit ${id} saved.`);
     } catch (err) {
       showActionNotice(`Failed to save org unit: ${String(err)}`, "error");
+    }
+  };
+
+  const deactivateOwner = async () => {
+    const ownerId = deactivateOwnerId.trim();
+    if (!ownerId) {
+      showActionNotice("Select an owner to deactivate.", "error");
+      return;
+    }
+    try {
+      await invoke("deactivate_finding_owner_record", {
+        ownerId,
+        transferToOwnerId: transferOwnerId.trim() || null,
+      });
+      setDeactivateOwnerId("");
+      setTransferOwnerId("");
+      await fetchLifecycleAndOwners();
+      showActionNotice(`Owner ${ownerId} deactivated.`);
+    } catch (err) {
+      showActionNotice(`Deactivate failed: ${String(err)}`, "error");
     }
   };
 
@@ -836,6 +858,21 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           </select>
         </div>
         <p className="mt-2 text-xs text-slate-500">Use stable owner IDs. If personnel changes, keep ID and update display name/email.</p>
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          <select value={deactivateOwnerId} onChange={(e) => setDeactivateOwnerId(e.target.value)} className="rounded border border-slate-200 bg-white px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-900">
+            <option value="">Select owner to deactivate</option>
+            {owners.filter((o) => o.is_active).map((owner) => (
+              <option key={owner.id} value={owner.id}>{owner.display_name} ({owner.id})</option>
+            ))}
+          </select>
+          <select value={transferOwnerId} onChange={(e) => setTransferOwnerId(e.target.value)} className="rounded border border-slate-200 bg-white px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-900">
+            <option value="">Transfer open findings to (required if open)</option>
+            {owners.filter((o) => o.is_active && o.id !== deactivateOwnerId).map((owner) => (
+              <option key={owner.id} value={owner.id}>{owner.display_name} ({owner.id})</option>
+            ))}
+          </select>
+          <button onClick={deactivateOwner} className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700">Deactivate Owner</button>
+        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
           <MetricCard

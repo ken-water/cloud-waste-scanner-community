@@ -3149,8 +3149,46 @@ pub async fn upsert_org_unit(pool: &Pool<Sqlite>, row: &OrgUnitRecord) -> Result
     .bind(row.updated_at)
     .execute(pool)
     .await
-    .map(|_| ())
-    .map_err(|e| e.to_string())
+        .map(|_| ())
+        .map_err(|e| e.to_string())
+}
+
+pub async fn count_open_findings_for_owner(
+    pool: &Pool<Sqlite>,
+    owner_id: &str,
+) -> Result<i64, String> {
+    let row = sqlx::query(
+        "SELECT COUNT(1) AS cnt
+         FROM finding_lifecycle
+         WHERE owner_id = ?
+           AND status IN ('detected','triaged','assigned','in_progress','verified')",
+    )
+    .bind(owner_id)
+    .fetch_one(pool)
+    .await
+    .map_err(|e| e.to_string())?;
+    Ok(row.get::<i64, _>("cnt"))
+}
+
+pub async fn reassign_open_findings_owner(
+    pool: &Pool<Sqlite>,
+    from_owner_id: &str,
+    to_owner_id: &str,
+    updated_at: i64,
+) -> Result<i64, String> {
+    let result = sqlx::query(
+        "UPDATE finding_lifecycle
+         SET owner_id = ?, updated_at = ?
+         WHERE owner_id = ?
+           AND status IN ('detected','triaged','assigned','in_progress','verified')",
+    )
+    .bind(to_owner_id)
+    .bind(updated_at)
+    .bind(from_owner_id)
+    .execute(pool)
+    .await
+    .map_err(|e| e.to_string())?;
+    Ok(result.rows_affected() as i64)
 }
 
 #[cfg(test)]
