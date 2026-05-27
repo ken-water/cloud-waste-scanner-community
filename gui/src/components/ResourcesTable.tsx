@@ -46,13 +46,6 @@ interface FindingOwner {
   is_active: boolean;
 }
 
-interface OrgUnit {
-  id: string;
-  name: string;
-  parent_id?: string | null;
-  is_active: boolean;
-}
-
 function normalizeWorsenedFlag(value: unknown): boolean {
   return value === true || value === "true" || value === 1 || value === "1";
 }
@@ -79,12 +72,6 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [actionNotice, setActionNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [lifecycleById, setLifecycleById] = useState<Record<string, FindingLifecycle>>({});
   const [owners, setOwners] = useState<FindingOwner[]>([]);
-  const [orgUnits, setOrgUnits] = useState<OrgUnit[]>([]);
-  const [ownerForm, setOwnerForm] = useState({ id: "", display_name: "", email: "" });
-  const [ownerOrgUnitId, setOwnerOrgUnitId] = useState<string>("");
-  const [orgForm, setOrgForm] = useState({ id: "", name: "", parent_id: "" });
-  const [deactivateOwnerId, setDeactivateOwnerId] = useState<string>("");
-  const [transferOwnerId, setTransferOwnerId] = useState<string>("");
   const [assigningId, setAssigningId] = useState<string>("");
   const [assigningOwnerId, setAssigningOwnerId] = useState<string>("");
 
@@ -149,10 +136,9 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
 
   async function fetchLifecycleAndOwners() {
     try {
-      const [lifecycleRows, ownerRows, orgRows] = await Promise.all([
+      const [lifecycleRows, ownerRows] = await Promise.all([
         invoke<FindingLifecycle[]>("list_finding_lifecycle_records"),
         invoke<FindingOwner[]>("list_finding_owner_records"),
-        invoke<OrgUnit[]>("list_org_unit_records"),
       ]);
       const map: Record<string, FindingLifecycle> = {};
       for (const row of (lifecycleRows || [])) {
@@ -160,7 +146,6 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       }
       setLifecycleById(map);
       setOwners(ownerRows || []);
-      setOrgUnits(orgRows || []);
     } catch (err) {
       console.warn("load lifecycle/owners failed", err);
     }
@@ -189,76 +174,6 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
     }
   };
 
-  const createOwner = async () => {
-    const id = ownerForm.id.trim();
-    const display_name = ownerForm.display_name.trim();
-    const org_unit_id = ownerOrgUnitId.trim();
-    if (!id || !display_name) {
-      showActionNotice("Owner id and display name are required.", "error");
-      return;
-    }
-    if (!org_unit_id) {
-      showActionNotice("Owner must belong to an org unit.", "error");
-      return;
-    }
-    try {
-      await invoke("upsert_finding_owner_record", {
-        id,
-        displayName: display_name,
-        email: ownerForm.email.trim() || null,
-        orgUnitId: org_unit_id,
-        isActive: true,
-      });
-      setOwnerForm({ id: "", display_name: "", email: "" });
-      setOwnerOrgUnitId("");
-      await fetchLifecycleAndOwners();
-      showActionNotice(`Owner ${id} saved.`);
-    } catch (err) {
-      showActionNotice(`Failed to save owner: ${String(err)}`, "error");
-    }
-  };
-
-  const createOrgUnit = async () => {
-    const id = orgForm.id.trim();
-    const name = orgForm.name.trim();
-    if (!id || !name) {
-      showActionNotice("Org unit id and name are required.", "error");
-      return;
-    }
-    try {
-      await invoke("upsert_org_unit_record", {
-        id,
-        name,
-        parentId: orgForm.parent_id.trim() || null,
-        isActive: true,
-      });
-      setOrgForm({ id: "", name: "", parent_id: "" });
-      await fetchLifecycleAndOwners();
-      showActionNotice(`Org unit ${id} saved.`);
-    } catch (err) {
-      showActionNotice(`Failed to save org unit: ${String(err)}`, "error");
-    }
-  };
-
-  const deactivateOwner = async () => {
-    const ownerId = deactivateOwnerId.trim();
-    if (!ownerId) {
-      showActionNotice("Select an owner to deactivate.", "error");
-      return;
-    }
-    try {
-      await invoke("deactivate_finding_owner_record", {
-        ownerId,
-        transferToOwnerId: transferOwnerId.trim() || null,
-      });
-      setDeactivateOwnerId("");
-      setTransferOwnerId("");
-      await fetchLifecycleAndOwners();
-      showActionNotice(`Owner ${ownerId} deactivated.`);
-    } catch (err) {
-      showActionNotice(`Deactivate failed: ${String(err)}`, "error");
-    }
-  };
 
   const toggleSelect = (id: string) => {
       const resource = resources.find(r => r.id === id);
@@ -827,52 +742,6 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               value={<span className="text-emerald-600 dark:text-emerald-400">{format(filteredSavings)}</span>}
               hint={`Filtered CO2e: ${formatCo2eKg(filteredCo2e.totalMonthlyCo2eKg)}/mo`}
           />
-      </div>
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Org Units</p>
-        <div className="mt-3 grid gap-2 md:grid-cols-4">
-          <input value={orgForm.id} onChange={(e) => setOrgForm({ ...orgForm, id: e.target.value })} placeholder="org id (e.g. platform)" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-          <input value={orgForm.name} onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })} placeholder="org name" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-          <input value={orgForm.parent_id} onChange={(e) => setOrgForm({ ...orgForm, parent_id: e.target.value })} placeholder="parent org id (optional)" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-          <button onClick={createOrgUnit} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700">Save Org Unit</button>
-        </div>
-      </div>
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Owner Directory</p>
-        <div className="mt-3 grid gap-2 md:grid-cols-4">
-          <input value={ownerForm.id} onChange={(e) => setOwnerForm({ ...ownerForm, id: e.target.value })} placeholder="owner id (e.g. team-ops)" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-          <input value={ownerForm.display_name} onChange={(e) => setOwnerForm({ ...ownerForm, display_name: e.target.value })} placeholder="display name" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-          <input value={ownerForm.email} onChange={(e) => setOwnerForm({ ...ownerForm, email: e.target.value })} placeholder="email (optional)" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-          <button onClick={createOwner} className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Save Owner</button>
-        </div>
-        <div className="mt-2">
-          <select
-            value={ownerOrgUnitId}
-            onChange={(e) => setOwnerOrgUnitId(e.target.value)}
-            className="rounded border border-slate-200 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-900"
-          >
-            <option value="">Select org unit for owner (required by policy)</option>
-            {orgUnits.filter((u) => u.is_active).map((unit) => (
-              <option key={unit.id} value={unit.id}>{unit.name} ({unit.id})</option>
-            ))}
-          </select>
-        </div>
-        <p className="mt-2 text-xs text-slate-500">Use stable owner IDs. If personnel changes, keep ID and update display name/email.</p>
-        <div className="mt-3 grid gap-2 md:grid-cols-3">
-          <select value={deactivateOwnerId} onChange={(e) => setDeactivateOwnerId(e.target.value)} className="rounded border border-slate-200 bg-white px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-900">
-            <option value="">Select owner to deactivate</option>
-            {owners.filter((o) => o.is_active).map((owner) => (
-              <option key={owner.id} value={owner.id}>{owner.display_name} ({owner.id})</option>
-            ))}
-          </select>
-          <select value={transferOwnerId} onChange={(e) => setTransferOwnerId(e.target.value)} className="rounded border border-slate-200 bg-white px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-900">
-            <option value="">Transfer open findings to (required if open)</option>
-            {owners.filter((o) => o.is_active && o.id !== deactivateOwnerId).map((owner) => (
-              <option key={owner.id} value={owner.id}>{owner.display_name} ({owner.id})</option>
-            ))}
-          </select>
-          <button onClick={deactivateOwner} className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700">Deactivate Owner</button>
-        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
           <MetricCard

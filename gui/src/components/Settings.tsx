@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, type ChangeEvent } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
-import { Cloud, Plus, Trash2, Settings as SettingsIcon, Monitor, Moon, Sun, Pencil, Hash, Save, X, Loader2, CheckCircle, Network, AlertTriangle, Bell, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { Cloud, Plus, Trash2, Settings as SettingsIcon, Monitor, Moon, Sun, Pencil, Hash, Save, X, Loader2, CheckCircle, Network, AlertTriangle, Bell, RefreshCw, Eye, EyeOff, Building2, Users } from "lucide-react";
 import { CustomSelect } from "./CustomSelect";
 import { CLOUD_PROVIDER_OPTIONS, resolveProviderValue } from "../constants/cloudProviders";
 import { PageHeader } from "./layout/PageHeader";
@@ -106,6 +106,7 @@ interface ConfirmDialogState {
 }
 
 type SettingsTab = "clouds" | "appearance" | "notifications" | "proxies" | "network";
+type ExtendedSettingsTab = SettingsTab | "org";
 
 interface SettingsProps {
   initialTab?: SettingsTab;
@@ -124,7 +125,13 @@ export function Settings({
   const PROXY_CHOICE_DIRECT = "__direct__";
   const ACCOUNT_NOTIFICATION_CHOICE_ALL = "__all_channels__";
 
-  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
+  const [activeTab, setActiveTab] = useState<ExtendedSettingsTab>(initialTab);
+  const [orgUnits, setOrgUnits] = useState<Array<{ id: string; name: string; parent_id?: string | null; is_active: boolean }>>([]);
+  const [owners, setOwners] = useState<Array<{ id: string; display_name: string; email?: string | null; org_unit_id?: string | null; is_active: boolean }>>([]);
+  const [orgForm, setOrgForm] = useState({ id: "", name: "", parent_id: "" });
+  const [ownerForm, setOwnerForm] = useState({ id: "", display_name: "", email: "", org_unit_id: "" });
+  const [deactivateOwnerId, setDeactivateOwnerId] = useState("");
+  const [transferOwnerId, setTransferOwnerId] = useState("");
   const proxyProtocolOptions = [
       { value: "socks5h", label: "SOCKS5H (Recommended)" },
       { value: "socks5", label: "SOCKS5 (Local DNS)" },
@@ -347,6 +354,10 @@ export function Settings({
       setNotificationChannels(channels);
       const proxies = await invoke<ProxyProfile[]>("list_proxy_profiles");
       setProxyProfiles(proxies);
+      const orgRows = await invoke<Array<{ id: string; name: string; parent_id?: string | null; is_active: boolean }>>("list_org_unit_records");
+      setOrgUnits(orgRows || []);
+      const ownerRows = await invoke<Array<{ id: string; display_name: string; email?: string | null; org_unit_id?: string | null; is_active: boolean }>>("list_finding_owner_records");
+      setOwners(ownerRows || []);
       const accountProxyRaw = await invoke<string>("get_setting", { key: "account_proxy_assignments" });
       if (accountProxyRaw?.trim()) {
           try {
@@ -427,6 +438,72 @@ export function Settings({
       if (apiToken) setApiAccessToken(apiToken);
     } catch (e) { console.error(e); }
   }
+
+  const saveOrgUnit = async () => {
+      const id = orgForm.id.trim();
+      const name = orgForm.name.trim();
+      if (!id || !name) {
+          showToast("Org unit id and name are required.", "error");
+          return;
+      }
+      try {
+          await invoke("upsert_org_unit_record", {
+              id,
+              name,
+              parentId: orgForm.parent_id.trim() || null,
+              isActive: true,
+          });
+          setOrgForm({ id: "", name: "", parent_id: "" });
+          await loadData();
+          showToast(`Org unit ${id} saved.`);
+      } catch (e) {
+          showToast(`Failed to save org unit: ${normalizeErrorMessage(e)}`, "error");
+      }
+  };
+
+  const saveOwner = async () => {
+      const id = ownerForm.id.trim();
+      const displayName = ownerForm.display_name.trim();
+      const orgUnitId = ownerForm.org_unit_id.trim();
+      if (!id || !displayName || !orgUnitId) {
+          showToast("Owner id, display name, and org unit are required.", "error");
+          return;
+      }
+      try {
+          await invoke("upsert_finding_owner_record", {
+              id,
+              displayName,
+              email: ownerForm.email.trim() || null,
+              orgUnitId,
+              isActive: true,
+          });
+          setOwnerForm({ id: "", display_name: "", email: "", org_unit_id: "" });
+          await loadData();
+          showToast(`Owner ${id} saved.`);
+      } catch (e) {
+          showToast(`Failed to save owner: ${normalizeErrorMessage(e)}`, "error");
+      }
+  };
+
+  const deactivateOwner = async () => {
+      const ownerId = deactivateOwnerId.trim();
+      if (!ownerId) {
+          showToast("Select owner to deactivate.", "error");
+          return;
+      }
+      try {
+          await invoke("deactivate_finding_owner_record", {
+              ownerId,
+              transferToOwnerId: transferOwnerId.trim() || null,
+          });
+          setDeactivateOwnerId("");
+          setTransferOwnerId("");
+          await loadData();
+          showToast(`Owner ${ownerId} deactivated.`);
+      } catch (e) {
+          showToast(`Deactivate failed: ${normalizeErrorMessage(e)}`, "error");
+      }
+  };
 
   function applyTheme(t: string) {
       if (t === 'dark') {
@@ -2604,6 +2681,9 @@ export function Settings({
           <button onClick={() => setActiveTab("appearance")} className={`pb-3 px-2 text-lg font-medium border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === "appearance" ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>
             <Monitor className="w-5 h-5" /> Preferences
           </button>
+          <button onClick={() => setActiveTab("org")} className={`pb-3 px-2 text-lg font-medium border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === "org" ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>
+            <Building2 className="w-5 h-5" /> Org & Owners
+          </button>
         </div>
         )}
 
@@ -3456,6 +3536,57 @@ export function Settings({
                             {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
                             {saving ? "Apply Settings" : "Apply Settings"}
                         </button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {activeTab === "org" && (
+            <div className="space-y-6">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Building2 className="w-5 h-5" /> Org Units
+                    </h2>
+                    <div className="mt-4 grid gap-3 md:grid-cols-4">
+                        <input value={orgForm.id} onChange={(e) => setOrgForm({ ...orgForm, id: e.target.value })} placeholder="org id" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
+                        <input value={orgForm.name} onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })} placeholder="org name" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
+                        <input value={orgForm.parent_id} onChange={(e) => setOrgForm({ ...orgForm, parent_id: e.target.value })} placeholder="parent org id (optional)" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
+                        <button onClick={saveOrgUnit} className="bg-slate-900 hover:bg-slate-700 text-white px-4 py-3 rounded-lg font-semibold">Save Org Unit</button>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Users className="w-5 h-5" /> Owner Directory
+                    </h2>
+                    <div className="mt-4 grid gap-3 md:grid-cols-4">
+                        <input value={ownerForm.id} onChange={(e) => setOwnerForm({ ...ownerForm, id: e.target.value })} placeholder="owner id" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
+                        <input value={ownerForm.display_name} onChange={(e) => setOwnerForm({ ...ownerForm, display_name: e.target.value })} placeholder="display name" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
+                        <input value={ownerForm.email} onChange={(e) => setOwnerForm({ ...ownerForm, email: e.target.value })} placeholder="email (optional)" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
+                        <select value={ownerForm.org_unit_id} onChange={(e) => setOwnerForm({ ...ownerForm, org_unit_id: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                            <option value="">Select org unit</option>
+                            {orgUnits.filter((u) => u.is_active).map((u) => (
+                                <option key={u.id} value={u.id}>{u.name} ({u.id})</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="mt-3">
+                        <button onClick={saveOwner} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold">Save Owner</button>
+                    </div>
+                    <div className="mt-5 grid gap-3 md:grid-cols-3">
+                        <select value={deactivateOwnerId} onChange={(e) => setDeactivateOwnerId(e.target.value)} className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                            <option value="">Select owner to deactivate</option>
+                            {owners.filter((o) => o.is_active).map((owner) => (
+                                <option key={owner.id} value={owner.id}>{owner.display_name} ({owner.id})</option>
+                            ))}
+                        </select>
+                        <select value={transferOwnerId} onChange={(e) => setTransferOwnerId(e.target.value)} className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                            <option value="">Transfer open findings to (required if open)</option>
+                            {owners.filter((o) => o.is_active && o.id !== deactivateOwnerId).map((owner) => (
+                                <option key={owner.id} value={owner.id}>{owner.display_name} ({owner.id})</option>
+                            ))}
+                        </select>
+                        <button onClick={deactivateOwner} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg font-semibold">Deactivate Owner</button>
                     </div>
                 </div>
             </div>
