@@ -99,6 +99,23 @@ pub struct HandledResource {
 }
 
 #[derive(Debug, Clone, Serialize, sqlx::FromRow)]
+pub struct FindingLifecycleRecord {
+    pub resource_id: String,
+    pub provider: String,
+    pub status: String,
+    pub owner_id: Option<String>,
+    pub due_at: Option<i64>,
+    pub assigned_at: Option<i64>,
+    pub in_progress_at: Option<i64>,
+    pub verified_at: Option<i64>,
+    pub closed_at: Option<i64>,
+    pub reopen_reason: Option<String>,
+    pub evidence_note: Option<String>,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+#[derive(Debug, Clone, Serialize, sqlx::FromRow)]
 pub struct MonitorMetric {
     pub id: String,
     pub provider: String,
@@ -263,6 +280,21 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
             provider TEXT NOT NULL,
             handled_at INTEGER NOT NULL,
             note TEXT
+        )",
+        "CREATE TABLE IF NOT EXISTS finding_lifecycle (
+            resource_id TEXT PRIMARY KEY,
+            provider TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'detected',
+            owner_id TEXT,
+            due_at INTEGER,
+            assigned_at INTEGER,
+            in_progress_at INTEGER,
+            verified_at INTEGER,
+            closed_at INTEGER,
+            reopen_reason TEXT,
+            evidence_note TEXT,
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NOT NULL
         )",
         // NEW TABLES for Data-Driven Rules
         "CREATE TABLE IF NOT EXISTS scan_rule_templates (
@@ -2951,6 +2983,60 @@ pub async fn get_handled_resources(pool: &Pool<Sqlite>) -> Result<Vec<String>, S
         .map_err(|e| e.to_string())?;
     let ids = rows.iter().map(|r| r.get("resource_id")).collect();
     Ok(ids)
+}
+
+pub async fn list_finding_lifecycle(pool: &Pool<Sqlite>) -> Result<Vec<FindingLifecycleRecord>, String> {
+    sqlx::query_as::<_, FindingLifecycleRecord>(
+        "SELECT resource_id, provider, status, owner_id, due_at, assigned_at, in_progress_at, verified_at, closed_at, reopen_reason, evidence_note, created_at, updated_at
+         FROM finding_lifecycle
+         ORDER BY updated_at DESC, resource_id ASC",
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+pub async fn get_finding_lifecycle(
+    pool: &Pool<Sqlite>,
+    resource_id: &str,
+) -> Result<Option<FindingLifecycleRecord>, String> {
+    sqlx::query_as::<_, FindingLifecycleRecord>(
+        "SELECT resource_id, provider, status, owner_id, due_at, assigned_at, in_progress_at, verified_at, closed_at, reopen_reason, evidence_note, created_at, updated_at
+         FROM finding_lifecycle
+         WHERE resource_id = ?",
+    )
+    .bind(resource_id)
+    .fetch_optional(pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+pub async fn upsert_finding_lifecycle(
+    pool: &Pool<Sqlite>,
+    row: &FindingLifecycleRecord,
+) -> Result<(), String> {
+    sqlx::query(
+        "INSERT OR REPLACE INTO finding_lifecycle (
+            resource_id, provider, status, owner_id, due_at, assigned_at, in_progress_at, verified_at, closed_at, reopen_reason, evidence_note, created_at, updated_at
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    )
+    .bind(&row.resource_id)
+    .bind(&row.provider)
+    .bind(&row.status)
+    .bind(&row.owner_id)
+    .bind(row.due_at)
+    .bind(row.assigned_at)
+    .bind(row.in_progress_at)
+    .bind(row.verified_at)
+    .bind(row.closed_at)
+    .bind(&row.reopen_reason)
+    .bind(&row.evidence_note)
+    .bind(row.created_at)
+    .bind(row.updated_at)
+    .execute(pool)
+    .await
+    .map(|_| ())
+    .map_err(|e| e.to_string())
 }
 
 #[cfg(test)]

@@ -529,6 +529,28 @@ struct ApiMarkHandledRequest {
 
 #[derive(Debug, Clone, Deserialize, Default)]
 #[serde(default)]
+struct ApiFindingLifecycleUpdateRequest {
+    provider: Option<String>,
+    status: String,
+    owner_id: Option<String>,
+    due_at: Option<i64>,
+    reopen_reason: Option<String>,
+    evidence_note: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ApiFindingLifecycleSummary {
+    detected: i64,
+    triaged: i64,
+    assigned: i64,
+    in_progress: i64,
+    verified: i64,
+    closed: i64,
+    total: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
 struct ApiGenerateReportRequest {
     format: Option<String>,
     scan_history_id: Option<i64>,
@@ -4834,6 +4856,166 @@ async fn handle_api_mark_finding_handled(
     })))
 }
 
+fn normalize_lifecycle_status(raw: &str) -> Option<&'static str> {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "detected" => Some("detected"),
+        "triaged" => Some("triaged"),
+        "assigned" => Some("assigned"),
+        "in_progress" => Some("in_progress"),
+        "verified" => Some("verified"),
+        "closed" => Some("closed"),
+        _ => None,
+    }
+}
+
+fn is_valid_transition(current: &str, next: &str) -> bool {
+    match current {
+        "detected" => matches!(next, "triaged" | "assigned"),
+        "triaged" => matches!(next, "assigned" | "detected"),
+        "assigned" => matches!(next, "in_progress" | "triaged"),
+        "in_progress" => matches!(next, "verified" | "assigned"),
+        "verified" => matches!(next, "closed" | "in_progress"),
+        "closed" => matches!(next, "triaged" | "assigned"),
+        _ => false,
+    }
+}
+
+async fn handle_api_list_finding_lifecycle(
+    State(state): State<LocalApiState>,
+) -> Result<Json<Vec<db::FindingLifecycleRecord>>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let rows = db::list_finding_lifecycle(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(rows))
+}
+
+async fn handle_api_get_finding_lifecycle_summary(
+    State(state): State<LocalApiState>,
+) -> Result<Json<ApiFindingLifecycleSummary>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let rows = db::list_finding_lifecycle(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let mut summary = ApiFindingLifecycleSummary {
+        detected: 0,
+        triaged: 0,
+        assigned: 0,
+        in_progress: 0,
+        verified: 0,
+        closed: 0,
+        total: rows.len() as i64,
+    };
+    for row in rows {
+        match row.status.as_str() {
+            "detected" => summary.detected += 1,
+            "triaged" => summary.triaged += 1,
+            "assigned" => summary.assigned += 1,
+            "in_progress" => summary.in_progress += 1,
+            "verified" => summary.verified += 1,
+            "closed" => summary.closed += 1,
+            _ => {}
+        }
+    }
+    Ok(Json(summary))
+}
+
+async fn handle_api_update_finding_lifecycle(
+    State(state): State<LocalApiState>,
+    AxumPath(resource_id): AxumPath<String>,
+    Json(payload): Json<ApiFindingLifecycleUpdateRequest>,
+) -> Result<Json<db::FindingLifecycleRecord>, ApiError> {
+    if resource_id.trim().is_empty() {
+        return Err(api_error(
+            StatusCode::BAD_REQUEST,
+            "resource_id cannot be empty.",
+        ));
+    }
+    let next_status = normalize_lifecycle_status(&payload.status).ok_or_else(|| {
+        api_error(
+            StatusCode::BAD_REQUEST,
+            "status must be one of: detected, triaged, assigned, in_progress, verified, closed",
+        )
+    })?;
+
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let now = now_unix_ts();
+    let existing = db::get_finding_lifecycle(&conn, &resource_id)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let mut row = existing.unwrap_or(db::FindingLifecycleRecord {
+        resource_id: resource_id.clone(),
+        provider: payload
+            .provider
+            .clone()
+            .unwrap_or_else(|| "unknown".to_string()),
+        status: "detected".to_string(),
+        owner_id: None,
+        due_at: None,
+        assigned_at: None,
+        in_progress_at: None,
+        verified_at: None,
+        closed_at: None,
+        reopen_reason: None,
+        evidence_note: None,
+        created_at: now,
+        updated_at: now,
+    });
+
+    if !is_valid_transition(&row.status, next_status) && row.status != next_status {
+        return Err(api_error(
+            StatusCode::CONFLICT,
+            format!("invalid lifecycle transition: {} -> {}", row.status, next_status),
+        ));
+    }
+
+    row.status = next_status.to_string();
+    row.provider = payload
+        .provider
+        .as_deref()
+        .map(|value| value.trim().to_string())
+        .filter(|value| !value.is_empty())
+        .unwrap_or_else(|| row.provider.clone());
+    if payload.owner_id.is_some() {
+        row.owner_id = payload
+            .owner_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty());
+    }
+    if payload.due_at.is_some() {
+        row.due_at = payload.due_at;
+    }
+    if payload.reopen_reason.is_some() {
+        row.reopen_reason = payload.reopen_reason;
+    }
+    if payload.evidence_note.is_some() {
+        row.evidence_note = payload.evidence_note;
+    }
+    match row.status.as_str() {
+        "assigned" if row.assigned_at.is_none() => row.assigned_at = Some(now),
+        "in_progress" if row.in_progress_at.is_none() => row.in_progress_at = Some(now),
+        "verified" if row.verified_at.is_none() => row.verified_at = Some(now),
+        "closed" if row.closed_at.is_none() => row.closed_at = Some(now),
+        _ => {}
+    }
+    row.updated_at = now;
+
+    db::upsert_finding_lifecycle(&conn, &row)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(row))
+}
+
 async fn handle_api_list_scan_history(
     State(state): State<LocalApiState>,
     Query(query): Query<ApiHistoryQuery>,
@@ -6842,6 +7024,18 @@ async fn start_api_server(
         .route("/v1/scans/:scan_id/progress", get(handle_api_scan_progress))
         .route("/v1/scans/:scan_id/cancel", post(handle_api_cancel_scan))
         .route("/v1/findings", get(handle_api_list_findings))
+        .route(
+            "/v1/findings/lifecycle",
+            get(handle_api_list_finding_lifecycle),
+        )
+        .route(
+            "/v1/findings/lifecycle/summary",
+            get(handle_api_get_finding_lifecycle_summary),
+        )
+        .route(
+            "/v1/findings/:resource_id/lifecycle",
+            patch(handle_api_update_finding_lifecycle),
+        )
         .route(
             "/v1/findings/handled",
             get(handle_api_list_handled_findings),

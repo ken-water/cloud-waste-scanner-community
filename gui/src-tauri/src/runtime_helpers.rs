@@ -669,6 +669,7 @@ mod tests {
             demo_mode: Some(false),
             report_emails: Some(vec!["ops@example.com".to_string()]),
             include_kubernetes: Some(true),
+            include_ai_runtime: Some(false),
             kubeconfig_path: Some("/home/ken/.kube/config".to_string()),
             kube_context: Some("prod".to_string()),
         };
