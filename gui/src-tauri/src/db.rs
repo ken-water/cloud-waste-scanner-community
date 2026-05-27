@@ -120,6 +120,17 @@ pub struct FindingOwnerRecord {
     pub id: String,
     pub display_name: String,
     pub email: Option<String>,
+    pub org_unit_id: Option<String>,
+    pub is_active: bool,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+#[derive(Debug, Clone, Serialize, sqlx::FromRow)]
+pub struct OrgUnitRecord {
+    pub id: String,
+    pub name: String,
+    pub parent_id: Option<String>,
     pub is_active: bool,
     pub created_at: i64,
     pub updated_at: i64,
@@ -310,6 +321,15 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
             id TEXT PRIMARY KEY,
             display_name TEXT NOT NULL,
             email TEXT,
+            org_unit_id TEXT,
+            is_active BOOLEAN NOT NULL DEFAULT 1,
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NOT NULL
+        )",
+        "CREATE TABLE IF NOT EXISTS org_units (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            parent_id TEXT,
             is_active BOOLEAN NOT NULL DEFAULT 1,
             created_at INTEGER NOT NULL,
             updated_at INTEGER NOT NULL
@@ -383,6 +403,9 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
         .execute(&pool)
         .await;
     let _ = sqlx::query("ALTER TABLE resource_metrics ADD COLUMN account_id TEXT")
+        .execute(&pool)
+        .await;
+    let _ = sqlx::query("ALTER TABLE finding_owners ADD COLUMN org_unit_id TEXT")
         .execute(&pool)
         .await;
 
@@ -3059,7 +3082,7 @@ pub async fn upsert_finding_lifecycle(
 
 pub async fn list_finding_owners(pool: &Pool<Sqlite>) -> Result<Vec<FindingOwnerRecord>, String> {
     sqlx::query_as::<_, FindingOwnerRecord>(
-        "SELECT id, display_name, email, is_active, created_at, updated_at
+        "SELECT id, display_name, email, org_unit_id, is_active, created_at, updated_at
          FROM finding_owners
          ORDER BY is_active DESC, display_name ASC",
     )
@@ -3070,12 +3093,13 @@ pub async fn list_finding_owners(pool: &Pool<Sqlite>) -> Result<Vec<FindingOwner
 
 pub async fn upsert_finding_owner(pool: &Pool<Sqlite>, row: &FindingOwnerRecord) -> Result<(), String> {
     sqlx::query(
-        "INSERT OR REPLACE INTO finding_owners (id, display_name, email, is_active, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT OR REPLACE INTO finding_owners (id, display_name, email, org_unit_id, is_active, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&row.id)
     .bind(&row.display_name)
     .bind(&row.email)
+    .bind(&row.org_unit_id)
     .bind(row.is_active)
     .bind(row.created_at)
     .bind(row.updated_at)
@@ -3099,6 +3123,34 @@ pub async fn set_finding_owner_active(
         .await
         .map(|_| ())
         .map_err(|e| e.to_string())
+}
+
+pub async fn list_org_units(pool: &Pool<Sqlite>) -> Result<Vec<OrgUnitRecord>, String> {
+    sqlx::query_as::<_, OrgUnitRecord>(
+        "SELECT id, name, parent_id, is_active, created_at, updated_at
+         FROM org_units
+         ORDER BY is_active DESC, name ASC",
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+pub async fn upsert_org_unit(pool: &Pool<Sqlite>, row: &OrgUnitRecord) -> Result<(), String> {
+    sqlx::query(
+        "INSERT OR REPLACE INTO org_units (id, name, parent_id, is_active, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?)",
+    )
+    .bind(&row.id)
+    .bind(&row.name)
+    .bind(&row.parent_id)
+    .bind(row.is_active)
+    .bind(row.created_at)
+    .bind(row.updated_at)
+    .execute(pool)
+    .await
+    .map(|_| ())
+    .map_err(|e| e.to_string())
 }
 
 #[cfg(test)]

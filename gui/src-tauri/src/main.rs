@@ -544,6 +544,16 @@ struct ApiFindingOwnerUpsertRequest {
     id: String,
     display_name: String,
     email: Option<String>,
+    org_unit_id: Option<String>,
+    is_active: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiOrgUnitUpsertRequest {
+    id: String,
+    name: String,
+    parent_id: Option<String>,
     is_active: Option<bool>,
 }
 
@@ -5084,6 +5094,11 @@ async fn handle_api_upsert_finding_owner(
             .as_deref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
+        org_unit_id: payload
+            .org_unit_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty()),
         is_active: payload
             .is_active
             .unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
@@ -5091,6 +5106,58 @@ async fn handle_api_upsert_finding_owner(
         updated_at: now,
     };
     db::upsert_finding_owner(&conn, &row)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(row))
+}
+
+async fn handle_api_list_org_units(
+    State(state): State<LocalApiState>,
+) -> Result<Json<Vec<db::OrgUnitRecord>>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let rows = db::list_org_units(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(rows))
+}
+
+async fn handle_api_upsert_org_unit(
+    State(state): State<LocalApiState>,
+    Json(payload): Json<ApiOrgUnitUpsertRequest>,
+) -> Result<Json<db::OrgUnitRecord>, ApiError> {
+    let id = payload.id.trim().to_string();
+    let name = payload.name.trim().to_string();
+    if id.is_empty() || name.is_empty() {
+        return Err(api_error(StatusCode::BAD_REQUEST, "id and name are required."));
+    }
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let now = now_unix_ts();
+    let existing = db::list_org_units(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?
+        .into_iter()
+        .find(|item| item.id == id);
+    let row = db::OrgUnitRecord {
+        id,
+        name,
+        parent_id: payload
+            .parent_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty()),
+        is_active: payload
+            .is_active
+            .unwrap_or_else(|| existing.as_ref().map(|item| item.is_active).unwrap_or(true)),
+        created_at: existing.as_ref().map(|item| item.created_at).unwrap_or(now),
+        updated_at: now,
+    };
+    db::upsert_org_unit(&conn, &row)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
     Ok(Json(row))
@@ -7139,6 +7206,8 @@ async fn start_api_server(
         )
         .route("/v1/finding-owners", get(handle_api_list_finding_owners))
         .route("/v1/finding-owners", post(handle_api_upsert_finding_owner))
+        .route("/v1/org-units", get(handle_api_list_org_units))
+        .route("/v1/org-units", post(handle_api_upsert_org_unit))
         .route(
             "/v1/finding-owners/:owner_id/deactivate",
             post(handle_api_deactivate_finding_owner),
@@ -21315,6 +21384,7 @@ async fn upsert_finding_owner_record(
     id: String,
     display_name: String,
     email: Option<String>,
+    org_unit_id: Option<String>,
     is_active: Option<bool>,
 ) -> Result<db::FindingOwnerRecord, String> {
     let owner_id = id.trim().to_string();
@@ -21338,6 +21408,10 @@ async fn upsert_finding_owner_record(
             .as_deref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
+        org_unit_id: org_unit_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty()),
         is_active: is_active.unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
         created_at: existing.as_ref().map(|owner| owner.created_at).unwrap_or(now),
         updated_at: now,
@@ -21355,6 +21429,54 @@ async fn list_finding_owner_records(
         .await
         .map_err(|e| e.to_string())?;
     db::list_finding_owners(&conn).await
+}
+
+#[tauri::command]
+async fn upsert_org_unit_record(
+    app_handle: tauri::AppHandle,
+    id: String,
+    name: String,
+    parent_id: Option<String>,
+    is_active: Option<bool>,
+) -> Result<db::OrgUnitRecord, String> {
+    let id = id.trim().to_string();
+    let name = name.trim().to_string();
+    if id.is_empty() || name.is_empty() {
+        return Err("id and name are required".to_string());
+    }
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let now = now_unix_ts();
+    let existing = db::list_org_units(&conn)
+        .await?
+        .into_iter()
+        .find(|item| item.id == id);
+    let row = db::OrgUnitRecord {
+        id,
+        name,
+        parent_id: parent_id
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty()),
+        is_active: is_active.unwrap_or_else(|| existing.as_ref().map(|item| item.is_active).unwrap_or(true)),
+        created_at: existing.as_ref().map(|item| item.created_at).unwrap_or(now),
+        updated_at: now,
+    };
+    db::upsert_org_unit(&conn, &row).await?;
+    Ok(row)
+}
+
+#[tauri::command]
+async fn list_org_unit_records(
+    app_handle: tauri::AppHandle,
+) -> Result<Vec<db::OrgUnitRecord>, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    db::list_org_units(&conn).await
 }
 
 #[tauri::command]
@@ -22361,6 +22483,8 @@ fn main() {
             list_finding_lifecycle_records,
             list_finding_owner_records,
             upsert_finding_owner_record,
+            list_org_unit_records,
+            upsert_org_unit_record,
             assign_finding_owner_record,
             get_account_rules_config,
             get_provider_rules_config,
