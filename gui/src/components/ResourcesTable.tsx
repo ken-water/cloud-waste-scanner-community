@@ -28,6 +28,23 @@ interface ResourcesTableProps {
   initialFilter?: any;
 }
 
+interface FindingLifecycle {
+  resource_id: string;
+  provider: string;
+  status: "detected" | "triaged" | "assigned" | "in_progress" | "verified" | "closed" | string;
+  owner_id?: string | null;
+  due_at?: number | null;
+  evidence_note?: string | null;
+  updated_at: number;
+}
+
+interface FindingOwner {
+  id: string;
+  display_name: string;
+  email?: string | null;
+  is_active: boolean;
+}
+
 function normalizeWorsenedFlag(value: unknown): boolean {
   return value === true || value === "true" || value === 1 || value === "1";
 }
@@ -52,6 +69,11 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null);
   const [confirmingAction, setConfirmingAction] = useState(false);
   const [actionNotice, setActionNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [lifecycleById, setLifecycleById] = useState<Record<string, FindingLifecycle>>({});
+  const [owners, setOwners] = useState<FindingOwner[]>([]);
+  const [ownerForm, setOwnerForm] = useState({ id: "", display_name: "", email: "" });
+  const [assigningId, setAssigningId] = useState<string>("");
+  const [assigningOwnerId, setAssigningOwnerId] = useState<string>("");
 
   // Export State
   const [isExportModalOpen, setExportModalOpen] = useState(false);
@@ -111,6 +133,68 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       setLoading(false);
     }
   }
+
+  async function fetchLifecycleAndOwners() {
+    try {
+      const [lifecycleRows, ownerRows] = await Promise.all([
+        invoke<FindingLifecycle[]>("list_finding_lifecycle_records"),
+        invoke<FindingOwner[]>("list_finding_owner_records"),
+      ]);
+      const map: Record<string, FindingLifecycle> = {};
+      for (const row of (lifecycleRows || [])) {
+        map[row.resource_id] = row;
+      }
+      setLifecycleById(map);
+      setOwners(ownerRows || []);
+    } catch (err) {
+      console.warn("load lifecycle/owners failed", err);
+    }
+  }
+
+  useEffect(() => {
+    fetchLifecycleAndOwners();
+  }, []);
+
+  const assignOwner = async (resource: WastedResource, ownerId: string) => {
+    if (!ownerId) return;
+    setAssigningId(resource.id);
+    try {
+      await invoke("assign_finding_owner_record", {
+        resourceId: resource.id,
+        provider: resource.provider,
+        ownerId,
+      });
+      await fetchLifecycleAndOwners();
+      setAssigningOwnerId("");
+      showActionNotice(`Assigned ${resource.id} to ${ownerId}.`);
+    } catch (err) {
+      showActionNotice(`Failed to assign owner: ${String(err)}`, "error");
+    } finally {
+      setAssigningId("");
+    }
+  };
+
+  const createOwner = async () => {
+    const id = ownerForm.id.trim();
+    const display_name = ownerForm.display_name.trim();
+    if (!id || !display_name) {
+      showActionNotice("Owner id and display name are required.", "error");
+      return;
+    }
+    try {
+      await invoke("upsert_finding_owner_record", {
+        id,
+        displayName: display_name,
+        email: ownerForm.email.trim() || null,
+        isActive: true,
+      });
+      setOwnerForm({ id: "", display_name: "", email: "" });
+      await fetchLifecycleAndOwners();
+      showActionNotice(`Owner ${id} saved.`);
+    } catch (err) {
+      showActionNotice(`Failed to save owner: ${String(err)}`, "error");
+    }
+  };
 
   const toggleSelect = (id: string) => {
       const resource = resources.find(r => r.id === id);
@@ -680,6 +764,16 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               hint={`Filtered CO2e: ${formatCo2eKg(filteredCo2e.totalMonthlyCo2eKg)}/mo`}
           />
       </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Owner Directory</p>
+        <div className="mt-3 grid gap-2 md:grid-cols-4">
+          <input value={ownerForm.id} onChange={(e) => setOwnerForm({ ...ownerForm, id: e.target.value })} placeholder="owner id (e.g. team-ops)" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+          <input value={ownerForm.display_name} onChange={(e) => setOwnerForm({ ...ownerForm, display_name: e.target.value })} placeholder="display name" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+          <input value={ownerForm.email} onChange={(e) => setOwnerForm({ ...ownerForm, email: e.target.value })} placeholder="email (optional)" className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+          <button onClick={createOwner} className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Save Owner</button>
+        </div>
+        <p className="mt-2 text-xs text-slate-500">Use stable owner IDs. If personnel changes, keep ID and update display name/email.</p>
+      </div>
       <div className="grid gap-4 md:grid-cols-3">
           <MetricCard
               label="Accounts In Scope"
@@ -717,6 +811,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                 <th className="px-6 py-4">Account</th>
                 <th className="px-6 py-4">Type</th>
                 <th className="px-6 py-4">Action</th>
+                <th className="px-6 py-4">Owner</th>
                 <th className="px-6 py-4">Details</th>
                 <th className="px-6 py-4 text-right">Monthly Cost</th>
                 <th className="px-6 py-4 text-right">Est. CO2e/mo</th>
@@ -725,7 +820,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                 {loading && (
                     <tr>
-                        <td colSpan={9} className="p-8 text-center text-slate-500 dark:text-slate-400 animate-pulse">
+                        <td colSpan={10} className="p-8 text-center text-slate-500 dark:text-slate-400 animate-pulse">
                             Loading resources...
                         </td>
                     </tr>
@@ -762,13 +857,36 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                             {r.action_type}
                         </span>
                     </td>
+                    <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={assigningOwnerId}
+                            onChange={(e) => setAssigningOwnerId(e.target.value)}
+                            className="rounded border border-slate-200 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-900"
+                          >
+                            <option value="">{(lifecycleById[r.id]?.owner_id || "Unassigned")}</option>
+                            {owners.filter((o) => o.is_active).map((owner) => (
+                              <option key={owner.id} value={owner.id}>
+                                {owner.display_name} ({owner.id})
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            disabled={!assigningOwnerId || assigningId === r.id}
+                            onClick={() => assignOwner(r, assigningOwnerId)}
+                            className="rounded bg-slate-900 px-2 py-1 text-xs font-semibold text-white disabled:opacity-50"
+                          >
+                            {assigningId === r.id ? "..." : "Assign"}
+                          </button>
+                        </div>
+                    </td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400 max-w-xs truncate" title={r.details}>{r.details}</td>
                     <td className="px-6 py-4 text-right font-bold text-slate-900 dark:text-white">{format(r.estimated_monthly_cost)}</td>
                     <td className="px-6 py-4 text-right font-semibold text-teal-700 dark:text-teal-300">{formatCo2eKg(estimateResourceCo2e(r).monthlyCo2eKg)}</td>
                 </tr>
                 ))}
                 {!loading && filteredResources.length === 0 && (
-                    <tr><td colSpan={9} className="p-8 text-center text-slate-400 dark:text-slate-500 italic">No resources match your search or filters.</td></tr>
+                    <tr><td colSpan={10} className="p-8 text-center text-slate-400 dark:text-slate-500 italic">No resources match your search or filters.</td></tr>
                 )}
             </tbody>
             </table>

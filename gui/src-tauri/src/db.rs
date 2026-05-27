@@ -116,6 +116,16 @@ pub struct FindingLifecycleRecord {
 }
 
 #[derive(Debug, Clone, Serialize, sqlx::FromRow)]
+pub struct FindingOwnerRecord {
+    pub id: String,
+    pub display_name: String,
+    pub email: Option<String>,
+    pub is_active: bool,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+#[derive(Debug, Clone, Serialize, sqlx::FromRow)]
 pub struct MonitorMetric {
     pub id: String,
     pub provider: String,
@@ -293,6 +303,14 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
             closed_at INTEGER,
             reopen_reason TEXT,
             evidence_note TEXT,
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NOT NULL
+        )",
+        "CREATE TABLE IF NOT EXISTS finding_owners (
+            id TEXT PRIMARY KEY,
+            display_name TEXT NOT NULL,
+            email TEXT,
+            is_active BOOLEAN NOT NULL DEFAULT 1,
             created_at INTEGER NOT NULL,
             updated_at INTEGER NOT NULL
         )",
@@ -3037,6 +3055,50 @@ pub async fn upsert_finding_lifecycle(
     .await
     .map(|_| ())
     .map_err(|e| e.to_string())
+}
+
+pub async fn list_finding_owners(pool: &Pool<Sqlite>) -> Result<Vec<FindingOwnerRecord>, String> {
+    sqlx::query_as::<_, FindingOwnerRecord>(
+        "SELECT id, display_name, email, is_active, created_at, updated_at
+         FROM finding_owners
+         ORDER BY is_active DESC, display_name ASC",
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+pub async fn upsert_finding_owner(pool: &Pool<Sqlite>, row: &FindingOwnerRecord) -> Result<(), String> {
+    sqlx::query(
+        "INSERT OR REPLACE INTO finding_owners (id, display_name, email, is_active, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?)",
+    )
+    .bind(&row.id)
+    .bind(&row.display_name)
+    .bind(&row.email)
+    .bind(row.is_active)
+    .bind(row.created_at)
+    .bind(row.updated_at)
+    .execute(pool)
+    .await
+    .map(|_| ())
+    .map_err(|e| e.to_string())
+}
+
+pub async fn set_finding_owner_active(
+    pool: &Pool<Sqlite>,
+    owner_id: &str,
+    is_active: bool,
+    updated_at: i64,
+) -> Result<(), String> {
+    sqlx::query("UPDATE finding_owners SET is_active = ?, updated_at = ? WHERE id = ?")
+        .bind(is_active)
+        .bind(updated_at)
+        .bind(owner_id)
+        .execute(pool)
+        .await
+        .map(|_| ())
+        .map_err(|e| e.to_string())
 }
 
 #[cfg(test)]

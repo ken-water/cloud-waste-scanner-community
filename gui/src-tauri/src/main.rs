@@ -538,6 +538,15 @@ struct ApiFindingLifecycleUpdateRequest {
     evidence_note: Option<String>,
 }
 
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiFindingOwnerUpsertRequest {
+    id: String,
+    display_name: String,
+    email: Option<String>,
+    is_active: Option<bool>,
+}
+
 #[derive(Debug, Clone, Serialize)]
 struct ApiFindingLifecycleSummary {
     detected: i64,
@@ -4986,11 +4995,26 @@ async fn handle_api_update_finding_lifecycle(
         .filter(|value| !value.is_empty())
         .unwrap_or_else(|| row.provider.clone());
     if payload.owner_id.is_some() {
-        row.owner_id = payload
+        let next_owner = payload
             .owner_id
             .as_deref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty());
+        if let Some(owner_id) = next_owner.as_deref() {
+            let owners = db::list_finding_owners(&conn)
+                .await
+                .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+            let owner_ok = owners
+                .iter()
+                .any(|owner| owner.id == owner_id && owner.is_active);
+            if !owner_ok {
+                return Err(api_error(
+                    StatusCode::BAD_REQUEST,
+                    format!("owner_id '{}' not found or inactive", owner_id),
+                ));
+            }
+        }
+        row.owner_id = next_owner;
     }
     if payload.due_at.is_some() {
         row.due_at = payload.due_at;
@@ -5014,6 +5038,83 @@ async fn handle_api_update_finding_lifecycle(
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
     Ok(Json(row))
+}
+
+async fn handle_api_list_finding_owners(
+    State(state): State<LocalApiState>,
+) -> Result<Json<Vec<db::FindingOwnerRecord>>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let owners = db::list_finding_owners(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(owners))
+}
+
+async fn handle_api_upsert_finding_owner(
+    State(state): State<LocalApiState>,
+    Json(payload): Json<ApiFindingOwnerUpsertRequest>,
+) -> Result<Json<db::FindingOwnerRecord>, ApiError> {
+    let owner_id = payload.id.trim().to_string();
+    let display_name = payload.display_name.trim().to_string();
+    if owner_id.is_empty() || display_name.is_empty() {
+        return Err(api_error(
+            StatusCode::BAD_REQUEST,
+            "id and display_name are required.",
+        ));
+    }
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let now = now_unix_ts();
+    let existing = db::list_finding_owners(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?
+        .into_iter()
+        .find(|owner| owner.id == owner_id);
+    let created_at = existing.as_ref().map(|owner| owner.created_at).unwrap_or(now);
+    let row = db::FindingOwnerRecord {
+        id: owner_id,
+        display_name,
+        email: payload
+            .email
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty()),
+        is_active: payload
+            .is_active
+            .unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
+        created_at,
+        updated_at: now,
+    };
+    db::upsert_finding_owner(&conn, &row)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(row))
+}
+
+async fn handle_api_deactivate_finding_owner(
+    State(state): State<LocalApiState>,
+    AxumPath(owner_id): AxumPath<String>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let owner_id = owner_id.trim().to_string();
+    if owner_id.is_empty() {
+        return Err(api_error(StatusCode::BAD_REQUEST, "owner_id is required."));
+    }
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    db::set_finding_owner_active(&conn, &owner_id, false, now_unix_ts())
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    Ok(Json(serde_json::json!({
+        "id": owner_id,
+        "is_active": false
+    })))
 }
 
 async fn handle_api_list_scan_history(
@@ -7035,6 +7136,12 @@ async fn start_api_server(
         .route(
             "/v1/findings/:resource_id/lifecycle",
             patch(handle_api_update_finding_lifecycle),
+        )
+        .route("/v1/finding-owners", get(handle_api_list_finding_owners))
+        .route("/v1/finding-owners", post(handle_api_upsert_finding_owner))
+        .route(
+            "/v1/finding-owners/:owner_id/deactivate",
+            post(handle_api_deactivate_finding_owner),
         )
         .route(
             "/v1/findings/handled",
@@ -21192,6 +21299,113 @@ async fn mark_resource_handled(
 }
 
 #[tauri::command]
+async fn list_finding_lifecycle_records(
+    app_handle: tauri::AppHandle,
+) -> Result<Vec<db::FindingLifecycleRecord>, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    db::list_finding_lifecycle(&conn).await
+}
+
+#[tauri::command]
+async fn upsert_finding_owner_record(
+    app_handle: tauri::AppHandle,
+    id: String,
+    display_name: String,
+    email: Option<String>,
+    is_active: Option<bool>,
+) -> Result<db::FindingOwnerRecord, String> {
+    let owner_id = id.trim().to_string();
+    let owner_name = display_name.trim().to_string();
+    if owner_id.is_empty() || owner_name.is_empty() {
+        return Err("id and display_name are required".to_string());
+    }
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let now = now_unix_ts();
+    let existing = db::list_finding_owners(&conn)
+        .await?
+        .into_iter()
+        .find(|owner| owner.id == owner_id);
+    let row = db::FindingOwnerRecord {
+        id: owner_id,
+        display_name: owner_name,
+        email: email
+            .as_deref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty()),
+        is_active: is_active.unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
+        created_at: existing.as_ref().map(|owner| owner.created_at).unwrap_or(now),
+        updated_at: now,
+    };
+    db::upsert_finding_owner(&conn, &row).await?;
+    Ok(row)
+}
+
+#[tauri::command]
+async fn list_finding_owner_records(
+    app_handle: tauri::AppHandle,
+) -> Result<Vec<db::FindingOwnerRecord>, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    db::list_finding_owners(&conn).await
+}
+
+#[tauri::command]
+async fn assign_finding_owner_record(
+    app_handle: tauri::AppHandle,
+    resource_id: String,
+    provider: String,
+    owner_id: String,
+) -> Result<db::FindingLifecycleRecord, String> {
+    let resource_id = resource_id.trim().to_string();
+    let owner_id = owner_id.trim().to_string();
+    if resource_id.is_empty() || owner_id.is_empty() {
+        return Err("resource_id and owner_id are required".to_string());
+    }
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let owners = db::list_finding_owners(&conn).await?;
+    if !owners.iter().any(|owner| owner.id == owner_id && owner.is_active) {
+        return Err(format!("owner_id '{}' not found or inactive", owner_id));
+    }
+    let now = now_unix_ts();
+    let mut row = db::get_finding_lifecycle(&conn, &resource_id)
+        .await?
+        .unwrap_or(db::FindingLifecycleRecord {
+            resource_id: resource_id.clone(),
+            provider: if provider.trim().is_empty() { "unknown".to_string() } else { provider.trim().to_string() },
+            status: "detected".to_string(),
+            owner_id: None,
+            due_at: None,
+            assigned_at: None,
+            in_progress_at: None,
+            verified_at: None,
+            closed_at: None,
+            reopen_reason: None,
+            evidence_note: None,
+            created_at: now,
+            updated_at: now,
+        });
+    row.owner_id = Some(owner_id);
+    row.status = "assigned".to_string();
+    if row.assigned_at.is_none() {
+        row.assigned_at = Some(now);
+    }
+    row.updated_at = now;
+    db::upsert_finding_lifecycle(&conn, &row).await?;
+    Ok(row)
+}
+
+#[tauri::command]
 async fn get_account_rules_config(
     app_handle: tauri::AppHandle,
     account_id: String,
@@ -22144,6 +22358,10 @@ fn main() {
             ask_ai_analyst_local,
             delete_scan_history,
             mark_resource_handled,
+            list_finding_lifecycle_records,
+            list_finding_owner_records,
+            upsert_finding_owner_record,
+            assign_finding_owner_record,
             get_account_rules_config,
             get_provider_rules_config,
             update_account_rule_config
