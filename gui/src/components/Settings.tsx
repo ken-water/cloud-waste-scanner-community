@@ -16,6 +16,7 @@ import { ImportAccountsModal } from "./settings/ImportAccountsModal";
 import { NotificationsSettingsContent } from "./settings/NotificationsSettingsContent";
 import { PendingDeleteAwsModal } from "./settings/PendingDeleteAwsModal";
 import { SettingsToast } from "./settings/SettingsToast";
+import { entitlementsForPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
 
 interface AwsProfile {
   name: string;
@@ -115,6 +116,12 @@ interface SettingsProps {
   showTabStrip?: boolean;
 }
 
+interface RuntimeRoleAdminGuard {
+  current_user: string;
+  can_manage_runtime_role: boolean;
+  admin_users: string[];
+}
+
 export function Settings({
   initialTab = "clouds",
   pageTitle = "Settings",
@@ -124,14 +131,19 @@ export function Settings({
   const PROXY_CHOICE_GLOBAL = "__global__";
   const PROXY_CHOICE_DIRECT = "__direct__";
   const ACCOUNT_NOTIFICATION_CHOICE_ALL = "__all_channels__";
+  const runtimePlanType = readRuntimePlanTypeFromStorage();
+  const canUseTeamWorkspace = entitlementsForPlan(runtimePlanType).team_workspace;
 
   const [activeTab, setActiveTab] = useState<ExtendedSettingsTab>(initialTab);
   const [orgUnits, setOrgUnits] = useState<Array<{ id: string; name: string; parent_id?: string | null; is_active: boolean }>>([]);
-  const [owners, setOwners] = useState<Array<{ id: string; display_name: string; email?: string | null; org_unit_id?: string | null; is_active: boolean }>>([]);
+  const [owners, setOwners] = useState<Array<{ id: string; display_name: string; email?: string | null; org_unit_id?: string | null; role?: string; is_active: boolean }>>([]);
   const [orgForm, setOrgForm] = useState({ id: "", name: "", parent_id: "" });
-  const [ownerForm, setOwnerForm] = useState({ id: "", display_name: "", email: "", org_unit_id: "" });
+  const [ownerForm, setOwnerForm] = useState({ id: "", display_name: "", email: "", org_unit_id: "", role: "owner" });
   const [deactivateOwnerId, setDeactivateOwnerId] = useState("");
   const [transferOwnerId, setTransferOwnerId] = useState("");
+  const [runtimeOperatorRole, setRuntimeOperatorRole] = useState<"owner" | "manager">("owner");
+  const [runtimeRoleAdminGuard, setRuntimeRoleAdminGuard] = useState<RuntimeRoleAdminGuard | null>(null);
+  const [runtimeRoleAdminUsersInput, setRuntimeRoleAdminUsersInput] = useState("");
   const proxyProtocolOptions = [
       { value: "socks5h", label: "SOCKS5H (Recommended)" },
       { value: "socks5", label: "SOCKS5 (Local DNS)" },
@@ -327,6 +339,12 @@ export function Settings({
       };
   }, []);
 
+  useEffect(() => {
+      if (!canUseTeamWorkspace && activeTab === "org") {
+          setActiveTab("clouds");
+      }
+  }, [activeTab, canUseTeamWorkspace]);
+
   const normalizeStoredApiPort = (raw: string): string => {
       const parsed = Number(raw);
       if (!Number.isFinite(parsed)) return "9123";
@@ -354,10 +372,23 @@ export function Settings({
       setNotificationChannels(channels);
       const proxies = await invoke<ProxyProfile[]>("list_proxy_profiles");
       setProxyProfiles(proxies);
-      const orgRows = await invoke<Array<{ id: string; name: string; parent_id?: string | null; is_active: boolean }>>("list_org_unit_records");
-      setOrgUnits(orgRows || []);
-      const ownerRows = await invoke<Array<{ id: string; display_name: string; email?: string | null; org_unit_id?: string | null; is_active: boolean }>>("list_finding_owner_records");
-      setOwners(ownerRows || []);
+      if (canUseTeamWorkspace) {
+          const orgRows = await invoke<Array<{ id: string; name: string; parent_id?: string | null; is_active: boolean }>>("list_org_unit_records");
+          setOrgUnits(orgRows || []);
+          const ownerRows = await invoke<Array<{ id: string; display_name: string; email?: string | null; org_unit_id?: string | null; role?: string; is_active: boolean }>>("list_finding_owner_records");
+          setOwners(ownerRows || []);
+          const roleRaw = await invoke<string>("get_runtime_operator_role").catch(() => "owner");
+          setRuntimeOperatorRole(roleRaw === "manager" ? "manager" : "owner");
+          const roleGuard = await invoke<RuntimeRoleAdminGuard>("get_runtime_role_admin_guard").catch(() => null);
+          setRuntimeRoleAdminGuard(roleGuard);
+          setRuntimeRoleAdminUsersInput((roleGuard?.admin_users || []).join(","));
+      } else {
+          setOrgUnits([]);
+          setOwners([]);
+          setRuntimeOperatorRole("owner");
+          setRuntimeRoleAdminGuard(null);
+          setRuntimeRoleAdminUsersInput("");
+      }
       const accountProxyRaw = await invoke<string>("get_setting", { key: "account_proxy_assignments" });
       if (accountProxyRaw?.trim()) {
           try {
@@ -475,9 +506,10 @@ export function Settings({
               displayName,
               email: ownerForm.email.trim() || null,
               orgUnitId,
+              role: ownerForm.role || "owner",
               isActive: true,
           });
-          setOwnerForm({ id: "", display_name: "", email: "", org_unit_id: "" });
+          setOwnerForm({ id: "", display_name: "", email: "", org_unit_id: "", role: "owner" });
           await loadData();
           showToast(`Owner ${id} saved.`);
       } catch (e) {
@@ -502,6 +534,36 @@ export function Settings({
           showToast(`Owner ${ownerId} deactivated.`);
       } catch (e) {
           showToast(`Deactivate failed: ${normalizeErrorMessage(e)}`, "error");
+      }
+  };
+
+  const saveRuntimeOperatorRole = async () => {
+      try {
+          await invoke("save_setting", { key: "runtime_operator_role", value: runtimeOperatorRole });
+          showToast(`Operator role saved as ${runtimeOperatorRole}.`);
+      } catch (e) {
+          showToast(`Failed to save operator role: ${normalizeErrorMessage(e)}`, "error");
+      }
+  };
+
+  const saveRuntimeRoleAdminUsers = async () => {
+      try {
+          const normalized = runtimeRoleAdminUsersInput
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean)
+              .join(",");
+          if (!normalized) {
+              showToast("Role admin users cannot be empty.", "error");
+              return;
+          }
+          await invoke("save_setting", { key: "runtime_role_admin_users", value: normalized });
+          const roleGuard = await invoke<RuntimeRoleAdminGuard>("get_runtime_role_admin_guard");
+          setRuntimeRoleAdminGuard(roleGuard);
+          setRuntimeRoleAdminUsersInput((roleGuard?.admin_users || []).join(","));
+          showToast("Role admin users updated.");
+      } catch (e) {
+          showToast(`Failed to save role admin users: ${normalizeErrorMessage(e)}`, "error");
       }
   };
 
@@ -2681,9 +2743,11 @@ export function Settings({
           <button onClick={() => setActiveTab("appearance")} className={`pb-3 px-2 text-lg font-medium border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === "appearance" ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>
             <Monitor className="w-5 h-5" /> Preferences
           </button>
-          <button onClick={() => setActiveTab("org")} className={`pb-3 px-2 text-lg font-medium border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === "org" ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>
-            <Building2 className="w-5 h-5" /> Org & Owners
-          </button>
+          {canUseTeamWorkspace && (
+            <button onClick={() => setActiveTab("org")} className={`pb-3 px-2 text-lg font-medium border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === "org" ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>
+              <Building2 className="w-5 h-5" /> Org & Owners
+            </button>
+          )}
         </div>
         )}
 
@@ -3541,7 +3605,7 @@ export function Settings({
             </div>
         )}
 
-        {activeTab === "org" && (
+        {activeTab === "org" && canUseTeamWorkspace && (
             <div className="space-y-6">
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
@@ -3557,9 +3621,60 @@ export function Settings({
 
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Users className="w-5 h-5" /> Team Operator Role
+                    </h2>
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                        Manager role can batch assign findings in Scan Results. Owner role cannot.
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        Current user: <code>{runtimeRoleAdminGuard?.current_user || "-"}</code> · Role admins: <code>{(runtimeRoleAdminGuard?.admin_users || []).join(", ") || "-"}</code>
+                    </p>
+                    <div className="mt-4 grid gap-3 md:grid-cols-3">
+                        <select
+                            value={runtimeOperatorRole}
+                            onChange={(e) => setRuntimeOperatorRole((e.target.value === "manager" ? "manager" : "owner"))}
+                            disabled={!runtimeRoleAdminGuard?.can_manage_runtime_role}
+                            className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700"
+                        >
+                            <option value="owner">Owner</option>
+                            <option value="manager">Manager</option>
+                        </select>
+                        <button
+                            onClick={saveRuntimeOperatorRole}
+                            disabled={!runtimeRoleAdminGuard?.can_manage_runtime_role}
+                            className="bg-slate-900 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg font-semibold"
+                        >
+                            Save Operator Role
+                        </button>
+                    </div>
+                    {!runtimeRoleAdminGuard?.can_manage_runtime_role && (
+                        <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
+                            Only mapped admin users can change operator role on this machine.
+                        </p>
+                    )}
+                    <div className="mt-5 grid gap-3 md:grid-cols-3">
+                        <input
+                            value={runtimeRoleAdminUsersInput}
+                            onChange={(e) => setRuntimeRoleAdminUsersInput(e.target.value)}
+                            disabled={!runtimeRoleAdminGuard?.can_manage_runtime_role}
+                            placeholder="comma-separated admin users, e.g. ken,alice"
+                            className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 disabled:opacity-50"
+                        />
+                        <button
+                            onClick={saveRuntimeRoleAdminUsers}
+                            disabled={!runtimeRoleAdminGuard?.can_manage_runtime_role}
+                            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg font-semibold"
+                        >
+                            Save Role Admin Users
+                        </button>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                         <Users className="w-5 h-5" /> Owner Directory
                     </h2>
-                    <div className="mt-4 grid gap-3 md:grid-cols-4">
+                    <div className="mt-4 grid gap-3 md:grid-cols-5">
                         <input value={ownerForm.id} onChange={(e) => setOwnerForm({ ...ownerForm, id: e.target.value })} placeholder="owner id" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
                         <input value={ownerForm.display_name} onChange={(e) => setOwnerForm({ ...ownerForm, display_name: e.target.value })} placeholder="display name" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
                         <input value={ownerForm.email} onChange={(e) => setOwnerForm({ ...ownerForm, email: e.target.value })} placeholder="email (optional)" className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700" />
@@ -3568,6 +3683,10 @@ export function Settings({
                             {orgUnits.filter((u) => u.is_active).map((u) => (
                                 <option key={u.id} value={u.id}>{u.name} ({u.id})</option>
                             ))}
+                        </select>
+                        <select value={ownerForm.role} onChange={(e) => setOwnerForm({ ...ownerForm, role: e.target.value })} className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700">
+                            <option value="owner">Owner</option>
+                            <option value="manager">Manager</option>
                         </select>
                     </div>
                     <div className="mt-3">

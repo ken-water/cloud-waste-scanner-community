@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { AlertCircle, RefreshCw, Loader2, CheckSquare, Square, Download, FileText, Search, ClipboardList, Play, EyeOff, Leaf } from "lucide-react";
+import { AlertCircle, RefreshCw, Loader2, CheckSquare, Square, Download, FileText, Search, ClipboardList, Play, EyeOff, Leaf, Share2 } from "lucide-react";
 import { Modal } from "./Modal";
 import { useCurrency } from "../hooks/useCurrency";
 import { CustomSelect } from "./CustomSelect";
@@ -11,6 +11,7 @@ import { exportBlobWithTauriFallback, exportTextWithTauriFallback, revealExporte
 import { loadPdfRuntime } from "../utils/pdfRuntime";
 import { PageHeader } from "./layout/PageHeader";
 import { MetricCard } from "./ui/MetricCard";
+import { entitlementsForPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
 
 interface WastedResource {
   id: string;
@@ -43,6 +44,14 @@ interface FindingOwner {
   display_name: string;
   email?: string | null;
   org_unit_id?: string | null;
+  role?: string;
+  is_active: boolean;
+}
+
+interface OrgUnit {
+  id: string;
+  name: string;
+  parent_id?: string | null;
   is_active: boolean;
 }
 
@@ -72,8 +81,14 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [actionNotice, setActionNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [lifecycleById, setLifecycleById] = useState<Record<string, FindingLifecycle>>({});
   const [owners, setOwners] = useState<FindingOwner[]>([]);
+  const [orgUnits, setOrgUnits] = useState<OrgUnit[]>([]);
   const [assigningId, setAssigningId] = useState<string>("");
   const [assigningOwnerId, setAssigningOwnerId] = useState<string>("");
+  const [filterOwnerId, setFilterOwnerId] = useState("");
+  const [filterOrgUnitId, setFilterOrgUnitId] = useState("");
+  const [batchAssignOwnerId, setBatchAssignOwnerId] = useState("");
+  const [includeSensitiveFields, setIncludeSensitiveFields] = useState<boolean>(false);
+  const [handoffAudience, setHandoffAudience] = useState<"exec" | "owner" | "audit">("owner");
 
   // Export State
   const [isExportModalOpen, setExportModalOpen] = useState(false);
@@ -86,6 +101,9 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [exportError, setExportError] = useState<string | null>(null);
   
   const isDemo = localStorage.getItem("cws_is_demo_mode") === "true";
+  const canUseTeamWorkspace = entitlementsForPlan(readRuntimePlanTypeFromStorage()).team_workspace;
+  const [operatorRole, setOperatorRole] = useState<"owner" | "manager">("owner");
+  const canUseManagerTools = canUseTeamWorkspace && operatorRole === "manager";
   const { format } = useCurrency();
 
   const showExportError = (text: string) => {
@@ -135,10 +153,16 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   }
 
   async function fetchLifecycleAndOwners() {
+    if (!canUseTeamWorkspace) {
+      setLifecycleById({});
+      setOwners([]);
+      return;
+    }
     try {
-      const [lifecycleRows, ownerRows] = await Promise.all([
+      const [lifecycleRows, ownerRows, orgRows] = await Promise.all([
         invoke<FindingLifecycle[]>("list_finding_lifecycle_records"),
         invoke<FindingOwner[]>("list_finding_owner_records"),
+        invoke<OrgUnit[]>("list_org_unit_records"),
       ]);
       const map: Record<string, FindingLifecycle> = {};
       for (const row of (lifecycleRows || [])) {
@@ -146,6 +170,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       }
       setLifecycleById(map);
       setOwners(ownerRows || []);
+      setOrgUnits(orgRows || []);
     } catch (err) {
       console.warn("load lifecycle/owners failed", err);
     }
@@ -155,7 +180,29 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
     fetchLifecycleAndOwners();
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+    const loadRole = async () => {
+      try {
+        const role = await invoke<string>("get_runtime_operator_role");
+        if (!mounted) return;
+        setOperatorRole(role === "manager" ? "manager" : "owner");
+      } catch {
+        if (!mounted) return;
+        setOperatorRole("owner");
+      }
+    };
+    void loadRole();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const assignOwner = async (resource: WastedResource, ownerId: string) => {
+    if (!canUseTeamWorkspace) {
+      showActionNotice("Owner assignment requires Team or Enterprise edition.", "error");
+      return;
+    }
     if (!ownerId) return;
     setAssigningId(resource.id);
     try {
@@ -172,6 +219,30 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
     } finally {
       setAssigningId("");
     }
+  };
+
+  const assignSelectedToOwner = async () => {
+      if (!canUseManagerTools) {
+          showActionNotice("Batch assignment requires manager role.", "error");
+          return;
+      }
+      if (!batchAssignOwnerId || selectedIds.size === 0) return;
+      const selected = getSelectedResources();
+      let okCount = 0;
+      for (const row of selected) {
+          try {
+              await invoke("assign_finding_owner_record", {
+                  resourceId: row.id,
+                  provider: row.provider,
+                  ownerId: batchAssignOwnerId,
+              });
+              okCount += 1;
+          } catch {
+            // keep going
+          }
+      }
+      await fetchLifecycleAndOwners();
+      showActionNotice(`Batch assigned ${okCount}/${selected.length} findings to ${batchAssignOwnerId}.`, okCount > 0 ? "success" : "error");
   };
 
 
@@ -212,7 +283,11 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           !filterResourceType || String(r.resource_type || "").toLowerCase() === filterResourceType.toLowerCase();
       const matchesSuggestedAction =
           !showOnlyDeleteActions || String(r.action_type || "").toUpperCase() === "DELETE";
-      return matchesSearch && matchesProvider && matchesAccount && matchesResourceType && matchesSuggestedAction;
+      const rowOwnerId = lifecycleById[r.id]?.owner_id || "";
+      const rowOwner = owners.find((o) => o.id === rowOwnerId);
+      const matchesOwner = !filterOwnerId || rowOwnerId === filterOwnerId;
+      const matchesOrgUnit = !filterOrgUnitId || String(rowOwner?.org_unit_id || "") === filterOrgUnitId;
+      return matchesSearch && matchesProvider && matchesAccount && matchesResourceType && matchesSuggestedAction && matchesOwner && matchesOrgUnit;
   });
 
   const handleSearchQueryChange = (value: string) => {
@@ -400,6 +475,171 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       } catch (err) {
           console.error("Failed to export CSV", err);
           showExportError(`CSV export failed: ${String(err)}`);
+      }
+  };
+
+  const maskSensitive = (value: string, keep = 4) => {
+      const text = String(value || "");
+      if (!text) return "";
+      if (text.length <= keep) return "*".repeat(text.length);
+      return `${"*".repeat(Math.max(3, text.length - keep))}${text.slice(-keep)}`;
+  };
+
+  const buildHandoffCsv = (items: WastedResource[]) => {
+      const csvEscape = (value: unknown) => {
+          const text = String(value ?? "");
+          const escaped = text.replace(/"/g, '""');
+          if (/[",\n]/.test(escaped)) return `"${escaped}"`;
+          return escaped;
+      };
+      const headers = [
+          "Resource ID",
+          "Provider",
+          "Account",
+          "Region",
+          "Type",
+          "Action",
+          "Monthly Cost",
+          "Estimated CO2e Monthly (kg)",
+          "Owner ID",
+          "Lifecycle Status",
+          "Details",
+      ];
+      const lines = [headers.map(csvEscape).join(",")];
+      for (const item of items) {
+          const lifecycle = lifecycleById[item.id];
+      const effectiveSensitive = handoffAudience === "audit" ? true : handoffAudience === "exec" ? false : includeSensitiveFields;
+      const safeId = effectiveSensitive ? item.id : maskSensitive(item.id, 6);
+      const safeAccount = effectiveSensitive
+          ? String(item.account_name || item.account_id || "Unattributed")
+          : maskSensitive(String(item.account_name || item.account_id || "Unattributed"), 4);
+      const safeDetails = effectiveSensitive ? item.details : maskSensitive(item.details, 10);
+          lines.push([
+              csvEscape(safeId),
+              csvEscape(item.provider),
+              csvEscape(safeAccount),
+              csvEscape(item.region),
+              csvEscape(item.resource_type),
+              csvEscape(item.action_type),
+              csvEscape(item.estimated_monthly_cost.toFixed(2)),
+              csvEscape(estimateResourceCo2e(item).monthlyCo2eKg.toFixed(2)),
+              csvEscape(lifecycle?.owner_id || ""),
+              csvEscape(lifecycle?.status || "detected"),
+              csvEscape(safeDetails),
+          ].join(","));
+      }
+      return `\uFEFF${lines.join("\n")}`;
+  };
+
+  const createHandoffPack = async () => {
+      const scopeItems = selectedIds.size > 0 ? getSelectedResources() : filteredResources;
+      if (scopeItems.length === 0) {
+          showActionNotice("No findings in current scope to hand off.", "error");
+          return;
+      }
+      const generatedAtIso = new Date().toISOString();
+      const stamp = generatedAtIso.slice(0, 10);
+      const scopeType = selectedIds.size > 0 ? "selected" : "filtered";
+      const effectiveSensitive = handoffAudience === "audit" ? true : handoffAudience === "exec" ? false : includeSensitiveFields;
+      const savings = scopeItems.reduce((sum, row) => sum + row.estimated_monthly_cost, 0);
+      const co2e = estimateAggregateCo2e(scopeItems).totalMonthlyCo2eKg;
+      const scopeProviders = Array.from(new Set(scopeItems.map((r) => r.provider))).sort();
+      const scopeAccounts = Array.from(
+          new Set(scopeItems.map((r) => String(r.account_id || r.account_name || "unattributed")))
+      ).sort();
+      const ownerIds = Array.from(
+          new Set(scopeItems.map((r) => lifecycleById[r.id]?.owner_id).filter(Boolean) as string[])
+      ).sort();
+      const statusBreakdown: Record<string, number> = {};
+      for (const item of scopeItems) {
+          const status = lifecycleById[item.id]?.status || "detected";
+          statusBreakdown[status] = (statusBreakdown[status] || 0) + 1;
+      }
+
+      const summaryText = [
+          `Cloud Waste Scanner Handoff Pack`,
+          `Generated: ${generatedAtIso}`,
+          `Scope Type: ${scopeType}`,
+          `Findings: ${scopeItems.length}`,
+          `Estimated Savings: ${format(savings)}/month`,
+          `Estimated CO2e: ${formatCo2eKg(co2e)}/month`,
+          ``,
+          `Applied Filters:`,
+          `- Provider filter: ${filterProvider}`,
+          `- Search query: ${searchQuery || "(none)"}`,
+          `- Delete-only: ${showOnlyDeleteActions ? "true" : "false"}`,
+          `- Account filter: ${filterAccountKey || "(none)"}`,
+          `- Resource type filter: ${filterResourceType || "(none)"}`,
+          ``,
+          `Scope Breakdown:`,
+          `- Providers: ${scopeProviders.join(", ") || "(none)"}`,
+          `- Accounts: ${scopeAccounts.join(", ") || "(none)"}`,
+          `- Owners: ${ownerIds.join(", ") || "(unassigned)"}`,
+          `- Lifecycle: ${Object.entries(statusBreakdown).map(([k, v]) => `${k}=${v}`).join(", ") || "(none)"}`,
+          `- Audience: ${handoffAudience}`,
+          `- Sensitive fields: ${effectiveSensitive ? "included" : "masked"}`,
+          ``,
+          `Artifacts:`,
+          `- handoff_${scopeType}_${stamp}.csv`,
+          `- handoff_${scopeType}_${stamp}.json`,
+      ].join("\n");
+
+      const manifest = {
+          version: "1.0",
+          generated_at: generatedAtIso,
+          scope: {
+              type: scopeType,
+              selected_count: selectedIds.size,
+              filtered_count: filteredResources.length,
+              filters: {
+                  provider: filterProvider,
+                  search_query: searchQuery || null,
+                  account_id: filterAccountKey || null,
+                  resource_type: filterResourceType || null,
+                  delete_only: showOnlyDeleteActions,
+              },
+              providers: scopeProviders,
+              accounts: scopeAccounts,
+              owners: ownerIds,
+              audience: handoffAudience,
+              include_sensitive_fields: effectiveSensitive,
+          },
+          metrics: {
+              findings: scopeItems.length,
+              identified_savings_monthly: Number(savings.toFixed(2)),
+              estimated_co2e_kg_monthly: Number(co2e.toFixed(2)),
+              lifecycle_breakdown: statusBreakdown,
+          },
+          artifacts: {
+              summary_txt: `handoff_${scopeType}_${stamp}.txt`,
+              findings_csv: `handoff_${scopeType}_${stamp}.csv`,
+              manifest_json: `handoff_${scopeType}_${stamp}.json`,
+          },
+      };
+
+      try {
+          const summaryPath = await exportTextWithTauriFallback(
+              summaryText,
+              `handoff_${scopeType}_${stamp}.txt`,
+              "text/plain;charset=utf-8;",
+              { openAfterSave: false }
+          );
+          await exportTextWithTauriFallback(
+              buildHandoffCsv(scopeItems),
+              `handoff_${scopeType}_${stamp}.csv`,
+              "text/csv;charset=utf-8;",
+              { openAfterSave: false }
+          );
+          await exportTextWithTauriFallback(
+              `${JSON.stringify(manifest, null, 2)}\n`,
+              `handoff_${scopeType}_${stamp}.json`,
+              "application/json;charset=utf-8;",
+              { openAfterSave: false }
+          );
+          await revealSavedExport(summaryPath, "CSV");
+          showActionNotice(`Handoff pack created for ${scopeItems.length} findings.`);
+      } catch (err) {
+          showActionNotice(`Failed to create handoff pack: ${String(err)}`, "error");
       }
   };
 
@@ -606,6 +846,29 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
             <button onClick={handleExportCSV} className="flex items-center px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-colors">
               <Download className="w-4 h-4 mr-2" /> CSV
             </button>
+            <select
+              value={handoffAudience}
+              onChange={(e) => setHandoffAudience(e.target.value as "exec" | "owner" | "audit")}
+              className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+            >
+              <option value="exec">Audience: Exec</option>
+              <option value="owner">Audience: Owner</option>
+              <option value="audit">Audience: Audit</option>
+            </select>
+            <button
+              onClick={() => setIncludeSensitiveFields((v) => !v)}
+              disabled={handoffAudience !== "owner"}
+              className={`flex items-center px-3 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                (handoffAudience === "audit" || includeSensitiveFields)
+                  ? "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-300"
+                  : "bg-slate-100 border-slate-200 text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
+              }`}
+            >
+              {handoffAudience === "audit" ? "Sensitive: ON (Audit)" : handoffAudience === "exec" ? "Sensitive: Masked (Exec)" : (includeSensitiveFields ? "Sensitive: ON" : "Sensitive: Masked")}
+            </button>
+            <button onClick={createHandoffPack} className="flex items-center px-3 py-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-sm font-medium transition-colors">
+              <Share2 className="w-4 h-4 mr-2" /> Create Handoff Pack
+            </button>
             <button onClick={fetchData} className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
               <RefreshCw className="w-5 h-5" />
             </button>
@@ -688,6 +951,30 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               />
               Delete candidates only
           </label>
+          {canUseTeamWorkspace && (
+            <>
+              <select
+                value={filterOrgUnitId}
+                onChange={(e) => setFilterOrgUnitId(e.target.value)}
+                className="w-full md:w-56 rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <option value="">All org units</option>
+                {orgUnits.filter((u) => u.is_active).map((u) => (
+                  <option key={u.id} value={u.id}>{u.name}</option>
+                ))}
+              </select>
+              <select
+                value={filterOwnerId}
+                onChange={(e) => setFilterOwnerId(e.target.value)}
+                className="w-full md:w-56 rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                <option value="">All owners</option>
+                {owners.filter((o) => o.is_active).map((o) => (
+                  <option key={o.id} value={o.id}>{o.display_name} ({o.id})</option>
+                ))}
+              </select>
+            </>
+          )}
       </div>
 
       {(filterAccountKey || filterResourceType || showOnlyDeleteActions) && (
@@ -705,6 +992,20 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               {showOnlyDeleteActions ? (
                   <span className="inline-flex items-center rounded-full bg-rose-50 px-3 py-1 font-semibold text-rose-700 dark:bg-rose-900/20 dark:text-rose-300">
                       Action Filter: DELETE
+                  </span>
+              ) : null}
+          </div>
+      )}
+      {canUseTeamWorkspace && (filterOwnerId || filterOrgUnitId) && (
+          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              {filterOrgUnitId ? (
+                  <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 font-semibold dark:bg-slate-700">
+                      Org Filter: {filterOrgUnitId}
+                  </span>
+              ) : null}
+              {filterOwnerId ? (
+                  <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 font-semibold dark:bg-slate-700">
+                      Owner Filter: {filterOwnerId}
                   </span>
               ) : null}
           </div>
@@ -780,7 +1081,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                 <th className="px-6 py-4">Account</th>
                 <th className="px-6 py-4">Type</th>
                 <th className="px-6 py-4">Action</th>
-                <th className="px-6 py-4">Owner</th>
+                {canUseTeamWorkspace && <th className="px-6 py-4">Owner</th>}
                 <th className="px-6 py-4">Details</th>
                 <th className="px-6 py-4 text-right">Monthly Cost</th>
                 <th className="px-6 py-4 text-right">Est. CO2e/mo</th>
@@ -789,7 +1090,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                 {loading && (
                     <tr>
-                        <td colSpan={10} className="p-8 text-center text-slate-500 dark:text-slate-400 animate-pulse">
+                        <td colSpan={canUseTeamWorkspace ? 10 : 9} className="p-8 text-center text-slate-500 dark:text-slate-400 animate-pulse">
                             Loading resources...
                         </td>
                     </tr>
@@ -826,6 +1127,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                             {r.action_type}
                         </span>
                     </td>
+                    {canUseTeamWorkspace && (
                     <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <select
@@ -849,13 +1151,14 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                           </button>
                         </div>
                     </td>
+                    )}
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400 max-w-xs truncate" title={r.details}>{r.details}</td>
                     <td className="px-6 py-4 text-right font-bold text-slate-900 dark:text-white">{format(r.estimated_monthly_cost)}</td>
                     <td className="px-6 py-4 text-right font-semibold text-teal-700 dark:text-teal-300">{formatCo2eKg(estimateResourceCo2e(r).monthlyCo2eKg)}</td>
                 </tr>
                 ))}
                 {!loading && filteredResources.length === 0 && (
-                    <tr><td colSpan={10} className="p-8 text-center text-slate-400 dark:text-slate-500 italic">No resources match your search or filters.</td></tr>
+                    <tr><td colSpan={canUseTeamWorkspace ? 10 : 9} className="p-8 text-center text-slate-400 dark:text-slate-500 italic">No resources match your search or filters.</td></tr>
                 )}
             </tbody>
             </table>
@@ -886,6 +1189,27 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                   <ClipboardList className="w-4 h-4 mr-2" />
                   Generate Plan
               </button>
+              {canUseManagerTools && (
+                <div className="flex items-center gap-2">
+                  <select
+                    value={batchAssignOwnerId}
+                    onChange={(e) => setBatchAssignOwnerId(e.target.value)}
+                    className="rounded-full border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm bg-white dark:bg-slate-900"
+                  >
+                    <option value="">Assign selected to...</option>
+                    {owners.filter((o) => o.is_active).map((owner) => (
+                      <option key={owner.id} value={owner.id}>{owner.display_name}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => void assignSelectedToOwner()}
+                    disabled={!batchAssignOwnerId}
+                    className="bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-emerald-700 transition-all disabled:opacity-50"
+                  >
+                    Batch Assign
+                  </button>
+                </div>
+              )}
           </div>
       )}
 

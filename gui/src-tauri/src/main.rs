@@ -545,6 +545,7 @@ struct ApiFindingOwnerUpsertRequest {
     display_name: String,
     email: Option<String>,
     org_unit_id: Option<String>,
+    role: Option<String>,
     is_active: Option<bool>,
 }
 
@@ -3333,6 +3334,68 @@ fn audit_log_entitled_for_runtime_plan(plan: Option<&str>) -> bool {
     entitlements_for_runtime_plan(plan).audit_log
 }
 
+fn normalize_operator_role(raw: Option<&str>) -> String {
+    match raw.unwrap_or("").trim().to_ascii_lowercase().as_str() {
+        "manager" => "manager".to_string(),
+        _ => "owner".to_string(),
+    }
+}
+
+fn current_local_username() -> String {
+    std::env::var("SUDO_USER")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| std::env::var("USER").ok())
+        .unwrap_or_else(|| "unknown".to_string())
+        .trim()
+        .to_string()
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct RuntimeRoleAdminGuard {
+    current_user: String,
+    can_manage_runtime_role: bool,
+    admin_users: Vec<String>,
+}
+
+async fn read_runtime_role_admin_guard(
+    conn: &sqlx::Pool<sqlx::Sqlite>,
+) -> RuntimeRoleAdminGuard {
+    let admin_users_raw = db::get_setting(conn, "runtime_role_admin_users")
+        .await
+        .unwrap_or_else(|_| "ken".to_string());
+    let admin_users: Vec<String> = admin_users_raw
+        .split(',')
+        .map(|item| item.trim().to_string())
+        .filter(|item| !item.is_empty())
+        .collect();
+    let current_user = current_local_username();
+    let can_manage_runtime_role = admin_users
+        .iter()
+        .any(|item| item.eq_ignore_ascii_case(current_user.as_str()));
+    RuntimeRoleAdminGuard {
+        current_user,
+        can_manage_runtime_role,
+        admin_users,
+    }
+}
+
+fn team_workspace_entitled_for_runtime_plan(plan: Option<&str>) -> bool {
+    entitlements_for_runtime_plan(plan).team_workspace
+}
+
+async fn ensure_governance_team_workspace(state: &AppState) -> Result<(), ApiError> {
+    let runtime_plan = read_runtime_plan_type(&state.db_path).await;
+    if team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        Ok(())
+    } else {
+        Err(api_error(
+            StatusCode::FORBIDDEN,
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions.",
+        ))
+    }
+}
+
 async fn local_api_schedule_entitled(state: &LocalApiState) -> bool {
     let app_state = state.app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
@@ -4922,6 +4985,7 @@ async fn handle_api_list_finding_lifecycle(
     State(state): State<LocalApiState>,
 ) -> Result<Json<Vec<db::FindingLifecycleRecord>>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -4935,6 +4999,7 @@ async fn handle_api_get_finding_lifecycle_summary(
     State(state): State<LocalApiState>,
 ) -> Result<Json<ApiFindingLifecycleSummary>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -4983,6 +5048,7 @@ async fn handle_api_update_finding_lifecycle(
     })?;
 
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -5073,6 +5139,7 @@ async fn handle_api_list_finding_owners(
     State(state): State<LocalApiState>,
 ) -> Result<Json<Vec<db::FindingOwnerRecord>>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -5095,6 +5162,7 @@ async fn handle_api_upsert_finding_owner(
         ));
     }
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -5105,6 +5173,12 @@ async fn handle_api_upsert_finding_owner(
         .into_iter()
         .find(|owner| owner.id == owner_id);
     let created_at = existing.as_ref().map(|owner| owner.created_at).unwrap_or(now);
+    let role = payload
+        .role
+        .as_deref()
+        .map(|value| value.trim().to_ascii_lowercase())
+        .filter(|value| value == "owner" || value == "manager")
+        .unwrap_or_else(|| existing.as_ref().map(|owner| owner.role.clone()).unwrap_or_else(|| "owner".to_string()));
     let row = db::FindingOwnerRecord {
         id: owner_id,
         display_name,
@@ -5118,6 +5192,7 @@ async fn handle_api_upsert_finding_owner(
             .as_deref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
+        role,
         is_active: payload
             .is_active
             .unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
@@ -5134,6 +5209,7 @@ async fn handle_api_list_org_units(
     State(state): State<LocalApiState>,
 ) -> Result<Json<Vec<db::OrgUnitRecord>>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -5153,6 +5229,7 @@ async fn handle_api_upsert_org_unit(
         return Err(api_error(StatusCode::BAD_REQUEST, "id and name are required."));
     }
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -5192,6 +5269,7 @@ async fn handle_api_deactivate_finding_owner(
         return Err(api_error(StatusCode::BAD_REQUEST, "owner_id is required."));
     }
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -5247,6 +5325,7 @@ async fn handle_api_org_unit_lifecycle_summary(
     State(state): State<LocalApiState>,
 ) -> Result<Json<Vec<ApiOrgUnitLifecycleRow>>, ApiError> {
     let app_state = state.app_handle.state::<AppState>();
+    ensure_governance_team_workspace(&app_state).await?;
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -10341,6 +10420,44 @@ async fn save_setting(
         .await
         .map_err(|e| e.to_string())?;
 
+    if normalized_key == "runtime_operator_role" || normalized_key == "runtime_role_admin_users" {
+        let admin_users_raw = db::get_setting(&conn, "runtime_role_admin_users")
+            .await
+            .unwrap_or_else(|_| "ken".to_string());
+        let current_user = current_local_username().to_ascii_lowercase();
+        let allowed = admin_users_raw
+            .split(',')
+            .map(|item| item.trim().to_ascii_lowercase())
+            .filter(|item| !item.is_empty())
+            .any(|item| item == current_user);
+        if !allowed {
+            return Err(format!(
+                "Only mapped admin users can change role settings. current_user='{}'.",
+                current_user
+            ));
+        }
+    }
+
+    if normalized_key == "runtime_operator_role" {
+        let role = normalized_value.to_ascii_lowercase();
+        if role != "owner" && role != "manager" {
+            return Err("runtime_operator_role must be 'owner' or 'manager'.".to_string());
+        }
+        normalized_value = role;
+    }
+
+    if normalized_key == "runtime_role_admin_users" {
+        let normalized_list = normalized_value
+            .split(',')
+            .map(|item| item.trim().to_ascii_lowercase())
+            .filter(|item| !item.is_empty())
+            .collect::<Vec<_>>();
+        if normalized_list.is_empty() {
+            return Err("runtime_role_admin_users cannot be empty.".to_string());
+        }
+        normalized_value = normalized_list.join(",");
+    }
+
     db::save_setting(&conn, &normalized_key, &normalized_value)
         .await
         .map_err(|e| e.to_string())?;
@@ -10351,6 +10468,8 @@ async fn save_setting(
         || normalized_key == "api_bind_host"
         || normalized_key == "api_access_token"
         || normalized_key == "api_tls_enabled"
+        || normalized_key == "runtime_operator_role"
+        || normalized_key == "runtime_role_admin_users"
         || normalized_key == "slack_webhook"
         || normalized_key.starts_with("policy")
     {
@@ -10385,6 +10504,29 @@ async fn get_setting(app_handle: tauri::AppHandle, key: String) -> Result<String
     db::get_setting(&conn, &key)
         .await
         .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn get_runtime_operator_role(app_handle: tauri::AppHandle) -> Result<String, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let raw = db::get_setting(&conn, "runtime_operator_role")
+        .await
+        .unwrap_or_else(|_| "owner".to_string());
+    Ok(normalize_operator_role(Some(raw.as_str())))
+}
+
+#[tauri::command]
+async fn get_runtime_role_admin_guard(
+    app_handle: tauri::AppHandle,
+) -> Result<RuntimeRoleAdminGuard, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(read_runtime_role_admin_guard(&conn).await)
 }
 
 #[tauri::command]
@@ -21505,6 +21647,13 @@ async fn list_finding_lifecycle_records(
     app_handle: tauri::AppHandle,
 ) -> Result<Vec<db::FindingLifecycleRecord>, String> {
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21518,6 +21667,7 @@ async fn upsert_finding_owner_record(
     display_name: String,
     email: Option<String>,
     org_unit_id: Option<String>,
+    role: Option<String>,
     is_active: Option<bool>,
 ) -> Result<db::FindingOwnerRecord, String> {
     let owner_id = id.trim().to_string();
@@ -21526,6 +21676,13 @@ async fn upsert_finding_owner_record(
         return Err("id and display_name are required".to_string());
     }
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21534,6 +21691,11 @@ async fn upsert_finding_owner_record(
         .await?
         .into_iter()
         .find(|owner| owner.id == owner_id);
+    let normalized_role = role
+        .as_deref()
+        .map(|value| value.trim().to_ascii_lowercase())
+        .filter(|value| value == "owner" || value == "manager")
+        .unwrap_or_else(|| existing.as_ref().map(|owner| owner.role.clone()).unwrap_or_else(|| "owner".to_string()));
     let row = db::FindingOwnerRecord {
         id: owner_id,
         display_name: owner_name,
@@ -21545,6 +21707,7 @@ async fn upsert_finding_owner_record(
             .as_deref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
+        role: normalized_role,
         is_active: is_active.unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
         created_at: existing.as_ref().map(|owner| owner.created_at).unwrap_or(now),
         updated_at: now,
@@ -21558,6 +21721,13 @@ async fn list_finding_owner_records(
     app_handle: tauri::AppHandle,
 ) -> Result<Vec<db::FindingOwnerRecord>, String> {
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21578,6 +21748,13 @@ async fn upsert_org_unit_record(
         return Err("id and name are required".to_string());
     }
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21606,6 +21783,13 @@ async fn list_org_unit_records(
     app_handle: tauri::AppHandle,
 ) -> Result<Vec<db::OrgUnitRecord>, String> {
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21625,6 +21809,13 @@ async fn assign_finding_owner_record(
         return Err("resource_id and owner_id are required".to_string());
     }
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21671,6 +21862,13 @@ async fn deactivate_finding_owner_record(
         return Err("owner_id is required".to_string());
     }
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -21710,6 +21908,13 @@ async fn get_org_unit_lifecycle_summary(
     app_handle: tauri::AppHandle,
 ) -> Result<Vec<ApiOrgUnitLifecycleRow>, String> {
     let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(
+            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+                .to_string(),
+        );
+    }
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
@@ -22691,6 +22896,8 @@ fn main() {
             load_license_file,
             save_setting,
             get_setting,
+            get_runtime_operator_role,
+            get_runtime_role_admin_guard,
             get_system_log_overview,
             read_system_logs,
             get_support_snapshot,

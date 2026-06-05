@@ -2,6 +2,9 @@
 
 Local-first cloud waste scanning for operators who want source-visible, production-usable tooling.
 
+[![Sponsor](https://img.shields.io/badge/Support-GitHub%20Sponsors-0f172a?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/ken-water)
+[![Buy us a coffee](https://img.shields.io/badge/Buy%20Us%20A%20Coffee-Keep%20CWS%20Shipping-f59e0b)](https://github.com/sponsors/ken-water)
+
 ## Repository Scope
 
 This repository is the **Community Edition**.
@@ -44,6 +47,7 @@ If Cloud Waste Scanner helps your team, you can support ongoing maintenance and 
 
 - Sponsor on GitHub: https://github.com/sponsors/ken-water
 - Buy us a coffee: https://github.com/sponsors/ken-water
+- Website support entry: https://cloud-waste-scanner.com/
 
 ## Development
 

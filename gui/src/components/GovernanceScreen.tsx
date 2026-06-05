@@ -19,6 +19,7 @@ import { drawPdfBrandHeader, drawPdfFooterSiteLink, formatPdfDateTime } from "..
 import { loadPdfRuntime } from "../utils/pdfRuntime";
 import { PageHeader } from "./layout/PageHeader";
 import { MetricCard } from "./ui/MetricCard";
+import { entitlementsForPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
 
 ChartJS.register(
   CategoryScale,
@@ -165,6 +166,7 @@ export function GovernanceScreen() {
   const [copyHint, setCopyHint] = useState<string>("");
   const [data, setData] = useState<GovernanceStatsResponse | null>(null);
   const [orgLifecycleRows, setOrgLifecycleRows] = useState<OrgUnitLifecycleRow[]>([]);
+  const canUseTeamWorkspace = entitlementsForPlan(readRuntimePlanTypeFromStorage()).team_workspace;
   const { format: formatCurrency } = useCurrency();
 
   const loadGovernance = useCallback(async (silent = false) => {
@@ -179,7 +181,9 @@ export function GovernanceScreen() {
           windowDays,
           demoMode: isDemo,
         }),
-        invoke<OrgUnitLifecycleRow[]>("get_org_unit_lifecycle_summary").catch(() => []),
+        canUseTeamWorkspace
+          ? invoke<OrgUnitLifecycleRow[]>("get_org_unit_lifecycle_summary").catch(() => [])
+          : Promise.resolve([]),
       ]);
       setData(res);
       setOrgLifecycleRows(orgRows || []);
@@ -398,6 +402,13 @@ export function GovernanceScreen() {
     const topErrors = topErrorCategories
       .map((item, index) => `${index + 1}. ${item.label}: ${item.count} (${formatPct(item.ratio_pct)})`)
       .join("\n");
+    const topOrgLifecycle = orgLifecycleRows
+      .slice(0, 5)
+      .map(
+        (item, index) =>
+          `${index + 1}. ${item.org_unit_name}: total ${item.total}, assigned ${item.assigned}, in-progress ${item.in_progress}, closed ${item.closed}`,
+      )
+      .join("\n");
 
     const text = [
       `Cloud Waste Scanner Governance Weekly Pack (${data.window_days}d)`,
@@ -420,6 +431,9 @@ export function GovernanceScreen() {
       "Top Error Categories:",
       topErrors || "No failed checks in selected window",
       "",
+      ...(canUseTeamWorkspace
+        ? ["Org Lifecycle Summary:", topOrgLifecycle || "No org lifecycle data", ""]
+        : []),
       "Recommendations:",
       ...recommendationLines.map((line, index) => `${index + 1}. ${line}`),
     ].join("\n");
@@ -589,6 +603,42 @@ export function GovernanceScreen() {
       });
       cursorY = getLastTableY(accountStart);
 
+      if (canUseTeamWorkspace) {
+        const orgStart = startSection("Org Lifecycle Summary", 24);
+        autoTable(doc, {
+          startY: orgStart,
+          head: [["Org Unit", "Detected", "Assigned", "In Progress", "Closed", "Total"]],
+          body: (orgLifecycleRows.length > 0 ? orgLifecycleRows : [{
+            org_unit_name: "No org lifecycle data",
+            detected: 0,
+            assigned: 0,
+            in_progress: 0,
+            closed: 0,
+            total: 0,
+          }]).map((item: any) => [
+            sanitizePdfText(item.org_unit_name),
+            sanitizePdfText(item.detected),
+            sanitizePdfText(item.assigned),
+            sanitizePdfText(item.in_progress),
+            sanitizePdfText(item.closed),
+            sanitizePdfText(item.total),
+          ]),
+          theme: "grid",
+          headStyles: { fillColor: [29, 78, 216] },
+          styles: { fontSize: 8 },
+          margin: { left: 14, right: 14, bottom: 18 },
+          columnStyles: {
+            0: { cellWidth: 74 },
+            1: { cellWidth: 22, halign: "right" },
+            2: { cellWidth: 22, halign: "right" },
+            3: { cellWidth: 24, halign: "right" },
+            4: { cellWidth: 20, halign: "right" },
+            5: { cellWidth: 20, halign: "right" },
+          },
+        });
+        cursorY = getLastTableY(orgStart);
+      }
+
       const recStart = startSection("Recommendations", 24);
       autoTable(doc, {
         startY: recStart,
@@ -706,6 +756,27 @@ export function GovernanceScreen() {
         lines.push("No failed checks,0,0.0%");
       }
       lines.push("");
+
+      if (canUseTeamWorkspace) {
+        lines.push("Org Lifecycle Summary");
+        lines.push("Org Unit,Detected,Assigned,In Progress,Closed,Total");
+        for (const item of orgLifecycleRows) {
+          lines.push(
+            [
+              csvEscape(item.org_unit_name),
+              csvEscape(item.detected),
+              csvEscape(item.assigned),
+              csvEscape(item.in_progress),
+              csvEscape(item.closed),
+              csvEscape(item.total),
+            ].join(","),
+          );
+        }
+        if (orgLifecycleRows.length === 0) {
+          lines.push("No org lifecycle data,0,0,0,0,0");
+        }
+        lines.push("");
+      }
 
       lines.push("Recommendations");
       lines.push("No,Guidance");
@@ -976,6 +1047,7 @@ export function GovernanceScreen() {
         </div>
       </div>
 
+      {canUseTeamWorkspace && (
       <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-800/50 overflow-auto">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <Building2 className="h-5 w-5 text-indigo-500" />
@@ -1012,6 +1084,7 @@ export function GovernanceScreen() {
           </tbody>
         </table>
       </div>
+      )}
     </div>
   );
 }

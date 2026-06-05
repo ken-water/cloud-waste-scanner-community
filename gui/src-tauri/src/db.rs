@@ -121,6 +121,7 @@ pub struct FindingOwnerRecord {
     pub display_name: String,
     pub email: Option<String>,
     pub org_unit_id: Option<String>,
+    pub role: String,
     pub is_active: bool,
     pub created_at: i64,
     pub updated_at: i64,
@@ -322,6 +323,7 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
             display_name TEXT NOT NULL,
             email TEXT,
             org_unit_id TEXT,
+            role TEXT NOT NULL DEFAULT 'owner',
             is_active BOOLEAN NOT NULL DEFAULT 1,
             created_at INTEGER NOT NULL,
             updated_at INTEGER NOT NULL
@@ -406,6 +408,9 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
         .execute(&pool)
         .await;
     let _ = sqlx::query("ALTER TABLE finding_owners ADD COLUMN org_unit_id TEXT")
+        .execute(&pool)
+        .await;
+    let _ = sqlx::query("ALTER TABLE finding_owners ADD COLUMN role TEXT DEFAULT 'owner'")
         .execute(&pool)
         .await;
 
@@ -3082,7 +3087,7 @@ pub async fn upsert_finding_lifecycle(
 
 pub async fn list_finding_owners(pool: &Pool<Sqlite>) -> Result<Vec<FindingOwnerRecord>, String> {
     sqlx::query_as::<_, FindingOwnerRecord>(
-        "SELECT id, display_name, email, org_unit_id, is_active, created_at, updated_at
+        "SELECT id, display_name, email, org_unit_id, role, is_active, created_at, updated_at
          FROM finding_owners
          ORDER BY is_active DESC, display_name ASC",
     )
@@ -3093,13 +3098,14 @@ pub async fn list_finding_owners(pool: &Pool<Sqlite>) -> Result<Vec<FindingOwner
 
 pub async fn upsert_finding_owner(pool: &Pool<Sqlite>, row: &FindingOwnerRecord) -> Result<(), String> {
     sqlx::query(
-        "INSERT OR REPLACE INTO finding_owners (id, display_name, email, org_unit_id, is_active, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT OR REPLACE INTO finding_owners (id, display_name, email, org_unit_id, role, is_active, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&row.id)
     .bind(&row.display_name)
     .bind(&row.email)
     .bind(&row.org_unit_id)
+    .bind(&row.role)
     .bind(row.is_active)
     .bind(row.created_at)
     .bind(row.updated_at)
