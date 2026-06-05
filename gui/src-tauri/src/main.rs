@@ -94,7 +94,7 @@ use proxy_runtime::{
     normalize_custom_proxy_url, resolve_proxy_runtime,
 };
 use runtime_helpers::{
-    build_runtime_entitlements, calculate_follow_up_next_run, calculate_initial_next_run,
+    build_runtime_capability_snapshot, build_runtime_entitlements, calculate_follow_up_next_run, calculate_initial_next_run,
     normalize_channel_min_findings_for_storage, normalize_channel_min_savings_for_storage,
     normalize_channel_trigger_mode_for_storage, normalize_enqueue_error_message,
     normalize_transport_error_detail, parse_notification_channel_email_recipients,
@@ -3324,6 +3324,16 @@ fn entitlements_for_runtime_plan(plan: Option<&str>) -> runtime_helpers::Runtime
         .unwrap_or_else(|| "community".to_string());
     let is_trial = normalized.eq_ignore_ascii_case("trial");
     build_runtime_entitlements(&normalized, is_trial)
+}
+
+fn runtime_capability_snapshot_for_plan(
+    plan: Option<&str>,
+) -> runtime_helpers::RuntimeCapabilitySnapshot {
+    let normalized = plan
+        .map(runtime_helpers::normalize_runtime_plan_type)
+        .unwrap_or_else(|| "community".to_string());
+    let is_trial = normalized.eq_ignore_ascii_case("trial");
+    build_runtime_capability_snapshot(&normalized, is_trial)
 }
 
 fn schedule_entitled_for_runtime_plan(plan: Option<&str>) -> bool {
@@ -10516,6 +10526,15 @@ async fn get_runtime_operator_role(app_handle: tauri::AppHandle) -> Result<Strin
         .await
         .unwrap_or_else(|_| "owner".to_string());
     Ok(normalize_operator_role(Some(raw.as_str())))
+}
+
+#[tauri::command]
+async fn get_runtime_capability_snapshot(
+    app_handle: tauri::AppHandle,
+) -> Result<runtime_helpers::RuntimeCapabilitySnapshot, String> {
+    let app_state = app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    Ok(runtime_capability_snapshot_for_plan(runtime_plan.as_deref()))
 }
 
 #[tauri::command]
@@ -22897,6 +22916,7 @@ fn main() {
             save_setting,
             get_setting,
             get_runtime_operator_role,
+            get_runtime_capability_snapshot,
             get_runtime_role_admin_guard,
             get_system_log_overview,
             read_system_logs,

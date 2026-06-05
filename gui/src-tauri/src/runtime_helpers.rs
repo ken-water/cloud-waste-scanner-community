@@ -283,6 +283,25 @@ pub(crate) struct RuntimeEntitlements {
     pub(crate) scim: bool,
 }
 
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub(crate) struct RuntimeCapabilityFlags {
+    pub(crate) discovery_and_evidence: bool,
+    pub(crate) local_api_and_exports: bool,
+    pub(crate) team_governance_execution: bool,
+    pub(crate) scheduled_governance: bool,
+    pub(crate) enterprise_audit: bool,
+    pub(crate) enterprise_identity: bool,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub(crate) struct RuntimeCapabilitySnapshot {
+    pub(crate) plan_type: String,
+    pub(crate) edition: String,
+    pub(crate) is_trial: bool,
+    pub(crate) entitlements: RuntimeEntitlements,
+    pub(crate) capabilities: RuntimeCapabilityFlags,
+}
+
 pub(crate) fn resolve_runtime_edition(plan_type: &str, is_trial: bool) -> String {
     if is_trial {
         return "community".to_string();
@@ -331,6 +350,38 @@ pub(crate) fn build_runtime_entitlements(plan_type: &str, is_trial: bool) -> Run
             sso: false,
             scim: false,
         },
+    }
+}
+
+pub(crate) fn build_runtime_capability_flags(
+    entitlements: &RuntimeEntitlements,
+) -> RuntimeCapabilityFlags {
+    RuntimeCapabilityFlags {
+        discovery_and_evidence: entitlements.local_scan
+            && entitlements.basic_report
+            && entitlements.resource_details,
+        local_api_and_exports: entitlements.local_api,
+        team_governance_execution: entitlements.team_workspace,
+        scheduled_governance: entitlements.scheduled_audits,
+        enterprise_audit: entitlements.audit_log,
+        enterprise_identity: entitlements.sso && entitlements.scim,
+    }
+}
+
+pub(crate) fn build_runtime_capability_snapshot(
+    plan_type: &str,
+    is_trial: bool,
+) -> RuntimeCapabilitySnapshot {
+    let normalized_plan_type = normalize_runtime_plan_type(plan_type);
+    let edition = resolve_runtime_edition(&normalized_plan_type, is_trial);
+    let entitlements = build_runtime_entitlements(&normalized_plan_type, is_trial);
+    let capabilities = build_runtime_capability_flags(&entitlements);
+    RuntimeCapabilitySnapshot {
+        plan_type: normalized_plan_type,
+        edition,
+        is_trial,
+        entitlements,
+        capabilities,
     }
 }
 

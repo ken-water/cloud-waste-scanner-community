@@ -14,6 +14,23 @@ export interface RuntimeEntitlements {
   scim: boolean;
 }
 
+export interface RuntimeCapabilityFlags {
+  discovery_and_evidence: boolean;
+  local_api_and_exports: boolean;
+  team_governance_execution: boolean;
+  scheduled_governance: boolean;
+  enterprise_audit: boolean;
+  enterprise_identity: boolean;
+}
+
+export interface RuntimeCapabilitySnapshot {
+  plan_type: string;
+  edition: RuntimeEdition;
+  is_trial: boolean;
+  entitlements: RuntimeEntitlements;
+  capabilities: RuntimeCapabilityFlags;
+}
+
 export type RuntimeEntitlementKey = keyof RuntimeEntitlements;
 export type ProductCapabilityKey =
   | "discovery_and_evidence"
@@ -155,6 +172,34 @@ export function capabilityEnabled(
     default:
       return false;
   }
+}
+
+export function capabilityFlagsForPlan(planTypeRaw: string | null | undefined): RuntimeCapabilityFlags {
+  return {
+    discovery_and_evidence: capabilityEnabled("discovery_and_evidence", planTypeRaw),
+    local_api_and_exports: capabilityEnabled("local_api_and_exports", planTypeRaw),
+    team_governance_execution: capabilityEnabled("team_governance_execution", planTypeRaw),
+    scheduled_governance: capabilityEnabled("scheduled_governance", planTypeRaw),
+    enterprise_audit: capabilityEnabled("enterprise_audit", planTypeRaw),
+    enterprise_identity: capabilityEnabled("enterprise_identity", planTypeRaw),
+  };
+}
+
+export function buildRuntimeCapabilitySnapshotFromPlan(
+  planTypeRaw: string | null | undefined,
+): RuntimeCapabilitySnapshot {
+  const plan_type = normalizeRuntimePlanType(planTypeRaw);
+  const edition = resolveRuntimeEdition(planTypeRaw);
+  const is_trial = plan_type === "trial";
+  const entitlements = entitlementsForPlan(planTypeRaw);
+  const capabilities = capabilityFlagsForPlan(planTypeRaw);
+  return {
+    plan_type,
+    edition,
+    is_trial,
+    entitlements,
+    capabilities,
+  };
 }
 
 export interface EditionCapabilityRow {

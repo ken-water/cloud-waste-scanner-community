@@ -1,17 +1,40 @@
 import { Check, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import { PageHeader } from "./layout/PageHeader";
 import { PageShell } from "./layout/PageShell";
 import {
   EDITION_CAPABILITY_MATRIX,
-  capabilityEnabled,
+  buildRuntimeCapabilitySnapshotFromPlan,
   formatEditionLabel,
   readRuntimePlanTypeFromStorage,
-  resolveRuntimeEdition,
+  type RuntimeCapabilitySnapshot,
 } from "../lib/edition";
 
 export default function LicenseScreen() {
   const runtimePlanType = readRuntimePlanTypeFromStorage();
-  const runtimeEdition = resolveRuntimeEdition(runtimePlanType);
+  const [snapshot, setSnapshot] = useState<RuntimeCapabilitySnapshot>(
+    buildRuntimeCapabilitySnapshotFromPlan(runtimePlanType),
+  );
+
+  useEffect(() => {
+    let mounted = true;
+    const fallback = buildRuntimeCapabilitySnapshotFromPlan(runtimePlanType);
+    const load = async () => {
+      try {
+        const value = await invoke<RuntimeCapabilitySnapshot>("get_runtime_capability_snapshot");
+        if (!mounted) return;
+        setSnapshot(value);
+      } catch {
+        if (!mounted) return;
+        setSnapshot(fallback);
+      }
+    };
+    void load();
+    return () => {
+      mounted = false;
+    };
+  }, [runtimePlanType]);
 
   return (
     <PageShell maxWidthClassName="max-w-6xl" className="space-y-6">
@@ -38,7 +61,7 @@ export default function LicenseScreen() {
               Community discovers. Team executes. Enterprise centralizes.
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-              Current runtime edition: <span className="font-semibold text-slate-900 dark:text-white">{formatEditionLabel(runtimeEdition)}</span>
+              Current runtime edition: <span className="font-semibold text-slate-900 dark:text-white">{formatEditionLabel(snapshot.edition)}</span>
             </p>
           </div>
         </div>
@@ -81,7 +104,7 @@ export default function LicenseScreen() {
         <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-300">
           Active on this machine now:
           <span className="ml-2 font-semibold text-slate-900 dark:text-white">
-            {EDITION_CAPABILITY_MATRIX.filter((row) => capabilityEnabled(row.key, runtimePlanType)).map((row) => row.label).join(" · ")}
+            {EDITION_CAPABILITY_MATRIX.filter((row) => snapshot.capabilities[row.key]).map((row) => row.label).join(" · ")}
           </span>
         </div>
       </section>
