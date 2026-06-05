@@ -24,6 +24,8 @@ For commercial use, managed support, or enterprise rollout terms, contact the ma
 
 Scope references:
 - Community: `COMMUNITY_SCOPE.md`
+- Community roadmap: `COMMUNITY_ROADMAP_NEXT.md`
+- Community backlog: `COMMUNITY_BACKLOG_NEXT.md`
 - Team: `TEAM_SCOPE.md`
 - Enterprise: `ENTERPRISE_SCOPE.md`
 
