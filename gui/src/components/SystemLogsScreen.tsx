@@ -5,7 +5,7 @@ import { PageHeader } from "./layout/PageHeader";
 import { PageShell } from "./layout/PageShell";
 import { MetricCard } from "./ui/MetricCard";
 import { exportTextWithTauriFallback } from "../utils/fileExport";
-import { canAccessTabByPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
+import { auditLogGateMessage, canAccessTabByPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
 
 interface SystemLogOverview {
   path: string;
@@ -266,7 +266,7 @@ export function SystemLogsScreen() {
               <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
                 {canOpenAuditLog
                   ? "Filter by area or level, copy the relevant lines, then move to Audit Log if you need operator accountability around the same event."
-                  : "Filter by area or level, and copy relevant lines for investigation. Operator audit trails require Enterprise edition."}
+                  : `Filter by area or level, and copy relevant lines for investigation. ${auditLogGateMessage()}`}
               </p>
             </div>
           </div>

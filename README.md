@@ -14,11 +14,18 @@ This repository is the **Community Edition**.
 
 Current version: `2.9.19`
 
-- Community is local-first and production-usable.
+- Community is local-first discovery and evidence generation.
+- Team is governance execution for owners, org units, and handoff workflows.
+- Enterprise is centralized control for identity, audit, and compliance scale.
 - No hosted license activation is required for core local workflows.
 - This repository is distributed under a **non-commercial license** (see `LICENSE`).
 
 For commercial use, managed support, or enterprise rollout terms, contact the maintainers via the project website.
+
+Scope references:
+- Community: `COMMUNITY_SCOPE.md`
+- Team: `TEAM_SCOPE.md`
+- Enterprise: `ENTERPRISE_SCOPE.md`
 
 ## Legal Transition Notice
 
@@ -33,6 +40,7 @@ This repository previously contained Pro-era documentation and release metadata.
 - Local-first execution: credentials remain on the operator machine.
 - Read-only scanning by default.
 - Evidence-oriented outputs for operator and finance review.
+- Commercial boundaries are defined by workflow coordination and centralized control, not by hiding core local discovery value.
 
 ## Local API and SDKs
 

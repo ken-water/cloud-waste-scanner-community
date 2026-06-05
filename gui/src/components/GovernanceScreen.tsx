@@ -828,7 +828,7 @@ export function GovernanceScreen() {
     <div className="p-8 space-y-6 bg-slate-50 dark:bg-slate-900 min-h-screen transition-colors duration-300">
       <PageHeader
         title="Governance"
-        subtitle="Enterprise-focused governance metrics for ownership, execution quality, savings, and ESG impact."
+        subtitle="Governance execution metrics for ownership, closure quality, savings, and ESG impact across Team and Enterprise workflows."
         icon={<Building2 className="h-6 w-6" />}
         actions={
           <div className="flex flex-col items-end gap-2">

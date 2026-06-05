@@ -11,7 +11,7 @@ import { exportBlobWithTauriFallback, exportTextWithTauriFallback, revealExporte
 import { loadPdfRuntime } from "../utils/pdfRuntime";
 import { PageHeader } from "./layout/PageHeader";
 import { MetricCard } from "./ui/MetricCard";
-import { entitlementsForPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
+import { entitlementsForPlan, readRuntimePlanTypeFromStorage, teamWorkspaceGateMessage } from "../lib/edition";
 
 interface WastedResource {
   id: string;
@@ -200,7 +200,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
 
   const assignOwner = async (resource: WastedResource, ownerId: string) => {
     if (!canUseTeamWorkspace) {
-      showActionNotice("Owner assignment requires Team or Enterprise edition.", "error");
+      showActionNotice(teamWorkspaceGateMessage(), "error");
       return;
     }
     if (!ownerId) return;
@@ -223,7 +223,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
 
   const assignSelectedToOwner = async () => {
       if (!canUseManagerTools) {
-          showActionNotice("Batch assignment requires manager role.", "error");
+          showActionNotice("Batch assignment belongs to the Team governance execution layer and also requires manager role on this machine.", "error");
           return;
       }
       if (!batchAssignOwnerId || selectedIds.size === 0) return;

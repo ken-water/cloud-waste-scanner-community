@@ -5,7 +5,7 @@ import { PageHeader } from "./layout/PageHeader";
 import { PageShell } from "./layout/PageShell";
 import { MetricCard } from "./ui/MetricCard";
 import { exportTextWithTauriFallback, revealExportedFileInFolder } from "../utils/fileExport";
-import { canAccessTabByPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
+import { auditLogGateMessage, canAccessTabByPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
 
 interface SupportHubScreenProps {
   onNavigate: (tab: string) => void;
@@ -99,7 +99,7 @@ export function SupportHubScreen({ onNavigate }: SupportHubScreenProps) {
         setAuditCount(0);
         const raw = String(auditRowsRes.reason || "");
         if (raw.toLowerCase().includes("enterprise")) {
-          setAuditGateNotice("Audit Log requires Enterprise edition.");
+          setAuditGateNotice(auditLogGateMessage());
         } else {
           setAuditGateNotice("Audit Log is currently unavailable.");
         }
@@ -276,7 +276,7 @@ export function SupportHubScreen({ onNavigate }: SupportHubScreenProps) {
           <MetricCard
             label="Audit Rows"
             value={auditCount}
-            hint={canOpenAuditLog ? "Most recent operator events available from the local audit store." : "Enterprise edition required for Audit Log."}
+            hint={canOpenAuditLog ? "Most recent operator events available from the local audit store." : auditLogGateMessage()}
             icon={<ClipboardList className="h-5 w-5" />}
           />
           <MetricCard
@@ -302,7 +302,7 @@ export function SupportHubScreen({ onNavigate }: SupportHubScreenProps) {
               <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
                 {canOpenAuditLog
                   ? "Start with System Logs for runtime failures, then use Audit Log to confirm the operator action trail."
-                  : "Start with System Logs for runtime failures. Audit Log trails are available on Enterprise edition."}
+                  : `Start with System Logs for runtime failures. ${auditLogGateMessage()}`}
               </p>
             </div>
             <div>
@@ -334,7 +334,7 @@ export function SupportHubScreen({ onNavigate }: SupportHubScreenProps) {
               onNavigate("audit_log");
             }}
             aria-disabled={!canOpenAuditLog}
-            title={canOpenAuditLog ? "" : "Enterprise edition required"}
+            title={canOpenAuditLog ? "" : auditLogGateMessage()}
             className={`rounded-2xl border p-6 text-left shadow-sm transition-all dark:border-slate-700 dark:bg-slate-800 ${
               canOpenAuditLog
                 ? "border-slate-200 bg-white hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:hover:border-indigo-500/40"
@@ -352,7 +352,7 @@ export function SupportHubScreen({ onNavigate }: SupportHubScreenProps) {
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
               {canOpenAuditLog
                 ? "Review who ran scans, triggered cleanups, or changed configuration on this machine."
-                : "Enterprise edition required to review operator audit trails."}
+                : auditLogGateMessage()}
             </p>
           </button>
 

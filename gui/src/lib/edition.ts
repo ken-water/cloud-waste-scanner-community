@@ -101,6 +101,32 @@ const TAB_REQUIREMENTS: Record<string, RuntimeEntitlementKey | null> = {
   history: "resource_details",
 };
 
+export function formatEditionLabel(edition: RuntimeEdition): string {
+  if (edition === "team") return "Team";
+  if (edition === "enterprise") return "Enterprise";
+  return "Community";
+}
+
+export function teamWorkspaceGateMessage(): string {
+  return "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls.";
+}
+
+export function scheduledAuditsGateMessage(): string {
+  return "Scheduled audits belong to the Team governance execution layer. Enterprise includes the same scheduling capability plus centralized identity and audit controls.";
+}
+
+export function auditLogGateMessage(): string {
+  return "Audit Log belongs to the Enterprise centralized control layer for operator accountability, identity, and compliance review.";
+}
+
+export function entitlementHintForTab(tabRaw: string): string {
+  const tab = (tabRaw || "").trim().toLowerCase();
+  if (tab === "audit_log") return auditLogGateMessage();
+  if (tab === "local_api") return "Local API is available in Community and above when local API access is enabled.";
+  if (tab === "history") return "Detailed history review is available in Community and above when scan history is enabled locally.";
+  return "Upgrade required";
+}
+
 export function requiredEntitlementForTab(tabRaw: string): RuntimeEntitlementKey | null {
   const tab = (tabRaw || "").trim().toLowerCase();
   return TAB_REQUIREMENTS[tab] ?? null;

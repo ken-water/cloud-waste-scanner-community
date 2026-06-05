@@ -126,6 +126,9 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
               <span>Status:</span>
               <span className="text-emerald-500 font-bold">Local Active</span>
           </div>
+          <p className="mt-2 text-[11px] leading-5 text-slate-500 dark:text-slate-400">
+            Discovery and evidence stay local on this machine.
+          </p>
           <div className="flex justify-between items-center mt-1">
               <span>Version:</span>
               <span>v{version}</span>

@@ -3314,7 +3314,7 @@ async fn probe_ai_devices() -> Result<(String, Vec<ai_runtime::AiDeviceSnapshot>
 fn schedule_gate_error() -> ApiError {
     api_error(
         StatusCode::FORBIDDEN,
-        "Scheduled audits are available on Team and Enterprise editions.",
+        "Scheduled audits belong to the Team governance execution layer. Enterprise includes the same scheduling capability plus centralized identity and audit controls.",
     )
 }
 
@@ -3391,7 +3391,7 @@ async fn ensure_governance_team_workspace(state: &AppState) -> Result<(), ApiErr
     } else {
         Err(api_error(
             StatusCode::FORBIDDEN,
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions.",
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls.",
         ))
     }
 }
@@ -8482,7 +8482,7 @@ async fn get_audit_logs(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !audit_log_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err("Audit Log is available on Enterprise edition.".to_string());
+        return Err("Audit Log belongs to the Enterprise centralized control layer for operator accountability, identity, and compliance review.".to_string());
     }
 
     let conn = db::init_db(&app_state.db_path)
@@ -8502,7 +8502,7 @@ async fn clear_audit_logs(app_handle: tauri::AppHandle) -> Result<(), String> {
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !audit_log_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err("Audit Log is available on Enterprise edition.".to_string());
+        return Err("Audit Log belongs to the Enterprise centralized control layer for operator accountability, identity, and compliance review.".to_string());
     }
 
     let conn = db::init_db(&app_state.db_path)
@@ -21650,7 +21650,7 @@ async fn list_finding_lifecycle_records(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21679,7 +21679,7 @@ async fn upsert_finding_owner_record(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21724,7 +21724,7 @@ async fn list_finding_owner_records(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21751,7 +21751,7 @@ async fn upsert_org_unit_record(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21786,7 +21786,7 @@ async fn list_org_unit_records(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21812,7 +21812,7 @@ async fn assign_finding_owner_record(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21865,7 +21865,7 @@ async fn deactivate_finding_owner_record(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }
@@ -21911,7 +21911,7 @@ async fn get_org_unit_lifecycle_summary(
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
         return Err(
-            "Org structure, owner directory, and lifecycle workflow are available on Team and Enterprise editions."
+            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
                 .to_string(),
         );
     }

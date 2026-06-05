@@ -4,6 +4,7 @@ import { PageShell } from "./layout/PageShell";
 import { MetricCard } from "./ui/MetricCard";
 import {
   canAccessTabByPlan,
+  entitlementHintForTab,
   readRuntimePlanTypeFromStorage,
   requiredEntitlementForTab,
 } from "../lib/edition";
@@ -59,10 +60,6 @@ const groups = [
 export function SettingsHubScreen({ onNavigate }: SettingsHubScreenProps) {
   const itemCount = groups.flatMap((group) => group.items).length;
   const runtimePlanType = readRuntimePlanTypeFromStorage();
-  const entitlementHintByTab: Record<string, string> = {
-    local_api: "Upgrade required",
-  };
-
   return (
     <PageShell maxWidthClassName="max-w-6xl">
         <PageHeader
@@ -129,7 +126,7 @@ export function SettingsHubScreen({ onNavigate }: SettingsHubScreenProps) {
                 const requiredEntitlement = requiredEntitlementForTab(item.id);
                 const allowed = canAccessTabByPlan(item.id, runtimePlanType);
                 const lockHint = !allowed && requiredEntitlement
-                  ? (entitlementHintByTab[item.id] || `${requiredEntitlement} required`)
+                  ? entitlementHintForTab(item.id)
                   : "";
                 return (
                   <button

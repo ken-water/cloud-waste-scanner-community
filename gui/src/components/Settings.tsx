@@ -16,7 +16,7 @@ import { ImportAccountsModal } from "./settings/ImportAccountsModal";
 import { NotificationsSettingsContent } from "./settings/NotificationsSettingsContent";
 import { PendingDeleteAwsModal } from "./settings/PendingDeleteAwsModal";
 import { SettingsToast } from "./settings/SettingsToast";
-import { entitlementsForPlan, readRuntimePlanTypeFromStorage } from "../lib/edition";
+import { entitlementsForPlan, readRuntimePlanTypeFromStorage, teamWorkspaceGateMessage } from "../lib/edition";
 
 interface AwsProfile {
   name: string;
@@ -3607,6 +3607,9 @@ export function Settings({
 
         {activeTab === "org" && canUseTeamWorkspace && (
             <div className="space-y-6">
+                <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-200">
+                    {teamWorkspaceGateMessage()}
+                </div>
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                         <Building2 className="w-5 h-5" /> Org Units
@@ -3624,7 +3627,7 @@ export function Settings({
                         <Users className="w-5 h-5" /> Team Operator Role
                     </h2>
                     <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                        Manager role can batch assign findings in Scan Results. Owner role cannot.
+                        Team is the governance execution layer. Manager role can batch assign findings in Scan Results. Owner role cannot.
                     </p>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         Current user: <code>{runtimeRoleAdminGuard?.current_user || "-"}</code> · Role admins: <code>{(runtimeRoleAdminGuard?.admin_users || []).join(", ") || "-"}</code>
