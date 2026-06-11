@@ -395,6 +395,10 @@ struct EnrichedScanResult {
     estimation_rationale: String,
     confidence_level: String,
     review_priority: String,
+    lifecycle_status: Option<String>,
+    owner_assigned: bool,
+    is_overdue: bool,
+    was_reopened: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -9437,6 +9441,9 @@ async fn current_enriched_scan_results(
     let current_results = db::get_scan_results(conn)
         .await
         .map_err(|e| e.to_string())?;
+    let lifecycle_rows = db::list_finding_lifecycle(conn)
+        .await
+        .map_err(|e| e.to_string())?;
     let history = db::get_scan_history(conn)
         .await
         .map_err(|e| e.to_string())?;
@@ -9445,12 +9452,36 @@ async fn current_enriched_scan_results(
         .find(|item| item.status.eq_ignore_ascii_case("completed"))
         .and_then(|item| item.scan_meta.as_deref());
     let attribution = extract_scan_meta_attribution(latest_meta);
+    let lifecycle_by_resource: HashMap<String, db::FindingLifecycleRecord> = lifecycle_rows
+        .into_iter()
+        .map(|row| (row.resource_id.clone(), row))
+        .collect();
+    let now = now_unix_ts();
 
     Ok(current_results
         .into_iter()
         .map(|resource| {
             let mapped = attribution.get(&resource_attribution_key(&resource));
-            let explanation = build_finding_explanation(&resource);
+            let lifecycle = lifecycle_by_resource.get(&resource.id);
+            let owner_assigned = lifecycle
+                .and_then(|row| row.owner_id.as_ref())
+                .map(|value| !value.trim().is_empty())
+                .unwrap_or(false);
+            let is_overdue = lifecycle
+                .and_then(|row| row.due_at)
+                .map(|due_at| due_at < now)
+                .unwrap_or(false);
+            let was_reopened = lifecycle
+                .and_then(|row| row.reopen_reason.as_ref())
+                .map(|value| !value.trim().is_empty())
+                .unwrap_or(false);
+            let explanation = build_finding_explanation(
+                &resource,
+                lifecycle.map(|row| row.status.as_str()),
+                owner_assigned,
+                is_overdue,
+                was_reopened,
+            );
             EnrichedScanResult {
                 id: resource.id,
                 provider: resource.provider,
@@ -9471,6 +9502,10 @@ async fn current_enriched_scan_results(
                 estimation_rationale: explanation.estimation_rationale,
                 confidence_level: explanation.confidence_level,
                 review_priority: explanation.review_priority,
+                lifecycle_status: lifecycle.map(|row| row.status.clone()),
+                owner_assigned,
+                is_overdue,
+                was_reopened,
             }
         })
         .collect())
@@ -9500,6 +9535,10 @@ enum FindingCategory {
 
 fn build_finding_explanation(
     resource: &cloud_waste_scanner_core::WastedResource,
+    lifecycle_status: Option<&str>,
+    owner_assigned: bool,
+    is_overdue: bool,
+    was_reopened: bool,
 ) -> FindingExplanation {
     let resource_type = resource.resource_type.trim();
     let details = resource.details.trim();
@@ -9686,6 +9725,10 @@ fn build_finding_explanation(
         category,
         resource.estimated_monthly_cost,
         confidence_level.as_str(),
+        lifecycle_status,
+        owner_assigned,
+        is_overdue,
+        was_reopened,
     )
     .to_string();
 
@@ -9840,7 +9883,39 @@ fn determine_review_priority(
     category: FindingCategory,
     estimated_monthly_cost: f64,
     confidence_level: &str,
+    lifecycle_status: Option<&str>,
+    owner_assigned: bool,
+    is_overdue: bool,
+    was_reopened: bool,
 ) -> &'static str {
+    let lifecycle_status = lifecycle_status.unwrap_or("").trim().to_ascii_lowercase();
+
+    if is_overdue && (was_reopened || !owner_assigned) {
+        return "urgent";
+    }
+
+    if is_overdue {
+        return "urgent";
+    }
+
+    if was_reopened && !owner_assigned {
+        return "urgent";
+    }
+
+    if was_reopened {
+        return "high";
+    }
+
+    if !owner_assigned
+        && matches!(
+            lifecycle_status.as_str(),
+            "detected" | "triaged" | "assigned" | "in_progress" | ""
+        )
+        && matches!(confidence_level, "high" | "medium")
+    {
+        return "high";
+    }
+
     if confidence_level == "high"
         && estimated_monthly_cost >= 1000.0
         && action == "DELETE"
@@ -9865,6 +9940,10 @@ fn determine_review_priority(
 
     if action == "RIGHTSIZE" && estimated_monthly_cost >= 200.0 {
         return "high";
+    }
+
+    if lifecycle_status == "in_progress" {
+        return "medium";
     }
 
     if matches!(confidence_level, "high" | "medium") || estimated_monthly_cost > 0.0 {

@@ -29,6 +29,10 @@ interface WastedResource {
   estimation_rationale?: string;
   confidence_level?: string;
   review_priority?: string;
+  lifecycle_status?: string | null;
+  owner_assigned?: boolean;
+  is_overdue?: boolean;
+  was_reopened?: boolean;
 }
 
 interface ResourcesTableProps {
@@ -73,6 +77,12 @@ function buildExportExplanationLines(resource: WastedResource): string[] {
     resource.confidence_level?.trim()
       ? `Confidence: ${resource.confidence_level.trim()}`
       : "",
+    resource.lifecycle_status?.trim()
+      ? `Lifecycle: ${resource.lifecycle_status.trim()}`
+      : "",
+    resource.owner_assigned === false ? "Owner: unassigned" : "",
+    resource.is_overdue ? "Execution: overdue" : "",
+    resource.was_reopened ? "Execution: reopened" : "",
     resource.detection_reason?.trim()
       ? `Why: ${resource.detection_reason.trim()}`
       : "",
@@ -1250,6 +1260,26 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                                     : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                                 }`}>
                                   Confidence: {r.confidence_level}
+                                </span>
+                              )}
+                              {r.is_overdue && (
+                                <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-700 dark:bg-rose-900/30 dark:text-rose-300">
+                                  Overdue
+                                </span>
+                              )}
+                              {r.was_reopened && (
+                                <span className="rounded-full bg-fuchsia-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-300">
+                                  Reopened
+                                </span>
+                              )}
+                              {r.owner_assigned === false && (
+                                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                  Unassigned
+                                </span>
+                              )}
+                              {r.lifecycle_status && (
+                                <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+                                  {r.lifecycle_status}
                                 </span>
                               )}
                             </div>
