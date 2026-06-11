@@ -12,7 +12,13 @@ Local-first cloud waste scanning for operators who want source-visible, producti
 
 This repository is the **Community Edition**.
 
-Current version: `2.9.19`
+Community release line: `3.0.0`
+
+Note:
+
+- `3.0.0` marks the Community release line reset for the open client-first roadmap.
+- This does not automatically imply that every binary artifact in the repository has already changed to `3.0.0`.
+- Binary version increments should still happen only when the shipped desktop or SDK artifacts themselves change.
 
 - Community is local-first discovery and evidence generation.
 - Team is governance execution for owners, org units, and handoff workflows.

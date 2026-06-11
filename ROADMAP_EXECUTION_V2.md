@@ -117,3 +117,7 @@ Objective: evolve from cost scanning into capacity operations intelligence.
   - release tag + complete release notes
   - no binary version bump required
   - must clearly declare scope in release notes
+- Community release line reset:
+  - the new Community-era release line may start at `3.0.0`
+  - this reset is a release-line decision, not an automatic binary-version decision
+  - if binaries are unchanged, keep executable/package versions unchanged until a binary release is actually made
