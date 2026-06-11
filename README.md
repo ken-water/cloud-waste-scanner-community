@@ -26,6 +26,11 @@ Scope references:
 - Community: `COMMUNITY_SCOPE.md`
 - Community roadmap: `COMMUNITY_ROADMAP_NEXT.md`
 - Community backlog: `COMMUNITY_BACKLOG_NEXT.md`
+- Community skills strategy: `COMMUNITY_SKILLS_STRATEGY.md`
+- Skills edition matrix: `SKILLS_EDITION_MATRIX.md`
+- Skills usage (ZH): `SKILLS_USAGE_ZH.md`
+- Skill monetization policy: `SKILL_MONETIZATION_POLICY.md`
+- Skill runtime modes: `SKILL_RUNTIME_MODES.md`
 - Team: `TEAM_SCOPE.md`
 - Enterprise: `ENTERPRISE_SCOPE.md`
 
@@ -53,6 +58,51 @@ Community includes a local HTTP API for automation around scans, findings, repor
 - Cursor pagination: add `envelope=true&limit=50&cursor=<next_cursor>` to supported list endpoints.
 - Webhook signing: `X-CWS-Signature` uses `HMAC-SHA256(secret, "<timestamp>.<raw_json_body>")`.
 - SDKs: see `sdks/python` and `sdks/typescript`.
+
+### Community skill: explain findings and exports
+
+The repository now includes a first local-first skill for turning CWS evidence into role-specific summaries:
+
+- Skill: `skills/cws-report-explainer`
+- Purpose: explain findings, rank next actions, and generate summaries for operators, finance, and executives
+- Input modes:
+  - local API
+  - exported `JSON / CSV / TXT`
+
+Runtime positioning:
+
+- Preferred: `connected mode` through the installed app and local API
+- Supported fallback: `file-only mode` from exported evidence
+- Reference: `SKILL_RUNTIME_MODES.md`
+
+Build a normalized evidence bundle from the local API:
+
+```bash
+python3 skills/cws-report-explainer/scripts/build_context.py \
+  --base-url http://127.0.0.1:43177 \
+  --token local-api-token \
+  --output ./tmp/cws-context.json
+```
+
+Or from exported files:
+
+```bash
+python3 skills/cws-report-explainer/scripts/build_context.py \
+  --input ./exports/findings.json \
+  --output ./tmp/cws-context.json
+```
+
+Then invoke the skill against the bundle for:
+
+- operator explanation
+- finance summary
+- executive brief
+- weekly action list
+
+Prompt templates and sample outputs:
+
+- `skills/cws-report-explainer/references/prompt-templates.md`
+- `skills/cws-report-explainer/references/examples.md`
 
 ## Support This Project
 

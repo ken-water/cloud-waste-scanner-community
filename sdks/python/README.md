@@ -12,6 +12,17 @@ print(client.openapi())
 print(client.list_findings(limit=25))
 ```
 
+You can also pair the Python SDK with the bundled explainer skill:
+
+```bash
+python3 skills/cws-report-explainer/scripts/build_context.py \
+  --base-url http://127.0.0.1:43177 \
+  --token local-api-token \
+  --output ./tmp/cws-context.json
+```
+
+Then use `./tmp/cws-context.json` with `skills/cws-report-explainer`.
+
 Webhook verification:
 
 ```python

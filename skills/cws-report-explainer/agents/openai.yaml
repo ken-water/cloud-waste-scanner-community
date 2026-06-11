@@ -1,0 +1,7 @@
+interface:
+  display_name: "CWS Report Explainer"
+  short_description: "Explain CWS findings for action and review"
+  default_prompt: "Use $cws-report-explainer to explain these Cloud Waste Scanner findings and turn them into a prioritized weekly action list."
+
+policy:
+  allow_implicit_invocation: true

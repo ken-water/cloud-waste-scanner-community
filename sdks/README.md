@@ -12,6 +12,18 @@ Current coverage:
 
 SDKs intentionally call the local API. They do not require a hosted CWS service.
 
+## Use with the report explainer skill
+
+If you want to turn local API data into readable weekly summaries instead of building your own formatter, use:
+
+- `skills/cws-report-explainer`
+
+The expected flow is:
+
+1. call the local API from the desktop app
+2. build a normalized JSON bundle with `skills/cws-report-explainer/scripts/build_context.py`
+3. feed that bundle to the skill for operator, finance, or executive output
+
 ## Python
 
 See `sdks/python`.

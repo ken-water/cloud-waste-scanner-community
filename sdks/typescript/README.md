@@ -15,6 +15,16 @@ console.log(await client.openapi());
 console.log(await client.listFindings({ limit: 25 }));
 ```
 
+For role-based summaries, pair the local API output with:
+
+- `skills/cws-report-explainer`
+
+Typical flow:
+
+1. call the local API
+2. normalize findings and reports into one JSON bundle
+3. run the explainer skill for operator, finance, or executive output
+
 Webhook verification:
 
 ```ts
