@@ -23,6 +23,10 @@ interface WastedResource {
   action_type: string;
   account_id?: string | null;
   account_name?: string | null;
+  detection_reason?: string;
+  evidence_summary?: string;
+  action_caution?: string;
+  estimation_rationale?: string;
 }
 
 interface ResourcesTableProps {
@@ -57,6 +61,24 @@ interface OrgUnit {
 
 function normalizeWorsenedFlag(value: unknown): boolean {
   return value === true || value === "true" || value === 1 || value === "1";
+}
+
+function buildExportExplanationLines(resource: WastedResource): string[] {
+  const lines = [
+    resource.detection_reason?.trim()
+      ? `Why: ${resource.detection_reason.trim()}`
+      : "",
+    resource.evidence_summary?.trim()
+      ? `Evidence: ${resource.evidence_summary.trim()}`
+      : "",
+    resource.action_caution?.trim()
+      ? `Caution: ${resource.action_caution.trim()}`
+      : "",
+    resource.estimation_rationale?.trim()
+      ? `Estimate: ${resource.estimation_rationale.trim()}`
+      : "",
+  ].filter((value): value is string => Boolean(value));
+  return lines;
 }
 
 export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
@@ -525,7 +547,11 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               csvEscape(estimateResourceCo2e(item).monthlyCo2eKg.toFixed(2)),
               csvEscape(lifecycle?.owner_id || ""),
               csvEscape(lifecycle?.status || "detected"),
-              csvEscape(safeDetails),
+              csvEscape(
+                [safeDetails, ...buildExportExplanationLines(item)]
+                  .filter(Boolean)
+                  .join(" | ")
+              ),
           ].join(","));
       }
       return `\uFEFF${lines.join("\n")}`;
@@ -696,7 +722,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                   resource.id,
                   format(resource.estimated_monthly_cost),
                   formatCo2eKg(estimateResourceCo2e(resource).monthlyCo2eKg),
-                  resource.action_type || "Review",
+                  [resource.action_type || "Review", ...buildExportExplanationLines(resource as WastedResource)].filter(Boolean).join(" | "),
                   "",
                   "",
               ]
@@ -705,7 +731,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                   resource.region,
                   resource.resource_type,
                   resource.id,
-                  resource.action_type,
+                  [resource.action_type, ...buildExportExplanationLines(resource as WastedResource)].filter(Boolean).join(" | "),
                   format(resource.estimated_monthly_cost),
                   formatCo2eKg(estimateResourceCo2e(resource).monthlyCo2eKg),
               ]
@@ -1152,7 +1178,31 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                         </div>
                     </td>
                     )}
-                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400 max-w-xs truncate" title={r.details}>{r.details}</td>
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400 max-w-md">
+                        <div className="space-y-1">
+                            <p className="truncate" title={r.details}>{r.details}</p>
+                            {r.detection_reason && (
+                              <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                <span className="font-semibold text-slate-600 dark:text-slate-300">Why:</span> {r.detection_reason}
+                              </p>
+                            )}
+                            {r.evidence_summary && (
+                              <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                <span className="font-semibold text-slate-600 dark:text-slate-300">Evidence:</span> {r.evidence_summary}
+                              </p>
+                            )}
+                            {r.action_caution && (
+                              <p className="text-xs leading-5 text-amber-700 dark:text-amber-300">
+                                <span className="font-semibold">Caution:</span> {r.action_caution}
+                              </p>
+                            )}
+                            {r.estimation_rationale && (
+                              <p className="text-xs leading-5 text-slate-400 dark:text-slate-500">
+                                <span className="font-semibold text-slate-500 dark:text-slate-400">Estimate:</span> {r.estimation_rationale}
+                              </p>
+                            )}
+                        </div>
+                    </td>
                     <td className="px-6 py-4 text-right font-bold text-slate-900 dark:text-white">{format(r.estimated_monthly_cost)}</td>
                     <td className="px-6 py-4 text-right font-semibold text-teal-700 dark:text-teal-300">{formatCo2eKg(estimateResourceCo2e(r).monthlyCo2eKg)}</td>
                 </tr>

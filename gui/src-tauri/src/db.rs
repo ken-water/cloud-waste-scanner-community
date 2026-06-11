@@ -3031,7 +3031,9 @@ pub async fn get_handled_resources(pool: &Pool<Sqlite>) -> Result<Vec<String>, S
     Ok(ids)
 }
 
-pub async fn list_finding_lifecycle(pool: &Pool<Sqlite>) -> Result<Vec<FindingLifecycleRecord>, String> {
+pub async fn list_finding_lifecycle(
+    pool: &Pool<Sqlite>,
+) -> Result<Vec<FindingLifecycleRecord>, String> {
     sqlx::query_as::<_, FindingLifecycleRecord>(
         "SELECT resource_id, provider, status, owner_id, due_at, assigned_at, in_progress_at, verified_at, closed_at, reopen_reason, evidence_note, created_at, updated_at
          FROM finding_lifecycle
@@ -3096,7 +3098,10 @@ pub async fn list_finding_owners(pool: &Pool<Sqlite>) -> Result<Vec<FindingOwner
     .map_err(|e| e.to_string())
 }
 
-pub async fn upsert_finding_owner(pool: &Pool<Sqlite>, row: &FindingOwnerRecord) -> Result<(), String> {
+pub async fn upsert_finding_owner(
+    pool: &Pool<Sqlite>,
+    row: &FindingOwnerRecord,
+) -> Result<(), String> {
     sqlx::query(
         "INSERT OR REPLACE INTO finding_owners (id, display_name, email, org_unit_id, role, is_active, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -3155,8 +3160,8 @@ pub async fn upsert_org_unit(pool: &Pool<Sqlite>, row: &OrgUnitRecord) -> Result
     .bind(row.updated_at)
     .execute(pool)
     .await
-        .map(|_| ())
-        .map_err(|e| e.to_string())
+    .map(|_| ())
+    .map_err(|e| e.to_string())
 }
 
 pub async fn count_open_findings_for_owner(

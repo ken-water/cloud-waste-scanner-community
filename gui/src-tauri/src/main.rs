@@ -94,12 +94,12 @@ use proxy_runtime::{
     normalize_custom_proxy_url, resolve_proxy_runtime,
 };
 use runtime_helpers::{
-    build_runtime_capability_snapshot, build_runtime_entitlements, calculate_follow_up_next_run, calculate_initial_next_run,
-    normalize_channel_min_findings_for_storage, normalize_channel_min_savings_for_storage,
-    normalize_channel_trigger_mode_for_storage, normalize_enqueue_error_message,
-    normalize_transport_error_detail, parse_notification_channel_email_recipients,
-    resolve_effective_notification_trigger_mode, summarize_error_text, summarize_for_trial,
-    trial_gate_message, validate_scan_request,
+    build_runtime_capability_snapshot, build_runtime_entitlements, calculate_follow_up_next_run,
+    calculate_initial_next_run, normalize_channel_min_findings_for_storage,
+    normalize_channel_min_savings_for_storage, normalize_channel_trigger_mode_for_storage,
+    normalize_enqueue_error_message, normalize_transport_error_detail,
+    parse_notification_channel_email_recipients, resolve_effective_notification_trigger_mode,
+    summarize_error_text, summarize_for_trial, trial_gate_message, validate_scan_request,
 };
 use scan_runtime::{
     build_aws_local_profile_map, compact_scan_error, filter_cloud_profiles_by_selection,
@@ -389,6 +389,10 @@ struct EnrichedScanResult {
     action_type: String,
     account_id: Option<String>,
     account_name: Option<String>,
+    detection_reason: String,
+    evidence_summary: String,
+    action_caution: String,
+    estimation_rationale: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -3368,9 +3372,7 @@ struct RuntimeRoleAdminGuard {
     admin_users: Vec<String>,
 }
 
-async fn read_runtime_role_admin_guard(
-    conn: &sqlx::Pool<sqlx::Sqlite>,
-) -> RuntimeRoleAdminGuard {
+async fn read_runtime_role_admin_guard(conn: &sqlx::Pool<sqlx::Sqlite>) -> RuntimeRoleAdminGuard {
     let admin_users_raw = db::get_setting(conn, "runtime_role_admin_users")
         .await
         .unwrap_or_else(|_| "ken".to_string());
@@ -5088,7 +5090,10 @@ async fn handle_api_update_finding_lifecycle(
     if !is_valid_transition(&row.status, next_status) && row.status != next_status {
         return Err(api_error(
             StatusCode::CONFLICT,
-            format!("invalid lifecycle transition: {} -> {}", row.status, next_status),
+            format!(
+                "invalid lifecycle transition: {} -> {}",
+                row.status, next_status
+            ),
         ));
     }
 
@@ -5182,13 +5187,21 @@ async fn handle_api_upsert_finding_owner(
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?
         .into_iter()
         .find(|owner| owner.id == owner_id);
-    let created_at = existing.as_ref().map(|owner| owner.created_at).unwrap_or(now);
+    let created_at = existing
+        .as_ref()
+        .map(|owner| owner.created_at)
+        .unwrap_or(now);
     let role = payload
         .role
         .as_deref()
         .map(|value| value.trim().to_ascii_lowercase())
         .filter(|value| value == "owner" || value == "manager")
-        .unwrap_or_else(|| existing.as_ref().map(|owner| owner.role.clone()).unwrap_or_else(|| "owner".to_string()));
+        .unwrap_or_else(|| {
+            existing
+                .as_ref()
+                .map(|owner| owner.role.clone())
+                .unwrap_or_else(|| "owner".to_string())
+        });
     let row = db::FindingOwnerRecord {
         id: owner_id,
         display_name,
@@ -5203,9 +5216,12 @@ async fn handle_api_upsert_finding_owner(
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
         role,
-        is_active: payload
-            .is_active
-            .unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
+        is_active: payload.is_active.unwrap_or_else(|| {
+            existing
+                .as_ref()
+                .map(|owner| owner.is_active)
+                .unwrap_or(true)
+        }),
         created_at,
         updated_at: now,
     };
@@ -5236,7 +5252,10 @@ async fn handle_api_upsert_org_unit(
     let id = payload.id.trim().to_string();
     let name = payload.name.trim().to_string();
     if id.is_empty() || name.is_empty() {
-        return Err(api_error(StatusCode::BAD_REQUEST, "id and name are required."));
+        return Err(api_error(
+            StatusCode::BAD_REQUEST,
+            "id and name are required.",
+        ));
     }
     let app_state = state.app_handle.state::<AppState>();
     ensure_governance_team_workspace(&app_state).await?;
@@ -5398,7 +5417,11 @@ async fn handle_api_org_unit_lifecycle_summary(
         }
     }
     let mut rows: Vec<ApiOrgUnitLifecycleRow> = acc.into_values().collect();
-    rows.sort_by(|a, b| b.total.cmp(&a.total).then_with(|| a.org_unit_name.cmp(&b.org_unit_name)));
+    rows.sort_by(|a, b| {
+        b.total
+            .cmp(&a.total)
+            .then_with(|| a.org_unit_name.cmp(&b.org_unit_name))
+    });
     Ok(Json(rows))
 }
 
@@ -9425,6 +9448,7 @@ async fn current_enriched_scan_results(
         .into_iter()
         .map(|resource| {
             let mapped = attribution.get(&resource_attribution_key(&resource));
+            let explanation = build_finding_explanation(&resource);
             EnrichedScanResult {
                 id: resource.id,
                 provider: resource.provider,
@@ -9439,9 +9463,118 @@ async fn current_enriched_scan_results(
                 account_name: mapped
                     .map(|value| value.account_name.clone())
                     .filter(|value| !value.is_empty()),
+                detection_reason: explanation.detection_reason,
+                evidence_summary: explanation.evidence_summary,
+                action_caution: explanation.action_caution,
+                estimation_rationale: explanation.estimation_rationale,
             }
         })
         .collect())
+}
+
+#[derive(Debug, Clone)]
+struct FindingExplanation {
+    detection_reason: String,
+    evidence_summary: String,
+    action_caution: String,
+    estimation_rationale: String,
+}
+
+fn build_finding_explanation(
+    resource: &cloud_waste_scanner_core::WastedResource,
+) -> FindingExplanation {
+    let resource_type = resource.resource_type.trim();
+    let details = resource.details.trim();
+    let details_lower = details.to_lowercase();
+    let action = resource.action_type.trim().to_uppercase();
+
+    let detection_reason = if details.is_empty() {
+        format!(
+            "{} was flagged because the scan found a likely waste candidate for a {} action.",
+            resource_type, action
+        )
+    } else if details_lower.contains("unattached")
+        || details_lower.contains("unassigned")
+        || details_lower.contains("detached")
+        || details_lower.contains("orphan")
+    {
+        format!(
+            "{} was flagged because it appears to be unattached or no longer mapped to an active workload.",
+            resource_type
+        )
+    } else if details_lower.contains("idle")
+        || details_lower.contains("stopped")
+        || details_lower.contains("low usage")
+    {
+        format!(
+            "{} was flagged because recent scan signals suggest it may be idle or underused.",
+            resource_type
+        )
+    } else if details_lower.contains("no lifecycle")
+        || details_lower.contains("older than")
+        || details_lower.contains("old ")
+    {
+        format!(
+            "{} was flagged because retention or lifecycle controls look weaker than expected for the current state.",
+            resource_type
+        )
+    } else {
+        format!(
+            "{} was flagged because the current scan matched a waste pattern for this resource category.",
+            resource_type
+        )
+    };
+
+    let evidence_summary = if details.is_empty() {
+        format!(
+            "Evidence came from the current {} scan result and the matched action type {}.",
+            resource.provider, action
+        )
+    } else {
+        format!(
+            "Evidence from the current {} scan: {}",
+            resource.provider, details
+        )
+    };
+
+    let action_caution = match action.as_str() {
+        "DELETE" => {
+            if details_lower.contains("production")
+                || details_lower.contains("primary")
+                || details_lower.contains("database")
+                || details_lower.contains("stateful")
+            {
+                "Delete only after confirming this asset is not part of a production, stateful, or recovery path.".to_string()
+            } else {
+                "Delete only after confirming no active workload, retention policy, or recovery plan still depends on this asset.".to_string()
+            }
+        }
+        "RIGHTSIZE" => {
+            "Validate performance headroom, traffic pattern, and change window before resizing.".to_string()
+        }
+        "ARCHIVE" => {
+            "Confirm retention, restore expectations, and access frequency before moving this item to a colder tier.".to_string()
+        }
+        _ => {
+            "Review owner intent and operational context before applying the suggested action.".to_string()
+        }
+    };
+
+    let estimation_rationale = if resource.estimated_monthly_cost > 0.0 {
+        format!(
+            "Estimated monthly impact is {:.2} based on the scanner's provider heuristics for this resource type and observed state.",
+            resource.estimated_monthly_cost
+        )
+    } else {
+        "Estimated monthly impact is currently zero or unavailable; treat this as a control or hygiene signal first.".to_string()
+    };
+
+    FindingExplanation {
+        detection_reason,
+        evidence_summary,
+        action_caution,
+        estimation_rationale,
+    }
 }
 
 fn make_update_file_path(url: &str) -> Result<std::path::PathBuf, String> {
@@ -10534,7 +10667,9 @@ async fn get_runtime_capability_snapshot(
 ) -> Result<runtime_helpers::RuntimeCapabilitySnapshot, String> {
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
-    Ok(runtime_capability_snapshot_for_plan(runtime_plan.as_deref()))
+    Ok(runtime_capability_snapshot_for_plan(
+        runtime_plan.as_deref(),
+    ))
 }
 
 #[tauri::command]
@@ -21714,7 +21849,12 @@ async fn upsert_finding_owner_record(
         .as_deref()
         .map(|value| value.trim().to_ascii_lowercase())
         .filter(|value| value == "owner" || value == "manager")
-        .unwrap_or_else(|| existing.as_ref().map(|owner| owner.role.clone()).unwrap_or_else(|| "owner".to_string()));
+        .unwrap_or_else(|| {
+            existing
+                .as_ref()
+                .map(|owner| owner.role.clone())
+                .unwrap_or_else(|| "owner".to_string())
+        });
     let row = db::FindingOwnerRecord {
         id: owner_id,
         display_name: owner_name,
@@ -21727,8 +21867,16 @@ async fn upsert_finding_owner_record(
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
         role: normalized_role,
-        is_active: is_active.unwrap_or_else(|| existing.as_ref().map(|owner| owner.is_active).unwrap_or(true)),
-        created_at: existing.as_ref().map(|owner| owner.created_at).unwrap_or(now),
+        is_active: is_active.unwrap_or_else(|| {
+            existing
+                .as_ref()
+                .map(|owner| owner.is_active)
+                .unwrap_or(true)
+        }),
+        created_at: existing
+            .as_ref()
+            .map(|owner| owner.created_at)
+            .unwrap_or(now),
         updated_at: now,
     };
     db::upsert_finding_owner(&conn, &row).await?;
@@ -21789,7 +21937,8 @@ async fn upsert_org_unit_record(
             .as_deref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty()),
-        is_active: is_active.unwrap_or_else(|| existing.as_ref().map(|item| item.is_active).unwrap_or(true)),
+        is_active: is_active
+            .unwrap_or_else(|| existing.as_ref().map(|item| item.is_active).unwrap_or(true)),
         created_at: existing.as_ref().map(|item| item.created_at).unwrap_or(now),
         updated_at: now,
     };
@@ -21839,7 +21988,10 @@ async fn assign_finding_owner_record(
         .await
         .map_err(|e| e.to_string())?;
     let owners = db::list_finding_owners(&conn).await?;
-    if !owners.iter().any(|owner| owner.id == owner_id && owner.is_active) {
+    if !owners
+        .iter()
+        .any(|owner| owner.id == owner_id && owner.is_active)
+    {
         return Err(format!("owner_id '{}' not found or inactive", owner_id));
     }
     let now = now_unix_ts();
@@ -21847,7 +21999,11 @@ async fn assign_finding_owner_record(
         .await?
         .unwrap_or(db::FindingLifecycleRecord {
             resource_id: resource_id.clone(),
-            provider: if provider.trim().is_empty() { "unknown".to_string() } else { provider.trim().to_string() },
+            provider: if provider.trim().is_empty() {
+                "unknown".to_string()
+            } else {
+                provider.trim().to_string()
+            },
             status: "detected".to_string(),
             owner_id: None,
             due_at: None,
@@ -21912,7 +22068,8 @@ async fn deactivate_finding_owner_record(
         {
             return Err("transfer_to_owner_id not found or inactive".to_string());
         }
-        migrated = db::reassign_open_findings_owner(&conn, &owner_id, &to_owner, now_unix_ts()).await?;
+        migrated =
+            db::reassign_open_findings_owner(&conn, &owner_id, &to_owner, now_unix_ts()).await?;
     }
     db::set_finding_owner_active(&conn, &owner_id, false, now_unix_ts()).await?;
     Ok(serde_json::json!({
@@ -21943,7 +22100,12 @@ async fn get_org_unit_lifecycle_summary(
 
     let owner_org_map: HashMap<String, String> = owners
         .iter()
-        .filter_map(|owner| owner.org_unit_id.as_ref().map(|org| (owner.id.clone(), org.clone())))
+        .filter_map(|owner| {
+            owner
+                .org_unit_id
+                .as_ref()
+                .map(|org| (owner.id.clone(), org.clone()))
+        })
         .collect();
     let org_name_map: HashMap<String, String> = org_units
         .iter()
@@ -21984,7 +22146,11 @@ async fn get_org_unit_lifecycle_summary(
         }
     }
     let mut rows: Vec<ApiOrgUnitLifecycleRow> = acc.into_values().collect();
-    rows.sort_by(|a, b| b.total.cmp(&a.total).then_with(|| a.org_unit_name.cmp(&b.org_unit_name)));
+    rows.sort_by(|a, b| {
+        b.total
+            .cmp(&a.total)
+            .then_with(|| a.org_unit_name.cmp(&b.org_unit_name))
+    });
     Ok(rows)
 }
 
