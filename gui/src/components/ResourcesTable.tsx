@@ -127,6 +127,20 @@ function confidenceRank(value?: string): number {
   }
 }
 
+function summarizePriorityCounts(items: WastedResource[]) {
+  return items.reduce(
+    (acc, item) => {
+      const key = String(item.review_priority || "").toLowerCase();
+      if (key === "urgent") acc.urgent += 1;
+      else if (key === "high") acc.high += 1;
+      else if (key === "medium") acc.medium += 1;
+      else acc.low += 1;
+      return acc;
+    },
+    { urgent: 0, high: 0, medium: 0, low: 0 }
+  );
+}
+
 export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   type ConfirmAction = "execute_plan" | "mark_handled";
 
@@ -373,6 +387,8 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   };
   const filteredSavings = sortedFilteredResources.reduce((sum, item) => sum + item.estimated_monthly_cost, 0);
   const filteredCo2e = estimateAggregateCo2e(sortedFilteredResources);
+  const prioritySummary = summarizePriorityCounts(sortedFilteredResources);
+  const topUrgentFindings = sortedFilteredResources.slice(0, 5);
   const visibleAccountCount = new Set(
       sortedFilteredResources.map((row) => String(row.account_id || row.account_name || "unattributed"))
   ).size;
@@ -747,6 +763,16 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       
       const totalSavings = items.reduce((sum, r) => sum + r.estimated_monthly_cost, 0);
       const totalCo2e = estimateAggregateCo2e(items);
+      const prioritySummary = summarizePriorityCounts(items);
+      const topUrgentFindings = [...items]
+          .sort((a, b) => {
+              const priorityDelta = reviewPriorityRank(b.review_priority) - reviewPriorityRank(a.review_priority);
+              if (priorityDelta !== 0) return priorityDelta;
+              const confidenceDelta = confidenceRank(b.confidence_level) - confidenceRank(a.confidence_level);
+              if (confidenceDelta !== 0) return confidenceDelta;
+              return b.estimated_monthly_cost - a.estimated_monthly_cost;
+          })
+          .slice(0, 5);
       doc.setFontSize(14); doc.setTextColor(0, 150, 0);
       const startY = headerBottomY + 7;
       doc.text(`Total Potential Savings: ${format(totalSavings)} / month`, 14, startY);
@@ -756,6 +782,28 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           14,
           startY + 7
       );
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105);
+      doc.text(
+          `Priority Summary: urgent ${prioritySummary.urgent} | high ${prioritySummary.high} | medium ${prioritySummary.medium} | low ${prioritySummary.low}`,
+          14,
+          startY + 13
+      );
+
+      let tableStartY = startY + 24;
+      if (topUrgentFindings.length > 0) {
+          doc.setFontSize(11);
+          doc.setTextColor(15, 23, 42);
+          doc.text("Top Urgent Findings", 14, startY + 21);
+          const urgentLines = topUrgentFindings.map((resource, index) => (
+              `${index + 1}. [${String(resource.review_priority || "low").toUpperCase()} / ${String(resource.confidence_level || "low").toUpperCase()}] ${resource.resource_type} ${resource.id} - ${format(resource.estimated_monthly_cost)}/mo`
+          ));
+          doc.setFontSize(9);
+          doc.setTextColor(71, 85, 105);
+          const wrappedUrgentLines = urgentLines.flatMap((line) => doc.splitTextToSize(line, pageWidth - 28));
+          doc.text(wrappedUrgentLines, 14, startY + 27);
+          tableStartY = startY + 27 + wrappedUrgentLines.length * 4 + 6;
+      }
 
       const tableHead = includeExecutionColumns
           ? [['Provider', 'Region', 'Type', 'ID', 'Cost', 'Est. CO2e/mo', 'Recommended', 'Custom', 'Notes']]
@@ -793,7 +841,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               ]
       ));
       autoTable(doc, {
-          startY: startY + 12,
+          startY: tableStartY,
           head: tableHead,
           body: tableRows,
           theme: 'grid',
@@ -991,7 +1039,8 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Current Slice</p>
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
-              {filteredResources.length} visible findings, {selectedIds.size} selected, estimated {format(filteredSavings)}/mo and {formatCo2eKg(filteredCo2e.totalMonthlyCo2eKg)}/mo CO2e in the current filtered set.
+              {sortedFilteredResources.length} visible findings, {selectedIds.size} selected, estimated {format(filteredSavings)}/mo and {formatCo2eKg(filteredCo2e.totalMonthlyCo2eKg)}/mo CO2e in the current filtered set.
+              Priority mix: {prioritySummary.urgent} urgent, {prioritySummary.high} high, {prioritySummary.medium} medium, {prioritySummary.low} low.
               {showOnlyDeleteActions ? " Delete-only review is active." : ""}
             </p>
           </div>
@@ -1091,6 +1140,71 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                   </span>
               ) : null}
           </div>
+      )}
+
+      <div className="grid gap-4 md:grid-cols-4">
+        <MetricCard
+          label="Urgent"
+          value={prioritySummary.urgent}
+          hint="Overdue, reopened, or high-cost items that should move first."
+        />
+        <MetricCard
+          label="High"
+          value={prioritySummary.high}
+          hint="Clear savings opportunities that still need prompt owner action."
+        />
+        <MetricCard
+          label="Medium"
+          value={prioritySummary.medium}
+          hint="Valid findings that should stay in the weekly review queue."
+        />
+        <MetricCard
+          label="Low"
+          value={prioritySummary.low}
+          hint="Lower-confidence or low-impact items for later review."
+        />
+      </div>
+
+      {topUrgentFindings.length > 0 && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Top Urgent Findings</p>
+              <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
+                Start weekly review with the first five findings below. They already include resource signal, execution state, and expected savings impact.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 space-y-3">
+            {topUrgentFindings.map((item, index) => (
+              <div key={`${item.id}-summary`} className="flex flex-col gap-2 rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-700">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-700 dark:text-slate-200">
+                      #{index + 1}
+                    </span>
+                    <span className="font-semibold text-slate-900 dark:text-white">{item.resource_type}</span>
+                    <span className="text-sm text-slate-500 dark:text-slate-400">{item.id}</span>
+                  </div>
+                  <div className="text-sm font-bold text-emerald-700 dark:text-emerald-300">{format(item.estimated_monthly_cost)}/mo</div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  {item.review_priority && <span className="rounded-full bg-rose-100 px-2 py-0.5 font-bold uppercase tracking-wider text-rose-700 dark:bg-rose-900/30 dark:text-rose-300">{item.review_priority}</span>}
+                  {item.confidence_level && <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{item.confidence_level}</span>}
+                  {item.lifecycle_status && <span className="rounded-full bg-sky-100 px-2 py-0.5 font-bold uppercase tracking-wider text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">{item.lifecycle_status}</span>}
+                  {item.is_overdue && <span className="rounded-full bg-rose-100 px-2 py-0.5 font-bold uppercase tracking-wider text-rose-700 dark:bg-rose-900/30 dark:text-rose-300">overdue</span>}
+                  {item.was_reopened && <span className="rounded-full bg-fuchsia-100 px-2 py-0.5 font-bold uppercase tracking-wider text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-300">reopened</span>}
+                  {item.owner_assigned === false && <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-700 dark:text-slate-200">unassigned</span>}
+                </div>
+                {item.detection_reason && (
+                  <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">Why:</span> {item.detection_reason}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
