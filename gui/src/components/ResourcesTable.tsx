@@ -593,10 +593,19 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           "Region",
           "Type",
           "Action",
+          "Review Priority",
+          "Confidence",
           "Monthly Cost",
           "Estimated CO2e Monthly (kg)",
           "Owner ID",
           "Lifecycle Status",
+          "Owner Assigned",
+          "Overdue",
+          "Reopened",
+          "Detection Reason",
+          "Evidence Summary",
+          "Action Caution",
+          "Estimation Rationale",
           "Details",
       ];
       const lines = [headers.map(csvEscape).join(",")];
@@ -615,14 +624,21 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               csvEscape(item.region),
               csvEscape(item.resource_type),
               csvEscape(item.action_type),
+              csvEscape(item.review_priority || ""),
+              csvEscape(item.confidence_level || ""),
               csvEscape(item.estimated_monthly_cost.toFixed(2)),
               csvEscape(estimateResourceCo2e(item).monthlyCo2eKg.toFixed(2)),
               csvEscape(lifecycle?.owner_id || ""),
               csvEscape(lifecycle?.status || "detected"),
+              csvEscape(item.owner_assigned === false ? "false" : "true"),
+              csvEscape(item.is_overdue ? "true" : "false"),
+              csvEscape(item.was_reopened ? "true" : "false"),
+              csvEscape(item.detection_reason || ""),
+              csvEscape(item.evidence_summary || ""),
+              csvEscape(item.action_caution || ""),
+              csvEscape(item.estimation_rationale || ""),
               csvEscape(
-                [safeDetails, ...buildExportExplanationLines(item)]
-                  .filter(Boolean)
-                  .join(" | ")
+                safeDetails
               ),
           ].join(","));
       }
@@ -649,10 +665,36 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           new Set(scopeItems.map((r) => lifecycleById[r.id]?.owner_id).filter(Boolean) as string[])
       ).sort();
       const statusBreakdown: Record<string, number> = {};
+      const priorityBreakdown = summarizePriorityCounts(scopeItems);
       for (const item of scopeItems) {
           const status = lifecycleById[item.id]?.status || "detected";
           statusBreakdown[status] = (statusBreakdown[status] || 0) + 1;
       }
+      const topFindings = [...scopeItems]
+          .sort((a, b) => {
+              const priorityDelta = reviewPriorityRank(b.review_priority) - reviewPriorityRank(a.review_priority);
+              if (priorityDelta !== 0) return priorityDelta;
+              const confidenceDelta = confidenceRank(b.confidence_level) - confidenceRank(a.confidence_level);
+              if (confidenceDelta !== 0) return confidenceDelta;
+              return b.estimated_monthly_cost - a.estimated_monthly_cost;
+          })
+          .slice(0, 5)
+          .map((item) => ({
+              id: effectiveSensitive ? item.id : maskSensitive(item.id, 6),
+              provider: item.provider,
+              account: effectiveSensitive
+                  ? String(item.account_name || item.account_id || "Unattributed")
+                  : maskSensitive(String(item.account_name || item.account_id || "Unattributed"), 4),
+              resource_type: item.resource_type,
+              action_type: item.action_type,
+              review_priority: item.review_priority || null,
+              confidence_level: item.confidence_level || null,
+              estimated_monthly_cost: Number(item.estimated_monthly_cost.toFixed(2)),
+              lifecycle_status: item.lifecycle_status || "detected",
+              owner_assigned: item.owner_assigned !== false,
+              is_overdue: Boolean(item.is_overdue),
+              was_reopened: Boolean(item.was_reopened),
+          }));
 
       const summaryText = [
           `Cloud Waste Scanner Handoff Pack`,
@@ -674,6 +716,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           `- Accounts: ${scopeAccounts.join(", ") || "(none)"}`,
           `- Owners: ${ownerIds.join(", ") || "(unassigned)"}`,
           `- Lifecycle: ${Object.entries(statusBreakdown).map(([k, v]) => `${k}=${v}`).join(", ") || "(none)"}`,
+          `- Priority: urgent=${priorityBreakdown.urgent}, high=${priorityBreakdown.high}, medium=${priorityBreakdown.medium}, low=${priorityBreakdown.low}`,
           `- Audience: ${handoffAudience}`,
           `- Sensitive fields: ${effectiveSensitive ? "included" : "masked"}`,
           ``,
@@ -707,7 +750,9 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               identified_savings_monthly: Number(savings.toFixed(2)),
               estimated_co2e_kg_monthly: Number(co2e.toFixed(2)),
               lifecycle_breakdown: statusBreakdown,
+              priority_breakdown: priorityBreakdown,
           },
+          top_findings: topFindings,
           artifacts: {
               summary_txt: `handoff_${scopeType}_${stamp}.txt`,
               findings_csv: `handoff_${scopeType}_${stamp}.csv`,
