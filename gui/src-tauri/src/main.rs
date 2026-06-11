@@ -9480,90 +9480,186 @@ struct FindingExplanation {
     estimation_rationale: String,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum FindingCategory {
+    Compute,
+    Storage,
+    Network,
+    Database,
+    LoadBalancer,
+    Bucket,
+    Snapshot,
+    Other,
+}
+
 fn build_finding_explanation(
     resource: &cloud_waste_scanner_core::WastedResource,
 ) -> FindingExplanation {
     let resource_type = resource.resource_type.trim();
     let details = resource.details.trim();
     let details_lower = details.to_lowercase();
+    let provider = resource.provider.trim();
+    let provider_label = if provider.is_empty() {
+        "provider".to_string()
+    } else {
+        provider.to_uppercase()
+    };
     let action = resource.action_type.trim().to_uppercase();
+    let category = classify_finding_category(resource_type);
+    let is_unattached = contains_any(
+        &details_lower,
+        &[
+            "unattached",
+            "unassigned",
+            "detached",
+            "orphan",
+            "unbound",
+            "unused static ip",
+        ],
+    );
+    let is_idle = contains_any(
+        &details_lower,
+        &[
+            "idle",
+            "stopped",
+            "low usage",
+            "utilization <",
+            "cpu <",
+            "0 bytes / 7 days",
+            "no backend pools",
+        ],
+    );
+    let is_lifecycle_gap = contains_any(
+        &details_lower,
+        &[
+            "no lifecycle",
+            "older than",
+            "old ",
+            "cold data",
+            "archive tier",
+            "glacier",
+            "multipart uploads",
+            "object versions older",
+        ],
+    );
+    let subject = finding_subject(resource_type, category);
 
     let detection_reason = if details.is_empty() {
         format!(
-            "{} was flagged because the scan found a likely waste candidate for a {} action.",
-            resource_type, action
+            "{} was flagged because the scan found a likely {} optimization candidate for a {} action.",
+            resource_type,
+            category_label(category),
+            action
         )
-    } else if details_lower.contains("unattached")
-        || details_lower.contains("unassigned")
-        || details_lower.contains("detached")
-        || details_lower.contains("orphan")
-    {
+    } else if is_unattached {
         format!(
-            "{} was flagged because it appears to be unattached or no longer mapped to an active workload.",
+            "{} was flagged because this {} appears to be allocated but not attached to an active workload or routing path.",
+            resource_type, subject
+        )
+    } else if is_idle && category == FindingCategory::Compute {
+        format!(
+            "{} was flagged because recent runtime signals suggest this compute capacity is idle or materially underused.",
             resource_type
         )
-    } else if details_lower.contains("idle")
-        || details_lower.contains("stopped")
-        || details_lower.contains("low usage")
-    {
+    } else if is_idle && category == FindingCategory::LoadBalancer {
         format!(
-            "{} was flagged because recent scan signals suggest it may be idle or underused.",
+            "{} was flagged because this traffic-handling resource appears provisioned without enough active backend or traffic demand.",
             resource_type
         )
-    } else if details_lower.contains("no lifecycle")
-        || details_lower.contains("older than")
-        || details_lower.contains("old ")
+    } else if is_idle {
+        format!(
+            "{} was flagged because scan signals suggest this {} is idle, oversized, or underused for its current state.",
+            resource_type, subject
+        )
+    } else if is_lifecycle_gap
+        && matches!(
+            category,
+            FindingCategory::Bucket | FindingCategory::Snapshot | FindingCategory::Storage
+        )
     {
         format!(
-            "{} was flagged because retention or lifecycle controls look weaker than expected for the current state.",
-            resource_type
+            "{} was flagged because retention, tiering, or cleanup controls look weaker than expected for this {}.",
+            resource_type, subject
         )
     } else {
         format!(
-            "{} was flagged because the current scan matched a waste pattern for this resource category.",
-            resource_type
+            "{} was flagged because the current scan matched a {} waste pattern for this resource type.",
+            resource_type,
+            category_label(category)
         )
     };
 
     let evidence_summary = if details.is_empty() {
         format!(
             "Evidence came from the current {} scan result and the matched action type {}.",
-            resource.provider, action
+            provider_label, action
         )
     } else {
         format!(
             "Evidence from the current {} scan: {}",
-            resource.provider, details
+            provider_label, details
         )
     };
 
     let action_caution = match action.as_str() {
         "DELETE" => {
-            if details_lower.contains("production")
-                || details_lower.contains("primary")
-                || details_lower.contains("database")
-                || details_lower.contains("stateful")
-            {
+            if contains_any(
+                &details_lower,
+                &[
+                    "production",
+                    "primary",
+                    "database",
+                    "stateful",
+                    "rollback",
+                    "recovery",
+                ],
+            ) || matches!(
+                category,
+                FindingCategory::Database | FindingCategory::Snapshot
+            ) {
                 "Delete only after confirming this asset is not part of a production, stateful, or recovery path.".to_string()
+            } else if matches!(
+                category,
+                FindingCategory::Network | FindingCategory::LoadBalancer
+            ) {
+                "Delete only after confirming no ingress, egress, routing rule, firewall policy, or DNS dependency still points to this resource.".to_string()
+            } else if matches!(category, FindingCategory::Bucket | FindingCategory::Storage) {
+                "Delete only after confirming retention, restore, and owner handoff requirements are already satisfied.".to_string()
             } else {
                 "Delete only after confirming no active workload, retention policy, or recovery plan still depends on this asset.".to_string()
             }
         }
         "RIGHTSIZE" => {
-            "Validate performance headroom, traffic pattern, and change window before resizing.".to_string()
+            if matches!(
+                category,
+                FindingCategory::Compute | FindingCategory::Database
+            ) {
+                "Validate performance headroom, peak usage pattern, and rollback path before resizing live capacity.".to_string()
+            } else {
+                "Validate performance headroom, traffic pattern, and change window before resizing."
+                    .to_string()
+            }
         }
         "ARCHIVE" => {
-            "Confirm retention, restore expectations, and access frequency before moving this item to a colder tier.".to_string()
+            if matches!(
+                category,
+                FindingCategory::Bucket | FindingCategory::Storage | FindingCategory::Snapshot
+            ) {
+                "Confirm retention policy, restore time objective, and access frequency before moving this data to a colder tier.".to_string()
+            } else {
+                "Confirm retention, restore expectations, and access frequency before moving this item to a colder tier.".to_string()
+            }
         }
-        _ => {
-            "Review owner intent and operational context before applying the suggested action.".to_string()
-        }
+        _ => "Review owner intent and operational context before applying the suggested action."
+            .to_string(),
     };
 
     let estimation_rationale = if resource.estimated_monthly_cost > 0.0 {
         format!(
-            "Estimated monthly impact is {:.2} based on the scanner's provider heuristics for this resource type and observed state.",
-            resource.estimated_monthly_cost
+            "Estimated monthly impact is {:.2} based on the scanner's {} heuristics for this {} and its observed state.",
+            resource.estimated_monthly_cost,
+            provider_label,
+            subject
         )
     } else {
         "Estimated monthly impact is currently zero or unavailable; treat this as a control or hygiene signal first.".to_string()
@@ -9574,6 +9670,89 @@ fn build_finding_explanation(
         evidence_summary,
         action_caution,
         estimation_rationale,
+    }
+}
+
+fn contains_any(haystack: &str, patterns: &[&str]) -> bool {
+    patterns.iter().any(|pattern| haystack.contains(pattern))
+}
+
+fn classify_finding_category(resource_type: &str) -> FindingCategory {
+    let value = resource_type.trim().to_lowercase();
+    if contains_any(
+        &value,
+        &[
+            "instance",
+            "vm",
+            "virtual machine",
+            "compute",
+            "ec2",
+            "cloud host",
+            "gke node",
+            "ecs",
+        ],
+    ) {
+        FindingCategory::Compute
+    } else if contains_any(&value, &["snapshot"]) {
+        FindingCategory::Snapshot
+    } else if contains_any(&value, &["bucket", "multipart upload", "object version"]) {
+        FindingCategory::Bucket
+    } else if contains_any(&value, &["load balancer", "nat gateway", "blb"]) {
+        FindingCategory::LoadBalancer
+    } else if contains_any(
+        &value,
+        &["public ip", "floating ip", "eip", "external ip", "ip"],
+    ) {
+        FindingCategory::Network
+    } else if contains_any(&value, &["rds", "database", "db instance"]) {
+        FindingCategory::Database
+    } else if contains_any(
+        &value,
+        &[
+            "volume",
+            "disk",
+            "storage",
+            "ebs",
+            "managed disk",
+            "cloud disk",
+            "block storage",
+        ],
+    ) {
+        FindingCategory::Storage
+    } else {
+        FindingCategory::Other
+    }
+}
+
+fn category_label(category: FindingCategory) -> &'static str {
+    match category {
+        FindingCategory::Compute => "compute",
+        FindingCategory::Storage => "storage",
+        FindingCategory::Network => "network",
+        FindingCategory::Database => "database",
+        FindingCategory::LoadBalancer => "traffic",
+        FindingCategory::Bucket => "object storage",
+        FindingCategory::Snapshot => "snapshot",
+        FindingCategory::Other => "resource",
+    }
+}
+
+fn finding_subject(resource_type: &str, category: FindingCategory) -> String {
+    match category {
+        FindingCategory::Compute => "compute resource".to_string(),
+        FindingCategory::Storage => "storage asset".to_string(),
+        FindingCategory::Network => "network allocation".to_string(),
+        FindingCategory::Database => "database resource".to_string(),
+        FindingCategory::LoadBalancer => "traffic resource".to_string(),
+        FindingCategory::Bucket => "object storage dataset".to_string(),
+        FindingCategory::Snapshot => "snapshot set".to_string(),
+        FindingCategory::Other => {
+            if resource_type.trim().is_empty() {
+                "resource".to_string()
+            } else {
+                resource_type.trim().to_lowercase()
+            }
+        }
     }
 }
 
