@@ -27,6 +27,8 @@ interface WastedResource {
   evidence_summary?: string;
   action_caution?: string;
   estimation_rationale?: string;
+  confidence_level?: string;
+  review_priority?: string;
 }
 
 interface ResourcesTableProps {
@@ -65,6 +67,12 @@ function normalizeWorsenedFlag(value: unknown): boolean {
 
 function buildExportExplanationLines(resource: WastedResource): string[] {
   const lines = [
+    resource.review_priority?.trim()
+      ? `Priority: ${resource.review_priority.trim()}`
+      : "",
+    resource.confidence_level?.trim()
+      ? `Confidence: ${resource.confidence_level.trim()}`
+      : "",
     resource.detection_reason?.trim()
       ? `Why: ${resource.detection_reason.trim()}`
       : "",
@@ -79,6 +87,34 @@ function buildExportExplanationLines(resource: WastedResource): string[] {
       : "",
   ].filter((value): value is string => Boolean(value));
   return lines;
+}
+
+function reviewPriorityRank(value?: string): number {
+  switch (String(value || "").toLowerCase()) {
+    case "urgent":
+      return 4;
+    case "high":
+      return 3;
+    case "medium":
+      return 2;
+    case "low":
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+function confidenceRank(value?: string): number {
+  switch (String(value || "").toLowerCase()) {
+    case "high":
+      return 3;
+    case "medium":
+      return 2;
+    case "low":
+      return 1;
+    default:
+      return 0;
+  }
 }
 
 export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
@@ -312,16 +348,26 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       return matchesSearch && matchesProvider && matchesAccount && matchesResourceType && matchesSuggestedAction && matchesOwner && matchesOrgUnit;
   });
 
+  const sortedFilteredResources = [...filteredResources].sort((a, b) => {
+      const priorityDelta = reviewPriorityRank(b.review_priority) - reviewPriorityRank(a.review_priority);
+      if (priorityDelta !== 0) return priorityDelta;
+      const confidenceDelta = confidenceRank(b.confidence_level) - confidenceRank(a.confidence_level);
+      if (confidenceDelta !== 0) return confidenceDelta;
+      const savingsDelta = b.estimated_monthly_cost - a.estimated_monthly_cost;
+      if (savingsDelta !== 0) return savingsDelta;
+      return a.id.localeCompare(b.id);
+  });
+
   const handleSearchQueryChange = (value: string) => {
       setSearchQuery(value);
   };
-  const filteredSavings = filteredResources.reduce((sum, item) => sum + item.estimated_monthly_cost, 0);
-  const filteredCo2e = estimateAggregateCo2e(filteredResources);
+  const filteredSavings = sortedFilteredResources.reduce((sum, item) => sum + item.estimated_monthly_cost, 0);
+  const filteredCo2e = estimateAggregateCo2e(sortedFilteredResources);
   const visibleAccountCount = new Set(
-      filteredResources.map((row) => String(row.account_id || row.account_name || "unattributed"))
+      sortedFilteredResources.map((row) => String(row.account_id || row.account_name || "unattributed"))
   ).size;
-  const deleteCandidateCount = filteredResources.filter((row) => String(row.action_type || "").toUpperCase() === "DELETE").length;
-  const rightsizeCandidateCount = filteredResources.filter((row) => String(row.action_type || "").toUpperCase() === "RIGHTSIZE").length;
+  const deleteCandidateCount = sortedFilteredResources.filter((row) => String(row.action_type || "").toUpperCase() === "DELETE").length;
+  const rightsizeCandidateCount = sortedFilteredResources.filter((row) => String(row.action_type || "").toUpperCase() === "RIGHTSIZE").length;
 
   // Stage 1: Generate Plan
   const handleGeneratePlan = () => {
@@ -558,7 +604,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   };
 
   const createHandoffPack = async () => {
-      const scopeItems = selectedIds.size > 0 ? getSelectedResources() : filteredResources;
+      const scopeItems = selectedIds.size > 0 ? getSelectedResources() : sortedFilteredResources;
       if (scopeItems.length === 0) {
           showActionNotice("No findings in current scope to hand off.", "error");
           return;
@@ -616,7 +662,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           scope: {
               type: scopeType,
               selected_count: selectedIds.size,
-              filtered_count: filteredResources.length,
+              filtered_count: sortedFilteredResources.length,
               filters: {
                   provider: filterProvider,
                   search_query: searchQuery || null,
@@ -1121,7 +1167,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                         </td>
                     </tr>
                 )}
-                {!loading && filteredResources.map((r) => (
+                {!loading && sortedFilteredResources.map((r) => (
                 <tr key={r.id} className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${selectedIds.has(r.id) ? 'bg-indigo-50/50 dark:bg-indigo-900/20' : ''}`}>
                     <td className="px-6 py-4">
                         <button onClick={() => toggleSelect(r.id)} className="flex items-center">
@@ -1181,6 +1227,32 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400 max-w-md">
                         <div className="space-y-1">
                             <p className="truncate" title={r.details}>{r.details}</p>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {r.review_priority && (
+                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                                  r.review_priority === "urgent"
+                                    ? "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300"
+                                    : r.review_priority === "high"
+                                    ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300"
+                                    : r.review_priority === "medium"
+                                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                                    : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                                }`}>
+                                  Priority: {r.review_priority}
+                                </span>
+                              )}
+                              {r.confidence_level && (
+                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                                  r.confidence_level === "high"
+                                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                                    : r.confidence_level === "medium"
+                                    ? "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+                                    : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                                }`}>
+                                  Confidence: {r.confidence_level}
+                                </span>
+                              )}
+                            </div>
                             {r.detection_reason && (
                               <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">
                                 <span className="font-semibold text-slate-600 dark:text-slate-300">Why:</span> {r.detection_reason}

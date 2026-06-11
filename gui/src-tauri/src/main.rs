@@ -393,6 +393,8 @@ struct EnrichedScanResult {
     evidence_summary: String,
     action_caution: String,
     estimation_rationale: String,
+    confidence_level: String,
+    review_priority: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -9467,6 +9469,8 @@ async fn current_enriched_scan_results(
                 evidence_summary: explanation.evidence_summary,
                 action_caution: explanation.action_caution,
                 estimation_rationale: explanation.estimation_rationale,
+                confidence_level: explanation.confidence_level,
+                review_priority: explanation.review_priority,
             }
         })
         .collect())
@@ -9478,6 +9482,8 @@ struct FindingExplanation {
     evidence_summary: String,
     action_caution: String,
     estimation_rationale: String,
+    confidence_level: String,
+    review_priority: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -9665,11 +9671,31 @@ fn build_finding_explanation(
         "Estimated monthly impact is currently zero or unavailable; treat this as a control or hygiene signal first.".to_string()
     };
 
+    let confidence_level = determine_confidence_level(
+        action.as_str(),
+        category,
+        details.is_empty(),
+        is_unattached,
+        is_idle,
+        is_lifecycle_gap,
+    )
+    .to_string();
+
+    let review_priority = determine_review_priority(
+        action.as_str(),
+        category,
+        resource.estimated_monthly_cost,
+        confidence_level.as_str(),
+    )
+    .to_string();
+
     FindingExplanation {
         detection_reason,
         evidence_summary,
         action_caution,
         estimation_rationale,
+        confidence_level,
+        review_priority,
     }
 }
 
@@ -9754,6 +9780,105 @@ fn finding_subject(resource_type: &str, category: FindingCategory) -> String {
             }
         }
     }
+}
+
+fn determine_confidence_level(
+    action: &str,
+    category: FindingCategory,
+    details_empty: bool,
+    is_unattached: bool,
+    is_idle: bool,
+    is_lifecycle_gap: bool,
+) -> &'static str {
+    if details_empty {
+        return "low";
+    }
+
+    if is_unattached
+        && matches!(
+            category,
+            FindingCategory::Storage
+                | FindingCategory::Network
+                | FindingCategory::LoadBalancer
+                | FindingCategory::Bucket
+        )
+    {
+        return "high";
+    }
+
+    if is_idle && action == "RIGHTSIZE" {
+        return "medium";
+    }
+
+    if is_idle
+        && matches!(
+            category,
+            FindingCategory::Compute | FindingCategory::LoadBalancer | FindingCategory::Network
+        )
+    {
+        return "medium";
+    }
+
+    if is_lifecycle_gap
+        && matches!(
+            category,
+            FindingCategory::Bucket | FindingCategory::Snapshot | FindingCategory::Storage
+        )
+    {
+        return "medium";
+    }
+
+    if action == "DELETE" {
+        return "medium";
+    }
+
+    "low"
+}
+
+fn determine_review_priority(
+    action: &str,
+    category: FindingCategory,
+    estimated_monthly_cost: f64,
+    confidence_level: &str,
+) -> &'static str {
+    if confidence_level == "high"
+        && estimated_monthly_cost >= 1000.0
+        && action == "DELETE"
+        && matches!(
+            category,
+            FindingCategory::Storage
+                | FindingCategory::Network
+                | FindingCategory::LoadBalancer
+                | FindingCategory::Bucket
+        )
+    {
+        return "urgent";
+    }
+
+    if estimated_monthly_cost >= 500.0 && matches!(confidence_level, "high" | "medium") {
+        return "high";
+    }
+
+    if action == "DELETE" && confidence_level == "high" {
+        return "high";
+    }
+
+    if action == "RIGHTSIZE" && estimated_monthly_cost >= 200.0 {
+        return "high";
+    }
+
+    if matches!(confidence_level, "high" | "medium") || estimated_monthly_cost > 0.0 {
+        return "medium";
+    }
+
+    if matches!(
+        category,
+        FindingCategory::Database | FindingCategory::Snapshot
+    ) {
+        return "medium";
+    }
+
+    "low"
 }
 
 fn make_update_file_path(url: &str) -> Result<std::path::PathBuf, String> {
