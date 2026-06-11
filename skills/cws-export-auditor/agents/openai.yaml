@@ -1,0 +1,7 @@
+interface:
+  display_name: "CWS Export Auditor"
+  short_description: "Audit CWS exports for clarity and trust"
+  default_prompt: "Use $cws-export-auditor to review this Cloud Waste Scanner export and identify what is unclear or missing before I share it."
+
+policy:
+  allow_implicit_invocation: true

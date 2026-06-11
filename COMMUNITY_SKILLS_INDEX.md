@@ -91,6 +91,26 @@ Files:
 
 - `skills/cws-playbook-writer/SKILL.md`
 
+### 4. `cws-export-auditor`
+
+Use when you need:
+
+- export clarity review
+- finance-readiness review
+- leadership-readiness review
+- checks for missing assumptions or misleading wording
+
+Input:
+
+- exported report text
+- exported findings
+- handoff summary text
+- normalized evidence bundle
+
+Files:
+
+- `skills/cws-export-auditor/SKILL.md`
+
 ## Which skill to use
 
 Use this simple selection rule:
@@ -98,6 +118,7 @@ Use this simple selection rule:
 - need explanation for people: `cws-report-explainer`
 - need weekly change summary: `cws-weekly-brief`
 - need practical next-step guidance: `cws-playbook-writer`
+- need to improve an export before sharing: `cws-export-auditor`
 
 ## Community boundary
 
@@ -122,6 +143,5 @@ Reference:
 
 ## Near-term next candidates
 
-- `cws-export-auditor`
 - stronger examples for SDK-driven local automation
 - stronger per-finding confidence/rationale presentation
