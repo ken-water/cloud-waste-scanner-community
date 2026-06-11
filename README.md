@@ -66,25 +66,24 @@ Community includes a local HTTP API for automation around scans, findings, repor
 - Webhook signing: `X-CWS-Signature` uses `HMAC-SHA256(secret, "<timestamp>.<raw_json_body>")`.
 - SDKs: see `sdks/python` and `sdks/typescript`.
 
-### Community skill: explain findings and exports
+### Community Skills
 
-The repository now includes a first local-first skill for turning CWS evidence into role-specific summaries:
+Cloud Waste Scanner Community now includes local-first skills that help a single operator get more value from scan evidence.
 
-- Skill: `skills/cws-report-explainer`
-- Purpose: explain findings, rank next actions, and generate summaries for operators, finance, and executives
-- Additional Community skill: `skills/cws-weekly-brief`
-  - summarize current vs prior evidence
-  - highlight repeated waste signals
-  - produce a concise weekly operator or founder brief
-- Input modes:
-  - local API
-  - exported `JSON / CSV / TXT`
+- `cws-report-explainer`: explain findings for operators, finance, and leadership
+- `cws-weekly-brief`: summarize current vs prior evidence
+- `cws-playbook-writer`: turn findings into safer action playbooks
+- `cws-export-auditor`: review exports before sharing them
+
+Community skills work best when connected to the CWS local API, but can also run from exported evidence files.
 
 Runtime positioning:
 
 - Preferred: `connected mode` through the installed app and local API
 - Supported fallback: `file-only mode` from exported evidence
 - Reference: `SKILL_RUNTIME_MODES.md`
+- Index: `COMMUNITY_SKILLS_INDEX.md`
+- Copy pack: `COMMUNITY_SKILLS_COPY_PACK.md`
 
 Build a normalized evidence bundle from the local API:
 
