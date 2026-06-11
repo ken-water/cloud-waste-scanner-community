@@ -1,44 +1,37 @@
 # Cloud Waste Scanner Community v3.0.0
 
-## Release summary
+Community `v3.0.0` resets the release line for the open client-first roadmap.
 
-`v3.0.0` is the Community release-line reset for the open client-first roadmap.
+This is a Community boundary and skill-surface release. It establishes a cleaner product story for what Community includes now, what Team means, and what remains Enterprise-only. It also introduces the first Community skill family around local evidence explanation and weekly review.
 
-This release establishes:
+This release does **not** claim that every desktop or SDK binary artifact has already been rebuilt as `3.0.0`. The release-line reset and the binary-version line are intentionally kept separate.
 
-- the Community / Team / Enterprise boundary
-- the first Community skill surface
-- the first Community skill family rules
-- a clearer release-line policy for Community-era content releases
+## Highlights
 
-## Release type
+- Community release line reset to `3.0.0`
+- clearer Community / Team / Enterprise boundary
+- first Community skill: `cws-report-explainer`
+- second Community skill: `cws-weekly-brief`
+- formal Community skill strategy, runtime modes, and monetization guardrails
+- conservative Team skill readiness assessment
 
-Community release-line reset.
-
-This release marks the start of the Community `3.0.0` line for the open client-first roadmap.
-
-It is primarily a product-boundary, documentation, and skill-surface release.
-
-It does not claim that every desktop or SDK binary artifact has already been rebuilt as `3.0.0`.
-
-## Scope declaration
-
-Included in this release:
+## Included in this release
 
 - Community product-boundary clarification
 - Community skills strategy
+- Community skills edition matrix
 - Community skill runtime rules
 - Community skill monetization rules
-- first Community skill: `cws-report-explainer`
-- second Community skill: `cws-weekly-brief`
+- `cws-report-explainer`
+- `cws-weekly-brief`
 - Team skill readiness assessment
 
-Not included in this release:
+## Not included in this release
 
 - Team product GA
 - Enterprise product GA
-- binary rebuild requirement for unchanged desktop artifacts
 - centralized identity or audit rollout
+- mandatory binary rebuild for unchanged desktop artifacts
 
 ## Why this release exists
 
@@ -129,6 +122,17 @@ It works from:
 - CWS local API
 - exported evidence files
 
+### 6. Community skill rules
+
+This release also makes the following product rules explicit:
+
+- Community skills explain and prepare
+- Team skills coordinate and execute
+- Enterprise skills control and audit
+- Community skills should support both:
+  - `connected-mode`
+  - `file-only-mode`
+
 ## What did not change
 
 This release does not claim completion of:
@@ -149,9 +153,17 @@ If you are using Community today:
 3. use `cws-weekly-brief` for weekly current-vs-prior review
 4. treat Team and Enterprise skill ideas as roadmap, not current GA surface
 
+## Suggested release-page CTA
+
+- Try Community locally
+- Use `cws-report-explainer` to explain findings
+- Use `cws-weekly-brief` to summarize weekly change
+- Follow Team features as preview/planned work, not current GA
+
 ## Validation checklist
 
 - Community boundary is documented
+- Community skills index is documented
 - skill runtime modes are documented
 - Community skill monetization boundary is documented
 - `cws-report-explainer` validates successfully

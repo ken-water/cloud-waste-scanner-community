@@ -33,6 +33,7 @@ Scope references:
 - Community roadmap: `COMMUNITY_ROADMAP_NEXT.md`
 - Community backlog: `COMMUNITY_BACKLOG_NEXT.md`
 - Community skills strategy: `COMMUNITY_SKILLS_STRATEGY.md`
+- Community skills index: `COMMUNITY_SKILLS_INDEX.md`
 - Skills edition matrix: `SKILLS_EDITION_MATRIX.md`
 - Skills usage (ZH): `SKILLS_USAGE_ZH.md`
 - Skill monetization policy: `SKILL_MONETIZATION_POLICY.md`
