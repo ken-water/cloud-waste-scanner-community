@@ -1,5 +1,16 @@
 # Cloud Waste Scanner Community v3.0.0
 
+## Release summary
+
+`v3.0.0` is the Community release-line reset for the open client-first roadmap.
+
+This release establishes:
+
+- the Community / Team / Enterprise boundary
+- the first Community skill surface
+- the first Community skill family rules
+- a clearer release-line policy for Community-era content releases
+
 ## Release type
 
 Community release-line reset.
@@ -9,6 +20,25 @@ This release marks the start of the Community `3.0.0` line for the open client-f
 It is primarily a product-boundary, documentation, and skill-surface release.
 
 It does not claim that every desktop or SDK binary artifact has already been rebuilt as `3.0.0`.
+
+## Scope declaration
+
+Included in this release:
+
+- Community product-boundary clarification
+- Community skills strategy
+- Community skill runtime rules
+- Community skill monetization rules
+- first Community skill: `cws-report-explainer`
+- second Community skill: `cws-weekly-brief`
+- Team skill readiness assessment
+
+Not included in this release:
+
+- Team product GA
+- Enterprise product GA
+- binary rebuild requirement for unchanged desktop artifacts
+- centralized identity or audit rollout
 
 ## Why this release exists
 
@@ -83,6 +113,22 @@ This gives users a low-friction trial path without weakening the local-first pro
 
 Added a Chinese-language skills usage guide for consistent external communication.
 
+### 5. Second Community skill: `cws-weekly-brief`
+
+Added a second Community skill for current-vs-prior weekly review.
+
+It supports:
+
+- latest-scan weekly summary
+- current vs prior evidence comparison
+- repeated waste signal highlighting
+- founder/operator weekly brief output
+
+It works from:
+
+- CWS local API
+- exported evidence files
+
 ## What did not change
 
 This release does not claim completion of:
@@ -93,6 +139,24 @@ This release does not claim completion of:
 - enterprise audit workflow automation
 
 It also does not imply that unchanged binaries were version-bumped.
+
+## Upgrade guidance
+
+If you are using Community today:
+
+1. keep using the local-first desktop workflow
+2. use `cws-report-explainer` for role-specific summaries
+3. use `cws-weekly-brief` for weekly current-vs-prior review
+4. treat Team and Enterprise skill ideas as roadmap, not current GA surface
+
+## Validation checklist
+
+- Community boundary is documented
+- skill runtime modes are documented
+- Community skill monetization boundary is documented
+- `cws-report-explainer` validates successfully
+- `cws-weekly-brief` validates successfully
+- Team readiness is described conservatively, not overstated
 
 ## Current product position after v3.0.0
 

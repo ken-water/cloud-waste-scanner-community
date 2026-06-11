@@ -1,0 +1,7 @@
+interface:
+  display_name: "CWS Playbook Writer"
+  short_description: "Turn findings into safe cleanup playbooks"
+  default_prompt: "Use $cws-playbook-writer to convert these Cloud Waste Scanner findings into a practical cleanup playbook."
+
+policy:
+  allow_implicit_invocation: true
