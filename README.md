@@ -71,6 +71,10 @@ The repository now includes a first local-first skill for turning CWS evidence i
 
 - Skill: `skills/cws-report-explainer`
 - Purpose: explain findings, rank next actions, and generate summaries for operators, finance, and executives
+- Additional Community skill: `skills/cws-weekly-brief`
+  - summarize current vs prior evidence
+  - highlight repeated waste signals
+  - produce a concise weekly operator or founder brief
 - Input modes:
   - local API
   - exported `JSON / CSV / TXT`

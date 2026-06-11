@@ -1,0 +1,7 @@
+interface:
+  display_name: "CWS Weekly Brief"
+  short_description: "Summarize current vs prior CWS evidence"
+  default_prompt: "Use $cws-weekly-brief to turn the latest Cloud Waste Scanner evidence into a concise weekly review note."
+
+policy:
+  allow_implicit_invocation: true
