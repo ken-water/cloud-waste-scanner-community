@@ -65,6 +65,69 @@ interface OrgUnit {
   is_active: boolean;
 }
 
+type HandoffAudience = "exec" | "owner" | "audit";
+
+interface HandoffPriorityBreakdown {
+  urgent: number;
+  high: number;
+  medium: number;
+  low: number;
+}
+
+interface HandoffTopFinding {
+  id: string;
+  provider: string;
+  account: string;
+  resource_type: string;
+  action_type: string;
+  review_priority: string | null;
+  confidence_level: string | null;
+  estimated_monthly_cost: number;
+  lifecycle_status: string;
+  owner_assigned: boolean;
+  is_overdue: boolean;
+  was_reopened: boolean;
+}
+
+interface HandoffManifestV1 {
+  schema_name: "cws_handoff_manifest";
+  schema_version: "1.1.0";
+  generated_at: string;
+  scope: {
+    type: "selected" | "filtered";
+    selected_count: number;
+    filtered_count: number;
+    filters: {
+      provider: string;
+      search_query: string | null;
+      account_id: string | null;
+      resource_type: string | null;
+      delete_only: boolean;
+    };
+    providers: string[];
+    accounts: string[];
+    owners: string[];
+    audience: HandoffAudience;
+    include_sensitive_fields: boolean;
+  };
+  metrics: {
+    findings: number;
+    identified_savings_monthly: number;
+    estimated_co2e_kg_monthly: number;
+    lifecycle_breakdown: Record<string, number>;
+    priority_breakdown: HandoffPriorityBreakdown;
+  };
+  top_findings: HandoffTopFinding[];
+  artifacts: {
+    summary_txt: string;
+    findings_csv: string;
+    manifest_json: string;
+  };
+}
+
+const HANDOFF_MANIFEST_SCHEMA_NAME = "cws_handoff_manifest";
+const HANDOFF_MANIFEST_SCHEMA_VERSION = "1.1.0";
+
 function normalizeWorsenedFlag(value: unknown): boolean {
   return value === true || value === "true" || value === 1 || value === "1";
 }
@@ -170,7 +233,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [filterOrgUnitId, setFilterOrgUnitId] = useState("");
   const [batchAssignOwnerId, setBatchAssignOwnerId] = useState("");
   const [includeSensitiveFields, setIncludeSensitiveFields] = useState<boolean>(false);
-  const [handoffAudience, setHandoffAudience] = useState<"exec" | "owner" | "audit">("owner");
+  const [handoffAudience, setHandoffAudience] = useState<HandoffAudience>("owner");
 
   // Export State
   const [isExportModalOpen, setExportModalOpen] = useState(false);
@@ -698,6 +761,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
 
       const summaryText = [
           `Cloud Waste Scanner Handoff Pack`,
+          `Schema: ${HANDOFF_MANIFEST_SCHEMA_NAME} ${HANDOFF_MANIFEST_SCHEMA_VERSION}`,
           `Generated: ${generatedAtIso}`,
           `Scope Type: ${scopeType}`,
           `Findings: ${scopeItems.length}`,
@@ -725,8 +789,9 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
           `- handoff_${scopeType}_${stamp}.json`,
       ].join("\n");
 
-      const manifest = {
-          version: "1.0",
+      const manifest: HandoffManifestV1 = {
+          schema_name: HANDOFF_MANIFEST_SCHEMA_NAME,
+          schema_version: HANDOFF_MANIFEST_SCHEMA_VERSION,
           generated_at: generatedAtIso,
           scope: {
               type: scopeType,
@@ -1023,7 +1088,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
             </button>
             <select
               value={handoffAudience}
-              onChange={(e) => setHandoffAudience(e.target.value as "exec" | "owner" | "audit")}
+              onChange={(e) => setHandoffAudience(e.target.value as HandoffAudience)}
               className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
             >
               <option value="exec">Audience: Exec</option>
