@@ -10,12 +10,12 @@
 <meta content="CWS Skills for GitHub, Codex, and Claude" property="og:title"/>
 <meta content="Free Community Skills that turn local Cloud Waste Scanner evidence into explanations, weekly briefs, cleanup playbooks, and export audits." property="og:description"/>
 <meta content="https://cloud-waste-scanner.com/skills.html" property="og:url"/>
-<meta content="https://cloud-waste-scanner.com/blog/images/scan-results.png" property="og:image"/>
+<meta content="https://cloud-waste-scanner.com/blog/images/community-skills-promo.png" property="og:image"/>
 <meta content="Cloud Waste Scanner" property="og:site_name"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <meta content="CWS Skills for GitHub, Codex, and Claude" name="twitter:title"/>
 <meta content="Download free Community Skills for GitHub, Codex, and Claude-compatible local evidence workflows." name="twitter:description"/>
-<meta content="https://cloud-waste-scanner.com/blog/images/scan-results.png" name="twitter:image"/>
+<meta content="https://cloud-waste-scanner.com/blog/images/community-skills-promo.png" name="twitter:image"/>
 <link href="styles.css?v=1.16.68.0" rel="stylesheet"/>
 <link href="logo.png" rel="icon" type="image/png"/>
 <style>
@@ -26,6 +26,21 @@
       linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
     background-size: auto, auto, 32px 32px, 32px 32px;
+  }
+  .skills-download-card {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+  }
+  .skills-download-card .skills-download-action {
+    margin-top: auto;
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  .skills-price-card {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 </style>
 <!-- Google tag (gtag.js) -->
@@ -91,9 +106,9 @@
 
 <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 <div class="grid gap-6 md:grid-cols-3">
-<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">GitHub / Generic</p><h2 class="mt-3 text-2xl font-bold text-slate-900">Source-visible package</h2><p class="mt-3 text-base leading-7 text-slate-600">Use this package when you want the plain skill source tree, examples, and manifest.</p><a class="mt-5 inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download skills-generic.tar.gz</a></article>
-<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Codex</p><h2 class="mt-3 text-2xl font-bold text-slate-900">Codex-ready layout</h2><p class="mt-3 text-base leading-7 text-slate-600">Installs under <code>.agents/skills</code> and keeps Codex-specific metadata.</p><a class="mt-5 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-codex.tar.gz">Download skills-codex.tar.gz</a></article>
-<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Claude Code</p><h2 class="mt-3 text-2xl font-bold text-slate-900">Claude-ready layout</h2><p class="mt-3 text-base leading-7 text-slate-600">Installs under <code>.claude/skills</code> and excludes Codex-only UI metadata.</p><a class="mt-5 inline-flex items-center justify-center rounded-xl bg-sky-600 px-5 py-3 text-sm font-bold text-white hover:bg-sky-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-claude.tar.gz">Download skills-claude.tar.gz</a></article>
+<article class="skills-download-card rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">GitHub / Generic</p><h2 class="mt-3 text-2xl font-bold text-slate-900">Source-visible package</h2><p class="mt-3 text-base leading-7 text-slate-600">Use this package when you want the plain skill source tree, examples, and manifest.</p><p class="mt-4 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500">Asset: skills-generic.tar.gz</p><a class="skills-download-action mt-5 inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.0.0/skills-generic.tar.gz">Download Generic</a></article>
+<article class="skills-download-card rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Codex</p><h2 class="mt-3 text-2xl font-bold text-slate-900">Codex-ready layout</h2><p class="mt-3 text-base leading-7 text-slate-600">Installs under <code>.agents/skills</code> and keeps Codex-specific metadata.</p><p class="mt-4 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-600">Asset: skills-codex.tar.gz</p><a class="skills-download-action mt-5 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.0.0/skills-codex.tar.gz">Download Codex</a></article>
+<article class="skills-download-card rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Claude Code</p><h2 class="mt-3 text-2xl font-bold text-slate-900">Claude-ready layout</h2><p class="mt-3 text-base leading-7 text-slate-600">Installs under <code>.claude/skills</code> and excludes Codex-only UI metadata.</p><p class="mt-4 rounded-xl bg-sky-50 px-3 py-2 text-xs font-bold text-sky-700">Asset: skills-claude.tar.gz</p><a class="skills-download-action mt-5 inline-flex items-center justify-center rounded-xl bg-sky-600 px-5 py-3 text-sm font-bold text-white hover:bg-sky-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.0.0/skills-claude.tar.gz">Download Claude</a></article>
 </div>
 </section>
 
@@ -112,12 +127,12 @@
 </section>
 
 <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-<div class="grid gap-8 lg:grid-cols-3">
-<div class="lg:col-span-1"><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Pricing boundary</p><h2 class="mt-3 text-4xl font-extrabold text-slate-900">Free skills. Paid governance.</h2><p class="mt-4 text-lg leading-8 text-slate-600">The downloadable skills are a Community capability. Charging starts when evidence becomes a shared workflow across people, departments, approvals, and audit trails.</p></div>
-<div class="lg:col-span-2 grid gap-4 md:grid-cols-3">
-<div class="rounded-3xl border border-emerald-200 bg-emerald-50 p-6"><p class="text-sm font-bold uppercase tracking-wide text-emerald-700">Community</p><h3 class="mt-3 text-3xl font-extrabold text-slate-900">Free</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-slate-700"><li>Local evidence explanation</li><li>Weekly brief drafting</li><li>Cleanup playbook drafting</li><li>Export review</li><li>GitHub, Codex, Claude packages</li></ul></div>
-<div class="rounded-3xl border border-slate-200 bg-white p-6"><p class="text-sm font-bold uppercase tracking-wide text-indigo-700">Team</p><h3 class="mt-3 text-3xl font-extrabold text-slate-900">Coming next</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-slate-700"><li>Owner assignment</li><li>Department routing</li><li>Shared report links</li><li>Weekly review workflow</li><li>Status and closure tracking</li></ul></div>
-<div class="rounded-3xl border border-slate-200 bg-white p-6"><p class="text-sm font-bold uppercase tracking-wide text-slate-700">Enterprise</p><h3 class="mt-3 text-3xl font-extrabold text-slate-900">Contact us</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-slate-700"><li>SSO and access control</li><li>Audit trail</li><li>Private deployment</li><li>Central policy control</li><li>Priority support</li></ul></div>
+<div class="grid gap-8 xl:grid-cols-[0.78fr_1.22fr]">
+<div><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Pricing boundary</p><h2 class="mt-3 text-4xl font-extrabold text-slate-900">Free skills. Paid governance.</h2><p class="mt-4 text-lg leading-8 text-slate-600">The downloadable skills are a Community capability. Charging starts when evidence becomes a shared workflow across people, departments, approvals, and audit trails.</p></div>
+<div class="grid gap-4 lg:grid-cols-3">
+<div class="skills-price-card rounded-3xl border border-emerald-200 bg-emerald-50 p-6"><p class="text-sm font-bold uppercase tracking-wide text-emerald-700">Community</p><h3 class="mt-3 text-3xl font-extrabold text-slate-900">Free</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-slate-700"><li>Local evidence explanation</li><li>Weekly brief drafting</li><li>Cleanup playbook drafting</li><li>Export review</li><li>GitHub, Codex, Claude packages</li></ul></div>
+<div class="skills-price-card rounded-3xl border border-slate-200 bg-white p-6"><p class="text-sm font-bold uppercase tracking-wide text-indigo-700">Team</p><h3 class="mt-3 text-3xl font-extrabold text-slate-900">Coming next</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-slate-700"><li>Owner assignment</li><li>Department routing</li><li>Shared report links</li><li>Weekly review workflow</li><li>Status and closure tracking</li></ul></div>
+<div class="skills-price-card rounded-3xl border border-slate-200 bg-white p-6"><p class="text-sm font-bold uppercase tracking-wide text-slate-700">Enterprise</p><h3 class="mt-3 text-3xl font-extrabold text-slate-900">Contact us</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-slate-700"><li>SSO and access control</li><li>Audit trail</li><li>Private deployment</li><li>Central policy control</li><li>Priority support</li></ul></div>
 </div>
 </div>
 </section>
@@ -143,14 +158,81 @@
 <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 <div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
-<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200"><div class="flex items-center gap-2"><img alt="Logo" class="h-6 w-6" src="logo.png"/><p class="text-sm text-slate-500">© Cloud Waste Scanner</p></div><p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p><p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p><div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm"><p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p><p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p></div></div>
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="logo.png"/>
+<p class="text-sm text-slate-500">© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
 <div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
-<div><p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p><div class="cws-footer-links space-y-2"><a class="block hover:text-slate-900 transition-colors" href="index.html">Home</a><a class="block hover:text-slate-900 transition-colors" href="download/">Download</a><a class="block hover:text-slate-900 transition-colors" href="skills.html">Skills</a><a class="block hover:text-slate-900 transition-colors" href="pricing.html">Pricing</a><a class="block hover:text-slate-900 transition-colors" href="sample-report.html">Sample Report</a><a class="block hover:text-slate-900 transition-colors" href="roadmap.html">Roadmap</a></div></div>
-<div><p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p><div class="cws-footer-links space-y-2"><a class="block hover:text-slate-900 transition-colors" href="blog.html">Blog</a><a class="block hover:text-slate-900 transition-colors" href="blog-series.html">Blog Series</a><a class="block hover:text-slate-900 transition-colors" href="solutions.html">Solutions</a><a class="block hover:text-slate-900 transition-colors" href="security.html">Security</a></div></div>
-<div><p class="text-sm md:text-base font-bold text-slate-600 mb-2">Community</p><div class="cws-footer-links space-y-2"><a class="block hover:text-slate-900 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community">GitHub</a><a class="block hover:text-slate-900 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest">Latest Release</a><a class="block hover:text-slate-900 transition-colors" href="https://github.com/sponsors/ken-water">Sponsor</a><a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a></div></div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="skills.html">Skills</a>
+<a class="block hover:text-slate-900 transition-colors" href="pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="company.html">Company</a>
 </div>
 </div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html#troubleshooting-faq">Troubleshooting</a>
 </div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+
 </footer>
 <script src="js/analytics.js" defer></script>
 </body>

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Cloud Waste Scanner Community Skills for GitHub, Codex, and Claude</title>
+  <desc id="desc">A promotional illustration showing CWS scan evidence flowing into GitHub, Codex, and Claude skill packages.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.52" stop-color="#0f2a44"/>
+      <stop offset="1" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#dff4ff" stop-opacity="0.94"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="0.52" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#020617" flood-opacity="0.28"/>
+    </filter>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <circle cx="1360" cy="110" r="260" fill="#7dd3fc" opacity="0.22"/>
+  <circle cx="130" cy="760" r="320" fill="#22c55e" opacity="0.12"/>
+  <path d="M1030 142 C1180 128 1276 198 1334 332 C1392 466 1510 470 1570 424 L1600 900 L1018 900 C930 710 888 532 912 366 C930 244 962 166 1030 142Z" fill="#f8fafc" opacity="0.16"/>
+
+  <g transform="translate(112 118)">
+    <rect x="0" y="0" width="640" height="664" rx="44" fill="url(#panel)" filter="url(#shadow)"/>
+    <rect x="42" y="44" width="556" height="70" rx="22" fill="#0f172a"/>
+    <circle cx="78" cy="79" r="10" fill="#ef4444"/>
+    <circle cx="110" cy="79" r="10" fill="#f59e0b"/>
+    <circle cx="142" cy="79" r="10" fill="#22c55e"/>
+    <text x="182" y="86" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="24" font-weight="700">cws scan evidence</text>
+
+    <text x="56" y="176" fill="#e0f2fe" font-family="Inter, ui-sans-serif, system-ui" font-size="34" font-weight="800">Local findings</text>
+    <text x="56" y="220" fill="#bae6fd" font-family="Inter, ui-sans-serif, system-ui" font-size="22">No cloud credentials leave your environment.</text>
+
+    <g transform="translate(56 274)">
+      <rect width="528" height="82" rx="22" fill="#eff6ff" stroke="#bfdbfe"/>
+      <rect x="24" y="25" width="32" height="32" rx="10" fill="#38bdf8"/>
+      <text x="78" y="37" fill="#0f172a" font-family="Inter, ui-sans-serif, system-ui" font-size="20" font-weight="800">14 orphaned storage assets</text>
+      <text x="78" y="64" fill="#64748b" font-family="Inter, ui-sans-serif, system-ui" font-size="17">owner missing · safe review candidate</text>
+    </g>
+    <g transform="translate(56 378)">
+      <rect width="528" height="82" rx="22" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <rect x="24" y="25" width="32" height="32" rx="10" fill="#22c55e"/>
+      <text x="78" y="37" fill="#0f172a" font-family="Inter, ui-sans-serif, system-ui" font-size="20" font-weight="800">$7,800 projected monthly reduction</text>
+      <text x="78" y="64" fill="#64748b" font-family="Inter, ui-sans-serif, system-ui" font-size="17">measurable · finance-safe wording</text>
+    </g>
+    <g transform="translate(56 482)">
+      <rect width="528" height="82" rx="22" fill="#fff7ed" stroke="#fed7aa"/>
+      <rect x="24" y="25" width="32" height="32" rx="10" fill="#f97316"/>
+      <text x="78" y="37" fill="#0f172a" font-family="Inter, ui-sans-serif, system-ui" font-size="20" font-weight="800">Kubernetes request drift</text>
+      <text x="78" y="64" fill="#64748b" font-family="Inter, ui-sans-serif, system-ui" font-size="17">needs owner · cleanup playbook ready</text>
+    </g>
+  </g>
+
+  <path d="M790 430 C880 430 900 308 990 308" fill="none" stroke="url(#accent)" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+  <path d="M790 456 C910 456 910 456 1024 456" fill="none" stroke="url(#accent)" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+  <path d="M790 482 C880 482 900 604 990 604" fill="none" stroke="url(#accent)" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="790" cy="456" r="24" fill="#e0f2fe" stroke="#38bdf8" stroke-width="8"/>
+
+  <g transform="translate(976 166)">
+    <rect width="496" height="568" rx="44" fill="#ffffff" filter="url(#shadow)"/>
+    <text x="44" y="74" fill="#0f172a" font-family="Inter, ui-sans-serif, system-ui" font-size="38" font-weight="900">Community Skills</text>
+    <text x="44" y="112" fill="#64748b" font-family="Inter, ui-sans-serif, system-ui" font-size="20">Explain · Brief · Playbook · Audit</text>
+
+    <g transform="translate(44 162)">
+      <rect width="408" height="86" rx="24" fill="#0f172a"/>
+      <text x="28" y="36" fill="#e2e8f0" font-family="Inter, ui-sans-serif, system-ui" font-size="20" font-weight="800">GitHub package</text>
+      <text x="28" y="64" fill="#94a3b8" font-family="Inter, ui-sans-serif, system-ui" font-size="17">source-visible skills tree</text>
+    </g>
+    <g transform="translate(44 270)">
+      <rect width="408" height="86" rx="24" fill="#eef2ff" stroke="#c7d2fe"/>
+      <text x="28" y="36" fill="#312e81" font-family="Inter, ui-sans-serif, system-ui" font-size="20" font-weight="800">Codex package</text>
+      <text x="28" y="64" fill="#64748b" font-family="Inter, ui-sans-serif, system-ui" font-size="17">.agents/skills ready</text>
+    </g>
+    <g transform="translate(44 378)">
+      <rect width="408" height="86" rx="24" fill="#ecfeff" stroke="#a5f3fc"/>
+      <text x="28" y="36" fill="#155e75" font-family="Inter, ui-sans-serif, system-ui" font-size="20" font-weight="800">Claude package</text>
+      <text x="28" y="64" fill="#64748b" font-family="Inter, ui-sans-serif, system-ui" font-size="17">.claude/skills ready</text>
+    </g>
+
+    <rect x="44" y="502" width="408" height="2" fill="#e2e8f0"/>
+    <text x="44" y="538" fill="#0f172a" font-family="Inter, ui-sans-serif, system-ui" font-size="19" font-weight="800">Free skills. Paid governance.</text>
+  </g>
+
+  <text x="112" y="836" fill="#e0f2fe" font-family="Inter, ui-sans-serif, system-ui" font-size="26" font-weight="800">Cloud Waste Scanner</text>
+  <text x="390" y="836" fill="#e0f2fe" font-family="Inter, ui-sans-serif, system-ui" font-size="24">local-first evidence workflows for AI-assisted cloud governance</text>
+</svg>
