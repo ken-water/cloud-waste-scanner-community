@@ -1,0 +1,55 @@
+name: Community Skills CI
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**'
+      - 'scripts/validate-skills.sh'
+      - 'scripts/package-skills.sh'
+      - 'SKILLS_*.md'
+      - 'INSTALL_*_SKILLS.md'
+      - 'GITHUB_SKILLS_COMMUNITY_RELEASE.md'
+      - '.github/workflows/skills-ci.yml'
+      - '.github/workflows/skills-release.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'scripts/validate-skills.sh'
+      - 'scripts/package-skills.sh'
+      - 'SKILLS_*.md'
+      - 'INSTALL_*_SKILLS.md'
+      - 'GITHUB_SKILLS_COMMUNITY_RELEASE.md'
+      - '.github/workflows/skills-ci.yml'
+      - '.github/workflows/skills-release.yml'
+
+jobs:
+  validate-skills:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate skills
+        run: ./scripts/validate-skills.sh
+
+      - name: Package skills
+        run: ./scripts/package-skills.sh
+
+      - name: Verify generated packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/skills-generic.tar.gz
+          test -f dist/skills-codex.tar.gz
+          test -f dist/skills-claude.tar.gz
+          tar -tzf dist/skills-generic.tar.gz | grep -q '^skills-generic/skills/cws-report-explainer/SKILL.md$'
+          tar -tzf dist/skills-codex.tar.gz | grep -q '^skills-codex/.agents/skills/cws-report-explainer/SKILL.md$'
+          tar -tzf dist/skills-claude.tar.gz | grep -q '^skills-claude/.claude/skills/cws-report-explainer/SKILL.md$'
+          if tar -tzf dist/skills-claude.tar.gz | grep -q '/agents/openai.yaml$'; then
+            echo 'Claude package must not include agents/openai.yaml' >&2
+            exit 1
+          fi

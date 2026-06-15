@@ -54,6 +54,18 @@ cp -a "$ROOT_DIR/skills/examples" "$DIST_DIR/skills-codex/examples"
 cp -a "$ROOT_DIR/skills/examples" "$DIST_DIR/skills-claude/examples"
 cp -a "$ROOT_DIR/skills/examples" "$DIST_DIR/skills-generic/examples"
 
+cp "$ROOT_DIR/SKILLS_QUICKSTART.md" "$DIST_DIR/skills-codex/SKILLS_QUICKSTART.md"
+cp "$ROOT_DIR/INSTALL_CODEX_SKILLS.md" "$DIST_DIR/skills-codex/INSTALL_CODEX_SKILLS.md"
+cp "$ROOT_DIR/CODEX_SKILLS_PLATFORM.md" "$DIST_DIR/skills-codex/CODEX_SKILLS_PLATFORM.md"
+
+cp "$ROOT_DIR/SKILLS_QUICKSTART.md" "$DIST_DIR/skills-claude/SKILLS_QUICKSTART.md"
+cp "$ROOT_DIR/INSTALL_CLAUDE_SKILLS.md" "$DIST_DIR/skills-claude/INSTALL_CLAUDE_SKILLS.md"
+cp "$ROOT_DIR/CLAUDE_SKILLS_PLATFORM.md" "$DIST_DIR/skills-claude/CLAUDE_SKILLS_PLATFORM.md"
+
+cp "$ROOT_DIR/SKILLS_QUICKSTART.md" "$DIST_DIR/skills-generic/SKILLS_QUICKSTART.md"
+cp "$ROOT_DIR/GITHUB_SKILLS_COMMUNITY_RELEASE.md" "$DIST_DIR/skills-generic/GITHUB_SKILLS_COMMUNITY_RELEASE.md"
+cp "$ROOT_DIR/SKILLS_PLATFORM_MATRIX.md" "$DIST_DIR/skills-generic/SKILLS_PLATFORM_MATRIX.md"
+
 for package in skills-codex skills-claude skills-generic; do
   tar -C "$DIST_DIR" -czf "$DIST_DIR/${package}.tar.gz" "$package"
 done

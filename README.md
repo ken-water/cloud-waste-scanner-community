@@ -86,8 +86,12 @@ Runtime positioning:
 - Copy pack: `COMMUNITY_SKILLS_COPY_PACK.md`
 - Multi-platform manifest: `skills/manifest.json`
 - Quickstart: `SKILLS_QUICKSTART.md`
+- GitHub community release: `GITHUB_SKILLS_COMMUNITY_RELEASE.md`
+- Platform matrix: `SKILLS_PLATFORM_MATRIX.md`
 - Codex install: `INSTALL_CODEX_SKILLS.md`
+- Codex platform notes: `CODEX_SKILLS_PLATFORM.md`
 - Claude install: `INSTALL_CLAUDE_SKILLS.md`
+- Claude platform notes: `CLAUDE_SKILLS_PLATFORM.md`
 
 Validate and package skills:
 
@@ -98,9 +102,11 @@ Validate and package skills:
 
 Package outputs:
 
+- `dist/skills-generic.tar.gz`
 - `dist/skills-codex.tar.gz`
 - `dist/skills-claude.tar.gz`
-- `dist/skills-generic.tar.gz`
+
+GitHub community release should publish the generic package first, then attach Codex and Claude packages as platform-specific convenience artifacts.
 
 Build a normalized evidence bundle from the local API:
 

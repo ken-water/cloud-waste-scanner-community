@@ -1,0 +1,48 @@
+name: Skill issue
+description: Report a problem with CWS skills, packaging, or examples
+title: "skill: "
+labels: ["skills"]
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - GitHub generic package
+        - Codex
+        - Claude Code
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      options:
+        - cws-report-explainer
+        - cws-weekly-brief
+        - cws-playbook-writer
+        - cws-export-auditor
+        - packaging / manifest
+        - examples
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Input type
+      description: Use sanitized examples. Do not paste secrets.
+      placeholder: "handoff manifest, findings CSV, local API bundle, pasted report text"
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command or prompt used
+      render: text

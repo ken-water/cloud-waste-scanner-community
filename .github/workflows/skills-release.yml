@@ -1,0 +1,52 @@
+name: Release Community Skills
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_artifacts:
+        description: 'Upload generated skill packages as workflow artifacts'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  package-skills:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate skills
+        run: ./scripts/validate-skills.sh
+
+      - name: Package skills
+        run: ./scripts/package-skills.sh
+
+      - name: Verify package layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/skills-generic.tar.gz
+          test -f dist/skills-codex.tar.gz
+          test -f dist/skills-claude.tar.gz
+          tar -tzf dist/skills-codex.tar.gz | grep -q '^skills-codex/.agents/skills/cws-report-explainer/SKILL.md$'
+          tar -tzf dist/skills-claude.tar.gz | grep -q '^skills-claude/.claude/skills/cws-report-explainer/SKILL.md$'
+          if tar -tzf dist/skills-claude.tar.gz | grep -q '/agents/openai.yaml$'; then
+            echo 'Claude package must not include agents/openai.yaml' >&2
+            exit 1
+          fi
+
+      - name: Upload skill packages
+        if: inputs.upload_artifacts == true
+        uses: actions/upload-artifact@v6
+        with:
+          name: cws-community-skills-packages
+          if-no-files-found: error
+          path: |
+            dist/skills-generic.tar.gz
+            dist/skills-codex.tar.gz
+            dist/skills-claude.tar.gz
+            skills/manifest.json
+            skills/examples/*
