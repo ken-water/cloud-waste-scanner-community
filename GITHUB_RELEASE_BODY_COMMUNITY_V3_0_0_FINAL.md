@@ -21,6 +21,8 @@ This release-line reset does **not** imply that every unchanged desktop or SDK b
 - `cws-playbook-writer`
 - `cws-export-auditor`
 - formal Community skill strategy, runtime modes, and monetization guardrails
+- GitHub generic, Codex, and Claude-compatible skill packages
+- Community skills launch article on the website
 
 ## Included
 
@@ -29,6 +31,10 @@ This release-line reset does **not** imply that every unchanged desktop or SDK b
 - Community skills edition matrix
 - Community skill runtime rules
 - Community skill monetization rules
+- multi-platform skills manifest and package scripts
+- GitHub Community Skills release workflow
+- Codex and Claude install/platform notes
+- Community Skills promotional blog article
 - Team skill readiness assessment
 - Team closure plan
 
@@ -45,6 +51,23 @@ This release-line reset does **not** imply that every unchanged desktop or SDK b
 - `cws-weekly-brief`: summarize current vs prior evidence
 - `cws-playbook-writer`: turn findings into safer action playbooks
 - `cws-export-auditor`: audit exports before sharing
+
+## Skill packages
+
+- `skills-generic.tar.gz`: GitHub/source-visible package
+- `skills-codex.tar.gz`: Codex-compatible `.agents/skills` package
+- `skills-claude.tar.gz`: Claude Code-compatible `.claude/skills` package
+
+Generate locally with:
+
+```bash
+./scripts/validate-skills.sh
+./scripts/package-skills.sh
+```
+
+Launch article:
+
+- `Community Skills Now Ship for GitHub, Codex, and Claude`
 
 ## Upgrade guidance
 

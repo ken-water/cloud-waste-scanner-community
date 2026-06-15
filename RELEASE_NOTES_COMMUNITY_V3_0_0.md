@@ -12,6 +12,10 @@ This release does **not** claim that every desktop or SDK binary artifact has al
 - clearer Community / Team / Enterprise boundary
 - first Community skill: `cws-report-explainer`
 - second Community skill: `cws-weekly-brief`
+- additional Community skills: `cws-playbook-writer` and `cws-export-auditor`
+- GitHub generic, Codex, and Claude-compatible skills packages
+- GitHub Community Skills release workflow and validation gates
+- website launch article for Community Skills
 - formal Community skill strategy, runtime modes, and monetization guardrails
 - conservative Team skill readiness assessment
 
@@ -24,6 +28,17 @@ This release does **not** claim that every desktop or SDK binary artifact has al
 - Community skill monetization rules
 - `cws-report-explainer`
 - `cws-weekly-brief`
+- `cws-playbook-writer`
+- `cws-export-auditor`
+- `skills/manifest.json`
+- `scripts/validate-skills.sh`
+- `scripts/package-skills.sh`
+- `INSTALL_CODEX_SKILLS.md`
+- `INSTALL_CLAUDE_SKILLS.md`
+- `GITHUB_SKILLS_COMMUNITY_RELEASE.md`
+- `CODEX_SKILLS_PLATFORM.md`
+- `CLAUDE_SKILLS_PLATFORM.md`
+- `SKILLS_PLATFORM_MATRIX.md`
 - Team skill readiness assessment
 
 ## Not included in this release
@@ -133,6 +148,31 @@ This release also makes the following product rules explicit:
   - `connected-mode`
   - `file-only-mode`
 
+### 7. Multi-platform skills packaging
+
+Added packaging for three distribution targets:
+
+- GitHub generic package: `dist/skills-generic.tar.gz`
+- Codex package: `dist/skills-codex.tar.gz`
+- Claude package: `dist/skills-claude.tar.gz`
+
+The packages are generated from the same source tree under `skills/`.
+
+Validation and packaging commands:
+
+```bash
+./scripts/validate-skills.sh
+./scripts/package-skills.sh
+```
+
+### 8. Community Skills launch article
+
+Added a website launch article:
+
+- `Community Skills Now Ship for GitHub, Codex, and Claude`
+
+The article explains what the skills do, how the packages differ, what evidence they consume, and what they deliberately do not do.
+
 ## What did not change
 
 This release does not claim completion of:
@@ -151,13 +191,18 @@ If you are using Community today:
 1. keep using the local-first desktop workflow
 2. use `cws-report-explainer` for role-specific summaries
 3. use `cws-weekly-brief` for weekly current-vs-prior review
-4. treat Team and Enterprise skill ideas as roadmap, not current GA surface
+4. use `cws-playbook-writer` for cautious cleanup checklists
+5. use `cws-export-auditor` before sharing exports
+6. treat Team and Enterprise skill ideas as roadmap, not current GA surface
 
 ## Suggested release-page CTA
 
 - Try Community locally
 - Use `cws-report-explainer` to explain findings
 - Use `cws-weekly-brief` to summarize weekly change
+- Use `cws-playbook-writer` to prepare cleanup checks
+- Use `cws-export-auditor` before sharing exports
+- Download GitHub, Codex, or Claude-compatible skills packages
 - Follow Team features as preview/planned work, not current GA
 
 ## Validation checklist
@@ -168,6 +213,10 @@ If you are using Community today:
 - Community skill monetization boundary is documented
 - `cws-report-explainer` validates successfully
 - `cws-weekly-brief` validates successfully
+- `cws-playbook-writer` validates successfully
+- `cws-export-auditor` validates successfully
+- skills packages build successfully
+- Claude package does not include Codex/OpenAI `agents/openai.yaml`
 - Team readiness is described conservatively, not overstated
 
 ## Current product position after v3.0.0

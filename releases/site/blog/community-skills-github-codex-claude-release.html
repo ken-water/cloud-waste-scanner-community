@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Skills Now Ship for GitHub, Codex, and Claude | CWS</title>
+  <meta name="description" content="Cloud Waste Scanner Community Skills now ship as GitHub, Codex, and Claude-compatible packages for explaining, auditing, and turning local scan evidence into safer action.">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/blog/community-skills-github-codex-claude-release.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Community Skills Now Ship for GitHub, Codex, and Claude | CWS">
+  <meta property="og:description" content="CWS Community Skills turn local scan evidence into explanations, weekly briefs, cleanup playbooks, and export audits across GitHub, Codex, and Claude workflows.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/blog/community-skills-github-codex-claude-release.html">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/scan-results.png">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Community Skills Now Ship for GitHub, Codex, and Claude | CWS">
+  <meta name="twitter:description" content="Explain, audit, and act on Cloud Waste Scanner evidence from GitHub, Codex, and Claude-compatible skill packages.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/scan-results.png">
+  <meta name="featured-image" content="images/scan-results.png">
+  <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../logo.png">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body class="bg-white text-slate-600 antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../download/">Download</a></div>
+</div>
+</div>
+</nav>
+</header>
+
+<main class="pt-24 pb-16">
+<section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="blog-shell">
+<article class="blog-main min-w-0">
+<header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+<div class="blog-breadcrumb justify-center"><a href="../blog.html">Blog</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=release-notes#release-notes">Release Notes</a><span class="blog-divider-dot">/</span><span>Community Skills</span></div>
+<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Community Skills Now Ship for GitHub, Codex, and Claude</h1>
+<p class="text-xl text-slate-600 leading-relaxed">The Community release now includes skill packages that turn local scan evidence into explanations, weekly briefs, cleanup playbooks, and export audits.</p>
+<div class="blog-meta-row mt-5"><time datetime="2026-06-15">June 15, 2026</time><span>&bull;</span><span>8 min read</span><span>&bull;</span><span>Product Updates</span></div>
+</header>
+
+<figure class="my-8"><img src="images/scan-results.png" alt="Cloud Waste Scanner scan results used as evidence for community skills" class="w-full rounded-2xl border border-slate-200 bg-white" loading="lazy"><figcaption class="mt-3 text-sm text-slate-500">The skills start from local CWS evidence: scan results, handoff manifests, CSV exports, or the local API.</figcaption></figure>
+
+<div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<p class="lead text-2xl text-slate-600 mb-8">Cloud waste findings are only useful when somebody can explain them, trust them, and decide what to do next. That is why we are publishing CWS Community Skills as source-visible packages for GitHub, Codex, and Claude workflows.</p>
+
+<h2>The problem: reports still need translation</h2>
+<p>A scan can identify idle capacity, unattached storage, stale snapshots, and weak lifecycle controls. But many teams still lose time after the scan:</p>
+<ul>
+<li>the operator has to explain why a finding matters;</li>
+<li>finance needs to know which numbers are safe to count;</li>
+<li>the execution owner needs a cautious checklist, not a deletion command;</li>
+<li>the reviewer needs to know whether an export is complete enough to share.</li>
+</ul>
+<p>That translation work is repetitive. It should be evidence-first, local-first, and consistent across tools.</p>
+
+<h2>What is included</h2>
+<p>The first Community Skills set includes four skills:</p>
+<ul>
+<li><strong>cws-report-explainer:</strong> explains findings for operators, finance reviewers, and executives.</li>
+<li><strong>cws-weekly-brief:</strong> turns current and prior evidence into a concise weekly review note.</li>
+<li><strong>cws-playbook-writer:</strong> converts findings into cautious cleanup playbooks with pre-checks and rollback notes.</li>
+<li><strong>cws-export-auditor:</strong> reviews exports before they are shared with finance, leadership, or audit reviewers.</li>
+</ul>
+
+<h2>Three packages, one source tree</h2>
+<p>The GitHub Community release is the source of truth. Codex and Claude packages are generated from the same <code>skills/</code> source tree.</p>
+<ul>
+<li><strong>GitHub generic package:</strong> <code>skills-generic.tar.gz</code> keeps the source-visible layout under <code>skills/</code>.</li>
+<li><strong>Codex package:</strong> <code>skills-codex.tar.gz</code> installs under <code>.agents/skills</code> and keeps <code>agents/openai.yaml</code>.</li>
+<li><strong>Claude package:</strong> <code>skills-claude.tar.gz</code> installs under <code>.claude/skills</code> and excludes Codex-specific UI metadata.</li>
+</ul>
+<p>This matters because we do not want three diverging skill implementations. We want one maintained evidence workflow with platform-specific packaging.</p>
+
+<h2>How the evidence flows</h2>
+<p>The skills support two modes:</p>
+<ul>
+<li><strong>Connected mode:</strong> use the installed Cloud Waste Scanner app and local API.</li>
+<li><strong>File-only mode:</strong> use exported JSON, CSV, TXT, or pasted report evidence.</li>
+</ul>
+<p>The new handoff manifest schema gives these skills more stable input. It includes priority breakdown, top findings, lifecycle state, confidence level, and whether an item is overdue, reopened, or unassigned.</p>
+
+<h2>What this enables immediately</h2>
+<p>A solo operator can now start with a scan and get a stronger follow-up package without moving cloud credentials into another service:</p>
+<ul>
+<li>an operator summary of the top urgent findings;</li>
+<li>a finance-safe explanation of what is measurable versus inferred;</li>
+<li>a weekly brief for recurring waste signals;</li>
+<li>a cleanup playbook that starts with pre-checks, not blind deletion;</li>
+<li>an export audit before sharing evidence with another reviewer.</li>
+</ul>
+
+<h2>What it does not do</h2>
+<p>Community Skills do not replace the scanner, run cloud API calls, store credentials, execute remediation, enforce approvals, or coordinate multi-user workflow state. The desktop app remains the scan engine. The skills explain and transform evidence produced by Cloud Waste Scanner.</p>
+
+<h2>How to try it</h2>
+<p>From the community repository, validate and build the packages:</p>
+<pre><code>./scripts/validate-skills.sh
+./scripts/package-skills.sh</code></pre>
+<p>The generated packages appear under <code>dist/</code>. The repository also includes sample evidence so users can test without exposing real cloud data:</p>
+<ul>
+<li><code>skills/examples/handoff_manifest_1.1.0.json</code></li>
+<li><code>skills/examples/handoff_findings.csv</code></li>
+<li><code>skills/examples/scan_results.json</code></li>
+</ul>
+
+<h2>Why we are publishing this now</h2>
+<p>Cloud cost control is not only a detection problem. It is also a communication problem. A finding must become a sentence that finance can trust, a checklist an operator can follow, and a weekly rhythm that does not collapse after the first cleanup pass.</p>
+<p>The skills release is a practical step toward that operating model while preserving the Community boundary: local-first evidence, source-visible packages, no hosted credential dependency.</p>
+</div>
+
+<div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Try Community Skills</div><h3 class="cws-cta-title mt-4">Use local scan evidence with GitHub, Codex, or Claude-compatible skill packages.</h3><div class="cws-cta-actions cws-cta-actions-inline mt-6"><a href="https://github.com/ken-water/cloud-waste-scanner-community" class="cws-cta-btn cws-cta-btn-primary">View on GitHub</a><a href="../blog-series.html?series=release-notes#release-notes" class="cws-cta-btn cws-cta-btn-secondary">Browse Release Notes</a><a href="../security.html" class="cws-cta-btn cws-cta-btn-secondary">Review Security Model</a></div></div></div>
+</article>
+
+<aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+</div>
+</section>
+</main>
+
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div><p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p><div class="cws-footer-links space-y-2"><a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a><a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a><a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a><a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a><a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a></div></div>
+<div><p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p><div class="cws-footer-links space-y-2"><a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a><a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a><a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a><a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a></div></div>
+<div><p class="text-sm md:text-base font-bold text-slate-600 mb-2">Community</p><div class="cws-footer-links space-y-2"><a class="block hover:text-slate-900 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community">GitHub</a><a class="block hover:text-slate-900 transition-colors" href="https://github.com/sponsors/ken-water">Sponsor</a><a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a></div></div>
+</div></div>
+</div>
+</footer>
+<script src="../js/analytics.js" defer></script>
+<script src="../js/lightbox.js" defer></script>
+<script src="../js/share-links.js?v=2.6.38.0" defer></script>
+</body>
+</html>
