@@ -12,12 +12,12 @@ Local-first cloud waste scanning for operators who want source-visible, producti
 
 This repository is the **Community Edition**.
 
-Community release line: `3.0.0`
+Community release line: `3.0.1`
 
 Note:
 
-- `3.0.0` marks the Community release line reset for the open client-first roadmap.
-- This does not automatically imply that every binary artifact in the repository has already changed to `3.0.0`.
+- `3.0.0` marked the Community release line reset for the open client-first roadmap.
+- The current `3.0.1` content release does not imply that every binary artifact in the repository has changed to `3.0.1`.
 - Binary version increments should still happen only when the shipped desktop or SDK artifacts themselves change.
 
 - Community is local-first discovery and evidence generation.
