@@ -8,6 +8,24 @@ on:
         required: true
         default: true
         type: boolean
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*-skills'
+      - 'skills-v*'
+    paths:
+      - 'skills/**'
+      - 'scripts/validate-skills.sh'
+      - 'scripts/package-skills.sh'
+      - 'SKILLS_*.md'
+      - 'INSTALL_*_SKILLS.md'
+      - 'GITHUB_SKILLS_COMMUNITY_RELEASE.md'
+      - 'CODEX_SKILLS_PLATFORM.md'
+      - 'CLAUDE_SKILLS_PLATFORM.md'
+      - 'SKILLS_PLATFORM_MATRIX.md'
+      - '.github/workflows/skills-release.yml'
+      - '.github/release-notes/v3.0.0-skills.md'
 
 jobs:
   package-skills:
@@ -39,7 +57,7 @@ jobs:
           fi
 
       - name: Upload skill packages
-        if: inputs.upload_artifacts == true
+        if: github.event_name != 'workflow_dispatch' || inputs.upload_artifacts == true
         uses: actions/upload-artifact@v6
         with:
           name: cws-community-skills-packages
