@@ -1,0 +1,59 @@
+{
+  "schema_name": "cws_handoff_manifest",
+  "schema_version": "1.1.0",
+  "generated_at": "2026-06-15T00:00:00.000Z",
+  "scope": {
+    "type": "filtered",
+    "selected_count": 0,
+    "filtered_count": 3,
+    "filters": {
+      "provider": "All",
+      "search_query": null,
+      "account_id": null,
+      "resource_type": null,
+      "delete_only": false
+    },
+    "providers": ["AWS", "GCP"],
+    "accounts": ["prod-a", "shared-net"],
+    "owners": ["platform"],
+    "audience": "owner",
+    "include_sensitive_fields": false
+  },
+  "metrics": {
+    "findings": 3,
+    "identified_savings_monthly": 1840.25,
+    "estimated_co2e_kg_monthly": 736.1,
+    "lifecycle_breakdown": {
+      "detected": 1,
+      "triaged": 1,
+      "in_progress": 1
+    },
+    "priority_breakdown": {
+      "urgent": 1,
+      "high": 1,
+      "medium": 1,
+      "low": 0
+    }
+  },
+  "top_findings": [
+    {
+      "id": "********vol-123456",
+      "provider": "AWS",
+      "account": "***d-a",
+      "resource_type": "EBS Volume",
+      "action_type": "DELETE",
+      "review_priority": "urgent",
+      "confidence_level": "high",
+      "estimated_monthly_cost": 920.5,
+      "lifecycle_status": "triaged",
+      "owner_assigned": false,
+      "is_overdue": true,
+      "was_reopened": false
+    }
+  ],
+  "artifacts": {
+    "summary_txt": "handoff_filtered_2026-06-15.txt",
+    "findings_csv": "handoff_filtered_2026-06-15.csv",
+    "manifest_json": "handoff_filtered_2026-06-15.json"
+  }
+}

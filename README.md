@@ -84,6 +84,23 @@ Runtime positioning:
 - Reference: `SKILL_RUNTIME_MODES.md`
 - Index: `COMMUNITY_SKILLS_INDEX.md`
 - Copy pack: `COMMUNITY_SKILLS_COPY_PACK.md`
+- Multi-platform manifest: `skills/manifest.json`
+- Quickstart: `SKILLS_QUICKSTART.md`
+- Codex install: `INSTALL_CODEX_SKILLS.md`
+- Claude install: `INSTALL_CLAUDE_SKILLS.md`
+
+Validate and package skills:
+
+```bash
+./scripts/validate-skills.sh
+./scripts/package-skills.sh
+```
+
+Package outputs:
+
+- `dist/skills-codex.tar.gz`
+- `dist/skills-claude.tar.gz`
+- `dist/skills-generic.tar.gz`
 
 Build a normalized evidence bundle from the local API:
 

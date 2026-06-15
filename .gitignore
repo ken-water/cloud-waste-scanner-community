@@ -22,3 +22,6 @@ __pycache__/
 
 # Local keyword planning cache
 .cws/blog_keyword_plan.json
+
+# Generated skill packages
+dist/

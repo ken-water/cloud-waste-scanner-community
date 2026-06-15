@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-06-15T00:00:00.000Z",
+  "findings": [
+    {
+      "id": "vol-123456",
+      "provider": "AWS",
+      "region": "us-east-1",
+      "resource_type": "EBS Volume",
+      "details": "Available Unattached 500GB gp3",
+      "estimated_monthly_cost": 920.5,
+      "action_type": "DELETE",
+      "review_priority": "urgent",
+      "confidence_level": "high"
+    },
+    {
+      "id": "nat-789012",
+      "provider": "AWS",
+      "region": "us-east-1",
+      "resource_type": "NAT Gateway",
+      "details": "Idle traffic 0 bytes over 7 days",
+      "estimated_monthly_cost": 650.0,
+      "action_type": "DELETE",
+      "review_priority": "high",
+      "confidence_level": "medium"
+    }
+  ]
+}

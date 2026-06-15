@@ -1,0 +1,60 @@
+{
+  "schema_name": "cws_skills_manifest",
+  "schema_version": "1.0.0",
+  "project": "cloud-waste-scanner-community",
+  "release_line": "3.0.0",
+  "runtime_modes": ["connected-mode", "file-only-mode"],
+  "platforms": {
+    "codex": {
+      "install_path": ".agents/skills",
+      "package_dir": "dist/skills-codex"
+    },
+    "claude": {
+      "install_path": ".claude/skills",
+      "package_dir": "dist/skills-claude"
+    },
+    "generic": {
+      "install_path": "skills",
+      "package_dir": "dist/skills-generic"
+    }
+  },
+  "skills": [
+    {
+      "name": "cws-report-explainer",
+      "path": "skills/cws-report-explainer",
+      "platforms": ["codex", "claude", "generic"],
+      "runtime_modes": ["connected-mode", "file-only-mode"],
+      "required_inputs": ["local API output", "findings JSON", "findings CSV", "handoff manifest"],
+      "scripts": ["scripts/build_context.py"]
+    },
+    {
+      "name": "cws-weekly-brief",
+      "path": "skills/cws-weekly-brief",
+      "platforms": ["codex", "claude", "generic"],
+      "runtime_modes": ["connected-mode", "file-only-mode"],
+      "required_inputs": ["current scan evidence", "prior scan evidence", "handoff manifest"],
+      "scripts": ["scripts/build_weekly_brief_context.py"]
+    },
+    {
+      "name": "cws-playbook-writer",
+      "path": "skills/cws-playbook-writer",
+      "platforms": ["codex", "claude", "generic"],
+      "runtime_modes": ["file-only-mode"],
+      "required_inputs": ["finding details", "findings CSV", "handoff manifest"],
+      "scripts": []
+    },
+    {
+      "name": "cws-export-auditor",
+      "path": "skills/cws-export-auditor",
+      "platforms": ["codex", "claude", "generic"],
+      "runtime_modes": ["file-only-mode"],
+      "required_inputs": ["exported report", "handoff summary", "findings CSV", "handoff manifest"],
+      "scripts": []
+    }
+  ],
+  "examples": {
+    "handoff_manifest": "skills/examples/handoff_manifest_1.1.0.json",
+    "handoff_findings_csv": "skills/examples/handoff_findings.csv",
+    "scan_results": "skills/examples/scan_results.json"
+  }
+}
