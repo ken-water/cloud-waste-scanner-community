@@ -1,7 +1,9 @@
 [package]
 name = "cloud-waste-scanner-gui"
-version= "2.9.19"
+# Desktop app versioning remains independent from the repository content release line.
+version= "3.1.0"
 edition = "2021"
+license-file = "../../LICENSE"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

@@ -12,17 +12,21 @@ Local-first cloud waste scanning for operators who want source-visible, producti
 
 This repository is the **Community Edition**.
 
-Community release line: `3.0.1`
+Community release line: `3.1.0`
 
 Note:
 
 - `3.0.0` marked the Community release line reset for the open client-first roadmap.
-- The current `3.0.1` content release does not imply that every binary artifact in the repository has changed to `3.0.1`.
+- The current `3.1.0` release is the active Community release line for this repository and shipped application packaging.
+- Active Community releases on current `main` should stay ahead of overlapping Pro numbering and use a Community-only forward line.
+- Historical Pro releases remain archived under `v1.x`, and pre-reset local-first releases remain archived under `v2.9.x`.
 - Binary version increments should still happen only when the shipped desktop or SDK artifacts themselves change.
+- The current desktop app package version in this repository is `3.1.0`.
+- Current delivery/version baseline is documented in `RELEASE_AND_DELIVERY_BASELINE.md`.
 
 - Community is local-first discovery and evidence generation.
-- Team is governance execution for owners, org units, and handoff workflows.
-- Enterprise is centralized control for identity, audit, and compliance scale.
+- Team is the paid governance execution target for owners, org units, and handoff workflows, but should still be treated as preview/planned until `TEAM_CLOSURE_PLAN.md` is substantially complete.
+- Enterprise is the planned centralized control layer for identity, audit, and compliance scale.
 - No hosted license activation is required for core local workflows.
 - This repository is distributed under a **non-commercial license** (see `LICENSE`).
 
@@ -32,6 +36,7 @@ Scope references:
 - Community: `COMMUNITY_SCOPE.md`
 - Community roadmap: `COMMUNITY_ROADMAP_NEXT.md`
 - Community backlog: `COMMUNITY_BACKLOG_NEXT.md`
+- Current release/delivery baseline: `RELEASE_AND_DELIVERY_BASELINE.md`
 - Community skills strategy: `COMMUNITY_SKILLS_STRATEGY.md`
 - Community skills index: `COMMUNITY_SKILLS_INDEX.md`
 - Skills edition matrix: `SKILLS_EDITION_MATRIX.md`
@@ -48,6 +53,13 @@ This repository previously contained Pro-era documentation and release metadata.
 - Older tags/commits may still include historical Pro wording.
 - The current `main` branch is the legal source of truth for Community licensing.
 - Transition details are documented in `LEGAL-TRANSITION.md`.
+
+## Delivery Status
+
+- Community is the shipped baseline on `main`.
+- Team foundations exist in the repository, but Team should still be treated as preview/planned rather than GA.
+- Enterprise remains planned only.
+- When documentation conflicts with older package metadata or historical release material, prefer `LICENSE`, `README.md`, and `RELEASE_AND_DELIVERY_BASELINE.md` on current `main`.
 
 ## Core Principles
 

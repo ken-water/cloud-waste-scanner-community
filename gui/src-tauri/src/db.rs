@@ -138,6 +138,24 @@ pub struct OrgUnitRecord {
 }
 
 #[derive(Debug, Clone, Serialize, sqlx::FromRow)]
+pub struct HandoffPackageRecord {
+    pub id: String,
+    pub scope_type: String,
+    pub audience: String,
+    pub include_sensitive_fields: bool,
+    pub findings_count: i64,
+    pub identified_savings_monthly: f64,
+    pub estimated_co2e_kg_monthly: f64,
+    pub summary_filename: String,
+    pub findings_filename: String,
+    pub manifest_filename: String,
+    pub summary_text: String,
+    pub findings_csv: String,
+    pub manifest_json: String,
+    pub created_at: i64,
+}
+
+#[derive(Debug, Clone, Serialize, sqlx::FromRow)]
 pub struct MonitorMetric {
     pub id: String,
     pub provider: String,
@@ -317,6 +335,22 @@ pub async fn init_db<P: AsRef<Path>>(path: P) -> Result<Pool<Sqlite>, String> {
             evidence_note TEXT,
             created_at INTEGER NOT NULL,
             updated_at INTEGER NOT NULL
+        )",
+        "CREATE TABLE IF NOT EXISTS handoff_packages (
+            id TEXT PRIMARY KEY,
+            scope_type TEXT NOT NULL,
+            audience TEXT NOT NULL,
+            include_sensitive_fields BOOLEAN NOT NULL DEFAULT 0,
+            findings_count INTEGER NOT NULL,
+            identified_savings_monthly REAL NOT NULL,
+            estimated_co2e_kg_monthly REAL NOT NULL,
+            summary_filename TEXT NOT NULL,
+            findings_filename TEXT NOT NULL,
+            manifest_filename TEXT NOT NULL,
+            summary_text TEXT NOT NULL,
+            findings_csv TEXT NOT NULL,
+            manifest_json TEXT NOT NULL,
+            created_at INTEGER NOT NULL
         )",
         "CREATE TABLE IF NOT EXISTS finding_owners (
             id TEXT PRIMARY KEY,
@@ -3202,6 +3236,74 @@ pub async fn reassign_open_findings_owner(
     Ok(result.rows_affected() as i64)
 }
 
+pub async fn insert_handoff_package(
+    pool: &Pool<Sqlite>,
+    row: &HandoffPackageRecord,
+) -> Result<(), String> {
+    sqlx::query(
+        "INSERT INTO handoff_packages (
+            id, scope_type, audience, include_sensitive_fields, findings_count,
+            identified_savings_monthly, estimated_co2e_kg_monthly,
+            summary_filename, findings_filename, manifest_filename,
+            summary_text, findings_csv, manifest_json, created_at
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    )
+    .bind(&row.id)
+    .bind(&row.scope_type)
+    .bind(&row.audience)
+    .bind(row.include_sensitive_fields)
+    .bind(row.findings_count)
+    .bind(row.identified_savings_monthly)
+    .bind(row.estimated_co2e_kg_monthly)
+    .bind(&row.summary_filename)
+    .bind(&row.findings_filename)
+    .bind(&row.manifest_filename)
+    .bind(&row.summary_text)
+    .bind(&row.findings_csv)
+    .bind(&row.manifest_json)
+    .bind(row.created_at)
+    .execute(pool)
+    .await
+    .map(|_| ())
+    .map_err(|e| e.to_string())
+}
+
+pub async fn list_handoff_packages(
+    pool: &Pool<Sqlite>,
+) -> Result<Vec<HandoffPackageRecord>, String> {
+    sqlx::query_as::<_, HandoffPackageRecord>(
+        "SELECT
+            id, scope_type, audience, include_sensitive_fields, findings_count,
+            identified_savings_monthly, estimated_co2e_kg_monthly,
+            summary_filename, findings_filename, manifest_filename,
+            summary_text, findings_csv, manifest_json, created_at
+         FROM handoff_packages
+         ORDER BY created_at DESC, id DESC",
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+pub async fn get_handoff_package(
+    pool: &Pool<Sqlite>,
+    id: &str,
+) -> Result<Option<HandoffPackageRecord>, String> {
+    sqlx::query_as::<_, HandoffPackageRecord>(
+        "SELECT
+            id, scope_type, audience, include_sensitive_fields, findings_count,
+            identified_savings_monthly, estimated_co2e_kg_monthly,
+            summary_filename, findings_filename, manifest_filename,
+            summary_text, findings_csv, manifest_json, created_at
+         FROM handoff_packages
+         WHERE id = ?",
+    )
+    .bind(id)
+    .fetch_optional(pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -3535,6 +3637,76 @@ mod tests {
         let rows = get_scan_history(&pool).await.expect("load history");
         assert_eq!(rows.len(), 1);
         assert_eq!(rows[0].id, id2);
+
+        drop(pool);
+        let _ = std::fs::remove_file(path);
+    }
+
+    #[tokio::test]
+    async fn handoff_packages_round_trip_and_list_newest_first() {
+        let (path, pool) = fresh_db("handoff-packages").await;
+
+        let older = HandoffPackageRecord {
+            id: "handoff-older".to_string(),
+            scope_type: "team".to_string(),
+            audience: "ops".to_string(),
+            include_sensitive_fields: false,
+            findings_count: 3,
+            identified_savings_monthly: 125.5,
+            estimated_co2e_kg_monthly: 52.7,
+            summary_filename: "older-summary.txt".to_string(),
+            findings_filename: "older-findings.csv".to_string(),
+            manifest_filename: "older-manifest.json".to_string(),
+            summary_text: "older summary".to_string(),
+            findings_csv: "id,provider\n1,AWS".to_string(),
+            manifest_json: r#"{"version":1}"#.to_string(),
+            created_at: 100,
+        };
+        let newer = HandoffPackageRecord {
+            id: "handoff-newer".to_string(),
+            scope_type: "exec".to_string(),
+            audience: "finance".to_string(),
+            include_sensitive_fields: true,
+            findings_count: 5,
+            identified_savings_monthly: 420.0,
+            estimated_co2e_kg_monthly: 176.4,
+            summary_filename: "newer-summary.txt".to_string(),
+            findings_filename: "newer-findings.csv".to_string(),
+            manifest_filename: "newer-manifest.json".to_string(),
+            summary_text: "newer summary".to_string(),
+            findings_csv: "id,provider\n2,Azure".to_string(),
+            manifest_json: r#"{"version":2}"#.to_string(),
+            created_at: 200,
+        };
+
+        insert_handoff_package(&pool, &older)
+            .await
+            .expect("insert older package");
+        insert_handoff_package(&pool, &newer)
+            .await
+            .expect("insert newer package");
+
+        let listed = list_handoff_packages(&pool)
+            .await
+            .expect("list handoff packages");
+        assert_eq!(listed.len(), 2);
+        assert_eq!(listed[0].id, newer.id);
+        assert_eq!(listed[1].id, older.id);
+        assert!(listed[0].include_sensitive_fields);
+        assert_eq!(listed[1].findings_count, 3);
+
+        let fetched = get_handoff_package(&pool, &newer.id)
+            .await
+            .expect("get handoff package")
+            .expect("handoff package exists");
+        assert_eq!(fetched.audience, "finance");
+        assert_eq!(fetched.summary_text, "newer summary");
+        assert_eq!(fetched.manifest_json, r#"{"version":2}"#);
+
+        let missing = get_handoff_package(&pool, "missing-id")
+            .await
+            .expect("get missing handoff package");
+        assert!(missing.is_none());
 
         drop(pool);
         let _ = std::fs::remove_file(path);

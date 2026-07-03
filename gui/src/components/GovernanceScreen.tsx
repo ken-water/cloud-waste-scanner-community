@@ -48,6 +48,17 @@ interface GovernanceScorecard {
   scan_checks_failed: number;
   scan_check_success_rate_pct: number;
   last_scan_at: number | null;
+  lifecycle_total: number;
+  lifecycle_open: number;
+  lifecycle_assigned: number;
+  lifecycle_in_progress: number;
+  lifecycle_verified: number;
+  lifecycle_closed: number;
+  overdue_open: number;
+  reopened_open: number;
+  closure_rate_pct: number;
+  overdue_rate_pct: number;
+  reopened_rate_pct: number;
 }
 
 interface GovernanceDailyPoint {
@@ -357,6 +368,15 @@ export function GovernanceScreen() {
   const recommendationLines = useMemo(() => {
     if (!score) return [];
     const lines: string[] = [];
+    if (score.overdue_open > 0) {
+      lines.push(`There are ${score.overdue_open} overdue open findings. Triage the oldest assigned items before adding new cleanup work.`);
+    }
+    if (score.reopened_open > 0) {
+      lines.push(`${score.reopened_open} open findings were reopened. Review closure evidence and rollback quality before marking similar items done.`);
+    }
+    if (score.lifecycle_total > 0 && score.closure_rate_pct < 35) {
+      lines.push(`Closure rate is ${formatPct(score.closure_rate_pct)}. Shift weekly review from discovery-only to owner follow-up and verified closure.`);
+    }
     if (score.scan_check_success_rate_pct < 90) {
       lines.push("Improve credential and network reliability to raise scan check success above 90%.");
     }
@@ -420,6 +440,10 @@ export function GovernanceScreen() {
       `Estimated CO2e Reduction: ${formatKg(score.estimated_co2e_kg_monthly)} / month`,
       `Positive Scan Rate: ${formatPct(score.positive_scan_rate_pct)}`,
       `Scan Check Success Rate: ${formatPct(score.scan_check_success_rate_pct)}`,
+      `Lifecycle Closure Rate: ${formatPct(score.closure_rate_pct)}`,
+      `Open Findings: ${score.lifecycle_open}`,
+      `Overdue Open Findings: ${score.overdue_open} (${formatPct(score.overdue_rate_pct)})`,
+      `Reopened Open Findings: ${score.reopened_open} (${formatPct(score.reopened_rate_pct)})`,
       `Failed Checks (Taxonomy v${errorTaxonomy?.taxonomy_version || "1"}): ${errorTaxonomy?.total_failed_checks || 0}`,
       "",
       "Top Providers:",
@@ -492,6 +516,10 @@ export function GovernanceScreen() {
           ["Identified Savings", sanitizePdfText(formatCurrency(score.identified_savings))],
           ["Estimated CO2e / month", sanitizePdfText(formatKg(score.estimated_co2e_kg_monthly))],
           ["Execution Quality", sanitizePdfText(formatPct(score.scan_check_success_rate_pct))],
+          ["Lifecycle Closure Rate", sanitizePdfText(formatPct(score.closure_rate_pct))],
+          ["Open Findings", sanitizePdfText(score.lifecycle_open)],
+          ["Overdue Open Findings", sanitizePdfText(`${score.overdue_open} (${formatPct(score.overdue_rate_pct)})`)],
+          ["Reopened Open Findings", sanitizePdfText(`${score.reopened_open} (${formatPct(score.reopened_rate_pct)})`)],
           ["Failed Checks (Taxonomy)", sanitizePdfText(`${errorTaxonomy?.total_failed_checks || 0} (v${errorTaxonomy?.taxonomy_version || "1"})`)],
           ["Coverage", sanitizePdfText(`${score.active_accounts} accounts / ${score.active_providers} providers`)],
           ["Last Scan", sanitizePdfText(formatUtcDateTime(score.last_scan_at))],
@@ -692,6 +720,10 @@ export function GovernanceScreen() {
       lines.push(`Summary,Identified Savings,${csvEscape(formatCurrency(score.identified_savings))}`);
       lines.push(`Summary,Estimated CO2e Monthly,${csvEscape(formatKg(score.estimated_co2e_kg_monthly))}`);
       lines.push(`Summary,Execution Quality,${csvEscape(formatPct(score.scan_check_success_rate_pct))}`);
+      lines.push(`Summary,Lifecycle Closure Rate,${csvEscape(formatPct(score.closure_rate_pct))}`);
+      lines.push(`Summary,Open Findings,${csvEscape(score.lifecycle_open)}`);
+      lines.push(`Summary,Overdue Open Findings,${csvEscape(`${score.overdue_open} (${formatPct(score.overdue_rate_pct)})`)}`);
+      lines.push(`Summary,Reopened Open Findings,${csvEscape(`${score.reopened_open} (${formatPct(score.reopened_rate_pct)})`)}`);
       lines.push(`Summary,Failed Checks,${csvEscape(errorTaxonomy?.total_failed_checks || 0)}`);
       lines.push(`Summary,Coverage,${csvEscape(`${score.active_accounts} accounts / ${score.active_providers} providers`)}`);
       lines.push("");
@@ -924,6 +956,9 @@ export function GovernanceScreen() {
         <MetricCard label="Estimated CO2e" value={<span className="text-emerald-700 dark:text-emerald-300">{formatKg(score?.estimated_co2e_kg_monthly || 0)}</span>} hint="Per month (estimated)" icon={<Leaf className="h-5 w-5" />} />
         <MetricCard label="Positive Scans" value={<span className="text-indigo-600 dark:text-indigo-400">{score?.positive_scan_runs || 0} <span className="text-base">({formatPct(score?.positive_scan_rate_pct || 0)})</span></span>} hint="Scan runs with waste found" icon={<Building2 className="h-5 w-5" />} />
         <MetricCard label="Execution Quality" value={formatPct(score?.scan_check_success_rate_pct || 0)} hint={`Checks: ${score?.scan_checks_succeeded || 0}/${score?.scan_checks_attempted || 0}`} icon={<ShieldCheck className="h-5 w-5" />} />
+        <MetricCard label="Closure Rate" value={formatPct(score?.closure_rate_pct || 0)} hint={`Closed: ${score?.lifecycle_closed || 0} / Total lifecycle: ${score?.lifecycle_total || 0}`} icon={<ShieldCheck className="h-5 w-5" />} />
+        <MetricCard label="Overdue Open" value={<span className="text-amber-600 dark:text-amber-400">{score?.overdue_open || 0}</span>} hint={`Open backlog: ${score?.lifecycle_open || 0} · ${formatPct(score?.overdue_rate_pct || 0)}`} icon={<AlertTriangle className="h-5 w-5" />} />
+        <MetricCard label="Reopened Open" value={<span className="text-fuchsia-600 dark:text-fuchsia-400">{score?.reopened_open || 0}</span>} hint={`Open backlog: ${score?.lifecycle_open || 0} · ${formatPct(score?.reopened_rate_pct || 0)}`} icon={<RefreshCw className="h-5 w-5" />} />
         <MetricCard label="Coverage" value={`${score?.active_accounts || 0} accounts`} hint={`Providers: ${score?.active_providers || 0}`} icon={<Server className="h-5 w-5" />} />
         <MetricCard label="Last Scan" value={<span className="text-base">{formatUtcDateTime(score?.last_scan_at)}</span>} hint={`Generated: ${formatUtcDateTime(data?.generated_at)}`} icon={<RefreshCw className="h-5 w-5" />} />
       </div>

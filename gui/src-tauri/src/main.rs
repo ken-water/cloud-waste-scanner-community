@@ -700,6 +700,67 @@ struct ApiReportArtifactStored {
     file_path: std::path::PathBuf,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct ApiHandoffPackageCreateRequest {
+    package_id: Option<String>,
+    scope_type: String,
+    audience: String,
+    include_sensitive_fields: bool,
+    findings_count: i64,
+    identified_savings_monthly: f64,
+    estimated_co2e_kg_monthly: f64,
+    summary_filename: String,
+    findings_filename: String,
+    manifest_filename: String,
+    summary_text: String,
+    findings_csv: String,
+    manifest_json: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Default)]
+#[serde(default)]
+struct ApiHandoffPackageListQuery {
+    cursor: Option<String>,
+    limit: Option<usize>,
+    envelope: Option<bool>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ApiHandoffPackageArtifactPointers {
+    summary_txt: String,
+    findings_csv: String,
+    manifest_json: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ApiHandoffPackageSummary {
+    package_id: String,
+    scope_type: String,
+    audience: String,
+    include_sensitive_fields: bool,
+    findings_count: i64,
+    identified_savings_monthly: f64,
+    estimated_co2e_kg_monthly: f64,
+    created_at: i64,
+    artifacts: ApiHandoffPackageArtifactPointers,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ApiHandoffPackageDetail {
+    package_id: String,
+    scope_type: String,
+    audience: String,
+    include_sensitive_fields: bool,
+    findings_count: i64,
+    identified_savings_monthly: f64,
+    estimated_co2e_kg_monthly: f64,
+    created_at: i64,
+    artifacts: ApiHandoffPackageArtifactPointers,
+    summary_text: String,
+    findings_csv: String,
+    manifest_json: serde_json::Value,
+}
+
 #[derive(Debug, Clone, Deserialize, Default)]
 #[serde(default)]
 struct ApiEventQuery {
@@ -962,6 +1023,21 @@ fn api_route_specs() -> Vec<(&'static str, &'static str, &'static str)> {
             "/v1/reports",
             "List report artifacts with optional cursor pagination",
         ),
+        (
+            "POST",
+            "/v1/handoff/packages",
+            "Create and persist a local handoff package",
+        ),
+        (
+            "GET",
+            "/v1/handoff/packages",
+            "List local handoff packages with optional cursor pagination",
+        ),
+        (
+            "GET",
+            "/v1/handoff/packages/:package_id",
+            "Get one local handoff package",
+        ),
         ("GET", "/v1/reports/overview", "Governance overview report"),
         ("GET", "/v1/reports/trend", "Trend report"),
         ("GET", "/v1/reports/error-taxonomy", "Error taxonomy report"),
@@ -1147,6 +1223,17 @@ struct GovernanceScorecard {
     scan_checks_failed: i64,
     scan_check_success_rate_pct: f64,
     last_scan_at: Option<i64>,
+    lifecycle_total: i64,
+    lifecycle_open: i64,
+    lifecycle_assigned: i64,
+    lifecycle_in_progress: i64,
+    lifecycle_verified: i64,
+    lifecycle_closed: i64,
+    overdue_open: i64,
+    reopened_open: i64,
+    closure_rate_pct: f64,
+    overdue_rate_pct: f64,
+    reopened_rate_pct: f64,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -1208,6 +1295,18 @@ struct GovernanceStatsResponse {
     providers: Vec<GovernanceProviderRow>,
     accounts: Vec<GovernanceAccountRow>,
     error_taxonomy: GovernanceErrorTaxonomy,
+}
+
+#[derive(Debug, Clone, Default)]
+struct LifecycleExecutionSummary {
+    total: i64,
+    open: i64,
+    assigned: i64,
+    in_progress: i64,
+    verified: i64,
+    closed: i64,
+    overdue_open: i64,
+    reopened_open: i64,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -2945,6 +3044,11 @@ async fn handle_api_capabilities(State(state): State<LocalApiState>) -> Json<ser
             ],
         },
         ApiCapabilityGroup {
+            name: "handoff".to_string(),
+            status: "active".to_string(),
+            routes: handoff_capability_routes(),
+        },
+        ApiCapabilityGroup {
             name: "reports".to_string(),
             status: "active".to_string(),
             routes: reports_capability_routes(),
@@ -3079,6 +3183,55 @@ fn reports_capability_routes() -> Vec<String> {
         "GET /v1/reports/:report_id".to_string(),
         "GET /v1/reports/:report_id/download".to_string(),
     ]
+}
+
+fn handoff_capability_routes() -> Vec<String> {
+    vec![
+        "POST /v1/handoff/packages".to_string(),
+        "GET /v1/handoff/packages".to_string(),
+        "GET /v1/handoff/packages/:package_id".to_string(),
+    ]
+}
+
+fn map_handoff_package_summary(row: db::HandoffPackageRecord) -> ApiHandoffPackageSummary {
+    ApiHandoffPackageSummary {
+        package_id: row.id,
+        scope_type: row.scope_type,
+        audience: row.audience,
+        include_sensitive_fields: row.include_sensitive_fields,
+        findings_count: row.findings_count,
+        identified_savings_monthly: row.identified_savings_monthly,
+        estimated_co2e_kg_monthly: row.estimated_co2e_kg_monthly,
+        created_at: row.created_at,
+        artifacts: ApiHandoffPackageArtifactPointers {
+            summary_txt: row.summary_filename,
+            findings_csv: row.findings_filename,
+            manifest_json: row.manifest_filename,
+        },
+    }
+}
+
+fn map_handoff_package_detail(row: db::HandoffPackageRecord) -> ApiHandoffPackageDetail {
+    let manifest_json = serde_json::from_str::<serde_json::Value>(&row.manifest_json)
+        .unwrap_or_else(|_| serde_json::json!({}));
+    ApiHandoffPackageDetail {
+        package_id: row.id,
+        scope_type: row.scope_type,
+        audience: row.audience,
+        include_sensitive_fields: row.include_sensitive_fields,
+        findings_count: row.findings_count,
+        identified_savings_monthly: row.identified_savings_monthly,
+        estimated_co2e_kg_monthly: row.estimated_co2e_kg_monthly,
+        created_at: row.created_at,
+        artifacts: ApiHandoffPackageArtifactPointers {
+            summary_txt: row.summary_filename,
+            findings_csv: row.findings_filename,
+            manifest_json: row.manifest_filename,
+        },
+        summary_text: row.summary_text,
+        findings_csv: row.findings_csv,
+        manifest_json,
+    }
 }
 
 fn mcp_capability_tools() -> Vec<serde_json::Value> {
@@ -4987,6 +5140,12 @@ fn normalize_lifecycle_status(raw: &str) -> Option<&'static str> {
     }
 }
 
+fn normalize_optional_text_field(raw: Option<&str>) -> Option<String> {
+    raw.map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(|value| value.to_string())
+}
+
 fn is_valid_transition(current: &str, next: &str) -> bool {
     match current {
         "detected" => matches!(next, "triaged" | "assigned"),
@@ -4997,6 +5156,78 @@ fn is_valid_transition(current: &str, next: &str) -> bool {
         "closed" => matches!(next, "triaged" | "assigned"),
         _ => false,
     }
+}
+
+fn apply_lifecycle_transition(
+    row: &mut db::FindingLifecycleRecord,
+    next_status: &str,
+    now: i64,
+    reopen_reason: Option<String>,
+) -> Result<(), String> {
+    let current_status = row.status.clone();
+    if current_status == next_status {
+        return Ok(());
+    }
+    if !is_valid_transition(&current_status, next_status) {
+        return Err(format!(
+            "invalid lifecycle transition: {} -> {}",
+            current_status, next_status
+        ));
+    }
+
+    let is_reopening_closed = current_status == "closed" && next_status != "closed";
+    if is_reopening_closed {
+        let reason = reopen_reason.ok_or_else(|| {
+            "reopen_reason is required when moving a closed finding back to triaged or assigned"
+                .to_string()
+        })?;
+        row.reopen_reason = Some(reason);
+    }
+
+    row.status = next_status.to_string();
+    match next_status {
+        "detected" => {
+            row.assigned_at = None;
+            row.in_progress_at = None;
+            row.verified_at = None;
+            row.closed_at = None;
+        }
+        "triaged" => {
+            row.assigned_at = None;
+            row.in_progress_at = None;
+            row.verified_at = None;
+            row.closed_at = None;
+        }
+        "assigned" => {
+            row.assigned_at = Some(now);
+            row.in_progress_at = None;
+            row.verified_at = None;
+            row.closed_at = None;
+        }
+        "in_progress" => {
+            if row.assigned_at.is_none() {
+                row.assigned_at = Some(now);
+            }
+            row.in_progress_at = Some(now);
+            row.verified_at = None;
+            row.closed_at = None;
+        }
+        "verified" => {
+            if row.assigned_at.is_none() {
+                row.assigned_at = Some(now);
+            }
+            if row.in_progress_at.is_none() {
+                row.in_progress_at = Some(now);
+            }
+            row.verified_at = Some(now);
+            row.closed_at = None;
+        }
+        "closed" => {
+            row.closed_at = Some(now);
+        }
+        _ => {}
+    }
+    Ok(())
 }
 
 async fn handle_api_list_finding_lifecycle(
@@ -5092,30 +5323,15 @@ async fn handle_api_update_finding_lifecycle(
         created_at: now,
         updated_at: now,
     });
-
-    if !is_valid_transition(&row.status, next_status) && row.status != next_status {
-        return Err(api_error(
-            StatusCode::CONFLICT,
-            format!(
-                "invalid lifecycle transition: {} -> {}",
-                row.status, next_status
-            ),
-        ));
-    }
-
-    row.status = next_status.to_string();
     row.provider = payload
         .provider
         .as_deref()
-        .map(|value| value.trim().to_string())
+        .map(str::trim)
         .filter(|value| !value.is_empty())
+        .map(|value| value.to_string())
         .unwrap_or_else(|| row.provider.clone());
     if payload.owner_id.is_some() {
-        let next_owner = payload
-            .owner_id
-            .as_deref()
-            .map(|value| value.trim().to_string())
-            .filter(|value| !value.is_empty());
+        let next_owner = normalize_optional_text_field(payload.owner_id.as_deref());
         if let Some(owner_id) = next_owner.as_deref() {
             let owners = db::list_finding_owners(&conn)
                 .await
@@ -5135,19 +5351,26 @@ async fn handle_api_update_finding_lifecycle(
     if payload.due_at.is_some() {
         row.due_at = payload.due_at;
     }
-    if payload.reopen_reason.is_some() {
-        row.reopen_reason = payload.reopen_reason;
+    let reopen_reason_provided = payload.reopen_reason.is_some();
+    let normalized_reopen_reason = normalize_optional_text_field(payload.reopen_reason.as_deref());
+    if reopen_reason_provided && row.status != "closed" {
+        row.reopen_reason = normalized_reopen_reason.clone();
     }
     if payload.evidence_note.is_some() {
-        row.evidence_note = payload.evidence_note;
+        row.evidence_note = normalize_optional_text_field(payload.evidence_note.as_deref());
     }
-    match row.status.as_str() {
-        "assigned" if row.assigned_at.is_none() => row.assigned_at = Some(now),
-        "in_progress" if row.in_progress_at.is_none() => row.in_progress_at = Some(now),
-        "verified" if row.verified_at.is_none() => row.verified_at = Some(now),
-        "closed" if row.closed_at.is_none() => row.closed_at = Some(now),
-        _ => {}
-    }
+    apply_lifecycle_transition(&mut row, next_status, now, normalized_reopen_reason).map_err(
+        |message| {
+            api_error(
+                if message.starts_with("invalid lifecycle transition:") {
+                    StatusCode::CONFLICT
+                } else {
+                    StatusCode::BAD_REQUEST
+                },
+                message,
+            )
+        },
+    )?;
     row.updated_at = now;
 
     db::upsert_finding_lifecycle(&conn, &row)
@@ -5727,7 +5950,12 @@ async fn handle_api_reports_overview(
     let history = db::get_scan_history(&conn)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    Ok(Json(compute_governance_stats(history, query.window_days)))
+    let lifecycle_rows = db::list_finding_lifecycle(&conn).await.unwrap_or_default();
+    Ok(Json(compute_governance_stats(
+        history,
+        lifecycle_rows,
+        query.window_days,
+    )))
 }
 
 async fn handle_api_reports_trend(
@@ -5741,7 +5969,8 @@ async fn handle_api_reports_trend(
     let history = db::get_scan_history(&conn)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    let stats = compute_governance_stats(history, query.window_days);
+    let lifecycle_rows = db::list_finding_lifecycle(&conn).await.unwrap_or_default();
+    let stats = compute_governance_stats(history, lifecycle_rows, query.window_days);
     Ok(Json(GovernanceTrendResponse {
         generated_at: stats.generated_at,
         window_days: stats.window_days,
@@ -5762,7 +5991,8 @@ async fn handle_api_reports_error_taxonomy(
     let history = db::get_scan_history(&conn)
         .await
         .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
-    let stats = compute_governance_stats(history, query.window_days);
+    let lifecycle_rows = db::list_finding_lifecycle(&conn).await.unwrap_or_default();
+    let stats = compute_governance_stats(history, lifecycle_rows, query.window_days);
     Ok(Json(GovernanceErrorTaxonomyResponse {
         generated_at: stats.generated_at,
         window_days: stats.window_days,
@@ -6336,6 +6566,116 @@ async fn handle_api_get_report(
         .map(|stored| stored.meta.clone())
         .ok_or_else(|| api_error(StatusCode::NOT_FOUND, "report id not found"))?;
     Ok(Json(item))
+}
+
+async fn handle_api_create_handoff_package(
+    State(state): State<LocalApiState>,
+    Json(payload): Json<ApiHandoffPackageCreateRequest>,
+) -> Result<Json<ApiHandoffPackageSummary>, ApiError> {
+    let scope_type = payload.scope_type.trim().to_string();
+    let audience = payload.audience.trim().to_string();
+    if scope_type.is_empty() || audience.is_empty() {
+        return Err(api_error(
+            StatusCode::BAD_REQUEST,
+            "scope_type and audience are required",
+        ));
+    }
+    if payload.summary_text.trim().is_empty()
+        || payload.findings_csv.trim().is_empty()
+        || payload.manifest_json.trim().is_empty()
+    {
+        return Err(api_error(
+            StatusCode::BAD_REQUEST,
+            "summary_text, findings_csv, and manifest_json are required",
+        ));
+    }
+    let package_id = payload
+        .package_id
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(|value| value.to_string())
+        .unwrap_or_else(|| format!("handoff_{}", Uuid::new_v4()));
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let row = db::HandoffPackageRecord {
+        id: package_id.clone(),
+        scope_type,
+        audience,
+        include_sensitive_fields: payload.include_sensitive_fields,
+        findings_count: payload.findings_count.max(0),
+        identified_savings_monthly: payload.identified_savings_monthly,
+        estimated_co2e_kg_monthly: payload.estimated_co2e_kg_monthly,
+        summary_filename: payload.summary_filename,
+        findings_filename: payload.findings_filename,
+        manifest_filename: payload.manifest_filename,
+        summary_text: payload.summary_text,
+        findings_csv: payload.findings_csv,
+        manifest_json: payload.manifest_json,
+        created_at: now_unix_ts(),
+    };
+    db::insert_handoff_package(&conn, &row)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e.clone()))?;
+    let details = format!(
+        "scope_type={} audience={} findings={} savings_monthly={:.2} sensitive={}",
+        row.scope_type,
+        row.audience,
+        row.findings_count,
+        row.identified_savings_monthly,
+        row.include_sensitive_fields
+    );
+    let _ = db::record_audit_log(&conn, "HANDOFF_PACKAGE_CREATED", &package_id, &details).await;
+    Ok(Json(map_handoff_package_summary(row)))
+}
+
+async fn handle_api_list_handoff_packages(
+    State(state): State<LocalApiState>,
+    Query(query): Query<ApiHandoffPackageListQuery>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let limit = query.limit.unwrap_or(50).clamp(1, 200);
+    let rows = db::list_handoff_packages(&conn)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let items = rows
+        .into_iter()
+        .map(map_handoff_package_summary)
+        .collect::<Vec<_>>();
+    if should_return_envelope(&ApiListQuery {
+        cursor: query.cursor.clone(),
+        limit: query.limit,
+        envelope: query.envelope,
+        ..Default::default()
+    }) {
+        let (page_items, meta) = paginate_vec(items, query.cursor.as_ref(), limit);
+        Ok(Json(api_page_response(page_items, meta)))
+    } else {
+        Ok(Json(
+            serde_json::to_value(items.into_iter().take(limit).collect::<Vec<_>>())
+                .unwrap_or_else(|_| serde_json::json!([])),
+        ))
+    }
+}
+
+async fn handle_api_get_handoff_package(
+    State(state): State<LocalApiState>,
+    AxumPath(package_id): AxumPath<String>,
+) -> Result<Json<ApiHandoffPackageDetail>, ApiError> {
+    let app_state = state.app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?;
+    let row = db::get_handoff_package(&conn, &package_id)
+        .await
+        .map_err(|e| api_error(StatusCode::INTERNAL_SERVER_ERROR, e))?
+        .ok_or_else(|| api_error(StatusCode::NOT_FOUND, "handoff package id not found"))?;
+    Ok(Json(map_handoff_package_detail(row)))
 }
 
 async fn handle_api_download_report(
@@ -7480,6 +7820,18 @@ async fn start_api_server(
             "/v1/scan-history/:history_id",
             delete(handle_api_delete_scan_history_item),
         )
+        .route(
+            "/v1/handoff/packages",
+            post(handle_api_create_handoff_package),
+        )
+        .route(
+            "/v1/handoff/packages",
+            get(handle_api_list_handoff_packages),
+        )
+        .route(
+            "/v1/handoff/packages/:package_id",
+            get(handle_api_get_handoff_package),
+        )
         .route("/v1/reports/generate", post(handle_api_generate_report))
         .route("/v1/reports", get(handle_api_list_reports))
         .route("/v1/reports/overview", get(handle_api_reports_overview))
@@ -8567,6 +8919,7 @@ async fn get_dashboard_stats(
 
 fn compute_governance_stats(
     history: Vec<db::ScanHistoryItem>,
+    lifecycle_rows: Vec<db::FindingLifecycleRecord>,
     window_days: Option<i64>,
 ) -> GovernanceStatsResponse {
     let now_ts = now_unix_ts();
@@ -8721,6 +9074,22 @@ fn compute_governance_stats(
         0.0
     };
     let estimated_co2e_kg_monthly = round_two(identified_savings.max(0.0) * 0.42);
+    let lifecycle = compute_lifecycle_execution_summary(&lifecycle_rows, now_ts);
+    let closure_rate_pct = if lifecycle.total > 0 {
+        round_one((lifecycle.closed as f64 / lifecycle.total as f64) * 100.0)
+    } else {
+        0.0
+    };
+    let overdue_rate_pct = if lifecycle.open > 0 {
+        round_one((lifecycle.overdue_open as f64 / lifecycle.open as f64) * 100.0)
+    } else {
+        0.0
+    };
+    let reopened_rate_pct = if lifecycle.open > 0 {
+        round_one((lifecycle.reopened_open as f64 / lifecycle.open as f64) * 100.0)
+    } else {
+        0.0
+    };
 
     let mut providers: Vec<GovernanceProviderRow> = provider_acc
         .into_iter()
@@ -8834,6 +9203,17 @@ fn compute_governance_stats(
             scan_checks_failed: total_failed_checks,
             scan_check_success_rate_pct,
             last_scan_at,
+            lifecycle_total: lifecycle.total,
+            lifecycle_open: lifecycle.open,
+            lifecycle_assigned: lifecycle.assigned,
+            lifecycle_in_progress: lifecycle.in_progress,
+            lifecycle_verified: lifecycle.verified,
+            lifecycle_closed: lifecycle.closed,
+            overdue_open: lifecycle.overdue_open,
+            reopened_open: lifecycle.reopened_open,
+            closure_rate_pct,
+            overdue_rate_pct,
+            reopened_rate_pct,
         },
         daily,
         providers,
@@ -8854,7 +9234,11 @@ async fn get_governance_stats(
 ) -> Result<GovernanceStatsResponse, String> {
     if demo_mode.unwrap_or(false) {
         let demo_history = generate_demo_governance_history(window_days);
-        return Ok(compute_governance_stats(demo_history, window_days));
+        return Ok(compute_governance_stats(
+            demo_history,
+            Vec::new(),
+            window_days,
+        ));
     }
 
     let app_state = app_handle.state::<AppState>();
@@ -8864,7 +9248,12 @@ async fn get_governance_stats(
     let history = db::get_scan_history(&conn)
         .await
         .map_err(|e| e.to_string())?;
-    Ok(compute_governance_stats(history, window_days))
+    let lifecycle_rows = db::list_finding_lifecycle(&conn).await.unwrap_or_default();
+    Ok(compute_governance_stats(
+        history,
+        lifecycle_rows,
+        window_days,
+    ))
 }
 
 fn parse_update_filename(url: &str) -> String {
@@ -9433,6 +9822,42 @@ fn latest_ai_source_for_window(
         HashMap::new(),
         Vec::new(),
     )
+}
+
+fn compute_lifecycle_execution_summary(
+    rows: &[db::FindingLifecycleRecord],
+    now_ts: i64,
+) -> LifecycleExecutionSummary {
+    let mut summary = LifecycleExecutionSummary::default();
+    for row in rows {
+        summary.total += 1;
+        let is_closed = row.status == "closed";
+        let is_open = !is_closed;
+        if is_open {
+            summary.open += 1;
+        } else {
+            summary.closed += 1;
+        }
+        match row.status.as_str() {
+            "assigned" => summary.assigned += 1,
+            "in_progress" => summary.in_progress += 1,
+            "verified" => summary.verified += 1,
+            _ => {}
+        }
+        if is_open && row.due_at.map(|due_at| due_at < now_ts).unwrap_or(false) {
+            summary.overdue_open += 1;
+        }
+        if is_open
+            && row
+                .reopen_reason
+                .as_deref()
+                .map(|value| !value.trim().is_empty())
+                .unwrap_or(false)
+        {
+            summary.reopened_open += 1;
+        }
+    }
+    summary
 }
 
 async fn current_enriched_scan_results(
@@ -22198,6 +22623,80 @@ async fn list_finding_lifecycle_records(
 }
 
 #[tauri::command]
+async fn create_handoff_package_record(
+    app_handle: tauri::AppHandle,
+    payload: serde_json::Value,
+) -> Result<ApiHandoffPackageSummary, String> {
+    let parsed: ApiHandoffPackageCreateRequest =
+        serde_json::from_value(payload).map_err(|e| e.to_string())?;
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let package_id = parsed
+        .package_id
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(|value| value.to_string())
+        .unwrap_or_else(|| format!("handoff_{}", Uuid::new_v4()));
+    let row = db::HandoffPackageRecord {
+        id: package_id.clone(),
+        scope_type: parsed.scope_type.trim().to_string(),
+        audience: parsed.audience.trim().to_string(),
+        include_sensitive_fields: parsed.include_sensitive_fields,
+        findings_count: parsed.findings_count.max(0),
+        identified_savings_monthly: parsed.identified_savings_monthly,
+        estimated_co2e_kg_monthly: parsed.estimated_co2e_kg_monthly,
+        summary_filename: parsed.summary_filename,
+        findings_filename: parsed.findings_filename,
+        manifest_filename: parsed.manifest_filename,
+        summary_text: parsed.summary_text,
+        findings_csv: parsed.findings_csv,
+        manifest_json: parsed.manifest_json,
+        created_at: now_unix_ts(),
+    };
+    db::insert_handoff_package(&conn, &row).await?;
+    let details = format!(
+        "scope_type={} audience={} findings={} savings_monthly={:.2} sensitive={}",
+        row.scope_type,
+        row.audience,
+        row.findings_count,
+        row.identified_savings_monthly,
+        row.include_sensitive_fields
+    );
+    let _ = db::record_audit_log(&conn, "HANDOFF_PACKAGE_CREATED", &package_id, &details).await;
+    Ok(map_handoff_package_summary(row))
+}
+
+#[tauri::command]
+async fn list_handoff_package_records(
+    app_handle: tauri::AppHandle,
+) -> Result<Vec<ApiHandoffPackageSummary>, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let rows = db::list_handoff_packages(&conn).await?;
+    Ok(rows.into_iter().map(map_handoff_package_summary).collect())
+}
+
+#[tauri::command]
+async fn get_handoff_package_record(
+    app_handle: tauri::AppHandle,
+    package_id: String,
+) -> Result<ApiHandoffPackageDetail, String> {
+    let app_state = app_handle.state::<AppState>();
+    let conn = db::init_db(&app_state.db_path)
+        .await
+        .map_err(|e| e.to_string())?;
+    let row = db::get_handoff_package(&conn, package_id.trim())
+        .await?
+        .ok_or_else(|| "handoff package id not found".to_string())?;
+    Ok(map_handoff_package_detail(row))
+}
+
+#[tauri::command]
 async fn upsert_finding_owner_record(
     app_handle: tauri::AppHandle,
     id: String,
@@ -22353,6 +22852,7 @@ async fn assign_finding_owner_record(
     resource_id: String,
     provider: String,
     owner_id: String,
+    reopen_reason: Option<String>,
 ) -> Result<db::FindingLifecycleRecord, String> {
     let resource_id = resource_id.trim().to_string();
     let owner_id = owner_id.trim().to_string();
@@ -22400,10 +22900,13 @@ async fn assign_finding_owner_record(
             updated_at: now,
         });
     row.owner_id = Some(owner_id);
-    row.status = "assigned".to_string();
-    if row.assigned_at.is_none() {
-        row.assigned_at = Some(now);
-    }
+    row.provider = if provider.trim().is_empty() {
+        row.provider
+    } else {
+        provider.trim().to_string()
+    };
+    let reopen_reason = normalize_optional_text_field(reopen_reason.as_deref());
+    apply_lifecycle_transition(&mut row, "assigned", now, reopen_reason)?;
     row.updated_at = now;
     db::upsert_finding_lifecycle(&conn, &row).await?;
     Ok(row)
@@ -23498,6 +24001,9 @@ fn main() {
             upsert_finding_owner_record,
             list_org_unit_records,
             upsert_org_unit_record,
+            create_handoff_package_record,
+            list_handoff_package_records,
+            get_handoff_package_record,
             assign_finding_owner_record,
             deactivate_finding_owner_record,
             get_org_unit_lifecycle_summary,
@@ -23518,6 +24024,7 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use cloud_waste_scanner_core::WastedResource;
 
     #[test]
     fn sanitize_import_id_part_normalizes_to_ascii_lower_and_underscores() {
@@ -23817,5 +24324,294 @@ contexts:
         assert_eq!(payload["readiness"]["status"], "ready");
         assert_eq!(payload["readiness"]["provider_hint"], "gke");
         assert_eq!(payload["active_context"]["namespace"], "platform");
+    }
+
+    #[test]
+    fn lifecycle_execution_summary_counts_open_closed_overdue_and_reopened() {
+        let rows = vec![
+            db::FindingLifecycleRecord {
+                resource_id: "res-1".to_string(),
+                provider: "AWS".to_string(),
+                status: "assigned".to_string(),
+                owner_id: Some("owner-1".to_string()),
+                due_at: Some(90),
+                assigned_at: Some(50),
+                in_progress_at: None,
+                verified_at: None,
+                closed_at: None,
+                reopen_reason: None,
+                evidence_note: None,
+                created_at: 10,
+                updated_at: 60,
+            },
+            db::FindingLifecycleRecord {
+                resource_id: "res-2".to_string(),
+                provider: "AWS".to_string(),
+                status: "in_progress".to_string(),
+                owner_id: Some("owner-2".to_string()),
+                due_at: Some(150),
+                assigned_at: Some(80),
+                in_progress_at: Some(100),
+                verified_at: None,
+                closed_at: None,
+                reopen_reason: Some("regression after rollback".to_string()),
+                evidence_note: None,
+                created_at: 20,
+                updated_at: 110,
+            },
+            db::FindingLifecycleRecord {
+                resource_id: "res-3".to_string(),
+                provider: "Azure".to_string(),
+                status: "verified".to_string(),
+                owner_id: Some("owner-3".to_string()),
+                due_at: Some(70),
+                assigned_at: Some(40),
+                in_progress_at: Some(55),
+                verified_at: Some(75),
+                closed_at: None,
+                reopen_reason: None,
+                evidence_note: None,
+                created_at: 15,
+                updated_at: 80,
+            },
+            db::FindingLifecycleRecord {
+                resource_id: "res-4".to_string(),
+                provider: "GCP".to_string(),
+                status: "closed".to_string(),
+                owner_id: Some("owner-4".to_string()),
+                due_at: Some(95),
+                assigned_at: Some(30),
+                in_progress_at: Some(40),
+                verified_at: Some(60),
+                closed_at: Some(85),
+                reopen_reason: Some("closed after retest".to_string()),
+                evidence_note: None,
+                created_at: 12,
+                updated_at: 85,
+            },
+        ];
+
+        let summary = compute_lifecycle_execution_summary(&rows, 100);
+        assert_eq!(summary.total, 4);
+        assert_eq!(summary.open, 3);
+        assert_eq!(summary.closed, 1);
+        assert_eq!(summary.assigned, 1);
+        assert_eq!(summary.in_progress, 1);
+        assert_eq!(summary.verified, 1);
+        assert_eq!(summary.overdue_open, 2);
+        assert_eq!(summary.reopened_open, 1);
+    }
+
+    #[test]
+    fn governance_stats_scorecard_includes_lifecycle_rates() {
+        let now = now_unix_ts();
+        let scan_meta = serde_json::json!({
+            "scan_checks_attempted": 4,
+            "scan_checks_succeeded": 3,
+            "scan_checks_failed": 1,
+            "scanned_accounts": ["prod-finops"],
+            "scan_error_buckets": {
+                "timeout": 1
+            }
+        });
+        let history = vec![db::ScanHistoryItem {
+            id: 1,
+            scanned_at: now,
+            total_waste: 50.0,
+            resource_count: 1,
+            status: "completed".to_string(),
+            results_json: serde_json::to_string(&vec![WastedResource {
+                id: "vol-1".to_string(),
+                provider: "AWS".to_string(),
+                region: "us-east-1".to_string(),
+                resource_type: "EBS Volume".to_string(),
+                details: "unattached".to_string(),
+                estimated_monthly_cost: 50.0,
+                action_type: "DELETE".to_string(),
+            }])
+            .expect("serialize results"),
+            scan_meta: Some(scan_meta.to_string()),
+        }];
+        let lifecycle_rows = vec![
+            db::FindingLifecycleRecord {
+                resource_id: "vol-1".to_string(),
+                provider: "AWS".to_string(),
+                status: "assigned".to_string(),
+                owner_id: Some("owner-1".to_string()),
+                due_at: Some(now - 3600),
+                assigned_at: Some(now - 7200),
+                in_progress_at: None,
+                verified_at: None,
+                closed_at: None,
+                reopen_reason: None,
+                evidence_note: None,
+                created_at: now - 7200,
+                updated_at: now - 3600,
+            },
+            db::FindingLifecycleRecord {
+                resource_id: "ip-1".to_string(),
+                provider: "Azure".to_string(),
+                status: "in_progress".to_string(),
+                owner_id: Some("owner-2".to_string()),
+                due_at: Some(now + 3600),
+                assigned_at: Some(now - 7200),
+                in_progress_at: Some(now - 1800),
+                verified_at: None,
+                closed_at: None,
+                reopen_reason: Some("rollback".to_string()),
+                evidence_note: None,
+                created_at: now - 7200,
+                updated_at: now - 1800,
+            },
+            db::FindingLifecycleRecord {
+                resource_id: "disk-1".to_string(),
+                provider: "GCP".to_string(),
+                status: "verified".to_string(),
+                owner_id: Some("owner-3".to_string()),
+                due_at: Some(now - 1800),
+                assigned_at: Some(now - 7200),
+                in_progress_at: Some(now - 5400),
+                verified_at: Some(now - 1200),
+                closed_at: None,
+                reopen_reason: None,
+                evidence_note: None,
+                created_at: now - 7200,
+                updated_at: now - 1200,
+            },
+            db::FindingLifecycleRecord {
+                resource_id: "vm-1".to_string(),
+                provider: "AWS".to_string(),
+                status: "closed".to_string(),
+                owner_id: Some("owner-4".to_string()),
+                due_at: Some(now - 10_800),
+                assigned_at: Some(now - 14_400),
+                in_progress_at: Some(now - 12_000),
+                verified_at: Some(now - 9_000),
+                closed_at: Some(now - 7_200),
+                reopen_reason: Some("resolved".to_string()),
+                evidence_note: None,
+                created_at: now - 14_400,
+                updated_at: now - 7_200,
+            },
+        ];
+
+        let stats = compute_governance_stats(history, lifecycle_rows, Some(7));
+        assert_eq!(stats.scorecard.scan_runs, 1);
+        assert_eq!(stats.scorecard.findings, 1);
+        assert_eq!(stats.scorecard.scan_checks_attempted, 4);
+        assert_eq!(stats.scorecard.scan_checks_failed, 1);
+        assert_eq!(stats.scorecard.lifecycle_total, 4);
+        assert_eq!(stats.scorecard.lifecycle_open, 3);
+        assert_eq!(stats.scorecard.lifecycle_assigned, 1);
+        assert_eq!(stats.scorecard.lifecycle_in_progress, 1);
+        assert_eq!(stats.scorecard.lifecycle_verified, 1);
+        assert_eq!(stats.scorecard.lifecycle_closed, 1);
+        assert_eq!(stats.scorecard.overdue_open, 2);
+        assert_eq!(stats.scorecard.reopened_open, 1);
+        assert!((stats.scorecard.closure_rate_pct - 25.0).abs() < 0.001);
+        assert!((stats.scorecard.overdue_rate_pct - 66.7).abs() < 0.1);
+        assert!((stats.scorecard.reopened_rate_pct - 33.3).abs() < 0.1);
+        assert_eq!(stats.error_taxonomy.total_failed_checks, 1);
+        assert!(stats
+            .error_taxonomy
+            .categories
+            .iter()
+            .any(|row| row.category == "timeout" && row.count == 1));
+    }
+
+    #[test]
+    fn lifecycle_transition_reopen_from_closed_requires_reason_and_clears_closed_markers() {
+        let mut row = db::FindingLifecycleRecord {
+            resource_id: "res-closed".to_string(),
+            provider: "AWS".to_string(),
+            status: "closed".to_string(),
+            owner_id: Some("owner-1".to_string()),
+            due_at: Some(100),
+            assigned_at: Some(10),
+            in_progress_at: Some(20),
+            verified_at: Some(30),
+            closed_at: Some(40),
+            reopen_reason: None,
+            evidence_note: None,
+            created_at: 1,
+            updated_at: 40,
+        };
+
+        let err = apply_lifecycle_transition(&mut row, "assigned", 50, None)
+            .expect_err("closed -> assigned should require reopen reason");
+        assert!(err.contains("reopen_reason is required"));
+
+        apply_lifecycle_transition(
+            &mut row,
+            "assigned",
+            50,
+            Some("owner needs rework".to_string()),
+        )
+        .expect("reopen with reason");
+        assert_eq!(row.status, "assigned");
+        assert_eq!(row.assigned_at, Some(50));
+        assert_eq!(row.in_progress_at, None);
+        assert_eq!(row.verified_at, None);
+        assert_eq!(row.closed_at, None);
+        assert_eq!(row.reopen_reason.as_deref(), Some("owner needs rework"));
+    }
+
+    #[test]
+    fn lifecycle_transition_to_verified_backfills_prior_execution_timestamps() {
+        let mut row = db::FindingLifecycleRecord {
+            resource_id: "res-verified".to_string(),
+            provider: "Azure".to_string(),
+            status: "assigned".to_string(),
+            owner_id: None,
+            due_at: None,
+            assigned_at: None,
+            in_progress_at: None,
+            verified_at: None,
+            closed_at: None,
+            reopen_reason: None,
+            evidence_note: None,
+            created_at: 1,
+            updated_at: 1,
+        };
+
+        apply_lifecycle_transition(&mut row, "in_progress", 20, None)
+            .expect("assigned -> in_progress");
+        assert_eq!(row.assigned_at, Some(20));
+        assert_eq!(row.in_progress_at, Some(20));
+
+        apply_lifecycle_transition(&mut row, "verified", 30, None)
+            .expect("in_progress -> verified");
+        assert_eq!(row.status, "verified");
+        assert_eq!(row.assigned_at, Some(20));
+        assert_eq!(row.in_progress_at, Some(20));
+        assert_eq!(row.verified_at, Some(30));
+        assert_eq!(row.closed_at, None);
+    }
+
+    #[test]
+    fn lifecycle_transition_back_to_triaged_clears_execution_stage_timestamps() {
+        let mut row = db::FindingLifecycleRecord {
+            resource_id: "res-triaged".to_string(),
+            provider: "GCP".to_string(),
+            status: "assigned".to_string(),
+            owner_id: Some("owner-2".to_string()),
+            due_at: None,
+            assigned_at: Some(15),
+            in_progress_at: Some(25),
+            verified_at: Some(35),
+            closed_at: None,
+            reopen_reason: Some("stale".to_string()),
+            evidence_note: None,
+            created_at: 1,
+            updated_at: 35,
+        };
+
+        apply_lifecycle_transition(&mut row, "triaged", 45, None).expect("assigned -> triaged");
+        assert_eq!(row.status, "triaged");
+        assert_eq!(row.assigned_at, None);
+        assert_eq!(row.in_progress_at, None);
+        assert_eq!(row.verified_at, None);
+        assert_eq!(row.closed_at, None);
+        assert_eq!(row.reopen_reason.as_deref(), Some("stale"));
     }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { AlertCircle, RefreshCw, Loader2, CheckSquare, Square, Download, FileText, Search, ClipboardList, Play, EyeOff, Leaf, Share2 } from "lucide-react";
+import { AlertCircle, RefreshCw, Loader2, CheckSquare, Square, Download, FileText, Search, ClipboardList, Play, EyeOff, Leaf, Share2, History, FolderOutput } from "lucide-react";
 import { Modal } from "./Modal";
 import { useCurrency } from "../hooks/useCurrency";
 import { CustomSelect } from "./CustomSelect";
@@ -45,6 +45,7 @@ interface FindingLifecycle {
   status: "detected" | "triaged" | "assigned" | "in_progress" | "verified" | "closed" | string;
   owner_id?: string | null;
   due_at?: number | null;
+  reopen_reason?: string | null;
   evidence_note?: string | null;
   updated_at: number;
 }
@@ -123,6 +124,28 @@ interface HandoffManifestV1 {
     findings_csv: string;
     manifest_json: string;
   };
+}
+
+interface HandoffPackageSummary {
+  package_id: string;
+  scope_type: string;
+  audience: HandoffAudience | string;
+  include_sensitive_fields: boolean;
+  findings_count: number;
+  identified_savings_monthly: number;
+  estimated_co2e_kg_monthly: number;
+  created_at: number;
+  artifacts: {
+    summary_txt: string;
+    findings_csv: string;
+    manifest_json: string;
+  };
+}
+
+interface HandoffPackageDetail extends HandoffPackageSummary {
+  summary_text: string;
+  findings_csv: string;
+  manifest_json: unknown;
 }
 
 const HANDOFF_MANIFEST_SCHEMA_NAME = "cws_handoff_manifest";
@@ -206,6 +229,7 @@ function summarizePriorityCounts(items: WastedResource[]) {
 
 export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   type ConfirmAction = "execute_plan" | "mark_handled";
+  type AssignMode = "single" | "batch";
 
   const [resources, setResources] = useState<WastedResource[]>([]);
   const [loading, setLoading] = useState(true);
@@ -228,12 +252,22 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
   const [owners, setOwners] = useState<FindingOwner[]>([]);
   const [orgUnits, setOrgUnits] = useState<OrgUnit[]>([]);
   const [assigningId, setAssigningId] = useState<string>("");
-  const [assigningOwnerId, setAssigningOwnerId] = useState<string>("");
+  const [assigningOwnerById, setAssigningOwnerById] = useState<Record<string, string>>({});
   const [filterOwnerId, setFilterOwnerId] = useState("");
   const [filterOrgUnitId, setFilterOrgUnitId] = useState("");
   const [batchAssignOwnerId, setBatchAssignOwnerId] = useState("");
+  const [assignModalState, setAssignModalState] = useState<{
+    mode: AssignMode;
+    targetOwnerId: string;
+    resourceIds: string[];
+    resourceLabels: string[];
+  } | null>(null);
+  const [assignReopenReason, setAssignReopenReason] = useState("");
+  const [assignModalSubmitting, setAssignModalSubmitting] = useState(false);
   const [includeSensitiveFields, setIncludeSensitiveFields] = useState<boolean>(false);
   const [handoffAudience, setHandoffAudience] = useState<HandoffAudience>("owner");
+  const [recentHandoffPackages, setRecentHandoffPackages] = useState<HandoffPackageSummary[]>([]);
+  const [handoffActionPackageId, setHandoffActionPackageId] = useState<string>("");
 
   // Export State
   const [isExportModalOpen, setExportModalOpen] = useState(false);
@@ -321,8 +355,18 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
     }
   }
 
+  async function fetchHandoffPackages() {
+    try {
+      const rows = await invoke<HandoffPackageSummary[]>("list_handoff_package_records");
+      setRecentHandoffPackages((rows || []).slice(0, 6));
+    } catch (err) {
+      console.warn("load handoff packages failed", err);
+    }
+  }
+
   useEffect(() => {
     fetchLifecycleAndOwners();
+    fetchHandoffPackages();
   }, []);
 
   useEffect(() => {
@@ -349,15 +393,26 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       return;
     }
     if (!ownerId) return;
+    if ((lifecycleById[resource.id]?.status || "detected") === "closed") {
+      setAssignReopenReason("");
+      setAssignModalState({
+        mode: "single",
+        targetOwnerId: ownerId,
+        resourceIds: [resource.id],
+        resourceLabels: [`${resource.id} (${resource.resource_type})`],
+      });
+      return;
+    }
     setAssigningId(resource.id);
     try {
       await invoke("assign_finding_owner_record", {
         resourceId: resource.id,
         provider: resource.provider,
         ownerId,
+        reopenReason: null,
       });
       await fetchLifecycleAndOwners();
-      setAssigningOwnerId("");
+      setAssigningOwnerById((prev) => ({ ...prev, [resource.id]: "" }));
       showActionNotice(`Assigned ${resource.id} to ${ownerId}.`);
     } catch (err) {
       showActionNotice(`Failed to assign owner: ${String(err)}`, "error");
@@ -373,6 +428,17 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       }
       if (!batchAssignOwnerId || selectedIds.size === 0) return;
       const selected = getSelectedResources();
+      const closedItems = selected.filter((row) => (lifecycleById[row.id]?.status || "detected") === "closed");
+      if (closedItems.length > 0) {
+          setAssignReopenReason("");
+          setAssignModalState({
+              mode: "batch",
+              targetOwnerId: batchAssignOwnerId,
+              resourceIds: closedItems.map((row) => row.id),
+              resourceLabels: closedItems.map((row) => `${row.id} (${row.resource_type})`),
+          });
+          return;
+      }
       let okCount = 0;
       for (const row of selected) {
           try {
@@ -380,6 +446,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                   resourceId: row.id,
                   provider: row.provider,
                   ownerId: batchAssignOwnerId,
+                  reopenReason: null,
               });
               okCount += 1;
           } catch {
@@ -388,6 +455,47 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       }
       await fetchLifecycleAndOwners();
       showActionNotice(`Batch assigned ${okCount}/${selected.length} findings to ${batchAssignOwnerId}.`, okCount > 0 ? "success" : "error");
+  };
+
+  const confirmReopenAssignment = async () => {
+      if (!assignModalState) return;
+      const reopenReason = assignReopenReason.trim();
+      if (!reopenReason) {
+          showActionNotice("Reopen reason is required before assigning a closed finding.", "error");
+          return;
+      }
+      setAssignModalSubmitting(true);
+      try {
+          const resourceMap = new Map(resources.map((item) => [item.id, item]));
+          let okCount = 0;
+          for (const resourceId of assignModalState.resourceIds) {
+              const resource = resourceMap.get(resourceId);
+              if (!resource) continue;
+              await invoke("assign_finding_owner_record", {
+                  resourceId: resource.id,
+                  provider: resource.provider,
+                  ownerId: assignModalState.targetOwnerId,
+                  reopenReason,
+              });
+              okCount += 1;
+          }
+          await fetchLifecycleAndOwners();
+          if (assignModalState.mode === "single") {
+              const resourceId = assignModalState.resourceIds[0];
+              if (resourceId) {
+                  setAssigningOwnerById((prev) => ({ ...prev, [resourceId]: "" }));
+              }
+              showActionNotice(`Reopened and reassigned ${assignModalState.resourceIds[0]} to ${assignModalState.targetOwnerId}.`);
+          } else {
+              showActionNotice(`Reopened and batch assigned ${okCount}/${assignModalState.resourceIds.length} closed findings to ${assignModalState.targetOwnerId}.`);
+          }
+          setAssignModalState(null);
+          setAssignReopenReason("");
+      } catch (err) {
+          showActionNotice(`Failed to assign owner: ${String(err)}`, "error");
+      } finally {
+          setAssignModalSubmitting(false);
+      }
   };
 
 
@@ -824,8 +932,27 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               manifest_json: `handoff_${scopeType}_${stamp}.json`,
           },
       };
+      const handoffCsv = buildHandoffCsv(scopeItems);
+      const packageId = `handoff_${scopeType}_${stamp}_${Date.now()}`;
 
       try {
+          const storedPackage = await invoke<HandoffPackageSummary>("create_handoff_package_record", {
+              payload: {
+                  package_id: packageId,
+                  scope_type: scopeType,
+                  audience: handoffAudience,
+                  include_sensitive_fields: effectiveSensitive,
+                  findings_count: scopeItems.length,
+                  identified_savings_monthly: Number(savings.toFixed(2)),
+                  estimated_co2e_kg_monthly: Number(co2e.toFixed(2)),
+                  summary_filename: manifest.artifacts.summary_txt,
+                  findings_filename: manifest.artifacts.findings_csv,
+                  manifest_filename: manifest.artifacts.manifest_json,
+                  summary_text: summaryText,
+                  findings_csv: handoffCsv,
+                  manifest_json: JSON.stringify(manifest, null, 2),
+              },
+          });
           const summaryPath = await exportTextWithTauriFallback(
               summaryText,
               `handoff_${scopeType}_${stamp}.txt`,
@@ -833,7 +960,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               { openAfterSave: false }
           );
           await exportTextWithTauriFallback(
-              buildHandoffCsv(scopeItems),
+              handoffCsv,
               `handoff_${scopeType}_${stamp}.csv`,
               "text/csv;charset=utf-8;",
               { openAfterSave: false }
@@ -845,9 +972,52 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
               { openAfterSave: false }
           );
           await revealSavedExport(summaryPath, "CSV");
-          showActionNotice(`Handoff pack created for ${scopeItems.length} findings.`);
+          await fetchHandoffPackages();
+          showActionNotice(`Handoff pack ${storedPackage.package_id} created for ${scopeItems.length} findings.`);
       } catch (err) {
           showActionNotice(`Failed to create handoff pack: ${String(err)}`, "error");
+      }
+  };
+
+  const formatPackageDateTime = (ts: number) => {
+      if (!Number.isFinite(ts)) return "-";
+      const date = new Date(ts * 1000);
+      if (Number.isNaN(date.getTime())) return "-";
+      return date.toLocaleString();
+  };
+
+  const reExportHandoffPackage = async (packageId: string) => {
+      if (!packageId) return;
+      setHandoffActionPackageId(packageId);
+      try {
+          const detail = await invoke<HandoffPackageDetail>("get_handoff_package_record", {
+              packageId,
+          });
+          const manifestText = `${JSON.stringify(detail.manifest_json, null, 2)}\n`;
+          const summaryPath = await exportTextWithTauriFallback(
+              detail.summary_text,
+              detail.artifacts.summary_txt,
+              "text/plain;charset=utf-8;",
+              { openAfterSave: false }
+          );
+          await exportTextWithTauriFallback(
+              detail.findings_csv,
+              detail.artifacts.findings_csv,
+              "text/csv;charset=utf-8;",
+              { openAfterSave: false }
+          );
+          await exportTextWithTauriFallback(
+              manifestText,
+              detail.artifacts.manifest_json,
+              "application/json;charset=utf-8;",
+              { openAfterSave: false }
+          );
+          await revealSavedExport(summaryPath, "CSV");
+          showActionNotice(`Re-exported handoff package ${packageId}.`);
+      } catch (err) {
+          showActionNotice(`Failed to re-export handoff package: ${String(err)}`, "error");
+      } finally {
+          setHandoffActionPackageId("");
       }
   };
 
@@ -1275,6 +1445,77 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
         />
       </div>
 
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Recent Handoff Packages</p>
+            <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
+              Re-open the latest locally stored handoff packages and export fresh copies without rebuilding the scope by hand.
+            </p>
+          </div>
+          <button
+            onClick={() => fetchHandoffPackages()}
+            className="inline-flex items-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
+          >
+            <RefreshCw className="mr-2 h-4 w-4" /> Refresh Packages
+          </button>
+        </div>
+        {recentHandoffPackages.length === 0 ? (
+          <div className="mt-4 rounded-xl border border-dashed border-slate-300 px-4 py-5 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+            No saved handoff packages yet. Create one from the current filtered findings to make it reusable.
+          </div>
+        ) : (
+          <div className="mt-4 grid gap-3">
+            {recentHandoffPackages.map((pkg) => (
+              <div
+                key={pkg.package_id}
+                className="flex flex-col gap-3 rounded-xl border border-slate-200 px-4 py-4 dark:border-slate-700 md:flex-row md:items-center md:justify-between"
+              >
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-700 dark:text-slate-200">
+                      {pkg.scope_type}
+                    </span>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                      {pkg.audience}
+                    </span>
+                    {pkg.include_sensitive_fields ? (
+                      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                        sensitive included
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-900 dark:text-white">
+                    <History className="h-4 w-4 text-slate-400" />
+                    <span className="font-semibold">{pkg.package_id}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {pkg.findings_count} findings, {format(pkg.identified_savings_monthly)}/mo savings, {formatCo2eKg(pkg.estimated_co2e_kg_monthly)}/mo CO2e, created {formatPackageDateTime(pkg.created_at)}.
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {pkg.artifacts.summary_txt} | {pkg.artifacts.findings_csv} | {pkg.artifacts.manifest_json}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <button
+                    onClick={() => reExportHandoffPackage(pkg.package_id)}
+                    disabled={handoffActionPackageId === pkg.package_id}
+                    className="inline-flex items-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
+                  >
+                    {handoffActionPackageId === pkg.package_id ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <FolderOutput className="mr-2 h-4 w-4" />
+                    )}
+                    Re-export
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {topUrgentFindings.length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <div className="flex items-center justify-between gap-4">
@@ -1437,8 +1678,13 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                     <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <select
-                            value={assigningOwnerId}
-                            onChange={(e) => setAssigningOwnerId(e.target.value)}
+                            value={assigningOwnerById[r.id] || ""}
+                            onChange={(e) =>
+                              setAssigningOwnerById((prev) => ({
+                                ...prev,
+                                [r.id]: e.target.value,
+                              }))
+                            }
                             className="rounded border border-slate-200 bg-white px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-900"
                           >
                             <option value="">{(lifecycleById[r.id]?.owner_id || "Unassigned")}</option>
@@ -1449,8 +1695,8 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
                             ))}
                           </select>
                           <button
-                            disabled={!assigningOwnerId || assigningId === r.id}
-                            onClick={() => assignOwner(r, assigningOwnerId)}
+                            disabled={!assigningOwnerById[r.id] || assigningId === r.id}
+                            onClick={() => assignOwner(r, assigningOwnerById[r.id] || "")}
                             className="rounded bg-slate-900 px-2 py-1 text-xs font-semibold text-white disabled:opacity-50"
                           >
                             {assigningId === r.id ? "..." : "Assign"}
@@ -1590,6 +1836,73 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
       )}
 
       {/* Execution Plan Modal */}
+      <Modal
+        isOpen={!!assignModalState}
+        onClose={() => {
+          if (!assignModalSubmitting) {
+            setAssignModalState(null);
+            setAssignReopenReason("");
+          }
+        }}
+        title={assignModalState?.mode === "batch" ? "Reopen Closed Findings" : "Reopen Closed Finding"}
+        footer={
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setAssignModalState(null);
+                setAssignReopenReason("");
+              }}
+              disabled={assignModalSubmitting}
+              className="px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-medium disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => void confirmReopenAssignment()}
+              disabled={assignModalSubmitting || !assignReopenReason.trim()}
+              className="px-4 py-2 rounded-lg font-medium text-white bg-fuchsia-600 hover:bg-fuchsia-700 disabled:opacity-60"
+            >
+              {assignModalSubmitting ? "Reopening..." : "Reopen and Assign"}
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-4 text-sm text-fuchsia-900 dark:border-fuchsia-900/40 dark:bg-fuchsia-900/20 dark:text-fuchsia-100">
+            Closed findings require an explicit reopen reason before they can move back into owner assignment.
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+              Target owner: {assignModalState?.targetOwnerId}
+            </p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              {assignModalState?.mode === "batch"
+                ? `${assignModalState?.resourceIds.length || 0} closed findings will be reopened and reassigned.`
+                : "This closed finding will be reopened and reassigned."}
+            </p>
+          </div>
+          <div className="max-h-36 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300">
+            <div className="space-y-1">
+              {(assignModalState?.resourceLabels || []).map((label) => (
+                <div key={label}>{label}</div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Reopen Reason
+            </label>
+            <textarea
+              value={assignReopenReason}
+              onChange={(event) => setAssignReopenReason(event.target.value)}
+              rows={4}
+              placeholder="Explain why this finding is being reopened and reassigned."
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-900 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-fuchsia-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+            />
+          </div>
+        </div>
+      </Modal>
+
       <Modal
         isOpen={!!confirmAction}
         onClose={() => {
