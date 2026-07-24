@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Whitepaper P1: Threat Model and Trust Boundary | Cloud Waste Scanner</title>
+  <meta name="description" content="Privacy First Cloud Cost Tool Threat Model and Trust Boundary: security review guidance for local-first cloud governance, credential boundaries, controls.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Whitepapers</div>
+      <h1>Security Whitepaper P1: Threat Model and Trust Boundary</h1>
+      <p class="lead">Privacy First Cloud Cost Tool Threat Model and Trust Boundary: security review guidance for local-first cloud governance, credential boundaries, controls.</p>
+      <div class="meta-line">2026-03-18 · Whitepapers</div>
+      <div class="article-body" data-article-body><section>
+<p>Security Whitepaper Series</p>
+<p>Read in order: trust boundary -> control matrix -> verification -> token hardening -> transport and auditability.</p>
+<div>
+<a href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Part 1</a>
+<a href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a>
+<a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a>
+<a href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a>
+<a href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a>
+</div>
+</section>
+
+<p>Part 1 is the entry point for security and architecture review. Before discussing controls, we define who we defend against, what we assume, and where the trust boundary is enforced in day-to-day operations.</p>
+<p>This baseline is written for teams evaluating a privacy first cloud cost tool in regulated environments where cloud governance framework evidence and no agent cloud cost optimization constraints are both required.</p>
+<p>The same privacy first cloud cost tool boundary model is reused in later parts so security reviewers can validate one consistent trust envelope end to end.</p>
+
+<h2 id="chapter-continuity">How Part 1 connects to the rest of the security track</h2>
+<p>This chapter defines the threat model and trust assumptions. <a href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a> maps those assumptions to explicit controls. <a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a> turns the controls into verification routines and incident readiness practice. <a href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a> and <a href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a> go deeper on token and transport integrity where implementation details matter most.</p>
+
+<figure>
+<img src="../images/whitepapers/security-part1-trust-boundary-map.svg" alt="Trust boundary execution map for local-first security review." loading="lazy" decoding="async">
+<figcaption>Figure S1-1. Trust boundary execution map: operator environment, local engine, provider APIs, and hosted service boundary.</figcaption>
+</figure>
+<h2 id="scope">1. Security scope and non-scope</h2>
+<p>Scope includes account onboarding paths, credential usage path, local scan execution, local API exposure, export artifacts, and release integrity checks. Non-scope includes cloud-provider internal controls that are outside customer tenancy boundaries and third-party environments not used in scan execution.</p>
+<p>The practical reason for explicit scope is simple: security reviews fail when teams evaluate controls against a blurred system boundary. If scope is unclear, control discussions become abstract and auditors cannot verify claims consistently.</p>
+
+<h2 id="threat-actors">2. Threat actors and attack objectives</h2>
+<ul>
+<li><strong>External network attacker:</strong> attempts interception, replay, or route manipulation during provider API calls.</li>
+<li><strong>Compromised endpoint peer:</strong> attempts credential theft, local token misuse, or unauthorized local API calls.</li>
+<li><strong>Over-privileged internal operator:</strong> uses broad permissions without review workflow controls.</li>
+<li><strong>Supply-chain attacker:</strong> attempts package replacement or artifact tampering in rollout path.</li>
+</ul>
+<p>These actors are selected based on real operational risk concentration for local-first governance tools. We do not assume a perfect endpoint or perfect network; we assume controls must remain effective in imperfect environments.</p>
+
+<h2 id="security-assumptions">3. Security assumptions that must be explicit</h2>
+<ul>
+<li>Customer endpoint baseline protections exist: patching, disk encryption, endpoint telemetry.</li>
+<li>Provider credentials assigned to scanner workflows follow least privilege and environment separation.</li>
+<li>Outbound route policy is controlled by customer network governance (direct or proxy profile).</li>
+<li>Destructive operations require human review and owner confirmation.</li>
+</ul>
+<p>Assumptions are not excuses. They are test inputs. If one assumption is false in a target environment, rollout policy must adjust before broad deployment.</p>
+
+<h2 id="trust-boundary">4. Trust boundary model and why it matters</h2>
+<p>The trust boundary is enforced between customer-controlled execution and hosted product infrastructure. Credential entry, provider API interaction, findings generation, and export packaging remain in customer-controlled runtime. Hosted pages and payment/licensing services remain outside that path.</p>
+<p>This separation reduces the blast radius class associated with central credential custody. It does not eliminate endpoint risk; it narrows where credential exposure can occur and makes ownership clearer for security operations teams.</p>
+
+<h2 id="data-path">5. Data-path walkthrough</h2>
+<ol>
+<li>Operator configures account credentials locally.</li>
+<li>Runtime calls provider endpoints from local execution environment.</li>
+<li>Metadata is normalized into findings locally.</li>
+<li>PDF/CSV/API outputs are generated locally and shared under operator policy.</li>
+</ol>
+<p>This path is intentionally straightforward because security evidence should be inspectable by operations, finance, and audit teams without reverse engineering hidden control planes.</p>
+
+<h2 id="case-study">6. Case study: why trust-boundary precision prevents review deadlock</h2>
+<p>In many cost-governance evaluations, the first deadlock appears when security asks whether provider credentials are ever transmitted to a hosted multi-tenant service. If product teams answer with ambiguous language, review slows down for weeks. In contrast, a clear trust-boundary model allows security to map controls quickly: endpoint controls for local runtime, network controls for egress routes, release controls for binary integrity, and review controls for action approval.</p>
+<p>The business effect is not theoretical. Clear boundary language reduces legal/security review loops and avoids repeated architecture clarification meetings. In practice, this often saves more rollout time than any single feature change.</p>
+
+<h2 id="residual-risk">7. Residual risks and mitigation direction</h2>
+<figure>
+<img src="../images/whitepapers/security-part1-threat-actor-surface.svg" alt="Threat actors and mapped control surfaces for part 1." loading="lazy" decoding="async">
+<figcaption>Figure S1-2. Threat actor surface: attacker classes mapped to primary controls and residual-risk actions.</figcaption>
+</figure>
+<ul>
+<li><strong>Endpoint compromise risk:</strong> reduced by endpoint hardening and credential rotation discipline.</li>
+<li><strong>Route misconfiguration risk:</strong> reduced by explicit proxy profiles and stage/reason diagnostics.</li>
+<li><strong>Human error in action workflows:</strong> reduced by review packs, owner assignment, and non-destructive default flow.</li>
+<li><strong>Artifact integrity risk:</strong> reduced by checksum verification and controlled release process.</li>
+</ul>
+
+<h2 id="implementation-faq">Implementation FAQ for architecture review</h2>
+<p><strong>Q: Does local-first mean zero security work for customer teams?</strong> No. Local-first changes where controls are enforced. It does not remove endpoint and network governance responsibilities.</p>
+<p><strong>Q: Why is this chapter separate from control details?</strong> Because controls are meaningful only after boundary and assumptions are agreed. Otherwise teams argue about controls against different mental models.</p>
+<p><strong>Q: What is the minimum evidence a reviewer should request in Part 1?</strong> Trust-boundary diagram, data-path narrative, credential lifecycle expectation, and explicit residual-risk list.</p>
+
+<h2 id="field-notes">Field notes from enterprise security reviews</h2>
+<p>In enterprise reviews, the first practical question is usually not about encryption algorithm choice. It is about responsibility boundaries during failure. If a credential misuse incident occurs, who can revoke, who can validate revocation, and who can confirm service continuity? Teams that answer these questions early move through approval quickly. Teams that postpone ownership mapping often have to redo security review with additional governance artifacts.</p>
+<p>A second pattern is confusion between architectural promise and operational reality. "Local-first" can be interpreted as "automatically secure." That interpretation is wrong. Local-first changes the trust boundary and can reduce central credential exposure, but endpoint controls and route governance remain mandatory. Security sign-off should include explicit acknowledgement of this tradeoff so expectations are aligned before rollout.</p>
+<p>A third pattern concerns evidence quality. Security teams are generally willing to approve if control claims are specific and testable. They become skeptical when controls are described abstractly without executable verification steps. This is why we recommend attaching one concrete verification example to each high-impact control in review packets.</p>
+<p>Finally, legal and procurement teams increasingly ask for plain-language statements they can map to policy. Keep one concise paragraph for each of these themes: credential custody, data-path scope, operator responsibilities, and artifact integrity. This reduces cross-functional friction and keeps security review focused on technical truth rather than interpretation variance.</p>
+<h2 id="review-questions">Review questions for Part 1 sign-off</h2>
+<ul>
+<li>Can we clearly explain where provider credentials exist during normal operation?</li>
+<li>Can we identify which controls are customer-owned versus product-owned?</li>
+<li>Do our runbooks reflect the actual trust boundary, not an assumed SaaS model?</li>
+<li>Do we have minimum evidence artifacts ready for architecture committee review?</li>
+</ul>
+
+<h2 id="appendix-review-walkthrough">Appendix: review walkthrough for architecture committee</h2>
+<p>When presenting this chapter to an architecture committee, use a short but structured sequence. Start with scope and non-scope in one slide. Then describe the trust boundary with one data-flow path from credential input to export output. After that, list residual risks with explicit ownership. Avoid generic language such as "secure by design" without control detail. Committees respond better to precise claims that can be challenged and verified.</p>
+<p>During Q and A, keep answers mapped to control ownership rather than abstract architecture language. For example, if asked "who handles endpoint compromise risk," answer with concrete ownership and remediation cadence. If asked "what evidence proves credentials remain local," answer with execution path and operational validation approach. This style shortens decision time because reviewers can map each claim to an accountable team.</p>
+<p>For organizations with procurement due diligence, include one plain-language section that states expected customer obligations. This prevents misunderstanding where procurement assumes product-managed controls for customer-managed infrastructure boundaries. The clearer this contract is, the lower the post-purchase integration friction.</p>
+<p>Finally, keep this appendix updated after major architecture or rollout model changes. A stale trust-boundary narrative can pass early review but fail later compliance checks, forcing expensive re-approval cycles.</p>
+
+<h2 id="data-sources">Data sources for this chapter</h2>
+<ul>
+<li><a href="../security.html">Security page</a> and <a href="../help.html">Documentation Core Concepts</a> for trust-boundary baseline.</li>
+<li><a href="../api.html">API Token Guide</a> and <a href="../api.html">API Center</a> for local API trust assumptions.</li>
+<li><a href="../blog-series.html">Release Ledger</a> for release-process controls tied to operational trust.</li>
+</ul>
+
+<h2 id="next-part">Next: from model to control matrix</h2>
+<p>Continue to <a href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a> for control-by-control mapping, including control intent, operator responsibilities, and validation checkpoints.</p>
+
+
+<section>
+<p>Security Review Checklist</p>
+<h3>Download the operator checklist used in enterprise reviews</h3>
+<p>Use this checklist in architecture review, rollout sign-off, and recurring governance audits.</p>
+<div>
+<a href="../security.html" download>Download Security Review Checklist</a>
+</div>
+</section></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

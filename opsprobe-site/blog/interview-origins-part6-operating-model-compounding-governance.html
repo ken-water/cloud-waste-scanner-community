@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founder Notes P6: Operating Model for Durable Savings | Cloud Waste Scanner</title>
+  <meta name="description" content="Founder Notes Part 6: Operating Model for Durable Cloud Savings: founder note on local-first cloud cost governance, execution safety, product tradeoffs.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Founder Notes P6: Operating Model for Durable Savings</h1>
+      <p class="lead">Founder Notes Part 6: Operating Model for Durable Cloud Savings: founder note on local-first cloud cost governance, execution safety, product tradeoffs.</p>
+      <div class="meta-line">2026-02-13 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>
+                    In <a href="interview-origins-part5-policy-simulation-edge-cases-reporting.html">Part 5</a>, we covered simulation and reporting. This final chapter answers the operational question teams ask after first wins: how to keep savings from drifting back three months later.
+                </p>
+
+                <hr />
+
+                <h3>Q: Why do many teams lose savings after an initially successful cleanup?</h3>
+                <p>
+                    <strong>A:</strong> Because they optimize as a campaign, not as an operating model.
+                </p>
+                <p>
+                    The first wave is often strong: obvious zombies get removed and budgets improve. Then entropy returns. New projects launch, ownership drifts, and low-priority resources quietly re-accumulate. Durable savings require recurring cadence, clear policy boundaries, and evidence that can move decisions across engineering, security, and finance.
+                </p>
+
+                <h3>Q: What changed in the product to support that operating model?</h3>
+                <p>
+                    <strong>A:</strong> We expanded from scanner features to governance capabilities that compound over time.
+                </p>
+                <ul>
+                    <li><strong>Monitor 2.0:</strong> clearer operational health signals instead of raw metric noise.</li>
+                    <li><strong>Advanced Policy Engine:</strong> provider- and environment-specific thresholds instead of one global rule.</li>
+                    <li><strong>Global Rightsizing:</strong> rightsizing recommendations across AWS, Azure, and GCP.</li>
+                    <li><strong>Storage Tiering Analysis:</strong> lifecycle-policy intelligence for long-tail object storage cost.</li>
+                    <li><strong>Local API Playbooks:</strong> repeatable automation flows with schedule, account targeting, and report delivery.</li>
+                </ul>
+                <p>
+                    The result is a practical shift: from ad-hoc cleanup to controlled, repeatable cloud governance.
+                </p>
+
+                <h3>Q: How does this look in a real weekly operating rhythm?</h3>
+                <p>
+                    <strong>A:</strong> We see high-performing teams run a simple weekly loop:
+                </p>
+                <ul>
+                    <li><strong>Monday:</strong> run targeted scans for shared and production accounts.</li>
+                    <li><strong>Tuesday:</strong> triage with policy context (auto-approve low-risk, escalate medium/high-risk).</li>
+                    <li><strong>Wednesday:</strong> execute approved actions in controlled batches.</li>
+                    <li><strong>Thursday:</strong> review outcomes in Monitor and validate savings retention.</li>
+                    <li><strong>Friday:</strong> update thresholds/ownership routing based on accepted vs rejected findings.</li>
+                </ul>
+                <p>
+                    This loop is intentionally lightweight. The point is consistency, not ceremony.
+                </p>
+
+                <h3>Q: Where does Local API automation create the biggest lift?</h3>
+                <p>
+                    <strong>A:</strong> It removes "manual trigger" bottlenecks without giving up control.
+                </p>
+                <p>
+                    Teams can trigger scans from schedulers, target only selected accounts, and track each scan by <code>scan_id</code>. This allows platform teams to keep one integration pattern while each business unit controls its own account scope and review cadence.
+                </p>
+                <p>Example (create an async scan job):</p>
+                <div>
+                    <div>
+                        <div>
+                            <p>Quick Request Examples</p>
+                            <p>Use the same route with Bash, Python, or JavaScript.</p>
+                        </div>
+                    </div>
+                    <div data-case-tabs>
+                        <div role="tablist" aria-label="Code language for create scan job">
+                            <button type="button" aria-selected="true">Bash</button>
+                            <button type="button" aria-selected="false">Python</button>
+                            <button type="button" aria-selected="false">JavaScript</button>
+                        </div>
+                    </div>
+                    <pre><code>curl -X POST "http://127.0.0.1:9123/v1/scans" -H "Authorization: Bearer YOUR_API_TOKEN" -H "Content-Type: application/json" -d '{"selected_accounts":["profile_abc123"],"report_emails":["finops@company.com","ops@company.com"]}'</code></pre>
+                    <pre><code>import requests
+
+payload = {
+    "selected_accounts": ["profile_abc123"],
+    "report_emails": ["finops@company.com", "ops@company.com"],
+}
+
+response = requests.post(
+    "http://127.0.0.1:9123/v1/scans",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"},
+    json=payload,
+    timeout=30,
+)
+
+print(response.json())</code></pre>
+                    <pre><code>const response = await fetch("http://127.0.0.1:9123/v1/scans", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer YOUR_API_TOKEN",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    selected_accounts: ["profile_abc123"],
+    report_emails: ["finops@company.com", "ops@company.com"],
+  }),
+});
+
+console.log(await response.json());</code></pre>
+                </div>
+
+                <h3>Q: Can post-scan report emails be automated for stakeholders?</h3>
+                <p>
+                    <strong>A:</strong> Yes. You can pass <code>report_emails</code> in API scan requests, and the scan job records a delivery result in <code>report_email_status</code>.
+                </p>
+                <p>
+                    In practice, this helps teams route outcomes to the right inboxes immediately: FinOps, platform operations, and application owners. It is one of the easiest ways to reduce the lag between detection and action.
+                </p>
+                <p>
+                    We recommend treating report routing as governance metadata: decide once per environment and keep it versioned in your automation payloads. Limit is <strong>up to 5 recipients</strong> per scan request.
+                </p>
+                <p>Example (poll delivery status):</p>
+                <div>
+                    <div>
+                        <div>
+                            <p>Quick Request Examples</p>
+                            <p>Check status in the same language your team already uses.</p>
+                        </div>
+                    </div>
+                    <div data-case-tabs>
+                        <div role="tablist" aria-label="Code language for poll delivery status">
+                            <button type="button" aria-selected="true">Bash</button>
+                            <button type="button" aria-selected="false">Python</button>
+                            <button type="button" aria-selected="false">JavaScript</button>
+                        </div>
+                    </div>
+                    <pre><code>curl -H "Authorization: Bearer YOUR_API_TOKEN" "http://127.0.0.1:9123/v1/scans/SCAN_ID"</code></pre>
+                    <pre><code>import requests
+
+response = requests.get(
+    "http://127.0.0.1:9123/v1/scans/SCAN_ID",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"},
+    timeout=30,
+)
+
+print(response.json()["report_email_status"])</code></pre>
+                    <pre><code>const response = await fetch("http://127.0.0.1:9123/v1/scans/SCAN_ID", {
+  headers: {
+    Authorization: "Bearer YOUR_API_TOKEN",
+  },
+});
+
+const data = await response.json();
+console.log(data.report_email_status);</code></pre>
+                </div>
+                <p>
+                    Check <code>report_email_status</code> in the response (<code>sent</code>, <code>failed: ...</code>, or <code>skipped: ...</code>).
+                </p>
+
+                <h3>Q: What did we learn about rightsizing vs deletion at scale?</h3>
+                <p>
+                    <strong>A:</strong> Most organizations need both, but rightsizing often unlocks faster consensus.
+                </p>
+                <p>
+                    Deletion conversations can stall when dependency confidence is low. Rightsizing offers a middle path for many "alive but overprovisioned" workloads. With support expanded to Azure and GCP, teams can apply one governance language across multi-cloud estates instead of negotiating separate heuristics for each provider.
+                </p>
+
+                <h3>Q: Why include storage lifecycle governance in a FinOps operating model?</h3>
+                <p>
+                    <strong>A:</strong> Because storage waste is quiet, durable, and easy to miss.
+                </p>
+                <p>
+                    Compute waste is visible during incidents. Storage waste is often invisible until quarter-end surprises. Lifecycle analysis closes this gap by identifying buckets and object sets where retention, transition, and expiration controls are missing or misaligned with real usage.
+                </p>
+
+                <h3>Q: What should teams measure to prove this is working?</h3>
+                <p>
+                    <strong>A:</strong> Keep the KPI set small and operational:
+                </p>
+                <ul>
+                    <li><strong>Time to Action:</strong> recommendation generated to approved execution.</li>
+                    <li><strong>Decision Quality:</strong> rejection rate caused by missing context/false positives.</li>
+                    <li><strong>Savings Durability:</strong> retained savings after 30/60/90 days.</li>
+                    <li><strong>Coverage Depth:</strong> share of cloud accounts participating in recurring scans.</li>
+                </ul>
+                <p>
+                    Better KPIs here usually mean better engineering discipline overall, not just lower cloud spend.
+                </p>
+
+                <h3>Q: If a team starts today, what rollout path is realistic?</h3>
+                <p>
+                    <strong>A:</strong> Use a staged 30/60/90-day approach:
+                </p>
+                <ul>
+                    <li><strong>0-30 days:</strong> baseline scans, policy segmentation (prod/dev/shared), and report routing owners.</li>
+                    <li><strong>31-60 days:</strong> enable rightsizing + storage lifecycle workflows; automate low-risk recurring scans.</li>
+                    <li><strong>61-90 days:</strong> institutionalize weekly review cadence and tighten policy simulation feedback loops.</li>
+                </ul>
+
+                <h3>Final takeaway</h3>
+                <p>
+                    The most important lesson from this series is simple: cloud efficiency is not a dashboard problem. It is an execution-system problem.
+                </p>
+                <p>
+                    When monitoring, policy, simulation, reporting, and automation are designed as one loop, savings stop being a one-time win and become a durable operating capability.
+                </p>
+                <p>
+                    This concludes the Founder Notes series. In future engineering updates, we will focus on cross-team rollout patterns, policy quality benchmarks, and automation runbooks from production environments.
+                </p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

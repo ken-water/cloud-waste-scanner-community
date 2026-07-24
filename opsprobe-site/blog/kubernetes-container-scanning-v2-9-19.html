@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>v2.9.19: No Agent Cloud Cost Optimization for Kubernetes</h1>
+      <p class="lead">Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.</p>
+      <div class="meta-line">2026-04-28 · Product Updates</div>
+      <div class="article-body" data-article-body><p>Container platforms changed how teams ship software, but they did not make waste disappear. In many environments, Kubernetes simply moved cloud waste behind a scheduler, a namespace, or a storage claim.</p>
+
+<p>That is the reason v2.9.19 matters. Cloud Waste Scanner now supports <strong>local-first Kubernetes and container waste scanning</strong>. The implementation is deliberately practical: it runs through local <code>kubectl</code>, uses the kubeconfig and context you choose, keeps data on your machine, and returns evidence that an operator can review without installing a SaaS collector inside the cluster.</p>
+
+<p>This is not a cosmetic checkbox. Kubernetes is where many teams now hide expensive infrastructure decisions: node pools sized for last quarter's launch, PersistentVolumes left behind after namespace cleanup, public LoadBalancer services that nobody owns, and replica settings that drift from current traffic. A monthly cloud bill rarely explains those relationships. A cluster dashboard rarely connects them to cross-cloud waste. CWS now helps bridge that gap with <strong>no agent cloud cost optimization</strong> for platform teams that need evidence before cleanup.</p>
+
+<h2 id="what-shipped">What shipped in v2.9.19</h2>
+<p>The new scan lane adds Kubernetes as a first-class local scan target. current users can run the workflow from the app, and automation users can drive it through the Local API. The current implementation is intentionally read-only and evidence-oriented, making it a practical no agent cloud cost optimization path for teams that need cloud governance tools and cloud cost optimization for DevOps without installing a collector.</p>
+
+<div>
+<table>
+<thead>
+<tr><th>Capability</th><th>What CWS reads</th><th>Why it matters</th></tr>
+</thead>
+<tbody>
+<tr><td>Context discovery</td><td><code>kubectl config get-contexts</code></td><td>Operators can choose the exact cluster context before scanning.</td></tr>
+<tr><td>Pods and workloads</td><td>Pods, Deployments, StatefulSets, DaemonSets</td><td>Find replica drift, restart pressure, owner signals, and workload hygiene gaps.</td></tr>
+<tr><td>Nodes</td><td>Cluster nodes and capacity metadata</td><td>Review low-request utilization and managed node-pool baseline risks.</td></tr>
+<tr><td>Persistent storage</td><td>PersistentVolumes and PersistentVolumeClaims</td><td>Detect orphaned PVs and storage claims that survive application migrations.</td></tr>
+<tr><td>Services</td><td>ClusterIP, NodePort, LoadBalancer services</td><td>Flag public exposure and cost review candidates such as idle LoadBalancers.</td></tr>
+<tr><td>Governance outputs</td><td>Findings, summary, action plan, MCP tool payloads</td><td>Turn cluster evidence into a review queue, not just raw JSON.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="why-local-first">Why we chose local kubectl instead of a hosted collector</h2>
+<p>There are powerful Kubernetes cost tools that deploy agents, exporters, or SaaS-connected collectors. Those tools can be valuable when the goal is continuous allocation, chargeback, or deep namespace economics. CWS is solving a different immediate problem: <strong>evidence-first waste discovery that respects the operator trust boundary</strong>.</p>
+
+<p>The v2.9.19 Kubernetes lane uses your local <code>kubectl</code> environment. That means:</p>
+<ul>
+<li>Your kubeconfig remains on your workstation or controlled jump host.</li>
+<li>The scan uses the Kubernetes permissions already granted to that context.</li>
+<li>The output is generated locally and can be reviewed before being shared.</li>
+<li>No in-cluster agent is required for this scan lane.</li>
+<li>No hosted inventory plane receives your cluster object list.</li>
+</ul>
+
+<div>
+<p>CWS is a local-first scanner: Kubernetes credentials and scan results stay in your environment unless you intentionally export or share them.</p>
+</div>
+
+<h2 id="what-findings-look-like">What kinds of waste can this reveal?</h2>
+<p>The first Kubernetes release focuses on practical signals that often show up in real platform operations. It is not trying to replace a full allocation engine. It is trying to answer a simpler question: <em>what should the platform team inspect this week because it may still be billing, exposing risk, or lacking an owner?</em></p>
+
+<h3 id="orphaned-persistent-volumes">1. Orphaned PersistentVolumes after migrations</h3>
+<p>A team migrates a service from one namespace to another. The old Deployment is gone. The old PVC is deleted. But the backing PV is still present, or the cloud disk behind it still exists. Kubernetes often makes storage safe by default; safety can become spend if nobody follows through.</p>
+<p>CWS can read PV and PVC state, then help the operator review which volumes no longer map cleanly to live workloads. In a combined cloud-plus-Kubernetes review, that evidence can be compared against cloud-side disks and snapshots.</p>
+
+<h3 id="node-baseline-drift">2. Node baseline drift in managed clusters</h3>
+<p>Managed Kubernetes teams often set a node-pool minimum during a launch week and forget to lower it after traffic normalizes. The cluster is healthy, dashboards look green, and the waste hides as a baseline floor.</p>
+<p>v2.9.19 builds on the earlier EKS/GKE/AKS node-pool signal work by making Kubernetes local scan context visible in the same operating story. The team can now review cluster object signals and cloud-side capacity posture together instead of treating them as separate audits.</p>
+
+<h3 id="loadbalancer-review">3. LoadBalancer services that nobody owns</h3>
+<p>A Kubernetes <code>Service</code> of type <code>LoadBalancer</code> can create a real cloud-side load balancer. If the service remains after the application is retired, the cloud bill may keep moving even when no developer recognizes the name in the provider console.</p>
+<p>CWS highlights these service-level review candidates so platform teams can ask the right ownership question before deleting anything: is this still attached to a live application path, or is it a leftover exposure and spend item?</p>
+
+<h3 id="replica-and-owner-gaps">4. Replica drift and owner gaps</h3>
+<p>Not every Kubernetes waste signal is a direct invoice line. Some are governance failures that lead to waste later: unlabeled workloads, missing owner hints, replicas set above current operational need, or namespace patterns that make chargeback impossible.</p>
+<p>CWS surfaces these as execution context. The goal is not automatic deletion. The goal is to create a concrete review list for platform teams and application owners.</p>
+
+<h2 id="case-study">Case study: the migration that left storage behind</h2>
+<p>Consider a SaaS team that recently moved a reporting service from an older namespace into a new platform-managed namespace. The migration was successful. Customers saw no downtime. The engineering team closed the ticket.</p>
+
+<p>Three weeks later, the cloud bill still showed higher-than-expected storage spend. The provider console listed several disks with names that looked like Kubernetes artifacts. The platform team could not confidently answer whether those disks were safe to delete because the application team had already moved on.</p>
+
+<p>With the new CWS workflow, the review looked like this:</p>
+<ol>
+<li>The operator selected the production kubeconfig and context in CWS.</li>
+<li>CWS ran a local read-only Kubernetes scan through <code>kubectl</code>.</li>
+<li>The scan listed PVs, PVCs, workloads, pods, services, and owner-related metadata.</li>
+<li>The team compared old namespace storage claims with current workload state.</li>
+<li>CWS generated findings and an action-plan view for review, not blind deletion.</li>
+<li>The platform owner exported the evidence and assigned two cleanup actions: confirm one PV, snapshot one disk for safety, and delete the confirmed orphan after approval.</li>
+</ol>
+
+<p>The important part was not that a tool said "delete this." The important part was that the team finally had evidence across the Kubernetes layer and the cloud resource layer. That evidence shortened a review that might have taken hours of console clicking and Slack archaeology.</p>
+
+<h2 id="how-to-run">How to run a Kubernetes scan</h2>
+<p>The desktop flow is designed for operators who already use <code>kubectl</code>. You provide a kubeconfig path and, optionally, a specific context. CWS validates the request, runs the local scan, and stores the latest Kubernetes inventory and findings locally.</p>
+
+<div>
+<pre><code>POST /v1/k8s/scans
+Authorization: Bearer YOUR_LOCAL_API_TOKEN
+Content-Type: application/json
+
+{
+  "kubeconfig_path": "~/.kube/config",
+  "kube_context": "prod-us-east"
+}</code></pre>
+</div>
+
+<p>You can also include Kubernetes in a broader scan request:</p>
+
+<div>
+<pre><code>POST /v1/scans
+Authorization: Bearer YOUR_LOCAL_API_TOKEN
+Content-Type: application/json
+
+{
+  "selected_accounts": ["aws-prod", "gcp-platform"],
+  "include_kubernetes": true,
+  "kubeconfig_path": "~/.kube/config",
+  "kube_context": "prod-us-east"
+}</code></pre>
+</div>
+
+<p>After the scan, the Local API exposes inventory and review endpoints:</p>
+<ul>
+<li><code>GET /v1/k8s/contexts</code> for kubeconfig contexts.</li>
+<li><code>GET /v1/k8s/findings</code> for Kubernetes waste findings.</li>
+<li><code>GET /v1/k8s/nodes</code>, <code>/pods</code>, <code>/workloads</code>, <code>/services</code>, <code>/persistent-volumes</code>, and <code>/persistent-volume-claims</code> for inventory review.</li>
+<li><code>GET /v1/reports/k8s-governance</code> for a governance summary.</li>
+<li><code>GET /v1/reports/k8s-action-plan</code> for an execution-oriented cleanup plan.</li>
+<li><code>GET /v1/mcp/tools/k8s-governance</code> and <code>/v1/mcp/tools/k8s-action-plan</code> for MCP-ready automation payloads.</li>
+</ul>
+
+<h2 id="who-benefits">Who benefits first?</h2>
+<p>This release is especially useful for teams that already run Kubernetes but do not want another always-on collector just to answer weekly hygiene questions. It fits several situations:</p>
+<ul>
+<li><strong>Platform teams</strong> that need a fast read-only review before a cleanup meeting.</li>
+<li><strong>SaaS teams</strong> that migrated services and need to verify leftover PVs, services, and node baselines.</li>
+<li><strong>Security-sensitive teams</strong> that cannot send kubeconfig, cluster inventory, or cloud account data to a hosted SaaS by default.</li>
+<li><strong>FinOps operators</strong> who need Kubernetes evidence next to cloud-side waste evidence.</li>
+<li><strong>SMB engineering teams</strong> that need practical cleanup evidence without deploying a full enterprise cost allocation stack.</li>
+</ul>
+
+<h2 id="current-boundaries">Current boundaries and what comes next</h2>
+<p>We should be explicit about the boundary. v2.9.19 uses local <code>kubectl</code>. It is not yet a direct kube-apiserver SDK client. It does not attempt to replace specialized allocation tools such as Kubecost or OpenCost for deep chargeback. It is focused on local-first evidence collection, waste review, and practical governance output.</p>
+
+<p>The next planned workflow work is about workflow, not just more scan calls:</p>
+<ul>
+<li>Shared owner queues for Kubernetes findings.</li>
+<li>Recurring closure history for platform teams.</li>
+<li>Namespace/team mapping for accountability.</li>
+<li>Deeper HPA, request/limit, and drift analysis.</li>
+<li>Optional alignment with allocation context for finance review.</li>
+<li>Procurement and compliance packaging for larger organizations.</li>
+</ul>
+
+<h2 id="finops-execution-insight">FinOps Execution Insight</h2>
+<ul>
+<li><strong>Kubernetes waste is not only a cluster problem.</strong> It often becomes cloud waste through disks, load balancers, node baselines, and ownership drift.</li>
+<li><strong>Local-first scanning changes the security conversation.</strong> Teams can inspect Kubernetes evidence without installing a hosted collector or exporting kubeconfig data.</li>
+<li><strong>The right first outcome is a cleanup queue, not blind automation.</strong> v2.9.19 gives operators evidence, governance summaries, and action plans so humans can close waste safely.</li>
+</ul>
+
+<h2 id="where-to-read-next">Where to read next</h2>
+<p>For route-level details, read the <a href="../api.html">Kubernetes API reference</a>. For a runnable workflow, use <a href="../api.html">Playbook 10: Kubernetes and Container Waste Scan</a>. For the public capability record, see the <a href="../blog-series.html">Release Ledger</a> and <a href="../roadmap.html">Roadmap</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

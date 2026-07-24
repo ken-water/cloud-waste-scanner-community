@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rightsizing for Azure and GCP Is Live | Cloud Waste Scanner | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner rightsizing now covers Azure and Google Cloud so teams can review oversized instances in one local-first">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>Rightsizing for Azure and GCP Is Live | Cloud Waste Scanner</h1>
+      <p class="lead">Cloud Waste Scanner rightsizing now covers Azure and Google Cloud so teams can review oversized instances in one local-first</p>
+      <div class="meta-line">2026-01-30 · Product Updates</div>
+      <div class="article-body" data-article-body><p>Teams kept asking the same question after AWS rightsizing launched: can we review Azure and GCP oversized machines the same way, without standing up a second workflow?</p>
+            <p>The answer is now yes. Dead-resource cleanup is only part of cloud cost control. A larger share of waste usually sits in machines that are healthy, always on, and simply larger than the workload needs.</p>
+
+            <figure>
+                <img src="images/rightsizing-dashboard.webp" alt="Multi-cloud rightsizing dashboard for AWS, Azure, and GCP.">
+                <figcaption>One review surface for oversized compute across AWS, Azure, and GCP.</figcaption>
+            </figure>
+
+            <h2>What changed in practice</h2>
+            <p>Rightsizing is now available for Azure and GCP alongside AWS. That matters because most teams do not overspend in a single cloud forever. The real problem is that each provider describes the same waste pattern with different naming, metrics, and recommendation styles.</p>
+            <p>Instead of forcing operators to keep three mental models open, the product normalizes them into one review list and keeps the provider detail where it still matters.</p>
+
+            <h2>How each provider is handled</h2>
+            <div>
+                <div>
+                    <h3>
+                        <img src="../images/logos/azure.svg" alt="Azure" onerror="this.style.display='none'">
+                        Microsoft Azure
+                    </h3>
+                    <p>Azure recommendations are based on Azure Monitor data across the review window. Oversized machines are flagged when the usage pattern stays low enough to support a safe downgrade discussion.</p>
+                </div>
+                <div>
+                    <h3>
+                        <img src="../images/logos/gcp.svg" alt="GCP" onerror="this.style.display='none'">
+                        Google Cloud
+                    </h3>
+                    <p>For GCP, the flow incorporates Google Recommender output so teams can review machine type changes with the provider recommendation already in view.</p>
+                </div>
+            </div>
+
+            <h2>Why the unified view matters</h2>
+            <p>Multi-cloud cost reviews often break down for a simple reason: by the time an operator reaches the third console, the meeting has already shifted from action to explanation. A normalized list makes the conversation shorter. Which machines are oversized? What is the likely downgrade path? Which team owns the follow-up? Those questions can be answered in one pass.</p>
+            <p>That is the real benefit here. It is not only more provider coverage. It is fewer context switches during weekly review.</p>
+
+            <h2>The boundary stays the same</h2>
+            <p>This addition does not change the trust model. Rightsizing analysis still runs locally. The client pulls metrics from the provider API, evaluates the recommendation in the operator environment, and renders the result without shipping the underlying infrastructure inventory to a hosted analytics plane.</p>
+            <p>That keeps the feature easier to explain in enterprise review: broader coverage, same narrow boundary.</p>
+            <p>For rollout history and policy logic, review <a href="rightsizing-launch.html">Rightsizing Launch</a> and <a href="engineering-trust-customer-value-esg.html">Engineering Trust, Customer Value, ESG</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

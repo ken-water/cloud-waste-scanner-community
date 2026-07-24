@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v3.1.0: Handoff Packages and Governance Lifecycle Closure | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner v3.1.0 adds persistent handoff packages, stronger governance lifecycle closure metrics, and explicit reopen controls for owner reassign">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>v3.1.0: Handoff Packages and Governance Lifecycle Closure</h1>
+      <p class="lead">Cloud Waste Scanner v3.1.0 adds persistent handoff packages, stronger governance lifecycle closure metrics, and explicit reopen controls for owner reassignment.</p>
+      <div class="meta-line">2026-07-03 · Product Updates</div>
+      <div class="article-body" data-article-body><p>Finding waste is only the first step. Teams still need to package evidence for the next owner, measure whether findings actually close, and avoid reopening work without context. v3.1.0 sharpens that part of the workflow.</p>
+
+<h2>What changed in v3.1.0</h2>
+<ul>
+<li><strong>Persistent handoff packages:</strong> handoff exports are now stored as local package records instead of existing only as files that can be lost or detached from context.</li>
+<li><strong>Lifecycle closure metrics:</strong> governance reporting now includes lifecycle totals, open backlog, assigned/in-progress/verified counts, overdue open findings, reopened open findings, and derived closure rates.</li>
+<li><strong>Explicit reopen controls:</strong> closed findings can no longer slip back into assignment without a reopen reason. The UI now asks for that reason before reassignment.</li>
+<li><strong>Stronger validation:</strong> new tests cover handoff persistence, lifecycle execution summaries, and governance scorecard rate calculations.</li>
+</ul>
+
+<h2>Why this matters</h2>
+<p>Before this release, a team could detect waste and even export evidence, but the execution trail still had weak spots:</p>
+<ul>
+<li>handoff files could be regenerated without a stable local record;</li>
+<li>governance metrics told you how scans were performing, but not whether execution was actually closing findings;</li>
+<li>a closed item could be reassigned without a clear operator-visible reopen step.</li>
+</ul>
+<p>v3.1.0 tightens those gaps. The result is better continuity between the person who finds waste, the person who reviews it, and the person who owns action.</p>
+
+<h2>Operator benefits</h2>
+<ul>
+<li><strong>Less evidence drift:</strong> recent handoff packages remain available locally for re-export and audit review.</li>
+<li><strong>Safer ownership changes:</strong> a closed finding now needs an explicit reopen explanation before it moves back into assigned execution.</li>
+<li><strong>Better weekly review:</strong> governance views now show closure rate, overdue open count, and reopened open count, not just detection-side metrics.</li>
+<li><strong>Cleaner lifecycle semantics:</strong> when work moves backward, outdated phase timestamps are cleared so the record matches the true workflow state.</li>
+</ul>
+
+<h2>Finance and governance value</h2>
+<p>For finance, handoff packaging is more useful when the underlying record is stable and re-runnable. For governance reviewers, detection metrics alone are not enough. They need to know:</p>
+<ul>
+<li>how many findings are still open,</li>
+<li>how many are overdue,</li>
+<li>how many had to be reopened,</li>
+<li>and whether closure is improving over time.</li>
+</ul>
+<p>Those are now first-class parts of the local governance scorecard.</p>
+
+<h2>How to use it</h2>
+<p>From the scan results screen:</p>
+<ol>
+<li>Create a handoff package from the current filtered or selected scope.</li>
+<li>Use the stored package list to re-export the same package later as TXT, CSV, or JSON.</li>
+<li>Open Governance to review closure rate, overdue open findings, and reopened open findings.</li>
+<li>If a closed finding must go back to an owner, enter a reopen reason during reassignment so the lifecycle record stays explainable.</li>
+</ol>
+
+<h2>Who should care first</h2>
+<ul>
+<li><strong>Solo operators:</strong> you now get better local continuity between scan, export, and follow-up without adding a hosted dependency.</li>
+<li><strong>Manager-review teams:</strong> governance views are more useful for weekly operating rhythm because they include execution health, not only scan yield.</li>
+<li><strong>Audit-sensitive environments:</strong> explicit reopen reasoning reduces ambiguity when an item that was previously marked closed returns to active work.</li>
+</ul>
+
+<h2>Implementation notes</h2>
+<p>This release keeps the commercial product boundary intact. Evidence stays local. Handoff packages are stored locally. The workflow is stronger, but it is still local-first rather than SaaS-coordinated.</p>
+<p>The repository now also includes targeted regression coverage for:</p>
+<ul>
+<li>handoff package persistence and retrieval;</li>
+<li>lifecycle execution summary calculations;</li>
+<li>governance scorecard lifecycle-derived rates;</li>
+<li>reopen and rollback timestamp semantics.</li>
+</ul>
+
+<h2>Versioning note</h2>
+<p>This release is aligned to the active current product line. The repository and shipped application packaging now move together at <code>3.1.0</code> to avoid conflict with the existing current product <code>3.0.1</code> release and the product <code>3.0.3</code> line.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

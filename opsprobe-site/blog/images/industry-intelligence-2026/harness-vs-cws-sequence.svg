@@ -1,0 +1,41 @@
+<svg width="1600" height="860" viewBox="0 0 1600 860" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Harness and CWS operating sequence</title>
+  <desc id="desc">Recommended execution order: CWS forensic baseline, Harness workflow controls, and shared review.</desc>
+
+  <rect width="1600" height="860" fill="#fffaf0"/>
+  <text x="800" y="92" text-anchor="middle" fill="#0c1724" font-size="42" font-family="Arial, Helvetica, sans-serif" font-weight="700">Recommended Sequence: Forensics First, Workflow Controls Second</text>
+
+  <rect x="90" y="180" width="420" height="510" rx="26" fill="#ECFDF5" stroke="#16A34A" stroke-width="3"/>
+  <text x="300" y="250" text-anchor="middle" fill="#166534" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="700">Step 1: CWS Baseline Scan</text>
+  <g fill="#14532D" font-size="22" font-family="Arial, Helvetica, sans-serif">
+    <text x="115" y="320">• Run local-first read-only scan</text>
+    <text x="115" y="366">• Identify orphaned and idle assets</text>
+    <text x="115" y="412">• Group findings by accountable owner</text>
+    <text x="115" y="458">• Remove high-confidence waste</text>
+  </g>
+
+  <rect x="600" y="180" width="420" height="510" rx="26" fill="#fdf7ea" stroke="#1f6feb" stroke-width="3"/>
+  <text x="810" y="250" text-anchor="middle" fill="#1E40AF" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="700">Step 2: Harness Controls</text>
+  <g fill="#1E3A8A" font-size="22" font-family="Arial, Helvetica, sans-serif">
+    <text x="625" y="320">• Add budget gates in CI/CD</text>
+    <text x="625" y="366">• Shift cost checks into release flow</text>
+    <text x="625" y="412">• Standardize team policy enforcement</text>
+    <text x="625" y="458">• Track drift and recurrence signals</text>
+  </g>
+
+  <rect x="1110" y="180" width="420" height="510" rx="26" fill="#FFF7ED" stroke="#EA580C" stroke-width="3"/>
+  <text x="1320" y="250" text-anchor="middle" fill="#9A3412" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="700">Step 3: Joint Closure</text>
+  <g fill="#7C2D12" font-size="22" font-family="Arial, Helvetica, sans-serif">
+    <text x="1135" y="320">• Engineering + Finance weekly review</text>
+    <text x="1135" y="366">• Validate realized savings</text>
+    <text x="1135" y="412">• Update ownership and controls</text>
+    <text x="1135" y="458">• Keep evidence loop healthy</text>
+  </g>
+
+  <line x1="510" y1="430" x2="592" y2="430" stroke="#64748B" stroke-width="4"/>
+  <polygon points="576,416 598,430 576,444" fill="#64748B"/>
+  <line x1="1020" y1="430" x2="1102" y2="430" stroke="#64748B" stroke-width="4"/>
+  <polygon points="1086,416 1108,430 1086,444" fill="#64748B"/>
+
+  <text x="800" y="780" text-anchor="middle" fill="#0c1724" font-size="24" font-family="Arial, Helvetica, sans-serif">Use CWS to clean structural waste first, then use Harness to keep workflow economics disciplined.</text>
+</svg>

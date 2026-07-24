@@ -423,7 +423,7 @@ export function ResourcesTable({ initialFilter }: ResourcesTableProps) {
 
   const assignSelectedToOwner = async () => {
       if (!canUseManagerTools) {
-          showActionNotice("Batch assignment belongs to the Team governance execution layer and also requires manager role on this machine.", "error");
+          showActionNotice("Batch assignment requires public beta access and manager role on this machine.", "error");
           return;
       }
       if (!batchAssignOwnerId || selectedIds.size === 0) return;

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Whitepaper P5: Transport Integrity and Auditability | Cloud Waste Scanner</title>
+  <meta name="description" content="Transport Integrity and Operational Auditability: security review guidance for local-first cloud governance, credential boundaries, controls, and audit.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Whitepapers</div>
+      <h1>Security Whitepaper P5: Transport Integrity and Auditability</h1>
+      <p class="lead">Transport Integrity and Operational Auditability: security review guidance for local-first cloud governance, credential boundaries, controls, and audit.</p>
+      <div class="meta-line">2026-03-18 · Whitepapers</div>
+      <div class="article-body" data-article-body><section>
+<p>Security Whitepaper Series</p>
+<p>Read in order: trust boundary -> control matrix -> verification -> token hardening -> transport and auditability.</p>
+<div>
+<a href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Part 1</a>
+<a href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a>
+<a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a>
+<a href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a>
+<a href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a>
+</div>
+</section>
+
+<p>Part 5 closes the security track by combining transport integrity with operational auditability. The goal is to leave evaluators with a complete, inspectable security story from boundary model to production governance evidence.</p>
+
+<h2 id="chapter-continuity">Final chapter context</h2>
+<p>The previous chapters covered trust assumptions, controls, verification, and token hardening. This chapter focuses on transport path integrity, release artifact integrity, and audit evidence completeness. Together, the five parts form one continuous control argument.</p>
+
+<h2 id="transport-path">1. Transport integrity model</h2>
+<p>Transport integrity is evaluated across two planes: provider API paths and local API automation paths. Controls must address confidentiality, integrity, and route correctness for both.</p>
+<figure>
+<img src="../images/whitepapers/security-part5-transport-integrity-path.svg" alt="Transport integrity path from operator network to provider endpoints." loading="lazy" decoding="async">
+<figcaption>Figure S5-1. Transport integrity path with signal classification and containment actions.</figcaption>
+</figure>
+<ul>
+<li>Provider paths: controlled egress, proxy policy compliance, timeout and retry diagnostics.</li>
+<li>Local API paths: TLS expectations where configured, auth enforcement, and route exposure minimization.</li>
+</ul>
+<p>Transport controls are meaningful only when verification and incident triage map back to concrete stage/reason diagnostics.</p>
+
+<h2 id="release-integrity">2. Release artifact integrity and rollout discipline</h2>
+<p>Security posture can be undermined by weak release process even if runtime controls are strong. Required practices include checksum validation, controlled distribution channels, and clear release-note traceability for user-visible security-impacting changes.</p>
+<p>Operationally, release integrity should be treated as a security control surface, not a pure DevOps concern.</p>
+
+<h2 id="auditability">3. Auditability evidence pack</h2>
+<p>An audit-ready evidence pack should include:</p>
+<figure>
+<img src="../images/whitepapers/security-part5-audit-evidence-chain.svg" alt="Audit evidence chain linking controls, verification output, and release evidence." loading="lazy" decoding="async">
+<figcaption>Figure S5-2. Audit evidence chain from control claim to closeout packet.</figcaption>
+</figure>
+<ul>
+<li>control-to-proof matrix entries for active controls;</li>
+<li>recent verification checklist execution records;</li>
+<li>token lifecycle operation records and revocation proof;</li>
+<li>transport/path validation outputs and failure taxonomy examples;</li>
+<li>release evidence showing control-impacting change traceability.</li>
+</ul>
+<p>This structure allows reviewers to trace claims without requesting ad-hoc data pulls.</p>
+
+<h2 id="case-study">4. Case study: audit friction caused by missing linkage</h2>
+<p>A frequent audit delay occurs when teams have all required artifacts but no linkage between them. For example, a release note references token hardening, but no direct link exists to verification output or runbook updates. Auditors then spend time reconstructing the chain manually. The practical fix is to embed artifact references directly in release evidence packets and keep identifiers stable across tooling.</p>
+<p>Good auditability is mostly about linkage quality, not artifact volume.</p>
+
+<h2 id="operational-closeout">5. Security review closeout model</h2>
+<p>Use a structured closeout checklist:</p>
+<ol>
+<li>Confirm boundary assumptions still match deployment reality.</li>
+<li>Confirm controls and verification cadence are current.</li>
+<li>Confirm token lifecycle records are complete and recent.</li>
+<li>Confirm transport checks pass under actual route policy.</li>
+<li>Confirm release evidence links to control-impacting changes.</li>
+</ol>
+<p>This closeout model reduces "paper pass" outcomes and improves operational confidence.</p>
+
+<h2 id="integration-with-technical-series">6. How to use this with the technical whitepaper series</h2>
+<p>Security and technical whitepapers are intentionally linked. Use Security Parts 1-5 for trust and controls, then use Technical Parts 1-5 for architecture, data model, runtime reliability, QA gates, and stack tradeoffs:</p>
+<ul>
+<li><a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Technical Part 1</a></li>
+<li><a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Technical Part 2</a></li>
+<li><a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Technical Part 3</a></li>
+<li><a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Technical Part 4</a></li>
+<li><a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Technical Part 5</a></li>
+</ul>
+<p>Reading both tracks together gives evaluators both control assurance and engineering execution assurance.</p>
+
+<h2 id="implementation-faq">Implementation FAQ for final sign-off</h2>
+<p><strong>Q: What usually blocks final security approval?</strong> Missing linkage between controls, verification outputs, and release evidence.</p>
+<p><strong>Q: What is the fastest way to remove audit uncertainty?</strong> Maintain one control-to-proof matrix with stable references and ownership.</p>
+<p><strong>Q: Is this the end of security work?</strong> No. This chapter defines ongoing operating discipline, not one-time certification theater.</p>
+
+<h2 id="audit-program-notes">Audit program notes: proving controls over time</h2>
+<p>Auditability is strongest when evidence is generated as part of normal operation, not assembled manually before audits. We recommend that every control-impacting release automatically updates evidence references in one audit packet structure. Manual assembly should be fallback, not default.</p>
+<p>A second principle is stable identifiers. If release IDs, control IDs, and runbook references change format frequently, linkage quality drops and audit cycles slow down. Keep identifiers stable and versioned. Stability reduces both internal review cost and external auditor effort.</p>
+<p>Third, evaluate evidence freshness. A perfect evidence package from six months ago is weak assurance for current operations. Define freshness thresholds by control class and include stale-evidence alerts in governance review. Freshness discipline keeps audit confidence aligned with runtime reality.</p>
+<p>Finally, close the loop between security and technical tracks. Security controls depend on technical execution quality, and technical reliability depends on security ownership clarity. Treat whitepaper tracks as complementary artifacts and review them together in major rollout decisions.</p>
+<h2 id="final-review-questions">Final review questions before broad rollout</h2>
+<ul>
+<li>Can we trace every major security claim to current evidence artifacts?</li>
+<li>Are transport, token, and release controls all represented in one closeout pack?</li>
+<li>Is evidence freshness monitored and reported on a fixed cadence?</li>
+<li>Do technical and security owners agree on residual risks and responsibilities?</li>
+</ul>
+
+<h2 id="closeout-operations-notes">Closeout operations notes: maintaining trust after approval</h2>
+<p>Security sign-off should not be treated as a finish line. The operational goal is sustained trust. Maintain a rolling closeout cycle where each release line updates security evidence links, confirms control freshness, and records residual-risk status changes. This approach keeps governance current and reduces re-approval friction for future rollout waves.</p>
+<p>Another key practice is harmonized reporting language across security and technical artifacts. If a reliability incident appears in technical reports but not in security control review, decision-makers receive conflicting signals. Keep one shared incident taxonomy and ensure both tracks reference it consistently.</p>
+<p>Finally, track governance debt explicitly. Missing evidence links, stale control proofs, and unresolved exceptions should appear in roadmap governance work, not only in security side notes. Visible governance debt encourages timely remediation and prevents silent erosion of control quality.</p>
+
+<h2 id="appendix-audit-execution">Appendix: audit execution and evidence lifecycle</h2>
+<p>Audit execution quality depends on consistency more than volume. A compact, repeatable evidence structure is better than large unstructured archives. We recommend one evidence index file per release line that maps controls to proof artifacts and freshness dates. This gives auditors a deterministic starting point and reduces manual interpretation effort.</p>
+<p>Evidence lifecycle management should include creation, review, retention, and retirement policies. Outdated or orphaned evidence creates confusion and can undermine confidence in current controls. Apply retention windows based on policy and compliance obligations, and document retirement logic so teams know why artifacts are removed.</p>
+<p>For recurring governance meetings, include one section on evidence quality trends: stale artifact count, broken references, unresolved exception age, and control update latency. These indicators reveal whether auditability is improving or drifting.</p>
+<p>Finally, integrate audit findings into roadmap decisions. Findings that indicate systematic control friction should drive product and process updates, not just one-time documentation patches. This closes the loop between assurance and engineering execution.</p>
+
+<h2 id="data-sources">Data sources for this chapter</h2>
+<ul>
+<li><a href="../security.html">Security</a>, <a href="../api.html">API Token Guide</a>, and <a href="../help.html">Documentation Center</a> for operational control references.</li>
+<li><a href="../blog-series.html">Release Ledger</a> and <a href="../roadmap.html">Roadmap</a> for process and release traceability references.</li>
+<li><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Whitepaper Series</a> for cross-part continuity and reviewer navigation.</li>
+</ul>
+
+<h2 id="series-close">Series close</h2>
+<p>The security series is designed as one flow: threat model, controls, verification, token hardening, and transport/auditability. Use the five parts together in security review and procurement due diligence to avoid fragmented interpretation.</p>
+
+
+<section>
+<p>Security Review Checklist</p>
+<h3>Download the operator checklist used in enterprise reviews</h3>
+<p>Use this checklist in architecture review, rollout sign-off, and recurring governance audits.</p>
+<div>
+<a href="../security.html" download>Download Security Review Checklist</a>
+</div>
+</section></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

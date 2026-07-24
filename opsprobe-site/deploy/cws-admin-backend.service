@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloud Waste Scanner Admin Backend
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ken/cloud-waste-scanner/admin-backend
+EnvironmentFile=/etc/cws-admin-backend.env
+ExecStart=/home/ken/cloud-waste-scanner/admin-backend/target/release/cws-admin-backend
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

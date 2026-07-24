@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+<title id="t">Part 3 · Verification Cadence Model</title>
+<desc id="d">Pre-rollout, periodic, and incident-triggered checks feeding runbook quality.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#fffaf0"/>
+    <stop offset="100%" stop-color="#eef8f6"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#f0a83b"/>
+    <stop offset="100%" stop-color="#49c6b7"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+  </marker>
+</defs>
+<rect width="1700" height="980" fill="url(#bg)"/>
+<rect x="40" y="40" width="1620" height="900" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+<rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Part 3 · Verification Cadence Model</text>
+<g filter="url(#softShadow)"><rect x="100" y="190" width="260" height="170" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="190" width="8" height="170" rx="8" fill="#1f6feb"/>
+<foreignObject x="124" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Pre-rollout Checks</div></foreignObject>
+<foreignObject x="124" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Boundary assumptions, token<br/>behavior, and route profile<br/>validation.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="510" y="190" width="260" height="170" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="510" y="190" width="8" height="170" rx="8" fill="#49c6b7"/>
+<foreignObject x="534" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Periodic Checks</div></foreignObject>
+<foreignObject x="534" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Control drift scans and<br/>evidence freshness review.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="920" y="190" width="260" height="170" rx="16" fill="#eef8f6" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="920" y="190" width="8" height="170" rx="8" fill="#14b8a6"/>
+<foreignObject x="944" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Incident-triggered Checks</div></foreignObject>
+<foreignObject x="944" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Focused verification after<br/>anomalies or alerts.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1330" y="190" width="260" height="170" rx="16" fill="#eef2ff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="1330" y="190" width="8" height="170" rx="8" fill="#0c1724"/>
+<foreignObject x="1354" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Runbook Update</div></foreignObject>
+<foreignObject x="1354" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Feed outcomes back to SOP<br/>and checklist.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="100" y="460" width="1500" height="250" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="460" width="8" height="250" rx="8" fill="#0c1724"/>
+<foreignObject x="124" y="478" width="1460" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Readiness Metrics</div></foreignObject>
+<foreignObject x="124" y="532" width="1460" height="166"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Checklist completion, triage speed, evidence completeness, and corrective-action<br/>verification.</div></foreignObject>
+<path d="M 360,280 Q 440,280 510,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 770,280 Q 840,280 920,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1180,280 Q 1260,280 1330,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1330,340 Q 1220,400 1100,460" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

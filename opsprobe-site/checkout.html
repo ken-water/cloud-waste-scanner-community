@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Beta Access | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner is free during the public beta. Download the desktop app and send first-scan feedback.">
+  <link rel="icon" href="assets/product-icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/site-config.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="index.html">Home</a><a href="pricing.html">Beta</a><a href="skills.html">Skills</a><a href="blog.html">Blog</a><a href="solutions.html">Solutions</a><a href="help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="download/">Download</a></div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="grid two">
+        <section class="card">
+          <div class="eyebrow">Public Beta</div>
+          <h1 id="plan-name" style="margin-top:14px; font-size:54px;">Free beta access</h1>
+          <p id="plan-price" class="lead" style="margin-top:10px; font-size:24px;">No checkout required</p>
+          <p id="plan-description" style="margin-top:18px; color:#4b5b70; font-size:18px; line-height:1.8;">Download the desktop app, run a local read-only scan, and send feedback about your first useful review.</p>
+          <div class="card" style="margin-top:24px; background:#effbf7;">
+            <p class="eyebrow">What happens next</p>
+          <p style="margin-top:10px;">There is no payment step during the public beta. The most valuable action is completing a first scan and telling us what needs to improve.</p>
+          </div>
+          <div class="inline-actions" style="margin-top:24px;">
+            <a id="checkout-action" class="btn primary" href="download/">Download Free</a>
+            <a class="btn" href="feedback.html">Send feedback</a>
+          </div>
+          <p id="checkout-note" style="margin-top:16px; color:#617086;"></p>
+        </section>
+        <section class="card dark">
+          <div class="eyebrow" style="background:rgba(255,255,255,0.08); color:#dbeafe; border-color:rgba(255,255,255,0.12);">Before you scan</div>
+          <h2 style="margin-top:12px; font-size:38px; letter-spacing:-0.05em;">You are buying software that runs locally and keeps credentials on your machine.</h2>
+          <div class="grid" style="margin-top:20px;">
+            <div class="card" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+              <h3 style="margin-top:0; font-size:22px;">1. Install locally</h3>
+              <p>Run the scanner on your Windows, Linux, or macOS machine.</p>
+            </div>
+            <div class="card" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+              <h3 style="margin-top:0; font-size:22px;">2. Scan read-only</h3>
+              <p>Start with a safe scan and review evidence before cleanup.</p>
+            </div>
+            <div class="card" style="background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08);">
+              <h3 style="margin-top:0; font-size:22px;">3. Prioritize savings</h3>
+              <p>Focus first on high-confidence waste with clear monthly impact.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="index.html"><img src="assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="pricing.html">Public Beta</a><a href="download/">Download</a><a href="solutions.html">Solutions</a><a href="api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="blog.html">Blog</a><a href="blog-series.html">Blog Series</a><a href="skills.html">Skills</a><a href="roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="help.html">Help</a><a href="feedback.html">Feedback</a><a href="recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="license.html">License</a><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const note = document.getElementById("checkout-note");
+      if (note) {
+        note.textContent = "Paid packaging will be revisited after we understand repeated usage and feedback patterns.";
+      }
+    })();
+  </script>
+</body>
+</html>

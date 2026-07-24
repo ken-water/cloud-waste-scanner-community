@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security | Cloud Waste Scanner</title>
+  <meta name="description" content="Security and trust model for Cloud Waste Scanner: local-first scanning, read-only setup, explicit cleanup, and evidence review.">
+  <link rel="icon" href="assets/product-icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="index.html">Home</a><a href="pricing.html">Beta</a><a href="skills.html">Skills</a><a href="blog.html">Blog</a><a href="solutions.html">Solutions</a><a href="help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="download/">Download</a></div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container article">
+      <div class="eyebrow">Trust Center</div>
+      <h1>Security stays inside the customer boundary.</h1>
+      <p class="lead">Cloud Waste Scanner is designed as a local-first desktop product. The scanner calls cloud provider APIs from your machine and keeps credential handling out of a hosted control plane.</p>
+
+      <h2>Trust model</h2>
+      <ul>
+        <li>Cloud credentials are entered into the local app, not a hosted SaaS dashboard.</li>
+        <li>Scan requests go from the customer machine to cloud provider APIs.</li>
+        <li>Scan results and evidence exports stay local unless the customer shares them.</li>
+        <li>The website is used for public beta access, downloads, documentation, and feedback, not for scanning customer cloud accounts.</li>
+      </ul>
+
+      <h2>Permission posture</h2>
+      <p>Start with read-only provider access. Cleanup should require a separate, explicit approval path and only the permissions needed for the selected resource type.</p>
+
+      <h2>Cleanup controls</h2>
+      <ul>
+        <li>Findings should be reviewed before action.</li>
+        <li>Owners, tags, age, and usage evidence should be checked before deletion or resizing.</li>
+        <li>Exports should be kept with internal tickets or governance notes.</li>
+        <li>Closed findings that need renewed action should include context for why they reopened.</li>
+      </ul>
+
+      <h2>Corporate networks</h2>
+      <p>The product supports restricted environments through proxy configuration. If your company intercepts TLS or restricts outbound cloud API endpoints, validate network routes before broad scans.</p>
+
+      <h2>Data handling</h2>
+      <p>Cloud Waste Scanner does not need customer cloud credentials or infrastructure data on our servers to perform scans. Customers remain responsible for how exported reports are stored, shared, and retained internally.</p>
+
+      <h2>Security review checklist</h2>
+      <ul>
+        <li>Use least-privilege read-only credentials for first scan approval.</li>
+        <li>Document who owns provider credentials and who can rotate them.</li>
+        <li>Keep cleanup permissions separate from scan permissions.</li>
+        <li>Confirm proxy and endpoint access before scanning regulated environments.</li>
+        <li>Review exported evidence before sending it outside your organization.</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="index.html"><img src="assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="pricing.html">Public Beta</a><a href="download/">Download</a><a href="solutions.html">Solutions</a><a href="api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="blog.html">Blog</a><a href="blog-series.html">Blog Series</a><a href="skills.html">Skills</a><a href="roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="help.html">Help</a><a href="feedback.html">Feedback</a><a href="recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="license.html">License</a><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

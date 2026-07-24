@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Cost Optimization Tools: Dashboard and Governance Views | Cloud Waste Scanner</title>
+  <meta name="description" content="Learn how to interpret Dashboard, Monitor, Governance, and Scan Result views in the right order for weekly operational decisions.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Guides</div>
+      <h1>Cloud Waste Scanner User Guide Part 9: How to Read Dashboard, Monitor, Governance, and Scan Result in Cloud Cost Optimization Tools</h1>
+      <p class="lead">Learn how to interpret Dashboard, Monitor, Governance, and Scan Result views in the right order for weekly operational decisions.</p>
+      <div class="meta-line">2026-03-12 · Product Guides</div>
+      <div class="article-body" data-article-body><div>
+                <div>
+                    <p>Remember</p>
+                    <p>Dashboard = overview</p>
+                    <p>Use it to understand the room before you start touching details.</p>
+                </div>
+                <div>
+                    <p>Remember</p>
+                    <p>Scan Result = this run</p>
+                    <p>This is where you filter, select, export, and decide what to do now.</p>
+                </div>
+                <div>
+                    <p>Remember</p>
+                    <p>Governance + Monitor = follow-up</p>
+                    <p>One page is for continuing work, the other is for keeping an eye on change.</p>
+                </div>
+            </div>
+
+            <div data-blog-body>
+                <p>
+                    New users usually do not get stuck on the scan itself. They get stuck right after the scan, because four pages are open and all of them look important.
+                </p>
+                
+
+                <section id="quick-start">
+                    <h2>Quick Start Steps</h2>
+                    <ol>
+                        <li>Open the guide workflow in Cloud Waste Scanner and keep scope minimal for first validation.</li>
+                        <li>Run connection validation first, then execute one controlled scan cycle.</li>
+                        <li>Export local evidence and assign owners for the next weekly closure loop.</li>
+                    </ol>
+                    <p>Cloud Waste Scanner runs entirely in your local environment. Your cloud credentials and scan results never leave your machine.</p>
+                </section>
+
+                <p id="seo-keyword-context">Teams evaluating cloud cost optimization tools usually operationalize this flow with cloud governance tools and cloud cost reporting automation. This guide keeps cloud cost optimization tools practical for weekly execution without adding control-plane friction.</p>
+
+<p>
+                    If you are trying to get real value from <strong>cloud cost optimization tools</strong>, do not treat every page as the main page. Read them in order. Once the order is clear, the product becomes much easier to use.
+                </p>
+                <p>
+                    Good operators do not get more value from cloud cost optimization tools by clicking more pages. They get more value by reading the right page at the right moment and keeping the workflow simple.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part9-2026/dashboard-overview.webp" alt="Cloud Waste Scanner dashboard showing overview cards and trend panels after a scan.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Start with the broad view, then move into this run's details.
+                    </figcaption>
+                </figure>
+
+                <h2>1) First rule: after a scan, go to Scan Result first</h2>
+                <p>
+                    When a scan finishes, the app takes you to <strong>Scan Result</strong>. Leave it there. That is the right first stop.
+                </p>
+                <p>
+                    A lot of people run a scan, then jump back to Dashboard, then click Governance, then open Monitor, and ten minutes later they still have not decided what to do. The faster habit is simpler: scan first, then work from the current result set.
+                </p>
+                <p>
+                    <strong>Scan Result</strong> is the workbench for this run. Use it to answer three questions:
+                </p>
+                <ul>
+                    <li>What showed up this time?</li>
+                    <li>What is worth looking at first?</li>
+                    <li>What should be exported or passed on right now?</li>
+                </ul>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part9-2026/scan-result-overview.webp" alt="Scan Result page with filters, result list, and action controls for the latest scan.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Treat Scan Result as the current run's workbench, not a page to glance at and leave.
+                    </figcaption>
+                </figure>
+
+                <h2>2) Dashboard is for the room, not for the individual item</h2>
+                <p>
+                    Think of <strong>Dashboard</strong> as the page you open when you want to understand the room. It tells you whether today looks quiet or messy, whether the trend feels better or worse, and whether the environment is worth digging into.
+                </p>
+                <p>
+                    It is good for:
+                </p>
+                <ul>
+                    <li>opening the product in the morning</li>
+                    <li>checking whether a scan changed the overall picture</li>
+                    <li>giving a manager a quick read of the current state</li>
+                    <li>starting a weekly review before people ask for details</li>
+                </ul>
+                <p>
+                    It is not the best place to decide which exact resource you will handle next. If you need the item itself, go back to Scan Result.
+                </p>
+
+                <h2>3) Governance is where follow-up gets organized</h2>
+                <p>
+                    The easiest way to think about <strong>Governance</strong> is this: <strong>Scan Result shows what this run found; Governance helps you keep working on what matters after the run.</strong>
+                </p>
+                <p>
+                    That is why this page is better for weekly review than for first-pass triage. Once you have already seen the current run, Governance helps you look at the categories and patterns that deserve repeated attention.
+                </p>
+                <p>
+                    This is one reason teams comparing <strong>cloud governance tools</strong> often get confused. They expect one page to do everything. In practice, Governance is much easier to use when you bring a short list from Scan Result into it.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part9-2026/governance-overview.webp" alt="Governance page showing category-focused summaries and follow-up panels for ongoing review.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Governance works better after you already know what this run surfaced.
+                    </figcaption>
+                </figure>
+
+                <h2>4) Monitor is for watching change, not replacing a full monitoring stack</h2>
+                <p>
+                    <strong>Monitor</strong> is the page most likely to be misunderstood. Do not treat it as if it were a full infrastructure monitoring product. That is not the job here.
+                </p>
+                <p>
+                    Use it when you want to keep an eye on change: what looks stable, what looks noisy, and which direction deserves another check later. It is a practical observation page, not a place to manage every metric under the sun.
+                </p>
+                <p>
+                    If Dashboard tells you how the room feels and Scan Result tells you what happened in this run, Monitor helps you keep watching after the first pass.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part9-2026/monitor-overview.webp" alt="Monitor page showing time-based trends and observation panels for ongoing tracking.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Monitor is the place to watch movement over time, not the place to start first-pass cleanup.
+                    </figcaption>
+                </figure>
+
+                <h2>5) Use the same reading order every time</h2>
+                <p>
+                    If you do not want to think too much about it, use this order every time:
+                </p>
+                <ol>
+                    <li>Open <strong>Dashboard</strong> for the overall picture.</li>
+                    <li>Run the scan.</li>
+                    <li>Read <strong>Scan Result</strong> and pick what matters now.</li>
+                    <li>Use <strong>Governance</strong> for follow-up and repeated review.</li>
+                    <li>Use <strong>Monitor</strong> when you want to watch change over time.</li>
+                </ol>
+                <p>
+                    The order matters because it saves attention. Once it becomes a habit, you stop bouncing between tabs and start getting through the work faster.
+                </p>
+
+                <h2>6) What uses scan quota and what does not</h2>
+                <p>
+                    This part is simple, but it matters because people hesitate when they are not sure.
+                </p>
+                <p>
+                    A new scan consumes scan quota. Reading pages does not.
+                </p>
+                <p>
+                    In plain terms:
+                </p>
+                <ul>
+                    <li><strong>Uses scan quota:</strong> starting a new scan</li>
+                    <li><strong>Does not use scan quota:</strong> refreshing a page, changing a date range, switching tabs, filtering, reading Dashboard, reading Monitor, reading Governance, exporting PDF, exporting CSV</li>
+                </ul>
+                <p>
+                    Once you know that, you stop babying the interface and start using it normally.
+                </p>
+
+                <h2>7) PDF is for review; CSV is for work</h2>
+                <p>
+                    Do not use PDF and CSV as if they were the same thing. They are not.
+                </p>
+                <p>
+                    <strong>PDF</strong> is better when you want something people can read in a meeting. <strong>CSV</strong> is better when someone needs to sort, filter, split, or keep adding notes. That is where <strong>cloud cost reporting automation</strong> starts to feel useful instead of ornamental.
+                </p>
+                <ul>
+                    <li><strong>PDF:</strong> weekly review, manager summary, approval flow, meeting pack</li>
+                    <li><strong>CSV:</strong> team split, owner assignment, sorting, further analysis, handoff</li>
+                </ul>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part9-2026/export-pdf.webp" alt="PDF export preview showing a formatted report ready for review or approval.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        PDF is the easier format when the audience wants a review pack.
+                    </figcaption>
+                </figure>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part9-2026/export-csv.webp" alt="CSV export preview showing a table ready for sorting and team-level follow-up.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        CSV is the easier format when the audience needs to keep working on the data.
+                    </figcaption>
+                </figure>
+
+                <h2>8) If you are teaching a new teammate, keep the first week narrow</h2>
+                <p>
+                    Do not ask a new teammate to master every page on day one. Give them one line to follow:
+                </p>
+                <ul>
+                    <li>use Dashboard to see the room</li>
+                    <li>use Scan Result to handle this run</li>
+                    <li>use Governance when the work needs follow-up</li>
+                    <li>use Monitor when watching change is the point</li>
+                </ul>
+                <p>
+                    That is enough for the first week. Once that order is stable, the rest of the product starts making sense much faster.
+                </p>
+
+                <h2>9) Keep one simple sentence in your head</h2>
+                <p>
+                    If you forget everything else, keep this:
+                </p>
+                <ul>
+                    <li><strong>Dashboard:</strong> what does the room look like?</li>
+                    <li><strong>Scan Result:</strong> what did this run find?</li>
+                    <li><strong>Governance:</strong> what needs continued attention?</li>
+                    <li><strong>Monitor:</strong> what has been moving over time?</li>
+                </ul>
+                <p>
+                    Once that sentence is clear, the product stops feeling crowded. It starts feeling ordered.
+                </p>
+
+                <p>
+                    Continue with <a href="cloud-waste-scanner-user-guide-choose-what-to-scan-first.html">Part 10: how to choose what to scan first</a>.
+                </p>
+            </div>
+
+                <section id="troubleshooting-api-errors">
+                    <h2>Troubleshooting and API Errors</h2>
+                    <p>If setup or scan validation fails, use a fixed triage order so your team can resolve issues without guessing.</p>
+                    <ul>
+                        <li>Start with <a href="../help.html">Troubleshooting</a> for staged checks and recovery flow.</li>
+                        <li>Review <a href="../help.html">API Errors</a> to map provider responses to next actions.</li>
+                        <li>Verify scope and mode in <a href="../help.html#provider-setup">Provider Credentials</a> before rerunning scans.</li>
+                    </ul>
+                </section>
+
+                <section id="finops-execution-insight">
+                    <h2>FinOps Execution Insight</h2>
+                    <ul>
+                        <li>Treat each scan as an operating loop: validate inputs, run once, export evidence, and assign owners.</li>
+                        <li>Prioritize findings your team can close this week, not the longest possible list.</li>
+                        <li>Keep evidence local and review-ready so engineering, finance, and management can align fast.</li>
+                    </ul>
+                </section>
+
+                <section id="when-to-use-cws-vs-others">
+                    <h2>When to Use CWS vs. Other Approaches</h2>
+                    <p>Use Cloud Waste Scanner when you need local-first credential control, deep waste visibility across storage/network/database, and exportable operator evidence. Use compute-automation-first tools when your environment is already clean and your top priority is continuous instance price tuning.</p>
+                    <p>For a complementary perspective, see <a href="industry-intelligence-spotio-vs-local-first-cws.html">Spot.io vs Local-First CWS</a>.</p>
+                </section>
+
+
+                <section id="declarative-conclusions">
+                    <h2>Declarative Conclusions</h2>
+                    <ul>
+                        <li>CWS is a local-first scanner, meaning credentials and scan outputs remain on your machine by default.</li>
+                        <li>Cloud waste is usually an ownership and review-rhythm failure, not just a pricing failure.</li>
+                        <li>A repeatable FinOps loop needs cloud asset inventory plus exportable evidence, not dashboard-only visibility.</li>
+                    </ul>
+                </section>
+
+                <section id="execution-links">
+                    <h2>Execution Paths</h2>
+                    <p>Continue with related guides or move directly to evaluation and procurement steps.</p>
+                    <div>
+                        <a href="industry-intelligence-spotio-vs-local-first-cws.html">Industry Comparison</a>
+                        <a href="cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Incident Story</a>
+                        <a href="../pricing.html">View Pricing</a>
+                        <a href="../blog.html">Open Blog</a>
+                    </div>
+                </section>
+
+<div>
+                <div>
+                    <div>Try Cloud Waste Scanner</div>
+                    <h3>Run one scan, then read the pages in the right order</h3>
+                    <p>Save your first $1,000 before the next billing cycle.</p>
+                    <div>
+                        <a href="/download/">Download App</a>
+                        <a href="../pricing.html">View Pricing</a>
+                    </div>
+                </div>
+            </div></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

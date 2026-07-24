@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Cloud Waste Scanner icon</title>
+  <desc id="desc">A cloud scanned by a focused beam with cost signals.</desc>
+  <defs>
+    <linearGradient id="sky" x1="44" y1="32" x2="214" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08314a"/>
+      <stop offset="0.55" stop-color="#0b5f7a"/>
+      <stop offset="1" stop-color="#11a78d"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="70" y1="92" x2="194" y2="178" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7c45c"/>
+      <stop offset="1" stop-color="#f28b2f"/>
+    </linearGradient>
+    <filter id="shadow" x="-16%" y="-16%" width="132%" height="132%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#07111f" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="256" height="256" rx="58" fill="#fffaf0"/>
+  <path d="M52 153c-20 0-36-15-36-34 0-18 14-33 32-34 7-26 31-44 59-44 24 0 46 14 56 35 24 2 43 22 43 47 0 26-21 47-48 47H52Z" fill="url(#sky)" filter="url(#shadow)"/>
+  <path d="M67 121h85c8 0 15 7 15 15s-7 15-15 15H67c-8 0-15-7-15-15s7-15 15-15Z" fill="#e9fbf7" opacity="0.92"/>
+  <path d="M72 136h54" stroke="#0b5f7a" stroke-width="10" stroke-linecap="round"/>
+  <path d="M156 94l76 36-76 36-22-36 22-36Z" fill="url(#beam)"/>
+  <path d="M158 115l33 15-33 15-9-15 9-15Z" fill="#fff7db" opacity="0.9"/>
+  <circle cx="74" cy="187" r="22" fill="#f7c45c" stroke="#0c1724" stroke-width="6"/>
+  <path d="M74 174v26M63 181h18c6 0 10 3 10 8s-4 8-10 8H64" fill="none" stroke="#0c1724" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M100 190h72M100 212h50" stroke="#0c1724" stroke-width="10" stroke-linecap="round" opacity="0.82"/>
+</svg>

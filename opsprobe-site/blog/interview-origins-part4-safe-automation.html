@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founder Notes P4: Safe Automation Without Blind Deletion | Cloud Waste Scanner</title>
+  <meta name="description" content="Founder Notes Part 4: Safe Automation Without Blind Deletion: founder note on local-first governance, execution safety, product tradeoffs, and savings.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Founder Notes P4: Safe Automation Without Blind Deletion</h1>
+      <p class="lead">Founder Notes Part 4: Safe Automation Without Blind Deletion: founder note on local-first governance, execution safety, product tradeoffs, and savings.</p>
+      <div class="meta-line">2026-02-09 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>
+                    In <a href="interview-origins-part3.html">Part 3</a>, we discussed scan depth. This chapter covers the harder step: execution that moves fast enough for ops, but not fast enough to break production.
+                </p>
+
+                <hr />
+
+                <h3>Q: Why not launch with a one-click “Delete All” action?</h3>
+                <p>
+                    <strong>A:</strong> Because speed without safety is a liability.
+                </p>
+                <p>
+                    Teams do not fear findings—they fear irreversible mistakes. The moment automation feels opaque, trust collapses. So we design execution around one principle: <strong>automation must be explainable before it is scalable</strong>.
+                </p>
+                <p>
+                    Every action needs context: why this resource is flagged, what evidence supports the decision, and what blast radius to expect.
+                </p>
+
+                <h3>Q: What does “safe automation” look like in the product?</h3>
+                <p>
+                    <strong>A:</strong> We split lifecycle into three phases: <strong>Detect</strong>, <strong>Plan</strong>, and <strong>Execute</strong>.
+                </p>
+                <p>
+                    Detect is always read-only. Plan generates an auditable change set with ownership hints and projected savings. Execute applies only approved actions under policy constraints. This keeps control explicit and reduces approval friction.
+                </p>
+                <p>
+                    It also allows progressive rollout: recommendation mode first, low-risk automation second, broader policy coverage last.
+                </p>
+
+                <h3>Q: How do you score risk before execution?</h3>
+                <p>
+                    <strong>A:</strong> By impact and reversibility, not by resource type alone.
+                </p>
+                <p>Typical baseline categories:</p>
+                <ul>
+                    <li><strong>Low risk:</strong> unattached volumes, unassociated IPs, expired snapshots with overlap.</li>
+                    <li><strong>Medium risk:</strong> long-idle compute with no recent traffic and weak dependency signals.</li>
+                    <li><strong>High risk:</strong> databases, load balancers, and network resources tied to production paths.</li>
+                </ul>
+                <p>
+                    Low-risk actions may be policy-approved. Medium and high-risk actions require explicit review or owner escalation.
+                </p>
+
+                <h3>Q: How do you prevent accidental production impact?</h3>
+                <p>
+                    <strong>A:</strong> Guardrails run before mutation, not after incidents.
+                </p>
+                <p>
+                    We check environment tags (`prod`, `critical`), maintenance windows, ownership rules, and service-specific preconditions such as active connection indicators or dependency references.
+                </p>
+                <p>
+                    We also support dry-run previews that show intended API actions and expected savings before execution approval.
+                </p>
+
+                <h3>Q: What about rollback and audit requirements?</h3>
+                <p>
+                    <strong>A:</strong> Every batch must leave an audit trail.
+                </p>
+                <p>
+                    We record actor, account scope, action IDs, timestamps, and result states. Where recovery paths exist, we attach rollback guidance (snapshot restore, re-association steps, or rebuild templates).
+                </p>
+                <p>
+                    The objective is not just “it worked.” The objective is “it can be reviewed, explained, and repeated.”
+                </p>
+
+                <h3>Q: What metrics should teams track in the first quarter?</h3>
+                <p>
+                    <strong>A:</strong> Start with three operating metrics:
+                </p>
+                <ul>
+                    <li><strong>Time to action:</strong> from recommendation to approved execution.</li>
+                    <li><strong>Decision quality:</strong> rejection rate due to missing context or false positives.</li>
+                    <li><strong>Savings durability:</strong> retained savings after 30/60/90 days.</li>
+                </ul>
+                <p>
+                    Improve these, and you usually improve both cloud efficiency and engineering operating discipline.
+                </p>
+
+                <h3>What comes next?</h3>
+                <p>
+                    In <a href="interview-origins-part5-policy-simulation-edge-cases-reporting.html">Part 5</a>, we cover policy simulation, edge-case strategy, and execution-ready reporting before production rollout.
+                </p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

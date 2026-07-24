@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Waste Scanner v1.0: What We Actually Shipped | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>Cloud Waste Scanner v1.0: What We Actually Shipped</h1>
+      <p class="lead">Cloud Waste Scanner v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials</p>
+      <div class="meta-line">2026-01-27 · Product Updates</div>
+      <div class="article-body" data-article-body><p>The first release bar was shaped by a near miss in a cleanup log review: better visibility, safer actions, and no credential upload.</p>
+            <p>Cloud bills rarely explode in one shot. They leak through forgotten resources, oversized machines, and cleanup paths that nobody quite trusts. v1.0 was built for teams stuck between heavyweight SaaS and brittle internal scripts.</p>
+
+            <h2>1. Visibility: surface the waste that usually stays buried</h2>
+            <p>The initial monitor design focused on speed of comprehension. Operators needed a page that would show which resources looked quiet, which looked healthy, and where to start the review.</p>
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/dashboard.webp" alt="Cloud Waste Scanner dashboard from the first release.">
+                        </div>
+                    </div>
+                    <figcaption>The first dashboard was built to help teams spot waste candidates without reading three provider consoles side by side.</figcaption>
+                </figure>
+            <p>From the start, the product leaned toward behavior-based review. The goal was to find resources that were technically alive and financially pointless.</p>
+
+            <h2>2. Action: review before anything destructive happens</h2>
+            <p>Finding waste is only half the job. Cleanup is where trust breaks. v1.0 therefore used a two-step path: scan first, review the candidate list, then expose the cleanup action only after the operator had made an explicit selection.</p>
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/scan-results.webp" alt="Scan results page with cleanup review path.">
+                        </div>
+                    </div>
+                    <figcaption>A unified result list made it possible to review before acting.</figcaption>
+                </figure>
+
+            <h2>3. Coverage and custody: one app, local credentials</h2>
+            <p>Multi-cloud complexity was already obvious, so the first release supported multiple providers from one app. Just as important, credentials stayed on the device. The product was not built around uploading keys to a vendor-managed backend.</p>
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/settings.webp" alt="Cloud account settings in the first Cloud Waste Scanner release.">
+                        </div>
+                    </div>
+                    <figcaption>Cloud account setup was designed around local custody from day one.</figcaption>
+                </figure>
+            <p>For how this baseline expanded in later releases, continue with <a href="v2-launch-global.html">v2 Launch Global</a> and the operations refinement in <a href="customer-first-shipping-feedback-loop.html">Customer-First Shipping Feedback Loop</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

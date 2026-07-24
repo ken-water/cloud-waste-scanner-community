@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+  <title id="t">CloudZero vs CWS trust boundary model</title>
+  <desc id="d">Hosted SaaS and local-first execution compared by custody boundary, operating flow, and practical tradeoffs.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#eef8f6"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0a83b"/>
+      <stop offset="100%" stop-color="#49c6b7"/>
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+    </marker>
+  </defs>
+
+  <rect width="1700" height="980" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1620" height="900" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  <rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#titleGrad)"/>
+  <text x="100" y="116" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Cloud Cost Strategy: Heavyweight SaaS vs Local-First Precision</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="100" y="190" width="720" height="700" rx="20" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <rect x="100" y="190" width="10" height="700" rx="8" fill="#f59e0b"/>
+  <text x="136" y="250" font-size="30" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#0c1724">CloudZero-style Hosted SaaS</text>
+  <text x="136" y="286" font-size="20" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="500" fill="#42526b">Centralized attribution depth with vendor-hosted control plane</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="170" y="340" width="260" height="140" rx="16" fill="#eef8f6" stroke="#99f6e4" stroke-width="2"/>
+  </g>
+  <foreignObject x="196" y="364" width="214" height="102">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:21px;font-weight:700;line-height:1.2;color:#0c1724;">Your cloud accounts</div>
+  </foreignObject>
+
+  <g filter="url(#softShadow)">
+    <rect x="500" y="340" width="260" height="140" rx="16" fill="#fef9c3" stroke="#fde68a" stroke-width="2"/>
+  </g>
+  <foreignObject x="526" y="364" width="214" height="102">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:21px;font-weight:700;line-height:1.2;color:#0c1724;">Vendor SaaS plane</div>
+  </foreignObject>
+
+  <path d="M430,410 L500,410" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+  <text x="465" y="390" text-anchor="middle" font-size="14" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="600" fill="#0c1724">cross-account read</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="170" y="530" width="590" height="300" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <foreignObject x="196" y="558" width="540" height="250">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:19px;font-weight:500;line-height:1.4;color:#0c1724;overflow:hidden;">
+      <div style="font-size:22px;font-weight:700;color:#0c1724;margin-bottom:10px;">Strengths</div>
+      <div>• Rich business attribution and chargeback storytelling.</div>
+      <div>• Strong cross-team finance/product/platform language.</div>
+      <div style="margin-top:12px;font-size:22px;font-weight:700;color:#92400e;">Tradeoffs</div>
+      <div>• Metadata custody shifts into third-party risk process.</div>
+      <div>• Spend-linked pricing can scale with cloud bill size.</div>
+    </div>
+  </foreignObject>
+
+  <g filter="url(#softShadow)">
+    <rect x="880" y="190" width="720" height="700" rx="20" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <rect x="880" y="190" width="10" height="700" rx="8" fill="#16a34a"/>
+  <text x="916" y="250" font-size="30" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#0c1724">CWS Local-First Runtime</text>
+  <text x="916" y="286" font-size="20" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="500" fill="#42526b">Operator-controlled execution with evidence-first handoff</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="950" y="340" width="260" height="140" rx="16" fill="#dcfce7" stroke="#bbf7d0" stroke-width="2"/>
+  </g>
+  <foreignObject x="976" y="364" width="214" height="102">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:21px;font-weight:700;line-height:1.2;color:#0c1724;">Operator runtime</div>
+  </foreignObject>
+
+  <g filter="url(#softShadow)">
+    <rect x="1280" y="340" width="260" height="140" rx="16" fill="#eef8f6" stroke="#99f6e4" stroke-width="2"/>
+  </g>
+  <foreignObject x="1306" y="364" width="214" height="102">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:21px;font-weight:700;line-height:1.2;color:#0c1724;">Provider APIs</div>
+  </foreignObject>
+
+  <path d="M1210,410 L1280,410" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+  <text x="1245" y="390" text-anchor="middle" font-size="14" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="600" fill="#0c1724">outbound only</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="950" y="530" width="590" height="300" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <foreignObject x="976" y="558" width="540" height="250">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:19px;font-weight:500;line-height:1.4;color:#0c1724;overflow:hidden;">
+      <div style="font-size:22px;font-weight:700;color:#0c1724;margin-bottom:10px;">Strengths</div>
+      <div>• Credential custody remains inside operator boundary.</div>
+      <div>• Action-grade evidence for engineering and finance closure.</div>
+      <div style="margin-top:12px;font-size:22px;font-weight:700;color:#166534;">Tradeoffs</div>
+      <div>• Less built-in macro attribution breadth than heavyweight SaaS.</div>
+      <div>• Requires disciplined weekly operating cadence.</div>
+    </div>
+  </foreignObject>
+</svg>

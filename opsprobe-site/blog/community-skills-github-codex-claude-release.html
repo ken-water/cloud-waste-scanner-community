@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Cost Reporting Automation with AI Evidence Skills | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner AI Evidence Skills ship as local evidence workflows packages for explaining, auditing, and acting on local scan evidence.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Article</div>
+      <h1>Cloud Cost Reporting Automation with AI Evidence Skills</h1>
+      <p class="lead">Cloud Waste Scanner AI Evidence Skills ship as local evidence workflows packages for explaining, auditing, and acting on local scan evidence.</p>
+      <div class="meta-line">2026-06-15 · Article</div>
+      <div class="article-body" data-article-body><p>Cloud waste findings are only useful when somebody can explain them, trust them, and decide what to do next. That is why we are publishing CWS AI Evidence Skills as source-visible packages for local evidence workflows workflows.</p>
+<p>For teams comparing cloud governance tools, this release turns local evidence into cloud cost reporting automation without forcing cloud credentials into a hosted service. It is a practical self hosted cloud cost optimization layer for operators who need explanations, weekly briefs, cleanup playbooks, and export checks.</p>
+
+<h2>The problem: reports still need translation</h2>
+<p>A scan can identify idle capacity, unattached storage, stale snapshots, and weak lifecycle controls. But many teams still lose time after the scan:</p>
+<ul>
+<li>the operator has to explain why a finding matters;</li>
+<li>finance needs to know which numbers are safe to count;</li>
+<li>the execution owner needs a cautious checklist, not a deletion command;</li>
+<li>the reviewer needs to know whether an export is complete enough to share.</li>
+</ul>
+<p>That translation work is repetitive. It should be evidence-first, local-first, and consistent across tools.</p>
+
+<h2>What is included</h2>
+<p>The first AI Evidence Skills set includes four skills:</p>
+<ul>
+<li><strong>cws-report-explainer:</strong> explains findings for operators, finance reviewers, and executives.</li>
+<li><strong>cws-weekly-brief:</strong> turns current and prior evidence into a concise weekly review note.</li>
+<li><strong>cws-playbook-writer:</strong> converts findings into cautious cleanup playbooks with pre-checks and rollback notes.</li>
+<li><strong>cws-export-auditor:</strong> reviews exports before they are shared with finance, leadership, or audit reviewers.</li>
+</ul>
+
+<h2>Three packages, one source tree</h2>
+<p>The release package current product release is the source of truth. Codex and Claude packages are generated from the same <code>skills/</code> source tree.</p>
+<ul>
+<li><strong>release package generic package:</strong> <code>skills-generic.tar.gz</code> keeps the source-visible layout under <code>skills/</code>.</li>
+<li><strong>Codex package:</strong> <code>skills-codex.tar.gz</code> installs under <code>.agents/skills</code> and keeps <code>agents/openai.yaml</code>.</li>
+<li><strong>Claude package:</strong> <code>skills-claude.tar.gz</code> installs under <code>.claude/skills</code> and excludes Codex-specific UI metadata.</li>
+</ul>
+<p>This matters because we do not want three diverging skill implementations. We want one maintained evidence workflow with platform-specific packaging.</p>
+
+<h2>How the evidence flows</h2>
+<p>The skills support two modes:</p>
+<ul>
+<li><strong>Connected mode:</strong> use the installed Cloud Waste Scanner app and local API.</li>
+<li><strong>File-only mode:</strong> use exported JSON, CSV, TXT, or pasted report evidence.</li>
+</ul>
+<p>The new handoff manifest schema gives these skills more stable input. It includes priority breakdown, top findings, lifecycle state, confidence level, and whether an item is overdue, reopened, or unassigned.</p>
+
+<h2>What this enables immediately</h2>
+<p>A solo operator can now start with a scan and get a stronger follow-up package without moving cloud credentials into another service:</p>
+<ul>
+<li>an operator summary of the top urgent findings;</li>
+<li>a finance-safe explanation of what is measurable versus inferred;</li>
+<li>a weekly brief for recurring waste signals;</li>
+<li>a cleanup playbook that starts with pre-checks, not blind deletion;</li>
+<li>an export audit before sharing evidence with another reviewer.</li>
+</ul>
+
+<h2>What it does not do</h2>
+<p>AI Evidence Skills do not replace the scanner, run cloud API calls, store credentials, execute remediation, enforce approvals, or coordinate multi-user workflow state. The desktop app remains the scan engine. The skills explain and transform evidence produced by Cloud Waste Scanner.</p>
+
+<h2>How to try it</h2>
+<p>From the release package, validate and build the packages:</p>
+<pre><code>./scripts/validate-skills.sh
+./scripts/package-skills.sh</code></pre>
+<p>The generated packages appear under <code>dist/</code>. The repository also includes sample evidence so users can test without exposing real cloud data:</p>
+<ul>
+<li><code>skills/examples/handoff_manifest_1.1.0.json</code></li>
+<li><code>skills/examples/handoff_findings.csv</code></li>
+<li><code>skills/examples/scan_results.json</code></li>
+</ul>
+
+<h2>Why we are publishing this now</h2>
+<p>Cloud cost control is not only a detection problem. It is also a communication problem. A finding must become a sentence that finance can trust, a checklist an operator can follow, and a weekly rhythm that does not collapse after the first cleanup pass.</p>
+<p>The skills release is a practical step toward that operating model while preserving the commercial product boundary: local-first evidence, source-visible packages, no hosted credential dependency.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

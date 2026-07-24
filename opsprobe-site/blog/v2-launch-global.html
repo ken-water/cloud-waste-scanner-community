@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v1.10: 15-Provider Coverage Without 15 Tools | Cloud Waste Scanner</title>
+  <meta name="description" content="v1.10 expands Cloud Waste Scanner to 15 cloud providers and keeps one local-first workflow for scan, review, and cleanup actions.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>v1.10: 15-Provider Coverage Without 15 Tools</h1>
+      <p class="lead">v1.10 expands Cloud Waste Scanner to 15 cloud providers and keeps one local-first workflow for scan, review, and cleanup actions.</p>
+      <div class="meta-line">2026-01-31 · Product Updates</div>
+      <div class="article-body" data-article-body><p>This release started from a blunt support ticket: AWS waste is visible, Alibaba waste is not, and the finance handoff still happens in spreadsheets.</p>
+            <p>That is what v1.10 fixed. Global teams do not suffer from a lack of raw data. They suffer from fragmented review loops. One business unit runs AWS, another uses Alibaba Cloud, and smaller groups keep workloads on DigitalOcean, Oracle, or regional providers that the main tooling ignores.</p>
+
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="../images/dashboard-overview.webp" alt="Unified multi-cloud dashboard for 15-provider coverage.">
+                        </div>
+                    </div>
+                    <figcaption>The value of broader coverage is a shared review path, not just a longer provider list.</figcaption>
+                </figure>
+
+            <h2>What changed in v1.10</h2>
+            <p>The scan layer was rebuilt around a more consistent output model so teams could triage findings without changing mental context every time the provider changed.</p>
+            <ul>
+                <li>AWS</li>
+                <li>Azure</li>
+                <li>Google Cloud</li>
+                <li>Alibaba Cloud</li>
+                <li>Huawei Cloud</li>
+                <li>Tencent Cloud</li>
+                <li>Oracle Cloud</li>
+                <li>DigitalOcean</li>
+                <li>Linode</li>
+                <li>Vultr</li>
+                <li>IBM Cloud</li>
+                <li>Cloudflare</li>
+                <li>Volcengine</li>
+                <li>Baidu AI Cloud</li>
+                <li>Tianyi Cloud</li>
+            </ul>
+            <p>The point was not completeness for its own sake. It was operational continuity: one scan, one shared backlog, one review meeting.</p>
+
+            <h2>Detection got deeper too</h2>
+            <p>This release line did more than expand provider names. It added provider-aware checks for idle databases, oversized instances, orphaned load balancers, and other billing patterns that only appear when you understand how each provider turns usage into spend.</p>
+            <p>That matters because shallow cross-cloud visibility often becomes a lowest-common-denominator report. v1.10 aimed for broader coverage without flattening the useful differences out of the findings.</p>
+
+            <h2>Why local-first still mattered</h2>
+            <p>Security teams often reject broad SaaS collection models before procurement even begins. That did not change here. The product still kept credentials on the device and executed scanning from the customer boundary. More providers did not mean a broader trust footprint.</p>
+            <div>
+                <p>Your API keys stay on your device. Scanning happens from your IP address. No infrastructure inventory is shipped to a hosted cloud inventory plane.</p>
+            </div>
+            <p>For the origin context, start with <a href="v1-launch.html">v1 Launch</a>. For strategy and governance framing, continue with <a href="engineering-trust-customer-value-esg.html">Engineering Trust, Customer Value, ESG</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

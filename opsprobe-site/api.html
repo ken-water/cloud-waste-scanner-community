@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API | Cloud Waste Scanner</title>
+  <meta name="description" content="Local API guidance for Cloud Waste Scanner scan automation, report export, webhook signing, and safe internal integration.">
+  <link rel="icon" href="assets/product-icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="js/anchor-scroll.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="index.html">Home</a><a href="pricing.html">Beta</a><a href="skills.html">Skills</a><a href="blog.html">Blog</a><a href="solutions.html">Solutions</a><a href="help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="download/">Download</a></div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container api-layout">
+      <aside class="api-sidebar" aria-label="API table of contents">
+        <section class="api-sidebar-card">
+          <h2>API Guide</h2>
+          <div class="api-links" data-anchor-nav data-anchor-offset="118">
+            <a href="#quick-start">Quick start</a>
+            <a href="#scope">What the API covers</a>
+            <a href="#complete-example">Complete example</a>
+            <a href="#endpoints">Common endpoints</a>
+            <a href="#examples">Language examples</a>
+            <a href="#webhooks">Webhook signing</a>
+            <a href="#errors">Errors and retries</a>
+            <a href="#safety">Safe integration</a>
+          </div>
+          <p class="api-note">The API is local-first. It is designed for automation around scan evidence, not for exposing a public cloud control plane.</p>
+        </section>
+      </aside>
+
+      <article class="article">
+        <div class="eyebrow">Local API</div>
+        <h1>Automate around local scan evidence.</h1>
+        <p class="lead">Use the API to trigger scans, fetch findings, export reports, and feed results into weekly review, tickets, or internal dashboards. The surface stays small on purpose, but it is broad enough for real automation.</p>
+
+        <div class="code-pills">
+          <span class="code-pill">Scan jobs</span>
+          <span class="code-pill">Findings</span>
+          <span class="code-pill">Reports</span>
+          <span class="code-pill">Webhooks</span>
+          <span class="code-pill">OpenAPI</span>
+        </div>
+
+        <section id="quick-start">
+          <h2>Quick start</h2>
+          <p>Run one read-only scan locally, read the findings, then export a report for review. That sequence is enough for most teams to automate the first useful workflow.</p>
+          <div class="code-sample">
+            <div class="code-head"><span>Base URL</span><span>Local host</span></div>
+            <pre><code>http://127.0.0.1:&lt;configured-port&gt;/v1</code></pre>
+          </div>
+          <div class="code-sample">
+            <div class="code-head"><span>Example request</span><span>curl</span></div>
+            <pre><code><span class="tok-fn">curl</span> <span class="tok-string">"http://127.0.0.1:8080/v1/findings?provider=aws&amp;status=open"</span></code></pre>
+          </div>
+        </section>
+
+        <section id="scope">
+          <h2>What the API covers</h2>
+          <ul>
+            <li>Start and inspect scan jobs from the desktop app or an internal orchestrator.</li>
+            <li>Read findings, account metadata, provider summaries, and compatibility information.</li>
+            <li>Export PDF, CSV, JSON, or text evidence packages for finance and engineering review.</li>
+            <li>Deliver signed webhook callbacks when event-driven automation is needed.</li>
+          </ul>
+        </section>
+
+        <section id="complete-example">
+          <h2>Complete example: weekly waste handoff</h2>
+          <p>Problem: finance asks why AWS network cost is still rising after the team says cleanup was finished. The useful API workflow is not one call; it is scan, filter, export, then notify the owner with evidence.</p>
+
+          <div class="endpoint-grid">
+            <div class="endpoint">
+              <div class="endpoint-top"><span class="method post">POST</span><code>/v1/scans</code></div>
+              <p>Start a scoped scan for the AWS account and network waste policy.</p>
+            </div>
+            <div class="endpoint">
+              <div class="endpoint-top"><span class="method get">GET</span><code>/v1/findings?provider=aws&amp;category=network&amp;status=open</code></div>
+              <p>Read only open network findings, ranked by confidence and estimated monthly impact.</p>
+            </div>
+            <div class="endpoint">
+              <div class="endpoint-top"><span class="method post">POST</span><code>/v1/reports/export</code></div>
+              <p>Create a PDF for review and JSON for the ticketing or weekly governance system.</p>
+            </div>
+          </div>
+
+          <div class="code-tabs" data-code-tabs>
+            <div class="code-tab-list" role="tablist" aria-label="Complete API example languages">
+              <button class="code-tab-btn is-active" type="button" role="tab" aria-selected="true" data-tab-target="curl">cURL</button>
+              <button class="code-tab-btn" type="button" role="tab" aria-selected="false" data-tab-target="python">Python</button>
+              <button class="code-tab-btn" type="button" role="tab" aria-selected="false" data-tab-target="javascript">JavaScript</button>
+              <button class="code-tab-btn" type="button" role="tab" aria-selected="false" data-tab-target="go">Go</button>
+            </div>
+
+            <div class="code-tab-panel" data-tab-panel="curl">
+              <div class="code-sample">
+                <div class="code-head"><span>End-to-end workflow</span><span>cURL</span></div>
+                <pre><code><span class="tok-fn">curl</span> -X <span class="tok-string">POST</span> <span class="tok-string">"http://127.0.0.1:8080/v1/scans"</span> \
+  -H <span class="tok-string">"Authorization: Bearer $CWS_TOKEN"</span> \
+  -H <span class="tok-string">"Content-Type: application/json"</span> \
+  -d <span class="tok-string">'{"provider":"aws","account_id":"prod-shared-services","policy_scope":["network-waste"]}'</span></code></pre>
+              </div>
+            </div>
+
+            <div class="code-tab-panel" data-tab-panel="python" hidden>
+              <div class="code-sample">
+                <div class="code-head"><span>End-to-end workflow</span><span>Python</span></div>
+                <pre><code><span class="tok-keyword">import</span> time
+<span class="tok-keyword">import</span> requests
+
+base = <span class="tok-string">"http://127.0.0.1:8080/v1"</span>
+headers = {<span class="tok-string">"Authorization"</span>: <span class="tok-string">f"Bearer {token}"</span>}
+
+scan = requests.<span class="tok-fn">post</span>(
+    <span class="tok-string">f"{base}/scans"</span>,
+    headers=headers,
+    json={
+        <span class="tok-string">"provider"</span>: <span class="tok-string">"aws"</span>,
+        <span class="tok-string">"account_id"</span>: <span class="tok-string">"prod-shared-services"</span>,
+        <span class="tok-string">"policy_scope"</span>: [<span class="tok-string">"network-waste"</span>],
+    },
+).json()
+
+<span class="tok-keyword">while</span> True:
+    status = requests.<span class="tok-fn">get</span>(<span class="tok-string">f"{base}/scans/{scan['id']}"</span>, headers=headers).json()
+    <span class="tok-keyword">if</span> status[<span class="tok-string">"state"</span>] <span class="tok-keyword">in</span> (<span class="tok-string">"completed"</span>, <span class="tok-string">"failed"</span>):
+        <span class="tok-keyword">break</span>
+    time.<span class="tok-fn">sleep</span>(<span class="tok-number">5</span>)
+
+findings = requests.<span class="tok-fn">get</span>(
+    <span class="tok-string">f"{base}/findings?provider=aws&amp;category=network&amp;status=open"</span>,
+    headers=headers,
+).json()
+
+export = requests.<span class="tok-fn">post</span>(
+    <span class="tok-string">f"{base}/reports/export"</span>,
+    headers=headers,
+    json={
+        <span class="tok-string">"format"</span>: [<span class="tok-string">"pdf"</span>, <span class="tok-string">"json"</span>],
+        <span class="tok-string">"finding_ids"</span>: [item[<span class="tok-string">"id"</span>] <span class="tok-keyword">for</span> item <span class="tok-keyword">in</span> findings[<span class="tok-string">"items"</span>][:<span class="tok-number">10</span>]],
+        <span class="tok-string">"purpose"</span>: <span class="tok-string">"weekly-network-waste-review"</span>,
+    },
+).json()
+
+print(export[<span class="tok-string">"pdf_path"</span>], export[<span class="tok-string">"json_path"</span>])</code></pre>
+              </div>
+            </div>
+
+            <div class="code-tab-panel" data-tab-panel="javascript" hidden>
+              <div class="code-sample">
+                <div class="code-head"><span>End-to-end workflow</span><span>JavaScript</span></div>
+                <pre><code><span class="tok-keyword">const</span> base = <span class="tok-string">"http://127.0.0.1:8080/v1"</span>;
+<span class="tok-keyword">const</span> headers = { Authorization: <span class="tok-string">`Bearer ${token}`</span>, <span class="tok-string">"Content-Type"</span>: <span class="tok-string">"application/json"</span> };
+
+<span class="tok-keyword">const</span> scan = <span class="tok-keyword">await</span> <span class="tok-fn">fetch</span>(<span class="tok-string">`${base}/scans`</span>, {
+  method: <span class="tok-string">"POST"</span>,
+  headers,
+  body: JSON.<span class="tok-fn">stringify</span>({
+    provider: <span class="tok-string">"aws"</span>,
+    account_id: <span class="tok-string">"prod-shared-services"</span>,
+    policy_scope: [<span class="tok-string">"network-waste"</span>]
+  })
+}).<span class="tok-fn">then</span>((res) =&gt; res.json());
+
+<span class="tok-keyword">const</span> findings = <span class="tok-keyword">await</span> <span class="tok-fn">fetch</span>(<span class="tok-string">`${base}/findings?provider=aws&amp;category=network&amp;status=open`</span>, { headers }).<span class="tok-fn">then</span>((res) =&gt; res.json());
+<span class="tok-keyword">const</span> exportData = <span class="tok-keyword">await</span> <span class="tok-fn">fetch</span>(<span class="tok-string">`${base}/reports/export`</span>, {
+  method: <span class="tok-string">"POST"</span>,
+  headers,
+  body: JSON.<span class="tok-fn">stringify</span>({ format: [<span class="tok-string">"pdf"</span>, <span class="tok-string">"json"</span>], finding_ids: findings.items.slice(<span class="tok-number">0</span>, <span class="tok-number">10</span>).map((item) =&gt; item.id), purpose: <span class="tok-string">"weekly-network-waste-review"</span> })
+}).<span class="tok-fn">then</span>((res) =&gt; res.json());
+
+console.<span class="tok-fn">log</span>(exportData.pdf_path, exportData.json_path);</code></pre>
+              </div>
+            </div>
+
+            <div class="code-tab-panel" data-tab-panel="go" hidden>
+              <div class="code-sample">
+                <div class="code-head"><span>End-to-end workflow</span><span>Go</span></div>
+                <pre><code><span class="tok-keyword">package</span> main
+
+<span class="tok-keyword">import</span> (
+  <span class="tok-string">"bytes"</span>
+  <span class="tok-string">"encoding/json"</span>
+  <span class="tok-string">"fmt"</span>
+  <span class="tok-string">"net/http"</span>
+)
+
+<span class="tok-keyword">func</span> main() {
+  <span class="tok-keyword">const</span> base = <span class="tok-string">"http://127.0.0.1:8080/v1"</span>
+  payload := map[<span class="tok-keyword">string</span>]<span class="tok-keyword">any</span>{
+    <span class="tok-string">"provider"</span>: <span class="tok-string">"aws"</span>,
+    <span class="tok-string">"account_id"</span>: <span class="tok-string">"prod-shared-services"</span>,
+    <span class="tok-string">"policy_scope"</span>: []<span class="tok-keyword">string</span>{<span class="tok-string">"network-waste"</span>},
+  }
+  body, _ := json.Marshal(payload)
+  req, _ := http.NewRequest(<span class="tok-string">"POST"</span>, base+<span class="tok-string">"/scans"</span>, bytes.NewReader(body))
+  req.Header.Set(<span class="tok-string">"Authorization"</span>, <span class="tok-string">"Bearer "</span>+token)
+  req.Header.Set(<span class="tok-string">"Content-Type"</span>, <span class="tok-string">"application/json"</span>)
+  _ = req
+  fmt.Println(<span class="tok-string">"scan started"</span>)
+}</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr><th>Output</th><th>How the team uses it</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>pdf_path</code></td><td>Attach to the weekly review note for finance and owners.</td></tr>
+              <tr><td><code>json_path</code></td><td>Feed into an internal ticket, dashboard, or AI evidence skill.</td></tr>
+              <tr><td><code>finding_ids</code></td><td>Keep cleanup scoped to reviewed findings, not broad provider deletion.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="endpoints">
+          <h2>Common endpoints</h2>
+          <div class="endpoint-groups">
+            <section class="endpoint-group">
+              <h3>Discover capabilities</h3>
+              <p>Use these first when building an internal client or checking whether a local app version supports the workflow you need.</p>
+              <div class="endpoint-grid">
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/openapi.json</code></div>
+                  <p>Fetch the OpenAPI document for local integration and client generation.</p>
+                </div>
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/meta/compatibility</code></div>
+                  <p>Read app and API compatibility metadata before calling newer fields or routes.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="endpoint-group">
+              <h3>Run and monitor scans</h3>
+              <p>Trigger a scoped scan from an internal job, then poll state until findings and exports are ready.</p>
+              <div class="endpoint-grid">
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method post">POST</span><code>/v1/scans</code></div>
+                  <p>Start a scan using a configured provider account and policy scope.</p>
+                </div>
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/scans/{id}</code></div>
+                  <p>Check scan state, high-level counts, and whether export artifacts are ready.</p>
+                </div>
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/findings</code></div>
+                  <p>List findings with provider, status, severity, category, team, and cursor filters.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="endpoint-group">
+              <h3>Build governance views</h3>
+              <p>Pull enough summarized data for weekly review without copying every raw finding into another system.</p>
+              <div class="endpoint-grid">
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/reports/trends</code></div>
+                  <p>Pull weekly trend lines for review cadence, closure, and savings movement.</p>
+                </div>
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/reports/categories</code></div>
+                  <p>Summarize the taxonomy behind the findings so teams can compare like with like.</p>
+                </div>
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method get">GET</span><code>/v1/reports/teams</code></div>
+                  <p>See backlog and closure by team, owner, or business unit.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="endpoint-group">
+              <h3>Export and automate handoff</h3>
+              <p>Create evidence artifacts and test event delivery before connecting cleanup decisions to internal systems.</p>
+              <div class="endpoint-grid">
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method post">POST</span><code>/v1/reports/export</code></div>
+                  <p>Generate PDF, CSV, JSON, or text exports for tickets, weekly review, or audit notes.</p>
+                </div>
+                <div class="endpoint">
+                  <div class="endpoint-top"><span class="method post">POST</span><code>/v1/webhooks/test</code></div>
+                  <p>Verify webhook delivery and signature handling before wiring production automation.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="examples">
+          <h2>Language examples</h2>
+          <p>The same API can be called from scripts, jobs, or internal tools. These examples stay intentionally small.</p>
+
+          <div class="api-tabs">
+            <div class="api-tab">
+              <strong>cURL</strong>
+              <div class="code-sample">
+                <div class="code-head"><span>Findings</span><span>bash</span></div>
+                <pre><code><span class="tok-fn">curl</span> -H <span class="tok-string">"Authorization: Bearer $CWS_TOKEN"</span> \
+  <span class="tok-string">"http://127.0.0.1:8080/v1/findings?provider=aws&amp;status=open"</span></code></pre>
+              </div>
+            </div>
+            <div class="api-tab">
+              <strong>JavaScript / TypeScript</strong>
+              <div class="code-sample">
+                <div class="code-head"><span>Fetch</span><span>js</span></div>
+                <pre><code><span class="tok-keyword">const</span> res = <span class="tok-keyword">await</span> <span class="tok-fn">fetch</span>(<span class="tok-string">"http://127.0.0.1:8080/v1/reports/trends?group_by=week"</span>, {
+  headers: { Authorization: <span class="tok-string">`Bearer ${token}`</span> }
+});</code></pre>
+              </div>
+            </div>
+            <div class="api-tab">
+              <strong>Python</strong>
+              <div class="code-sample">
+                <div class="code-head"><span>Requests</span><span>py</span></div>
+                <pre><code><span class="tok-keyword">import</span> requests
+
+res = requests.<span class="tok-fn">get</span>(
+    <span class="tok-string">"http://127.0.0.1:8080/v1/reports/categories"</span>,
+    headers={<span class="tok-string">"Authorization"</span>: <span class="tok-string">f"Bearer {token}"</span>},
+)</code></pre>
+              </div>
+            </div>
+            <div class="api-tab">
+              <strong>Go</strong>
+              <div class="code-sample">
+                <div class="code-head"><span>net/http</span><span>go</span></div>
+                <pre><code><span class="tok-keyword">req</span>, _ := http.NewRequest(<span class="tok-string">"GET"</span>, <span class="tok-string">"http://127.0.0.1:8080/v1/scans/123"</span>, nil)
+req.Header.Set(<span class="tok-string">"Authorization"</span>, <span class="tok-string">"Bearer "+token</span>)</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="webhooks">
+          <h2>Webhook signing</h2>
+          <p>Webhook payloads use HMAC-SHA256 over the raw body and timestamp. Keep the signing secret inside the internal receiver and reject stale timestamps.</p>
+          <table class="table">
+            <thead>
+              <tr><th>Header</th><th>Meaning</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>X-CWS-Timestamp</code></td><td>Event timestamp used to limit replay.</td></tr>
+              <tr><td><code>X-CWS-Signature</code></td><td>HMAC signature computed over the body and timestamp.</td></tr>
+              <tr><td><code>X-CWS-Event</code></td><td>Event type for the receiving system.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="errors">
+          <h2>Errors and retries</h2>
+          <ul>
+            <li>Use cursor pagination for large result sets.</li>
+            <li>Retry transient network failures with backoff, not tight loops.</li>
+            <li>Check compatibility metadata before depending on new fields.</li>
+            <li>Prefer read-only scan access until your cleanup workflow is approved.</li>
+          </ul>
+        </section>
+
+        <section id="safety">
+          <h2>Safe integration</h2>
+          <ul>
+            <li>Do not expose the local API directly to the public internet.</li>
+            <li>Keep automation scoped to reviewed findings rather than broad deletion.</li>
+            <li>Attach report exports to tickets or review notes before cleanup.</li>
+            <li>Store tokens only in trusted internal systems.</li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="index.html"><img src="assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="pricing.html">Public Beta</a><a href="download/">Download</a><a href="solutions.html">Solutions</a><a href="api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="blog.html">Blog</a><a href="blog-series.html">Blog Series</a><a href="skills.html">Skills</a><a href="roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="help.html">Help</a><a href="feedback.html">Feedback</a><a href="recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="license.html">License</a><a href="security.html">Security</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

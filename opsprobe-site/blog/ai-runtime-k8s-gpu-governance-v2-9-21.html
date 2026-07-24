@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v2.9.21: Local-First AI Runtime and Kubernetes GPU Governance | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Waste Scanner v2.9.21 adds local-first AI runtime scans, Kubernetes GPU capacity summaries, and governance report APIs for cost control.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>v2.9.21: Local-First AI Runtime and Kubernetes GPU Governance</h1>
+      <p class="lead">Cloud Waste Scanner v2.9.21 adds local-first AI runtime scans, Kubernetes GPU capacity summaries, and governance report APIs for cost control.</p>
+      <div class="meta-line">2026-05-15 · Product Updates</div>
+      <div class="article-body" data-article-body><div>
+<div>
+<p>New Scan Surface</p>
+<p>Kubernetes inventory and findings</p>
+<p>Pods, nodes, workloads, services, PVs, PVCs, governance summaries, and action plans.</p>
+</div>
+<div>
+<p>Trust Boundary</p>
+<p>Local kubectl, read-only permissions</p>
+<p>Kubeconfig and scan output stay on the operator machine. CWS does not require a hosted cluster collector.</p>
+</div>
+<div>
+<p>Operator Value</p>
+<p>Find cloud waste behind containers</p>
+<p>Surface orphan PVs, underused node baselines, risky LoadBalancer services, and owner gaps.</p>
+</div>
+</div>
+
+<div data-blog-body>
+<h2>Why this release matters now</h2>
+<p>For most teams running AI workloads, GPU spend is now one of the fastest-growing cost lines. The operational problem is not only price. The harder problem is evidence: many teams can see invoice growth, but cannot quickly prove where GPU waste is happening, who owns it, and which actions are safe.</p>
+<p>v2.9.21 addresses that gap with a local-first workflow built for operators. Instead of relying on a hosted collector, Cloud Waste Scanner can now read local runtime signals and Kubernetes GPU allocation signals, then return concrete findings and recommendations for execution.</p>
+
+<h2>What shipped in v2.9.21</h2>
+<ul>
+<li>Local AI runtime scan support for NVIDIA and AMD runtime paths.</li>
+<li>Kubernetes GPU summary endpoint to compare node allocatable GPUs against pod requests and limits.</li>
+<li>AI governance report output for weekly execution, ownership review, and closure tracking.</li>
+</ul>
+
+<h2>What new problems you can solve</h2>
+<p>This release is designed for the common "invoice shock to action" path in AI infrastructure:</p>
+<ul>
+<li>Find idle GPU windows where devices are allocated but underutilized.</li>
+<li>Detect memory-stranded patterns where GPU memory pressure does not match compute usage.</li>
+<li>Surface request-limit drift in Kubernetes workloads that reserve expensive GPU capacity without sustained demand.</li>
+<li>Turn findings into an operator-ready governance report instead of ad-hoc screenshots and manual notes.</li>
+</ul>
+
+<h2>Operator benefits and expected outcomes</h2>
+<ul>
+<li>Faster triage: local runtime evidence reduces time from cost alert to actionable diagnosis.</li>
+<li>Safer change decisions: capacity and usage context are presented together before rightsizing or scheduling changes.</li>
+<li>Stronger accountability: findings can be grouped into weekly review queues for platform and FinOps owners.</li>
+<li>Better repeatability: teams can use the same API outputs in dashboards, runbooks, and automation workflows.</li>
+</ul>
+
+<h2>How to use it in the UI</h2>
+<p>In the current product desktop app, the previous AI analyst entry is now replaced by an execution-oriented scan workflow.</p>
+<ol>
+<li>Open <strong>AI Device Scan</strong> from the left navigation.</li>
+<li>Click <strong>Run AI Device Scan</strong> to collect local GPU runtime findings.</li>
+<li>Review returned findings for idle, stranded, and efficiency signals.</li>
+<li>Open related scan results for cleanup planning and owner assignment.</li>
+</ol>
+<p>You can also run this from the main scan wizard, where AI device utilization scan is enabled as a first-class scan option.</p>
+
+<h2>How to use it through Local API</h2>
+<p>For automation and integrations, v2.9.21 extends the local API surface:</p>
+<ul>
+<li><code>GET /v1/ai/devices</code>: list detected local runtime devices.</li>
+<li><code>POST /v1/ai/scans</code>: trigger local AI runtime scan.</li>
+<li><code>GET /v1/ai/findings</code>: retrieve AI runtime findings.</li>
+<li><code>GET /v1/ai/recommendations</code>: retrieve recommendations mapped to findings.</li>
+<li><code>GET /v1/k8s/gpu-summary</code>: retrieve cluster-level GPU allocatable/request/limit summary.</li>
+<li><code>GET /v1/reports/ai-governance</code>: retrieve governance-oriented report output.</li>
+</ul>
+<p>Recommended execution pattern: trigger scan, collect findings, append k8s summary context, then publish a weekly governance report for review and closure tracking.</p>
+
+<h2>Trust boundary and data handling</h2>
+<p>CWS remains local-first in this release. Runtime probes and Kubernetes reads execute in your environment. Credentials and raw outputs do not need to leave your machine unless you intentionally export or forward them.</p>
+
+<h3>FinOps Execution Insight</h3>
+<ul>
+<li>Because GPU waste is high-cost and bursty, local evidence speed directly improves decision quality.</li>
+<li>Because Kubernetes reservations can mask true pressure, allocation context must be paired with runtime findings.</li>
+<li>Because cleanup fails without ownership, governance report outputs should be integrated into weekly operating cadence.</li>
+</ul>
+</div></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

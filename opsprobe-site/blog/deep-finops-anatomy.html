@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inside a $50k Cloud Leak: What Scripts Missed | Cloud Waste Scanner</title>
+  <meta name="description" content="Inside a $50k Cloud Leak: What Shallow Scripts Miss: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Inside a $50k Cloud Leak: What Scripts Missed</h1>
+      <p class="lead">Inside a $50k Cloud Leak: What Shallow Scripts Miss: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.</p>
+      <div class="meta-line">2026-02-03 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>We kept seeing the same pattern in cost review calls: teams removed obvious idle instances, celebrated a small drop, and then watched the next bill climb again.</p>
+            <p>The reason is usually simple. Most waste lives below the level of shallow scripts. It hides in network artifacts, provisioned storage, and cross-resource relationships that are invisible if the check only asks whether a VM is running or stopped.</p>
+
+            <h2>Case study 1: the network-layer zombie</h2>
+            <p>A mid-sized SaaS company had a strict Friday cleanup routine for development environments. The instances disappeared on schedule. The bill did not. The missing piece was NAT gateways left behind in multiple regions, still charging hourly and sometimes still processing low-level chatter.</p>
+            <p>This is the kind of waste shallow cleanup misses because the expensive object is not the instance. It is the network path around the instance.</p>
+            <figure>
+                <img src="images/deep-nat-gateway.webp" alt="Network-layer waste detected alongside compute findings.">
+                <figcaption>A deeper review path catches network artifacts that survive after the visible workload is gone.</figcaption>
+            </figure>
+
+            <h2>Case study 2: attached-but-dead storage</h2>
+            <p>Unattached volumes are easy. The harder case is expensive storage that is technically still attached but no longer economically justified. Provisioned IOPS and premium disks can keep billing even when the instance they support is stopped or only used occasionally.</p>
+            <p>That means the question is not just whether storage is attached. The question is whether the attached workload still deserves that class of storage.</p>
+
+            <h2>Why shallow checks miss both patterns</h2>
+            <p>Single-resource checks only look at the object in front of them. Real cloud waste often sits in the relationship between objects: the gateway and the empty subnet, the expensive disk and the stopped instance, the load balancer and the service that no longer receives traffic.</p>
+            <p>Once you accept that, the detection model changes. You stop asking one question per resource and start correlating traffic, state, and billing behavior across resources.</p>
+
+            <figure>
+                <img src="images/deep-dashboard.webp" alt="Dashboard view for mixed waste categories across cloud environments.">
+                <figcaption>A useful dashboard is one that helps operators connect categories of waste, not just list them.</figcaption>
+            </figure>
+
+            <h2>Breadth still matters</h2>
+            <p>There is also a provider reality here. Your main estate may live on AWS, but cost leaks can just as easily sit in a smaller team account on another provider. A meaningful review surface has to cover both the major clouds and the side estates that quietly accumulate spend.</p>
+            <figure>
+                <img src="images/deep-cloud-accounts.webp" alt="Multi-cloud account setup for shared review across providers.">
+                <figcaption>Breadth matters because hidden spend rarely respects organizational boundaries.</figcaption>
+            </figure>
+
+            <h2>Execution plans close the loop</h2>
+            <p>Deeper findings are only useful if the team can act on them with confidence. That is why execution plans matter. They turn a complicated result set into something reviewable: what will change, what the savings look like, and who can sign off.</p>
+            <figure>
+                <img src="images/deep-scan-report.webp" alt="Execution plan PDF for cloud cleanup review and approval.">
+                <figcaption>The more complex the finding, the more valuable a reviewable report becomes.</figcaption>
+            </figure>
+            <p>To apply this model in daily operations, pair this chapter with <a href="the-idle-fallacy.html">The Idle Fallacy</a> for policy design and <a href="local-first-finops.html">Local-First FinOps</a> for trust-boundary decisions.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

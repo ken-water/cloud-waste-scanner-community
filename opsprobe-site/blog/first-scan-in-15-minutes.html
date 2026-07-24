@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Cost Optimization Tools: Local-First Audit in 15 Minutes | Cloud Waste Scanner</title>
+  <meta name="description" content="How to install and run a local-first AWS audit in Cloud Waste Scanner in 15 minutes, with no cloud credentials shared to third-party services.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Guides</div>
+      <h1>Cloud Cost Optimization Tools: First Effective Cloud Scan in 15 Minutes</h1>
+      <p class="lead">How to install and run a local-first AWS audit in Cloud Waste Scanner in 15 minutes, with no cloud credentials shared to third-party services.</p>
+      <div class="meta-line">2026-02-28 · Product Guides</div>
+      <div class="article-body" data-article-body><div>
+                <div>
+                    <p>Target</p>
+                    <p>One clean first scan</p>
+                    <p>Start with one account and one region so the first result is easy to trust.</p>
+                </div>
+                <div>
+                    <p>Output</p>
+                    <p>Evidence you can share</p>
+                    <p>Use PDF for review and CSV for follow-up instead of screenshots and chat fragments.</p>
+                </div>
+                <div>
+                    <p>Boundary</p>
+                    <p>Local-first workflow</p>
+                    <p>Credentials stay local while the team validates the first useful scanning path.</p>
+                </div>
+            </div>
+
+            <div data-blog-body>
+                <p>
+                    First-run friction usually kills momentum: credentials are added, scan starts, then nobody trusts the output. This guide avoids that pattern and gets you one clean, usable scan cycle in 15 minutes.
+                </p>
+                <section id="quick-start">
+                    <h2>Quick Start Steps</h2>
+                    <ol>
+                        <li>Download and install CWS on your local machine.</li>
+                        <li>Add one read-only AWS account and run <strong>Test Connection</strong>.</li>
+                        <li>Run a scoped scan and export PDF/CSV evidence for team handoff.</li>
+                    </ol>
+                    <p>Cloud Waste Scanner runs entirely in your local environment. Your cloud credentials and scan results never leave your machine.</p>
+                </section>
+
+                <p id="seo-keyword-context">Teams evaluating cloud cost optimization tools usually operationalize this flow with cloud governance tools and no agent cloud cost optimization. This guide keeps cloud cost optimization tools practical for weekly execution without adding control-plane friction.</p>
+
+                <h2>What you will have after 15 minutes</h2>
+                <ul>
+                    <li>A verified cloud scan result with actionable waste signals.</li>
+                    <li>Estimated savings that can be used in internal prioritization.</li>
+                    <li>Exportable evidence (PDF/CSV) for team handoff and governance traceability.</li>
+                </ul>
+                <p>
+                    On the first run, do not chase maximum coverage. What matters is a complete, reliable loop: configure, scan, understand, export, and act. Good cloud cost optimization tools should get that loop moving fast instead of leaving teams to assemble it by hand.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/first-scan-15min-2026/identified-waste.webp" alt="Cloud Waste Scanner dashboard with identified waste findings and estimated savings.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Your first successful run should produce outputs that are immediately usable by engineering, finance, and operations. That is where finops tools and a privacy first cloud cost tool start to prove their value.
+                    </figcaption>
+                </figure>
+
+                <h2>Before you start (2 minutes)</h2>
+                <p>Prepare these items first:</p>
+                <ul>
+                    <li>Cloud account credentials (least-privilege read scope recommended).</li>
+                    <li>The target region for your first run (for example, AWS <code>us-east-1</code>).</li>
+                    <li>Your network route decision: direct, system proxy, or custom proxy.</li>
+                    <li>One notification destination your team already checks.</li>
+                </ul>
+                <p>
+                    Cloud Waste Scanner is local-first: credentials stay on your local environment and are not uploaded to a remote service.
+                </p>
+
+                <h2>Step 1: Install and confirm baseline health (3 minutes)</h2>
+                <p>After installation, verify three items before any scan:</p>
+                <ul>
+                    <li>The app opens and the main dashboard renders normally.</li>
+                    <li>License status is valid (<strong>Trial, Monthly, Yearly, or Lifetime</strong>).</li>
+                    <li>Settings can be opened and saved successfully.</li>
+                </ul>
+
+                <h2>Step 2: Add your cloud account and test connection first (3 minutes)</h2>
+                <p>
+                    Do not start scanning immediately after adding credentials. Always run <strong>Test Connection</strong> first. This isolates environment issues early and avoids ambiguous scan outcomes.
+                </p>
+                <p>
+                    A successful connection test usually confirms credential formatting, route reachability, and baseline API access.
+                </p>
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/first-scan-15min-2026/edit-account-test-success.webp" alt="Cloud account edit panel with successful Test Connection result.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Always run Test Connection in the account editor before scanning to reduce false starts.
+                    </figcaption>
+                </figure>
+
+                <h2>Step 3: Run your first scan with minimal scope (4 minutes)</h2>
+                <p>For first run reliability, use a narrow scope:</p>
+                <ul>
+                    <li>One account.</li>
+                    <li>One region.</li>
+                    <li>Default rules.</li>
+                </ul>
+                <p>
+                    Review the result in this order: potential savings, high-priority findings, then export path.
+                </p>
+
+                <h2>Step 4: Turn output into team action (3 minutes)</h2>
+                <p>
+                    Once the scan completes, move through the result page in a fixed order:
+                </p>
+                <ol>
+                    <li>Filter to the provider or account you just scanned.</li>
+                    <li>Review the highest-confidence findings first.</li>
+                    <li>Use <strong>Ignore</strong> for items your team already handled elsewhere.</li>
+                    <li>Use <strong>Generate Plan</strong> for actions that should be reviewed or executed with traceability.</li>
+                </ol>
+
+                <h2>Step 5: Export both review formats right away (3 minutes)</h2>
+                <p>
+                    A scan report that nobody shares quickly becomes shelfware. Export both formats right away:
+                </p>
+                <ul>
+                    <li><strong>PDF</strong> for management updates and audit-ready summaries.</li>
+                    <li><strong>CSV</strong> for engineering workflows, filtering, and task assignment.</li>
+                </ul>
+                <p>
+                    Then validate one notification channel so future scans flow into your operating rhythm instead of becoming manual follow-up work.
+                </p>
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/first-scan-15min-2026/report-export-full-page.webp" alt="Full-page exported Cloud Waste Scanner PDF report preview.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Full-page exported PDF view (sample). A complete report is easier to share across management and engineering.
+                    </figcaption>
+                </figure>
+
+                <h2 id="troubleshooting-api-errors">Troubleshooting on first run</h2>
+                <ul>
+                    <li>Connection test passes but scan fails: usually deeper API permission scope is missing for specific checks.</li>
+                    <li>Notification test fails: verify proxy mode, DNS route mode, and endpoint reachability.</li>
+                    <li>Zero findings: verify that account/region scope matches where your active resources actually run.</li>
+                </ul>
+                <p>
+                    For faster support, provide the relevant time range from <code>cws.log</code>. It gives stage-level diagnostics for connection, scan, and notification paths.
+                </p>
+
+                <h2>Beyond savings: cost plus ESG visibility</h2>
+                <p>
+                    Cloud Waste Scanner already provides a dual perspective in reporting: financial savings and ESG-related impact signals such as estimated carbon reduction. This helps teams frame optimization decisions in both budget and sustainability language.
+                </p>
+                <p>
+                    We will continue improving this with clearer methodology notes, stronger auditability, and tighter alignment across engineering, finance, and leadership decision workflows.
+                </p>
+                <figure>
+                    <img src="images/first-scan-15min-2026/esg-alpine-cabin.webp" alt="An alpine cabin beside a lake representing sustainability and long-term responsible operations.">
+                    <figcaption>
+                        ESG in cloud operations means better financial discipline today and a more sustainable operating footprint over time.
+                    </figcaption>
+                </figure>
+
+                <h2>What comes next</h2>
+                <p>
+                    In the next article, we will cover real-world proxy and network setups so scanning, notifications, and updates stay stable in restrictive environments.
+                </p>
+                <p>
+                    Continue with <a href="network-proxy-setup-restricted-environments.html">Network Proxy Setup in Restricted Environments</a>, then use <a href="customer-first-shipping-feedback-loop.html">Customer-First Shipping Feedback Loop</a> to see how these diagnostics evolve in release practice.
+                </p>
+                <p>For tool-boundary context, see <a href="industry-intelligence-spotio-vs-local-first-cws.html">Spot.io vs Local-First CWS</a>.</p>
+
+                <section id="finops-execution-insight">
+                    <h2>FinOps Execution Insight</h2>
+                    <ul>
+                        <li>Because setup trust determines adoption, Test Connection should happen before any full scan.</li>
+                        <li>Because weekly closure needs clear handoff, first-run output must be export-ready instead of screenshot-based.</li>
+                        <li>Through local-first execution, teams keep credential control while still producing management-readable evidence.</li>
+                    </ul>
+                </section>
+
+                <section id="when-to-use-cws-vs-others">
+                    <h2>When to Use CWS vs. Other Approaches</h2>
+                    <p>Use CWS when you need local-first credential control, deep waste visibility, and fast operator-grade evidence. Use optimization-first platforms when your environment is already clean and your priority is continuous compute tuning.</p>
+                </section>
+            </div>
+
+            <section>
+
+                <section id="declarative-conclusions">
+                    <h2>Declarative Conclusions</h2>
+                    <ul>
+                        <li>CWS is a local-first scanner, meaning credentials and scan outputs remain on your machine by default.</li>
+                        <li>Cloud waste is usually an ownership and review-rhythm failure, not just a pricing failure.</li>
+                        <li>A repeatable FinOps loop needs cloud asset inventory plus exportable evidence, not dashboard-only visibility.</li>
+                    </ul>
+                </section>
+
+                <section id="execution-links">
+                    <h2>Execution Paths</h2>
+                    <p>Continue with related guides or move directly to evaluation and procurement steps.</p>
+                    <div>
+                        <a href="industry-intelligence-spotio-vs-local-first-cws.html">Industry Comparison</a>
+                        <a href="cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Incident Story</a>
+                        <a href="../pricing.html">View Pricing</a>
+                        <a href="../blog.html">Open Blog</a>
+                    </div>
+                </section>
+
+<div>
+                    <div>
+                        <div>Start Here</div>
+                        <h3>Run one clean scan cycle today</h3>
+                        <div>
+                            <a href="/download/">Download App</a>
+                            <a href="../pricing.html">View Pricing</a>
+                        </div>
+                        <p>Save your first $1,000 before the next billing cycle.</p>
+                    </div>
+                </div>
+            </section></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

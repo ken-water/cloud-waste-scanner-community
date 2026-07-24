@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Fixed Idle Thresholds Miss Real Cloud Waste | Cloud Waste Scanner</title>
+  <meta name="description" content="Why Fixed Idle Thresholds Miss Real Cloud Waste: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Why Fixed Idle Thresholds Miss Real Cloud Waste</h1>
+      <p class="lead">Why Fixed Idle Thresholds Miss Real Cloud Waste: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.</p>
+      <div class="meta-line">2026-01-28 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>Many cloud tools still classify idle with one fixed CPU threshold. It is simple. It also misclassifies both waste and critical background workloads more often than people admit.</p>
+            <p>If a server sits at 4% CPU, it must be doing something. That sounds reasonable until you look at the size and price of the machine behind the number.</p>
+
+            <h2>Why the shortcut fails</h2>
+            <p>Take a <code>c5.4xlarge</code>. If it runs at a steady 6% CPU, a blunt threshold may call it healthy. Budget-wise, that can still be a poor trade. You might be paying for 16 vCPUs to support work that belongs on a much smaller class.</p>
+            <p>The opposite error is just as dangerous. A tiny service running at 1% CPU may still be critical. If a cleanup rule treats every low-usage machine as disposable, the operator ends up with false confidence and the environment absorbs the risk.</p>
+
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="../images/settings-policies.webp" alt="Policy settings for CPU, network, and lookback thresholds.">
+                        </div>
+                    </div>
+                    <figcaption>Policies give the review team more than a single global CPU guess.</figcaption>
+                </figure>
+
+            <h2>What the policy engine changes</h2>
+            <p>The policy engine replaces one-size logic with a combination of thresholds and windows that teams can actually defend:</p>
+            <ul>
+                <li><strong>CPU thresholds:</strong> useful for spotting oversized compute classes.</li>
+                <li><strong>Network thresholds:</strong> helpful for detecting machines that churn but serve little real traffic.</li>
+                <li><strong>Lookback periods:</strong> important for batch jobs and monthly workloads that should not be misread from a short window.</li>
+            </ul>
+            <p>The result is not perfect certainty. It is a better starting point for review, with fewer false positives and fewer missed downgrade opportunities.</p>
+
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="../images/dashboard-overview.webp" alt="Dashboard overview showing impact of policy-driven findings.">
+                        </div>
+                    </div>
+                    <figcaption>Policy changes can reveal waste that was invisible under a fixed idle rule.</figcaption>
+                </figure>
+
+            <h2>Enterprise networks still need a clean path out</h2>
+            <p>Finding waste is pointless if the scanner cannot reach provider APIs. That is why proxy support remains part of the real-world story here. Enterprise teams often run these reviews behind strict network controls, and the product has to work inside that boundary instead of pretending it does not exist.</p>
+
+            <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="../images/settings-network.webp" alt="Network proxy settings for scanning from restricted enterprise environments.">
+                        </div>
+                    </div>
+                    <figcaption>Proxy support matters because many enterprise reviews happen from constrained networks.</figcaption>
+                </figure>
+            <p>If you are rolling this into a restricted enterprise network, follow <a href="network-proxy-setup-restricted-environments.html">Network Proxy Setup for Restricted Environments</a>. For deeper cross-resource analysis after policy tuning, continue with <a href="deep-finops-anatomy.html">Deep FinOps Anatomy</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

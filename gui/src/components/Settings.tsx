@@ -3485,7 +3485,7 @@ export function Settings({
                             onChange={e => setApiPort(normalizeApiPortInput(e.target.value))}
                             onBlur={() => setApiPort((prev) => normalizeStoredApiPort(prev))}
                         />
-                        <p className="text-base text-slate-500 mt-2">Example endpoint: <code>{apiTlsEnabled ? "https" : "http"}://192.168.1.20:{apiPort}/v1/scans</code>. Trial plan cannot use API endpoints.</p>
+                        <p className="text-base text-slate-500 mt-2">Example endpoint: <code>{apiTlsEnabled ? "https" : "http"}://192.168.1.20:{apiPort}/v1/scans</code>. Local API is available during the public beta when enabled on this machine.</p>
                     </div>
 
                     <div>
@@ -3627,7 +3627,7 @@ export function Settings({
                         <Users className="w-5 h-5" /> Team Operator Role
                     </h2>
                     <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                        Team is the governance execution layer. Manager role can batch assign findings in Scan Results. Owner role cannot.
+                        Public beta access includes the governance execution layer. Manager role can batch assign findings in Scan Results. Owner role cannot.
                     </p>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         Current user: <code>{runtimeRoleAdminGuard?.current_user || "-"}</code> · Role admins: <code>{(runtimeRoleAdminGuard?.admin_users || []).join(", ") || "-"}</code>

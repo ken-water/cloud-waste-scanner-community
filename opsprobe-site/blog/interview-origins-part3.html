@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founder Notes P3: Unifying 15+ Cloud Providers | Cloud Waste Scanner</title>
+  <meta name="description" content="Founder Notes Part 3: Unifying 15+ Cloud Providers with Rust: founder note on local-first governance, execution safety, product tradeoffs, and savings.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Founder Notes P3: Unifying 15+ Cloud Providers</h1>
+      <p class="lead">Founder Notes Part 3: Unifying 15+ Cloud Providers with Rust: founder note on local-first governance, execution safety, product tradeoffs, and savings.</p>
+      <div class="meta-line">2026-02-07 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>
+                    In <a href="interview-origins-part2-local-first.html">Part 2</a>, we explained why Local-First became a trust requirement. Part 3 addresses the implementation challenge: how do you support 15+ providers in one runtime without shipping heavyweight dependency stacks?
+                </p>
+
+                <hr />
+
+                <h3>Q: Integrating 15+ providers sounds brutal. What makes it hard in practice?</h3>
+                <p>
+                    <strong>A:</strong> The complexity is not just endpoint differences; it is identity and request semantics.
+                </p>
+                <p>
+                    AWS SigV4, Azure OAuth2, and multiple vendor-specific HMAC variants all demand distinct signing flows. Some providers are close enough to look familiar, but different enough to break if canonicalization is even slightly off.
+                </p>
+                <p>
+                    If you pull full SDKs for every platform, binary size and dependency surface explode quickly. That is manageable in server-centric SaaS, but expensive and fragile in Local-First distribution.
+                </p>
+
+                <h3>Q: How did Rust help you keep things unified and lightweight?</h3>
+                <p>
+                    <strong>A:</strong> We treated provider support as a trait contract, not a per-vendor architecture.
+                </p>
+                <p>
+                    Our core abstraction is a `Scanner` trait:
+                </p>
+                <pre><code>#[async_trait]
+pub trait Scanner {
+    async fn scan_resources(&self) -> Result<Vec<WastedResource>>;
+    fn provider_name(&self) -> &str;
+}</code></pre>
+                <p>
+                    Each provider implements the same operational contract. For many integrations, we use focused REST clients with `reqwest` instead of full-service SDKs. That lets us include exactly what we need for scanning, and nothing more.
+                </p>
+
+                <h3>Q: Does this compromise capability for long-tail providers?</h3>
+                <p>
+                    <strong>A:</strong> It improves focus and maintainability.
+                </p>
+                <p>
+                    We do not need every service endpoint for every provider. We need reliable coverage for high-impact waste classes: compute, storage, snapshots, public IPs, and load balancers.
+                </p>
+                <p>
+                    By implementing only required signing and API paths, we keep execution fast and packaging lean while still covering the workflows customers care about most.
+                </p>
+
+                <h3>Q: How do you handle concurrency at multi-region scale?</h3>
+                <p>
+                    <strong>A:</strong> Async tasks, not heavyweight threads.
+                </p>
+                <p>
+                    With Rust + `tokio`, region scans run as lightweight tasks multiplexed over a small OS thread pool. We parallelize region and resource queries via `join_all`, which improves throughput while keeping memory behavior stable.
+                </p>
+                <p>
+                    This is important for Local-First: performance must be strong even on ordinary enterprise endpoints.
+                </p>
+
+                <h3>Q: Why still enforce rate limiting if scans run from customer environments?</h3>
+                <p>
+                    <strong>A:</strong> Decentralized traffic does not remove provider limits or operational etiquette.
+                </p>
+                <p>
+                    Local-First distributes origin IPs, which helps avoid centralized bottlenecks. But we still use token-bucket controls to prevent burst patterns that can trigger provider throttling or defensive systems.
+                </p>
+                <p>
+                    Good scanners should be fast, predictable, and polite to upstream APIs.
+                </p>
+
+                <h3>Q: What did this architecture unlock for the roadmap?</h3>
+                <p>
+                    <strong>A:</strong> It gave us a foundation for safe automation.
+                </p>
+                <p>
+                    Once discovery is consistent across providers, the next step is controlled execution: planning, approvals, and auditable cleanup workflows. That is exactly what we cover in Part 4.
+                </p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

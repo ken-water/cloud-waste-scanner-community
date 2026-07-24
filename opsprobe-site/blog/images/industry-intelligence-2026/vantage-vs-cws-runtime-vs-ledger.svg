@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Vantage vs CWS: Ledger Visibility vs Runtime Forensics</title>
+  <desc id="desc">Comparison diagram showing hosted SaaS bill-ledger analysis versus local-first runtime resource forensics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#eef2ff"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="7" markerHeight="5" refX="6.2" refY="2.5" orient="auto">
+      <path d="M0,0 L7,2.5 L0,5 z" fill="#42526b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0c1724" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <text x="700" y="58" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#0c1724">Vantage vs CWS: Two Valid Models, Different Control Boundaries</text>
+  <text x="700" y="88" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#0c1724">Ledger-first attribution for finance clarity vs local-first runtime forensics for operator action.</text>
+
+  <rect x="70" y="130" width="600" height="560" rx="20" fill="#ffffff" stroke="#d8e1ee" filter="url(#shadow)"/>
+  <text x="370" y="172" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#0e7490">Vantage-style Hosted SaaS Path</text>
+  <text x="370" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#42526b">Strong at multi-cloud cost attribution and executive dashboards</text>
+
+  <rect x="120" y="242" width="220" height="84" rx="12" fill="#eef8f6" stroke="#67e8f9"/>
+  <text x="230" y="275" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#155e75">Cloud Accounts</text>
+  <text x="230" y="296" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#0f766e">cross-account roles</text>
+
+  <rect x="380" y="242" width="240" height="84" rx="12" fill="#fffaf0" stroke="#7dd3fc"/>
+  <text x="500" y="275" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#0c4a6e">Vendor Control Plane</text>
+  <text x="500" y="296" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#0369a1">cost model + BI layer</text>
+
+  <rect x="250" y="382" width="240" height="84" rx="12" fill="#fffaf0" stroke="#d8e1ee"/>
+  <text x="370" y="415" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#0c1724">CUR / Billing Pipeline</text>
+  <text x="370" y="436" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#42526b">ledger updates with delay</text>
+
+  <rect x="200" y="522" width="340" height="122" rx="14" fill="#fffaf0" stroke="#94a3b8"/>
+  <text x="370" y="555" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" font-weight="700" fill="#0c1724">Best fit</text>
+  <text x="370" y="583" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#0c1724">FinOps teams needing</text>
+  <text x="370" y="603" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#0c1724">allocation, showback, chargeback</text>
+
+  <path d="M340 284 L380 284" stroke="#42526b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M500 326 L410 382" stroke="#42526b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M370 466 L370 522" stroke="#42526b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+
+  <rect x="730" y="130" width="600" height="560" rx="20" fill="#ffffff" stroke="#d8e1ee" filter="url(#shadow)"/>
+  <text x="1030" y="172" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#0c1724">CWS Local-First Forensics Path</text>
+  <text x="1030" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#42526b">Strong at immediate waste detection with controlled credential custody</text>
+
+  <rect x="780" y="242" width="240" height="84" rx="12" fill="#eef2ff" stroke="#a5b4fc"/>
+  <text x="900" y="275" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#312e81">Local Runtime</text>
+  <text x="900" y="296" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#4338ca">binary / container</text>
+
+  <rect x="1060" y="242" width="220" height="84" rx="12" fill="#fdf7ea" stroke="#d8e1ee"/>
+  <text x="1170" y="275" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#1e3a8a">Provider APIs</text>
+  <text x="1170" y="296" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#0c1724">runtime metadata</text>
+
+  <rect x="910" y="382" width="240" height="84" rx="12" fill="#fffaf0" stroke="#d8e1ee"/>
+  <text x="1030" y="415" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#0c1724">Forensic Heuristics</text>
+  <text x="1030" y="436" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#42526b">zombie resources, hidden edges</text>
+
+  <rect x="860" y="522" width="340" height="122" rx="14" fill="#fffaf0" stroke="#94a3b8"/>
+  <text x="1030" y="555" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" font-weight="700" fill="#0c1724">Best fit</text>
+  <text x="1030" y="583" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#0c1724">SRE / platform teams needing</text>
+  <text x="1030" y="603" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#0c1724">fast evidence and local control</text>
+
+  <path d="M1020 284 L1060 284" stroke="#42526b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M900 326 L980 382" stroke="#42526b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1030 466 L1030 522" stroke="#42526b" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+</svg>

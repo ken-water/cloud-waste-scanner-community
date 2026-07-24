@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3 Expensive Cloud Incidents and Their Fixes | Cloud Waste Scanner</title>
+  <meta name="description" content="3 Expensive Cloud Incidents and What Prevented Them: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Incident Series</div>
+      <h1>3 Expensive Cloud Incidents and Their Fixes</h1>
+      <p class="lead">3 Expensive Cloud Incidents and What Prevented Them: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.</p>
+      <div class="meta-line">2026-01-29 · Incident Series</div>
+      <div class="article-body" data-article-body><figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/dashboard.webp" alt="Cloud cost dashboard used to review incidents and wasted spend.">
+                        </div>
+                    </div>
+                    <figcaption>Cost review works better when the team can tie incidents back to recurring patterns.</figcaption>
+                </figure>
+
+            <p>These are not edge cases from tiny labs. They are common operational slips that turned into large monthly bills, and they make good drills for new operators.</p>
+
+            <h2>1. The NAT gateway bill nobody expected</h2>
+            <p>AWS NAT gateways are infamous because they charge for both presence and processing. In one common pattern, services in private subnets fetch large amounts of data or call external APIs through a centralized NAT path, and the data processing bill grows quietly until the invoice lands.</p>
+            <div>
+                <h3>What changed the outcome</h3>
+                <p>Reviewing heavy traffic paths early, moving eligible traffic to VPC endpoints, and questioning whether every high-bandwidth service needs to sit behind the same NAT path.</p>
+            </div>
+
+            <h2>2. Orphaned disks after automated testing</h2>
+            <p>Test automation often does the obvious half of the teardown. Instances are terminated. Extra volumes remain. Over time, the bill fills up with unattached storage that nobody remembers creating.</p>
+            <p>The dangerous part is not that the mistake is rare. It is that the mistake is ordinary and repeats every night until someone opens the storage list and asks why it is still growing.</p>
+
+            <h2>3. The safe architecture that still leaked money</h2>
+            <p>Highly available network designs can still produce painful bills if an application bug causes repeated large transfers. A design can be textbook safe and financially noisy at the same time.</p>
+            <p>The lesson is straightforward: architecture decisions do not remove the need for ongoing observation. Teams still need to track unusual traffic, idle patterns, and spend spikes after the system is live.</p>
+
+            <h2>What these incidents have in common</h2>
+            <p>All three cases share the same failure mode. Nobody made a dramatic one-time mistake. The bill grew because a normal-looking system stopped receiving normal review. That is why recurring visibility matters more than heroic cleanup sessions once a quarter.</p>
+            <p>If you want a deeper technical breakdown of why these patterns survive shallow checks, continue with <a href="deep-finops-anatomy.html">Deep FinOps Anatomy</a>. For a checklist-style monthly review pass, use <a href="hidden-cloud-costs.html">5 Hidden Cloud Costs</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

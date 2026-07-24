@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040" role="img" aria-labelledby="t d">
+<title id="t">Provider Plugin Contract</title>
+<desc id="d">One interface, many cloud-specific adapters.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#fffaf0"/>
+    <stop offset="100%" stop-color="#eef8f6"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#f0a83b"/>
+    <stop offset="100%" stop-color="#49c6b7"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+  </marker>
+</defs>
+<rect width="1800" height="1040" fill="url(#bg)"/>
+<rect x="40" y="40" width="1720" height="960" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+<rect x="70" y="64" width="1660" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Provider Plugin Contract</text>
+<g filter="url(#softShadow)"><rect x="700" y="210" width="420" height="190" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="700" y="210" width="8" height="190" rx="8" fill="#1f6feb"/>
+<foreignObject x="724" y="228" width="380" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Adapter Interface</div></foreignObject>
+<foreignObject x="724" y="282" width="380" height="106"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">collect() · normalize() ·<br/>classify()</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="120" y="490" width="260" height="160" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="120" y="490" width="8" height="160" rx="8" fill="#0c1724"/>
+<foreignObject x="144" y="508" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">AWS</div></foreignObject>
+<foreignObject x="144" y="562" width="220" height="76"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">native API fields and<br/>pagination semantics</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="430" y="490" width="260" height="160" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="430" y="490" width="8" height="160" rx="8" fill="#1f6feb"/>
+<foreignObject x="454" y="508" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Azure</div></foreignObject>
+<foreignObject x="454" y="562" width="220" height="76"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">resource graph shape and tag<br/>variance</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="740" y="490" width="260" height="160" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="740" y="490" width="8" height="160" rx="8" fill="#49c6b7"/>
+<foreignObject x="764" y="508" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">GCP</div></foreignObject>
+<foreignObject x="764" y="562" width="220" height="76"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">project-level scopes and<br/>policy controls</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1050" y="490" width="260" height="160" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="1050" y="490" width="8" height="160" rx="8" fill="#14b8a6"/>
+<foreignObject x="1074" y="508" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Alibaba</div></foreignObject>
+<foreignObject x="1074" y="562" width="220" height="76"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">region/account variants and<br/>throttling behavior</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1360" y="490" width="300" height="160" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="1360" y="490" width="8" height="160" rx="8" fill="#0c1724"/>
+<foreignObject x="1384" y="508" width="260" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Other Providers</div></foreignObject>
+<foreignObject x="1384" y="562" width="260" height="76"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">plugin extension keeps core policy<br/>logic unchanged</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="120" y="710" width="1540" height="220" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="120" y="710" width="8" height="220" rx="8" fill="#0c1724"/>
+<foreignObject x="144" y="728" width="1500" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Engineering Benefit</div></foreignObject>
+<foreignObject x="144" y="782" width="1500" height="136"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Provider-specific API churn is isolated in adapters while policy and evidence logic remain stable in core.<br/>This is the foundation for scaling multi-provider support without multiplying governance rules.</div></foreignObject>
+<path d="M 700,390 Q 540,460 380,520" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 780,400 Q 720,440 670,490" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 900,400 Q 890,440 880,490" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1010,400 Q 1060,440 1100,490" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1120,400 Q 1240,450 1360,500" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 910,400 Q 900,560 890,710" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Local-First Matters in FinOps | Cloud Waste Scanner</title>
+  <meta name="description" content="A clear trust-boundary explanation of why Cloud Waste Scanner keeps credentials local and what the hosted side actually does">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Why Local-First Matters in FinOps</h1>
+      <p class="lead">A clear trust-boundary explanation of why Cloud Waste Scanner keeps credentials local and what the hosted side actually does</p>
+      <div class="meta-line">2026-01-26 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>
+                    In enterprise review calls, pricing was rarely the first objection. The first real question was simpler: where do our cloud credentials go?
+                </p>
+                <p>
+                    Teams comparing finops tools usually discover that credential custody matters before any dashboard polish does. A privacy first cloud cost tool is easier to review, and self hosted cloud cost optimization is easier to approve when the scanning boundary stays with the operator.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="../images/dashboard-overview-1280.webp" alt="Cloud Waste Scanner dashboard overview showing local-first desktop workflow.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        The product is delivered as a desktop workflow so scanning can happen inside the customer boundary.
+                    </figcaption>
+                </figure>
+
+                <p>
+                    Typical hosted FinOps products ask for a cross-account role early. Once approved, infrastructure metadata is collected into the vendor system: instance identifiers, bucket names, database inventory, account structure, and change history. That model can work. It also expands the blast radius if the vendor becomes the weak point.
+                </p>
+
+                <h2>Why this review question matters</h2>
+                <p>
+                    Security teams are not only reviewing features. They are reviewing concentration risk. If one external platform is trusted by many customer accounts, that platform becomes a supply-chain target.
+                </p>
+                <p>
+                    That is why we took the slower product path and kept the scanning boundary local. It reduces convenience in a few places, but it keeps the trust model readable.
+                </p>
+                <p>
+                    Among finops tools, that choice is not cosmetic. It decides whether the product behaves like a hosted inventory broker or a privacy first cloud cost tool that fits stricter enterprise review paths.
+                </p>
+
+                <blockquote>
+                    The core rule is simple: credentials stay with the operator, not with us.
+                </blockquote>
+
+                <h2>What runs locally</h2>
+                <ul>
+                    <li>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Credential storage:</strong> provider credentials stay on the operator device.</span>
+                    </li>
+                    <li>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Scanning:</strong> API requests go from the operator environment directly to the cloud provider.</span>
+                    </li>
+                    <li>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Local evidence:</strong> findings, exports, and review artifacts are generated from the local workflow.</span>
+                    </li>
+                </ul>
+
+                <h2>What the hosted side actually does</h2>
+                <p>
+                    The hosted components support product operations: downloads, licensing, checkout, documentation, and public pages. That boundary is narrower than a vendor-managed cloud inventory platform, and the difference matters during security review.
+                </p>
+
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Customer side</th>
+                                <th>Hosted side</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Credentials</td>
+                                <td>Stored and used locally</td>
+                                <td>Not used as cloud account login material</td>
+                            </tr>
+                            <tr>
+                                <td>Cloud API access</td>
+                                <td>Direct from operator environment</td>
+                                <td>Not acting as a polling broker</td>
+                            </tr>
+                            <tr>
+                                <td>Licensing and purchase</td>
+                                <td>Client validates and displays status</td>
+                                <td>Hosted service provides purchase and license endpoints</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Why we accept the tradeoff</h2>
+                <p>
+                    A fully hosted product can look smoother in a demo. A narrower trust boundary looks better in a real review. For us, that tradeoff was worth taking because the product is meant for environments where security questions show up before procurement is finished.
+                </p>
+                <p>
+                    This is also why the product story is not only about cost findings. It is about whether teams can adopt a cloud governance workflow without handing the full inventory plane to a third party first.
+                </p>
+
+                <h2>Related review material</h2>
+                <p>
+                    If you are evaluating the product for internal rollout, review the broader <a href="../pricing.html">Security page</a> and the public <a href="../index.html">Company page</a> together. One explains the boundary. The other explains the operating stance behind it.
+                </p>
+                <p>
+                    For security mapping by control family, continue with <a href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Security Whitepaper Part 1</a>. For implementation guidance on token handling, pair this with the <a href="../api.html">API Token Guide</a>.
+                </p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

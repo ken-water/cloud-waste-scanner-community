@@ -1,0 +1,38 @@
+<svg width="1600" height="860" viewBox="0 0 1600 860" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="860" fill="#fffaf0"/>
+  <text x="800" y="90" text-anchor="middle" fill="#0c1724" font-size="44" font-family="Arial, Helvetica, sans-serif" font-weight="700">Execution Sequence: Scan First, Automate Second</text>
+
+  <rect x="120" y="180" width="410" height="500" rx="26" fill="#eef8f6" stroke="#0891B2" stroke-width="3"/>
+  <text x="325" y="250" text-anchor="middle" fill="#0E7490" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="700">Step 1: CT Scan</text>
+  <g fill="#155E75" font-size="24" font-family="Arial, Helvetica, sans-serif">
+    <text x="160" y="320">• Read-only baseline check</text>
+    <text x="160" y="366">• Idle storage and IP exposure</text>
+    <text x="160" y="412">• Zombie cluster residue</text>
+    <text x="160" y="458">• Fast evidence package</text>
+  </g>
+
+  <rect x="595" y="180" width="410" height="500" rx="26" fill="#fdf7ea" stroke="#1f6feb" stroke-width="3"/>
+  <text x="800" y="250" text-anchor="middle" fill="#1E40AF" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="700">Step 2: Cleanup</text>
+  <g fill="#1E3A8A" font-size="24" font-family="Arial, Helvetica, sans-serif">
+    <text x="635" y="320">• Assign owner per finding</text>
+    <text x="635" y="366">• Remove unused assets</text>
+    <text x="635" y="412">• Verify cost closure</text>
+    <text x="635" y="458">• Measure recurrence</text>
+  </g>
+
+  <rect x="1070" y="180" width="410" height="500" rx="26" fill="#F0FDF4" stroke="#16A34A" stroke-width="3"/>
+  <text x="1275" y="250" text-anchor="middle" fill="#166534" font-size="30" font-family="Arial, Helvetica, sans-serif" font-weight="700">Step 3: Automate</text>
+  <g fill="#14532D" font-size="24" font-family="Arial, Helvetica, sans-serif">
+    <text x="1110" y="320">• Enable deep intervention</text>
+    <text x="1110" y="366">• Optimize steady-state usage</text>
+    <text x="1110" y="412">• Keep guardrails in place</text>
+    <text x="1110" y="458">• Track quarterly ROI</text>
+  </g>
+
+  <line x1="530" y1="430" x2="595" y2="430" stroke="#64748B" stroke-width="4"/>
+  <polygon points="579,416 601,430 579,444" fill="#64748B"/>
+  <line x1="1005" y1="430" x2="1070" y2="430" stroke="#64748B" stroke-width="4"/>
+  <polygon points="1054,416 1076,430 1054,444" fill="#64748B"/>
+
+  <text x="800" y="770" text-anchor="middle" fill="#0c1724" font-size="24" font-family="Arial, Helvetica, sans-serif">Most teams get better outcomes when they remove obvious waste before enabling deeper automation.</text>
+</svg>

@@ -1,4 +1,4 @@
-export type RuntimeEdition = "community" | "team" | "enterprise";
+export type RuntimeEdition = "community" | "team" | "enterprise" | "public_beta";
 const RUNTIME_PLAN_STORAGE_KEY = "cws_runtime_plan_type";
 const RUNTIME_EDITION_STORAGE_KEY = "cws_runtime_edition";
 
@@ -27,6 +27,8 @@ export interface RuntimeCapabilitySnapshot {
   plan_type: string;
   edition: RuntimeEdition;
   is_trial: boolean;
+  trial_expires_at?: number | null;
+  trial_days_remaining?: number | null;
   entitlements: RuntimeEntitlements;
   capabilities: RuntimeCapabilityFlags;
 }
@@ -41,10 +43,10 @@ export type ProductCapabilityKey =
   | "enterprise_identity";
 
 const COMMUNITY: RuntimeEntitlements = {
-  local_scan: true,
-  basic_report: true,
-  resource_details: true,
-  local_api: true,
+  local_scan: false,
+  basic_report: false,
+  resource_details: false,
+  local_api: false,
   team_workspace: false,
   scheduled_audits: false,
   audit_log: false,
@@ -55,11 +57,11 @@ const COMMUNITY: RuntimeEntitlements = {
 const TRIAL: RuntimeEntitlements = {
   local_scan: true,
   basic_report: true,
-  resource_details: false,
-  local_api: false,
-  team_workspace: false,
-  scheduled_audits: false,
-  audit_log: false,
+  resource_details: true,
+  local_api: true,
+  team_workspace: true,
+  scheduled_audits: true,
+  audit_log: true,
   sso: false,
   scim: false,
 };
@@ -91,20 +93,24 @@ const ENTERPRISE: RuntimeEntitlements = {
 export function normalizeRuntimePlanType(raw: string | null | undefined): string {
   const value = (raw || "").trim().toLowerCase();
   if (value === "subscription") return "monthly";
-  if (value === "per-use") return "starter";
+  if (value === "per-use" || value === "per_use") return "starter";
+  if (value === "public-beta" || value === "public_beta" || value === "beta") return "public_beta";
+  if (value === "expired_trial") return "trial_expired";
   return value;
 }
 
 export function resolveRuntimeEdition(planTypeRaw: string | null | undefined): RuntimeEdition {
   const plan = normalizeRuntimePlanType(planTypeRaw);
-  if (["enterprise", "advanced", "site"].includes(plan)) return "enterprise";
-  if (["team", "monthly", "yearly", "lifetime", "pro"].includes(plan)) return "team";
+  if (plan === "public_beta") return "public_beta";
+  if (["trial", "monthly", "yearly", "lifetime", "pro", "team", "enterprise", "advanced", "site"].includes(plan)) return "enterprise";
   return "community";
 }
 
 export function entitlementsForPlan(planTypeRaw: string | null | undefined): RuntimeEntitlements {
   const plan = normalizeRuntimePlanType(planTypeRaw);
+  if (plan === "public_beta") return ENTERPRISE;
   if (plan === "trial") return TRIAL;
+  if (plan === "trial_expired") return COMMUNITY;
   const edition = resolveRuntimeEdition(plan);
   if (edition === "enterprise") return ENTERPRISE;
   if (edition === "team") return TEAM;
@@ -126,21 +132,21 @@ const TAB_REQUIREMENTS: Record<string, RuntimeEntitlementKey | null> = {
 };
 
 export function formatEditionLabel(edition: RuntimeEdition): string {
-  if (edition === "team") return "Team";
-  if (edition === "enterprise") return "Enterprise";
-  return "Community";
+  if (edition === "community") return "Not activated";
+  if (edition === "public_beta") return "Public Beta";
+  return "Paid";
 }
 
 export function teamWorkspaceGateMessage(): string {
-  return "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls.";
+  return "Public beta access includes org structure, owner directory, lifecycle workflow, and handoff coordination.";
 }
 
 export function scheduledAuditsGateMessage(): string {
-  return "Scheduled audits belong to the Team governance execution layer. Enterprise includes the same scheduling capability plus centralized identity and audit controls.";
+  return "Public beta access includes scheduled audits and recurring governance reviews.";
 }
 
 export function auditLogGateMessage(): string {
-  return "Audit Log belongs to the Enterprise centralized control layer for operator accountability, identity, and compliance review.";
+  return "Public beta access includes the audit log for operator accountability and compliance review.";
 }
 
 export function entitlementHintForTab(tabRaw: string): string {
@@ -148,7 +154,7 @@ export function entitlementHintForTab(tabRaw: string): string {
   if (tab === "audit_log") return auditLogGateMessage();
   if (tab === "local_api") return "Local API is available in Community and above when local API access is enabled.";
   if (tab === "history") return "Detailed history review is available in Community and above when scan history is enabled locally.";
-  return "Upgrade required";
+  return "Not available in this build";
 }
 
 export function capabilityEnabled(
@@ -197,6 +203,8 @@ export function buildRuntimeCapabilitySnapshotFromPlan(
     plan_type,
     edition,
     is_trial,
+    trial_expires_at: null,
+    trial_days_remaining: null,
     entitlements,
     capabilities,
   };

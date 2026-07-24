@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Whitepaper P2: Findings Model and Policy Evaluation | Cloud Waste Scanner</title>
+  <meta name="description" content="Findings Data Model and Policy Evaluation: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Whitepapers</div>
+      <h1>Tech Whitepaper P2: Findings Model and Policy Evaluation</h1>
+      <p class="lead">Findings Data Model and Policy Evaluation: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.</p>
+      <div class="meta-line">2026-03-18 · Whitepapers</div>
+      <div class="article-body" data-article-body><section>
+<p>Technical Whitepaper Series</p>
+<p>Read in order for full context: architecture -> data model -> performance -> quality gates -> platform roadmap.</p>
+<div>
+<a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p>Part 1 defined boundaries. Part 2 makes those boundaries executable by defining the findings model that policy, exports, and review workflows all depend on. If this model is weak, everything downstream becomes a debate instead of a decision.</p>
+
+<h2 id="chapter-continuity">Where this chapter sits in the full narrative</h2>
+<p>From <a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>, we inherit one constraint: provider differences must not leak into policy semantics. This chapter shows how that is implemented. <a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a> will then test this model under throughput and reliability stress.</p>
+
+<h2 id="why-model">1. Why normalized findings are non-negotiable</h2>
+<p>Raw provider payloads are inconsistent in three ways: naming, lifecycle semantics, and cost attribution granularity. If rules evaluate raw payloads directly, every rule becomes provider-specific and review meetings degrade into field-level translation sessions. The normalized findings model exists to prevent that.</p>
+<p>In CWS, adapters map provider-native metadata into canonical entities before any policy evaluation runs. This means policy rules can stay stable while adapters evolve with provider APIs.</p>
+<figure>
+<img src="../images/whitepapers/findings-policy-flow.svg" alt="Normalized findings pipeline from provider payload to deterministic policy output and export artifacts." loading="lazy" decoding="async">
+<figcaption>Figure 2-1. Raw metadata to normalized findings, then deterministic policy and export outputs.</figcaption>
+</figure>
+
+<h2 id="schema">2. Canonical schema: minimum fields and invariants</h2>
+<p>Every finding is required to carry a minimum set of invariant fields: provider identity, account or project scope, stable resource identity, signal type, observation timestamp, rule identifier, rule version, and evidence pointers. If one of these is missing, the finding should be treated as incomplete rather than silently accepted.</p>
+<p>Representative canonical shape:</p>
+<pre><code>{
+  "provider": "aws",
+  "account_id": "123456789012",
+  "resource_type": "elastic_ip",
+  "resource_id": "eipalloc-0ab1c2d3",
+  "signal": "unused_ip",
+  "severity": "medium",
+  "evidence": {
+    "observed_at": "2026-03-18T10:42:00Z",
+    "source_fields": ["association_id", "network_interface_id"],
+    "confidence": 0.93
+  },
+  "policy": {
+    "rule_id": "network.unused_ip.7d",
+    "version": "2026.03.1",
+    "threshold": "7d"
+  }
+}</code></pre>
+<p>This model is intentionally boring. Boring is good here. It means exports and APIs can be consumed by finance, platform, and management audiences without each audience requesting a separate pipeline.</p>
+
+<h2 id="lineage">3. Evidence lineage: the difference between a hint and an audit-ready finding</h2>
+<p>Detection without lineage is opinion. Detection with lineage is reviewable evidence. CWS persists enough provenance to answer the three questions every reviewer asks:</p>
+<ul>
+<li>What was observed (field-level context, timestamps, signal family)?</li>
+<li>Under which rule version and threshold was it classified?</li>
+<li>Can another operator reproduce the same result from the same inputs?</li>
+</ul>
+<p>Lineage matters most when scan results change week-over-week. Without lineage, teams cannot tell whether the environment changed, the rule changed, or provider behavior changed. With lineage, that distinction is explicit.</p>
+
+<h2 id="determinism">4. Deterministic policy evaluation and reproducibility</h2>
+<p>Policy determinism is treated as a release requirement, not a nice-to-have. Given the same canonical input and the same policy version, output should be the same. Any deviation must be explainable by input difference, rule revision, or evaluation bug.</p>
+<figure>
+<img src="../images/whitepapers/tech-part2-schema-to-policy.svg" alt="Schema-to-policy projection across canonical findings and output surfaces." loading="lazy" decoding="async">
+<figcaption>Figure T2-2. Schema-to-policy projection: canonical fields, deterministic rules, and multi-audience outputs.</figcaption>
+</figure>
+<p>Illustrative policy snippet:</p>
+<pre><code>policy_set: default-ops
+version: 2026.03.1
+rules:
+  - id: network.unused_ip.7d
+    when: resource_type == "elastic_ip"
+    condition: days_unassociated >= 7
+    severity: medium
+  - id: storage.orphan_volume.14d
+    when: resource_type == "volume"
+    condition: days_unattached >= 14
+    severity: high
+  - id: compute.idle_instance.7d
+    when: resource_type == "instance"
+    condition: cpu_p95 < 5 and net_out_p95 < 1
+    severity: medium</code></pre>
+<p>Threshold tuning is expected across organizations. The key is that tuning remains explicit, versioned, and traceable.</p>
+
+<h2 id="cross-team">5. Cross-team handoff design: one model, multiple consumers</h2>
+<p>Finance, platform, and leadership teams need different projections from the same finding:</p>
+<ul>
+<li><strong>Platform:</strong> resource identifiers, dependency hints, rollback-safe sequencing.</li>
+<li><strong>Finance:</strong> estimated monthly impact bands, account ownership, aging context.</li>
+<li><strong>Management:</strong> category trends, closure rate, unresolved high-risk items.</li>
+</ul>
+<p>Because all three views are projections of one canonical model, teams avoid reconciliation loops where numbers disagree across dashboards and exported packs.</p>
+
+<h2 id="case">6. Case: why this model reduces weekly-review friction</h2>
+<p>In a typical weekly review, one finding can trigger three objections: "is this real?", "who owns it?", and "can we safely act?". The model addresses each directly:</p>
+<ul>
+<li>"Is this real?" - answer with evidence lineage and observation window.</li>
+<li>"Who owns it?" - answer with account/project scope and tags.</li>
+<li>"Can we safely act?" - answer with rule rationale and recommended action class.</li>
+</ul>
+<p>This structure does not eliminate disagreement, but it moves disagreement from opinion to inspectable facts.</p>
+
+<h2 id="limits">7. Honest limits</h2>
+<ul>
+<li>Telemetry depth remains permission-bound; some signals need extra provider metrics configuration.</li>
+<li>Cross-provider parity is improved but not perfect; model stability does not imply equal signal richness.</li>
+<li>Determinism depends on disciplined versioning. Untracked rule changes are governance debt.</li>
+</ul>
+
+
+<h2 id="policy-operations-appendix">Policy operations appendix: from model design to weekly execution</h2>
+<p>Once the model is defined, the difficult part is keeping it useful in weekly operations. A useful policy model has three operational properties: low ambiguity, stable semantics, and explicit exceptions. Low ambiguity means reviewers can understand why a finding exists without opening five provider consoles. Stable semantics means rule behavior does not shift unexpectedly between release cycles. Explicit exceptions mean known environment-specific deviations are documented as policy overrides instead of hidden in ad-hoc scripts.</p>
+<p>In practical terms, teams should establish a policy change protocol. Any threshold adjustment, rule addition, or signal deprecation should include: a short rationale, expected side effects, rollback condition, and impacted stakeholder groups. For example, tightening an idle threshold from 14 days to 7 days can improve responsiveness but may increase false positives for monthly batch workloads. That tradeoff is acceptable only if affected teams are informed and if the output includes contextual signals to reduce noisy escalations.</p>
+<p>A second operational recommendation is to treat confidence values as decision support, not absolute truth. Confidence should guide triage priority, but action safety should still rely on evidence lineage and dependency context. Teams that over-index on numeric confidence can miss higher-risk lower-confidence findings that involve shared infrastructure or compliance-sensitive resources. We recommend combining confidence with resource criticality and ownership maturity in review scoring.</p>
+<p>A third recommendation is to classify policy outcomes into action classes that map to workflow reality: observe, review, optimize, and escalate. "Observe" means keep visibility but defer action; "review" means assign owner and validate context; "optimize" means safe, owner-approved change can proceed; "escalate" means governance or security review is required first. This action taxonomy helps non-engineering stakeholders participate in decisions without reading raw provider metadata.</p>
+<p>Finally, maintain a compact policy glossary. Terms like orphaned, idle, stale, and underutilized can carry different meanings across teams. A one-page glossary linked from reports reduces interpretation drift and shortens meeting time. The objective is not academic precision; it is operational alignment. If two teams use the same word for different states, your model can be technically strong and still fail at execution.</p>
+
+
+
+<h2 id="model-faq">Implementation FAQ: maintaining model quality after launch</h2>
+<p><strong>Q: How often should rules be tuned?</strong> Tune on a fixed cadence, not ad-hoc reaction. Monthly tuning works for most teams; high-change environments may use bi-weekly review. Every tune should include rationale and rollback trigger.</p>
+<p><strong>Q: What if finance and platform disagree on severity?</strong> Keep one severity field from policy and add audience-specific projection columns in exports. Do not fork rule logic per audience. Divergent logic is harder to audit than divergent display preferences.</p>
+<p><strong>Q: How do we handle incomplete telemetry?</strong> Use explicit confidence and missing-signal markers instead of suppressing findings. Suppression hides risk. Transparent uncertainty supports better decisions and clearer ownership discussions.</p>
+<p><strong>Q: How do we avoid term drift in long programs?</strong> Keep a controlled glossary and version it with policy. If a term definition changes, that change should appear in release notes and review handbooks. Language drift is a real source of governance error.</p>
+<p><strong>Q: What is the best early KPI?</strong> Not raw finding count. Track review closure cycle time and percentage of findings with clear owner plus action class. Those metrics show whether the model helps teams move from detection to execution.</p>
+
+
+<h2 id="model-field-notes">Field notes: where teams usually get stuck</h2>
+<p>The first friction point is ownership tagging quality. A good model still produces weak outcomes if account tags are inconsistent or stale. Teams should schedule a lightweight ownership hygiene pass before expecting high closure rates. The second friction point is threshold overfitting. If thresholds are tuned too tightly for one month of behavior, model outputs become unstable when workload patterns shift. Keep thresholds conservative at first, then narrow only when historical evidence supports it. The third friction point is review overload. When everything is marked urgent, nothing is urgent. Use action classes and ownership to keep workload realistic.</p>
+<p>In adoption reviews, we recommend a simple maturity ladder: baseline visibility, stable ownership, and then optimization throughput. Skipping directly to optimization often fails because teams are trying to automate decisions before they trust the model context. It is slower in week one, but faster by month two when governance cadence is stable.</p>
+
+<h2 id="data-sources">Data sources for this chapter</h2>
+<ul>
+<li><a href="../api.html">Metrics Definition</a> and <a href="../api.html">API Reference</a>: field-level semantics and API projections.</li>
+<li><a href="../api.html">API Playbooks</a>: operational usage patterns for structured outputs.</li>
+<li><a href="../blog-series.html">Release Ledger</a>: traceability context for evolving rule and output behavior.</li>
+</ul>
+
+<h2 id="next-part">Next: proving this model under load and failure</h2>
+<p><a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a> examines throughput strategy, throttling-safe concurrency, failure isolation, and rollout patterns in restricted network environments.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

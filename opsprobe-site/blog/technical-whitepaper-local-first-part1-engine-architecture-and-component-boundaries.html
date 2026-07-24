@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Whitepaper P1: Engine Architecture and Boundaries | Cloud Waste Scanner</title>
+  <meta name="description" content="Engine Architecture and Component Boundaries: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Whitepapers</div>
+      <h1>Tech Whitepaper P1: Engine Architecture and Boundaries</h1>
+      <p class="lead">Engine Architecture and Component Boundaries: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.</p>
+      <div class="meta-line">2026-03-18 · Whitepapers</div>
+      <div class="article-body" data-article-body><section>
+<p>Technical Whitepaper Series</p>
+<p>Read in order for full context: architecture -> data model -> performance -> quality gates -> platform roadmap.</p>
+<div>
+<a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p>Part 1 sets the baseline for this technical series. If you are evaluating Cloud Waste Scanner in an architecture board, this chapter answers one question first: where exactly does each responsibility live, and how do we prevent responsibility drift as provider coverage grows?</p>
+
+<h2 id="chapter-continuity">How this chapter connects to the rest of the series</h2>
+<p>Read this chapter as the system boundary map. In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a> we move from boundaries to the normalized findings model that crosses those boundaries. In <a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a> we test whether that model still works under concurrency pressure, network constraints, and provider throttling. In <a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a> and <a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>, we explain how quality discipline and stack choices keep those decisions stable over time.</p>
+
+<h2 id="runtime-layers">1. Runtime layers and ownership boundaries</h2>
+<p>The runtime is intentionally split into three layers:</p>
+<ul>
+<li><strong>Operator control layer (desktop):</strong> account selection, scan scope, export intent, local token management.</li>
+<li><strong>Execution layer (Rust core):</strong> provider calls, normalization, heuristics, policy evaluation, and deterministic result generation.</li>
+<li><strong>Evidence layer:</strong> local API responses, dashboard summaries, PDF/CSV outputs, and release-facing audit artifacts.</li>
+</ul>
+<p>This split is not cosmetic. It prevents a common failure mode in cloud governance tools: UI and policy logic becoming tightly coupled so every policy change requires a risky front-end rewrite. By isolating policy and normalization in the core layer, the desktop can evolve independently while the evidence contract remains stable for automation and compliance review.</p>
+<figure>
+<img src="../images/whitepapers/tech-architecture-boundaries.svg" alt="Local-first engine architecture showing Tauri orchestrator, Rust core, provider plugins, and local evidence outputs." loading="lazy" decoding="async">
+<figcaption>Figure 1-1. Architecture boundary map: orchestration, core engine, plugin adapters, and local evidence outputs.</figcaption>
+</figure>
+
+<h2 id="component-contracts">2. Component contracts: what each layer may and may not do</h2>
+<p>In design reviews we enforce explicit "can" and "cannot" lists:</p>
+<ul>
+<li>The desktop layer can collect operator input and trigger local API operations; it cannot interpret raw provider payloads directly.</li>
+<li>The core layer can evaluate policy against normalized entities; it cannot silently rewrite operator-selected scope.</li>
+<li>The evidence layer can format outputs for finance and platform teams; it cannot invent derived fields that policy did not produce.</li>
+</ul>
+<p>These constraints are there to preserve auditability. If a finding appears in a PDF, reviewers should be able to trace it back to one deterministic pipeline: provider payload -> normalized entity -> policy rule -> export projection. No hidden branch should exist in the presentation layer.</p>
+
+<h2 id="plugin-system">3. Provider plugin system and why it exists</h2>
+<p>Multi-cloud support fails quickly without a plugin contract. Providers differ in pagination shape, retry semantics, response naming, and eventual consistency behavior. CWS isolates those differences through provider adapters that emit a shared normalized model.</p>
+<ul>
+<li><strong>Adapter responsibility:</strong> map provider-native payloads to canonical entities with source references.</li>
+<li><strong>Core responsibility:</strong> evaluate policy only on canonical fields.</li>
+<li><strong>Output responsibility:</strong> preserve both canonical values and source lineage so reviewers can verify context.</li>
+</ul>
+<p>The practical impact is straightforward: adding or updating a provider should not force a rewrite of policy semantics. If it does, the contract is broken.</p>
+<figure>
+<img src="../images/whitepapers/provider-plugin-system.svg" alt="Provider plugin contract with shared adapter interface for AWS, Azure, GCP, Alibaba and other clouds." loading="lazy" decoding="async">
+<figcaption>Figure 1-2. Plugin contract: one adapter interface across heterogeneous cloud APIs.</figcaption>
+</figure>
+
+<h2 id="local-first-path">4. Local-first execution path and trust implications</h2>
+<ol>
+<li>Operator configures accounts and credentials locally.</li>
+<li>Provider API calls are executed from the operator environment.</li>
+<li>Findings are normalized and scored locally.</li>
+<li>Evidence artifacts are generated locally for handoff and review.</li>
+</ol>
+<p>That path keeps credential custody under operator control. It does not remove operational responsibility from the customer side; endpoint hygiene, proxy governance, and local runtime controls still matter. But it avoids the extra risk class of centralizing cloud credentials in a hosted scanning plane.</p>
+
+<h2 id="engineering-case">5. Engineering case: boundary drift during provider expansion</h2>
+<p>A practical case from roadmap execution: when provider coverage expanded, the fastest short-term option was to add provider-specific severity interpretation in front-end renderers. We rejected that approach. Instead, we moved classification rules into core policy outputs and kept UI rendering data-driven. This added short-term work, but it prevented a long-term class of review bugs where two screens show the same resource with different priority labels.</p>
+<p>Why include this case? Because architecture debt in governance products usually appears in interpretation mismatches, not compile errors. The cost shows up in weekly review friction and delayed cleanup actions.</p>
+
+<h2 id="tradeoffs">6. Explicit tradeoffs and non-goals</h2>
+<ul>
+<li><strong>Non-goal:</strong> a fully hosted scanner that accepts customer cloud credentials by default.</li>
+<li><strong>Tradeoff:</strong> local-first reduces central credential risk but increases endpoint-side operational expectations.</li>
+<li><strong>Tradeoff:</strong> plugin contracts improve maintainability but require ongoing provider-API adaptation work.</li>
+<li><strong>Non-goal:</strong> fully automatic destructive actions without review context.</li>
+</ul>
+
+
+<h2 id="architecture-review-checklist">Architecture review checklist and practical pitfalls</h2>
+<p>Teams usually approve architecture too quickly and pay the price later in operational confusion. To avoid that, we use a concrete review checklist before broad rollout. First, verify that policy decisions are produced only by the core layer and never by ad-hoc front-end logic. Second, verify that adapter output can be traced to provider payload fields without manual interpretation. Third, verify that exports contain enough context for finance and operations reviewers to reach the same conclusion independently. Fourth, verify that failure states are explicit; silent fallback behavior should be treated as a defect, not a convenience feature.</p>
+<p>One practical pitfall is boundary leakage during urgent feature work. A team needs a provider-specific exception, adds logic in the nearest layer, and promises to refactor later. In most organizations, "later" does not arrive. Six months after launch, the architecture diagram still looks clean while the code path has become inconsistent across providers. The preventive measure is simple but strict: every provider-specific branch must live in the adapter or in versioned policy. If it appears in rendering logic or export templates, the reviewer should block the change.</p>
+<p>Another pitfall is implicit ownership. A multi-cloud product naturally attracts multiple stakeholders: platform engineering, cloud operations, finance analysts, and security reviewers. If ownership boundaries are not documented, every incident turns into a routing problem before it becomes a technical problem. Our recommendation is to map ownership directly to runtime layers: desktop behavior owned by product application engineering, core evaluation behavior owned by scan engine maintainers, and evidence format contracts jointly owned by operations and governance. This ownership map should be visible in onboarding docs and release checklists.</p>
+<p>A third pitfall is treating architecture docs as static. In practice, architecture is a living contract. Provider APIs change, runtime behavior evolves, and exported evidence requirements shift as organizations mature. To keep the contract alive, include architecture-boundary impact in release notes whenever a change touches adapter contracts, canonical fields, or evidence projection rules. This is less about formality and more about preventing drift between what teams believe the system does and what it actually does.</p>
+<p>Finally, architecture validation should include one dry-run review meeting, not just engineering tests. Ask a platform engineer, a finance reviewer, and a security reviewer to inspect the same exported package and answer three questions: what happened, why it was classified, and what action is safe. If the three answers diverge, the architecture may be technically correct but operationally weak. That feedback loop is often the fastest way to identify missing context in your evidence model.</p>
+
+
+
+<h2 id="boundary-faq">Implementation FAQ: boundary decisions in real teams</h2>
+<p><strong>Q: Why not collapse UI and policy to ship faster?</strong> Because short-term speed here usually creates long-term governance inconsistency. Once UI starts interpreting provider-specific fields directly, policy behavior diverges from exported evidence and review meetings become arguments about tooling behavior. Keeping policy in core avoids this drift.</p>
+<p><strong>Q: What is the smallest boundary set we can keep?</strong> At minimum, separate provider adaptation, policy evaluation, and output projection. If these three concerns mix, regression risk rises sharply during provider updates and release triage becomes expensive.</p>
+<p><strong>Q: How do we verify boundaries in code review?</strong> Add review prompts: Does this change introduce provider-specific branching outside adapters? Does it modify canonical fields without versioned migration notes? Does it add output fields that are not traceable to policy outputs? If any answer is yes, request refactor before merge.</p>
+<p><strong>Q: How do we present this to non-engineering stakeholders?</strong> Use one slide and one example. Show the path from provider payload to normalized finding to action recommendation. Then show a real resource example with evidence lineage. Non-engineering teams usually accept architecture decisions quickly when traceability is visible.</p>
+<p><strong>Q: What breaks first when boundaries are weak?</strong> Usually not performance. What breaks first is trust: two outputs disagree, ownership is ambiguous, and teams postpone action because they cannot prove confidence. Strong boundaries are the cheapest way to protect trust at scale.</p>
+
+
+<h2 id="data-sources">Data sources for this chapter</h2>
+<ul>
+<li><a href="../help.html">Documentation - Core Concepts</a>: trust-boundary and local-first model.</li>
+<li><a href="../help.html#provider-setup">Provider directory</a>: breadth pressure that motivates adapter boundaries.</li>
+<li><a href="../roadmap.html">Roadmap</a> and <a href="../blog-series.html">Release Ledger</a>: evidence of iterative provider and architecture evolution.</li>
+</ul>
+<p>All claims in this chapter are grounded in repository-visible architecture behavior and public product documentation, not synthetic benchmark marketing numbers.</p>
+
+<h2 id="next-part">Next: from architecture to deterministic findings</h2>
+<p>In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>, we move one level deeper: the normalized findings schema, evidence lineage, and policy determinism rules that make architecture boundaries operationally useful.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

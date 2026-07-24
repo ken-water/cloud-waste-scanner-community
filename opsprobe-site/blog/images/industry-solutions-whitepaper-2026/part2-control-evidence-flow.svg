@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+  <title id="t">Control evidence flow for regulated cloud governance</title>
+  <desc id="d">Flow from finding classification to approval route, execution proof, and retention bundle for audit readiness.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fffaf0"/><stop offset="100%" stop-color="#eef8f6"/></linearGradient>
+    <linearGradient id="head" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f0a83b"/><stop offset="100%" stop-color="#49c6b7"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/></filter>
+    <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#0c1724"/></marker>
+  </defs>
+  <rect width="1700" height="980" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1620" height="900" rx="28" fill="#fff" stroke="#d8e1ee" stroke-width="2"/>
+  <rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#head)"/>
+  <text x="100" y="116" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#fff">Regulated Control-to-Evidence Flow</text>
+
+  <g filter="url(#shadow)">
+    <rect x="110" y="220" width="320" height="560" rx="18" fill="#eef8f6" stroke="#99f6e4" stroke-width="2"/>
+    <rect x="470" y="220" width="320" height="560" rx="18" fill="#fdf7ea" stroke="#d8e1ee" stroke-width="2"/>
+    <rect x="830" y="220" width="320" height="560" rx="18" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+    <rect x="1190" y="220" width="320" height="560" rx="18" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+  </g>
+
+  <foreignObject x="138" y="248" width="264" height="512"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;color:#0c1724;"><div style="font-size:26px;font-weight:700;margin-bottom:8px;">1. Finding Class</div><div style="font-size:19px;line-height:1.35;color:#0c1724;">Normalize finding type, severity, impact estimate, and owner candidate.</div><div style="margin-top:14px;font-size:20px;font-weight:700;">Required fields</div><div style="font-size:18px;line-height:1.35;color:#0c1724;">• Resource lineage<br/>• Source API timestamp<br/>• Service boundary tag</div></div></foreignObject>
+  <foreignObject x="498" y="248" width="264" height="512"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;color:#0c1724;"><div style="font-size:26px;font-weight:700;margin-bottom:8px;">2. Approval Route</div><div style="font-size:19px;line-height:1.35;color:#0c1724;">Map finding to risk lane and approver path using pre-defined control families.</div><div style="margin-top:14px;font-size:20px;font-weight:700;">Required fields</div><div style="font-size:18px;line-height:1.35;color:#0c1724;">• Lane (L1/L2/L3)<br/>• Approver identity<br/>• Exception expiry</div></div></foreignObject>
+  <foreignObject x="858" y="248" width="264" height="512"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;color:#0c1724;"><div style="font-size:26px;font-weight:700;margin-bottom:8px;">3. Execution Proof</div><div style="font-size:19px;line-height:1.35;color:#0c1724;">Record change action, validation check, and rollback reference in one object.</div><div style="margin-top:14px;font-size:20px;font-weight:700;">Required fields</div><div style="font-size:18px;line-height:1.35;color:#0c1724;">• Actor + timestamp<br/>• Post-change validation<br/>• Rollback pointer</div></div></foreignObject>
+  <foreignObject x="1218" y="248" width="264" height="512"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;color:#0c1724;"><div style="font-size:26px;font-weight:700;margin-bottom:8px;">4. Retention Bundle</div><div style="font-size:19px;line-height:1.35;color:#0c1724;">Package security, engineering, and finance evidence for review and archive.</div><div style="margin-top:14px;font-size:20px;font-weight:700;">Required fields</div><div style="font-size:18px;line-height:1.35;color:#0c1724;">• Retention class<br/>• Review hash ID<br/>• Export package URI</div></div></foreignObject>
+
+  <path d="M430,500 L470,500" fill="none" stroke="#1f6feb" stroke-width="4" marker-end="url(#arrowHead)"/>
+  <path d="M790,500 L830,500" fill="none" stroke="#1f6feb" stroke-width="4" marker-end="url(#arrowHead)"/>
+  <path d="M1150,500 L1190,500" fill="none" stroke="#1f6feb" stroke-width="4" marker-end="url(#arrowHead)"/>
+</svg>

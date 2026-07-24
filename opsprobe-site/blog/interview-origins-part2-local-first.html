@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founder Notes P2: Local-First as a Trust Model | Cloud Waste Scanner</title>
+  <meta name="description" content="Founder Notes Part 2: Local-First as a Trust Model: founder note on local-first governance, execution safety, product tradeoffs, and savings discipline.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>Founder Notes P2: Local-First as a Trust Model</h1>
+      <p class="lead">Founder Notes Part 2: Local-First as a Trust Model: founder note on local-first governance, execution safety, product tradeoffs, and savings discipline.</p>
+      <div class="meta-line">2026-02-06 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>
+                    In <a href="interview-origins-part1.html">Part 1</a>, we covered execution hesitation. Part 2 focuses on the architecture decision behind adoption: where trust should live when production credentials are involved.
+                </p>
+
+                <hr />
+
+                <h3>Q: Did your early deployments prove the business case?</h3>
+                <p>
+                    <strong>A:</strong> Yes, and faster than expected.
+                </p>
+                <p>
+                    In early enterprise rollouts, we consistently found meaningful recoverable waste, often in the 10–20% range of monthly cloud spend. Not because teams were negligent, but because cloud environments evolve faster than governance habits.
+                </p>
+                <p>
+                    In one case, a short scan surfaced enough low-risk cleanup to cover an annual tooling budget in under a week. That changed the conversation from “another platform expense” to “this tool pays for itself.”
+                </p>
+
+                <h3>Q: If ROI is so clear, why do many teams still hesitate?</h3>
+                <p>
+                    <strong>A:</strong> Because deep scanning requires high-privilege access, and centralizing that access in SaaS can be a non-starter.
+                </p>
+                <p>
+                    Security leaders are asked to approve broad cross-account credentials, often spanning production. Even if a vendor is credible, the risk concentration is uncomfortable: one compromise can expose many environments.
+                </p>
+                <p>
+                    So the issue is not “can this tool find waste?” The issue is “can we trust the trust model?”
+                </p>
+
+                <h3>Q: Is that what drove Local-First?</h3>
+                <p>
+                    <strong>A:</strong> Exactly. Local-First is a risk distribution strategy.
+                </p>
+                <p>
+                    Credentials stay on the customer side. API calls originate from the customer environment. Cloud inventory data is processed locally. The licensing service handles licensing and updates, not customer infrastructure telemetry.
+                </p>
+                <p>
+                    This dramatically reduces shared blast radius and aligns with teams that require strict control over secrets and account topology.
+                </p>
+
+                <h3>Q: How does this help with compliance and procurement?</h3>
+                <p>
+                    <strong>A:</strong> It shortens security review cycles.
+                </p>
+                <p>
+                    When architecture makes data residency and key custody obvious, many objections disappear early. Instead of negotiating exceptions for privileged SaaS access, teams can evaluate a model where sensitive paths never leave their own boundary.
+                </p>
+                <p>
+                    For regulated industries, that distinction matters. It often determines whether deployment is possible this quarter or delayed indefinitely.
+                </p>
+
+                <h3>Q: What tradeoffs come with Local-First?</h3>
+                <p>
+                    <strong>A:</strong> You give up centralized convenience and gain clearer risk boundaries.
+                </p>
+                <p>
+                    You can't assume one giant hosted service will normalize every provider, region, and edge case for every customer instantly. The product must be efficient on commodity endpoints, resilient across network conditions, and explicit about execution boundaries.
+                </p>
+                <p>
+                    That is harder engineering—but it is the right shape for trust-sensitive enterprise workloads.
+                </p>
+
+                <h3>Q: What did this imply for your implementation stack?</h3>
+                <p>
+                    <strong>A:</strong> It forced us to care deeply about binary size, concurrency, and cross-provider consistency.
+                </p>
+                <p>
+                    Once everything runs locally, performance and footprint are no longer “nice to have.” They are product fundamentals. That takes us directly to Part 3: how we used Rust to unify 15+ cloud providers in one lightweight runtime.
+                </p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

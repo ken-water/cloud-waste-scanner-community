@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+<title id="t">Part 1 · Threat Actors and Control Surfaces</title>
+<desc id="d">Threat classes mapped to primary controls and residual actions.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#fffaf0"/>
+    <stop offset="100%" stop-color="#eef8f6"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#f0a83b"/>
+    <stop offset="100%" stop-color="#49c6b7"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+  </marker>
+</defs>
+<rect width="1700" height="980" fill="url(#bg)"/>
+<rect x="40" y="40" width="1620" height="900" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+<rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Part 1 · Threat Actors and Control Surfaces</text>
+<g filter="url(#softShadow)"><rect x="100" y="190" width="260" height="170" rx="16" fill="#fff7f7" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="190" width="8" height="170" rx="8" fill="#ef4444"/>
+<foreignObject x="124" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">External Network Actor</div></foreignObject>
+<foreignObject x="124" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Interception or replay<br/>attempts on provider-route<br/>traffic.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="510" y="190" width="260" height="170" rx="16" fill="#fff7ed" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="510" y="190" width="8" height="170" rx="8" fill="#f97316"/>
+<foreignObject x="534" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Compromised Endpoint</div></foreignObject>
+<foreignObject x="534" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Local token theft, script<br/>misuse, or unauthorized local<br/>API calls.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="920" y="190" width="260" height="170" rx="16" fill="#fffbeb" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="920" y="190" width="8" height="170" rx="8" fill="#eab308"/>
+<foreignObject x="944" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Over-privileged Operator</div></foreignObject>
+<foreignObject x="944" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Broad IAM scope used without<br/>review-lane constraints.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1330" y="190" width="260" height="170" rx="16" fill="#faf5ff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="1330" y="190" width="8" height="170" rx="8" fill="#8b5cf6"/>
+<foreignObject x="1354" y="208" width="220" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Supply Chain Risk</div></foreignObject>
+<foreignObject x="1354" y="262" width="220" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Artifact tampering or<br/>unverified package<br/>substitution.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="100" y="460" width="720" height="250" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="460" width="8" height="250" rx="8" fill="#1f6feb"/>
+<foreignObject x="124" y="478" width="680" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Primary Controls</div></foreignObject>
+<foreignObject x="124" y="532" width="680" height="166"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Least privilege, route policy, token<br/>enforcement, and execution review lane.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="880" y="460" width="720" height="250" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="880" y="460" width="8" height="250" rx="8" fill="#49c6b7"/>
+<foreignObject x="904" y="478" width="680" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Residual-Risk Actions</div></foreignObject>
+<foreignObject x="904" y="532" width="680" height="166"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Rotation cadence, incident runbook, checksum<br/>verification, and evidence archive.</div></foreignObject>
+<path d="M 360,280 Q 440,280 510,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 770,280 Q 840,280 920,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1180,280 Q 1260,280 1330,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1330,320 Q 1080,400 820,470" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1400,360 Q 1360,410 1330,460" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

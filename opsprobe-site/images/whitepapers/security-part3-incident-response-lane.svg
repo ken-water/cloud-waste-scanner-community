@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+<title id="t">Part 3 · Incident Response Lane</title>
+<desc id="d">Triage-to-recovery flow with evidence and post-incident closure outputs.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#fffaf0"/>
+    <stop offset="100%" stop-color="#eef8f6"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#f0a83b"/>
+    <stop offset="100%" stop-color="#49c6b7"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+  </marker>
+</defs>
+<rect width="1700" height="980" fill="url(#bg)"/>
+<rect x="40" y="40" width="1620" height="900" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+<rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Part 3 · Incident Response Lane</text>
+<g filter="url(#softShadow)"><rect x="100" y="190" width="280" height="170" rx="16" fill="#fff7f7" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="190" width="8" height="170" rx="8" fill="#ef4444"/>
+<foreignObject x="124" y="208" width="240" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Detect</div></foreignObject>
+<foreignObject x="124" y="262" width="240" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Alert, anomaly, or operator<br/>report.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="420" y="190" width="280" height="170" rx="16" fill="#fff7ed" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="420" y="190" width="8" height="170" rx="8" fill="#f97316"/>
+<foreignObject x="444" y="208" width="240" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Classify</div></foreignObject>
+<foreignObject x="444" y="262" width="240" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Stage/reason taxonomy and scoped<br/>impact.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="740" y="190" width="280" height="170" rx="16" fill="#fffbeb" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="740" y="190" width="8" height="170" rx="8" fill="#eab308"/>
+<foreignObject x="764" y="208" width="240" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Contain</div></foreignObject>
+<foreignObject x="764" y="262" width="240" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Token, route, credential, or<br/>access boundary.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1060" y="190" width="280" height="170" rx="16" fill="#f0fdf4" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="1060" y="190" width="8" height="170" rx="8" fill="#22c55e"/>
+<foreignObject x="1084" y="208" width="240" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Recover</div></foreignObject>
+<foreignObject x="1084" y="262" width="240" height="86"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Stabilize flow and validate<br/>control state.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="280" y="460" width="520" height="250" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="280" y="460" width="8" height="250" rx="8" fill="#0c1724"/>
+<foreignObject x="304" y="478" width="480" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Evidence Bundle</div></foreignObject>
+<foreignObject x="304" y="532" width="480" height="166"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Timeline, logs, impact scope, and owner<br/>decisions for root-cause and stakeholder<br/>updates.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="860" y="460" width="520" height="250" rx="16" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="860" y="460" width="8" height="250" rx="8" fill="#1f6feb"/>
+<foreignObject x="884" y="478" width="480" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Post-incident Actions</div></foreignObject>
+<foreignObject x="884" y="532" width="480" height="166"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Runbook patch, control update, drill<br/>follow-up, and release linkage.</div></foreignObject>
+<path d="M 380,280 Q 400,280 420,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 700,280 Q 720,280 740,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1020,280 Q 1040,280 1060,280" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1060,340 Q 930,400 800,460" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1180,360 Q 1160,410 1150,460" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap | Cloud Waste Scanner</title>
+  <meta name="description" content="Rust + Tauri Runtime Tradeoffs and Platform Roadmap: technical architecture guidance for CWS data models, reliability, auditability, and rollout patterns.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Whitepapers</div>
+      <h1>Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap</h1>
+      <p class="lead">Rust + Tauri Runtime Tradeoffs and Platform Roadmap: technical architecture guidance for CWS data models, reliability, auditability, and rollout patterns.</p>
+      <div class="meta-line">2026-03-18 · Whitepapers</div>
+      <div class="article-body" data-article-body><section>
+<p>Technical Whitepaper Series</p>
+<p>Read in order for full context: architecture -> data model -> performance -> quality gates -> platform roadmap.</p>
+<div>
+<a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p>Part 5 closes the technical track. The previous chapters described architecture, data model, runtime behavior, and quality governance. This final chapter explains why the product stack is Rust + Tauri, where that choice is strong, and where it imposes cost that we accept deliberately.</p>
+
+<h2 id="chapter-continuity">Final chapter context</h2>
+<p>If you came directly to this chapter, start with <a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a> for boundaries and <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a> for the findings model. This chapter assumes those decisions are already accepted and focuses on implementation tradeoffs.</p>
+
+<h2 id="stack-rationale">1. Why Rust + Tauri for a local-first governance product</h2>
+<p>Rust is used for execution-critical paths because the scan engine combines concurrency, network I/O, normalization, and policy evaluation in one runtime. Strong type guarantees and explicit ownership rules reduce classes of runtime bugs that become expensive in long-lived governance tools.</p>
+<p>Tauri is used for operator experience because it supports desktop-native workflows while keeping the core logic in Rust. For local-first products, this is a practical fit: operators can run and review scans in their own environment without introducing a heavyweight in-cloud control plane.</p>
+<figure>
+<img src="../images/whitepapers/rust-tauri-tradeoffs.svg" alt="Rust and Tauri engineering tradeoff matrix with benefits and limitations." loading="lazy" decoding="async">
+<figcaption>Figure 5-1. Runtime stack decision matrix: benefits, constraints, and long-term maintenance costs.</figcaption>
+</figure>
+
+<h2 id="strengths">2. Strengths we rely on in production</h2>
+<ul>
+<li><strong>Execution predictability:</strong> Rust core supports controlled concurrency and deterministic policy paths.</li>
+<li><strong>Credential custody alignment:</strong> local-first runtime avoids default central credential aggregation.</li>
+<li><strong>Single-core logic path:</strong> CLI, desktop workflows, and local APIs share the same engine behavior.</li>
+<li><strong>Operational portability:</strong> desktop and local API flows fit teams that cannot expose broad inbound services.</li>
+</ul>
+<p>These strengths are practical, not theoretical. They directly support the review workflows described in earlier chapters.</p>
+
+<h2 id="costs">3. Costs and tradeoffs we accept</h2>
+<p>No stack is free. The Rust + Tauri path introduces explicit costs:</p>
+<ul>
+<li><strong>Cross-platform packaging overhead:</strong> desktop distribution and signing pipelines require disciplined release engineering.</li>
+<li><strong>Specialized engineering investment:</strong> high-quality Rust contributions have a steeper onboarding curve than typical scripting stacks.</li>
+<li><strong>UI-runtime boundary work:</strong> keeping desktop experience smooth while preserving strict core contracts requires deliberate API design.</li>
+<li><strong>Provider maintenance burden:</strong> plugin contracts reduce chaos but do not eliminate ongoing API adaptation work.</li>
+</ul>
+<p>We keep these costs because they buy deterministic behavior and stronger trust boundaries in enterprise usage.</p>
+
+<h2 id="tauri-specific">4. Tauri-specific platform considerations</h2>
+<p>Tauri is effective for local-first delivery, but there are important operational details:</p>
+<ul>
+<li>startup sequencing must preserve runtime invariants (state registration before state-dependent calls);</li>
+<li>platform-specific logging paths must be stable so support workflows can retrieve startup evidence quickly;</li>
+<li>installer format and signing requirements differ by target OS and must be reflected in release gates.</li>
+</ul>
+<p>These considerations are not edge cases. They shape day-to-day support quality.</p>
+
+<h2 id="roadmap">5. Platform roadmap direction</h2>
+<p>Platform roadmap work is prioritized along three dimensions:</p>
+<figure>
+<img src="../images/whitepapers/tech-part5-roadmap-tradeoff-matrix.svg" alt="Roadmap tradeoff matrix for stack decisions and adoption outcomes." loading="lazy" decoding="async">
+<figcaption>Figure T5-2. Roadmap tradeoff matrix: strengths, costs, filter criteria, and adoption outcomes.</figcaption>
+</figure>
+<ul>
+<li><strong>Deterministic evidence quality:</strong> stronger lineage, clearer rule-version traceability, and cleaner handoff exports.</li>
+<li><strong>Reliability governance:</strong> expanded fault-injection checks, tighter degraded-mode assertions, and better runtime diagnostics.</li>
+<li><strong>Delivery safety:</strong> higher coverage in high-risk modules and stricter release evidence gates.</li>
+</ul>
+<p>Roadmap language is intentionally conservative. We prefer explicit constraints over aggressive promises that cannot be validated.</p>
+
+<h2 id="what-not-building">6. What we are not building (on purpose)</h2>
+<ul>
+<li>We are not pivoting to a default hosted credential-holding scanner model.</li>
+<li>We are not adding destructive one-click automation as default behavior without review context.</li>
+<li>We are not optimizing for vanity benchmark bursts at the expense of stable weekly completion.</li>
+</ul>
+<p>These non-goals preserve alignment with the operating model described across the series.</p>
+
+<h2 id="adoption-checklist">7. Adoption checklist for technical buyers</h2>
+<ol>
+<li>Validate trust-boundary expectations with security and infrastructure teams.</li>
+<li>Review policy model and evidence lineage requirements with operations and finance stakeholders.</li>
+<li>Run a restricted-scope baseline scan and verify degraded-mode and export behavior.</li>
+<li>Review release gate artifacts for the target version before broad rollout.</li>
+<li>Define ownership for provider plugin updates and threshold tuning cadence.</li>
+</ol>
+<p>Teams that complete this checklist typically avoid the two biggest rollout risks: governance ambiguity and expectation mismatch.</p>
+
+
+<h2 id="platform-strategy-appendix">Platform strategy appendix: decision criteria for the next two years</h2>
+<p>Technical buyers usually ask one strategic question after stack review: can this platform evolve without forcing a disruptive migration? The short answer is yes, if three criteria remain true: core contracts remain stable, operational evidence remains auditable, and platform improvements are additive rather than contradictory to local-first principles.</p>
+<p>For stack evolution, we use explicit decision filters. A new capability should pass all filters before entering roadmap commitment:</p>
+<ul>
+<li>Does it preserve credential-custody guarantees?</li>
+<li>Does it strengthen deterministic evidence rather than adding opaque abstraction?</li>
+<li>Does it reduce operational friction for review workflows?</li>
+<li>Can it be validated through existing QA and release gate structure?</li>
+</ul>
+<p>If any answer is no, the feature stays exploratory.</p>
+<p>A second strategic consideration is plugin ecosystem growth. Provider expansion is valuable only when quality remains consistent. Rapid provider count growth without adapter quality discipline creates uneven confidence and support burden. We therefore prioritize adapter maturity signals: test depth, error taxonomy completeness, and evidence-lineage integrity. Coverage breadth follows, but not at the expense of reliability.</p>
+<p>A third consideration is platform ergonomics for enterprise operators. As deployments grow, teams need clearer controls for scope selection, schedule governance, and report handoff. Improving these controls usually has higher user value than adding isolated niche detections. In roadmap planning, we weight operator workflow quality heavily because it drives sustained adoption.</p>
+<p>A fourth consideration is release predictability. Enterprise teams value predictable behavior changes over frequent but noisy updates. This reinforces the strategy from Part 4: explicit gates, explicit release notes, and explicit rollback criteria. Predictability is not a marketing theme; it is a core adoption driver in regulated or risk-sensitive environments.</p>
+<p>Finally, we maintain explicit non-goals to avoid roadmap drift. Not every technically possible feature is strategically right for this product. The platform remains focused on local-first governance with evidence-first operation. Features that weaken that identity may look attractive in short-term demos but create long-term architectural and trust debt.</p>
+
+
+
+<h2 id="strategy-faq">Implementation FAQ: stack evolution without identity drift</h2>
+<p><strong>Q: Could we switch to a pure hosted model later?</strong> Technically possible, but strategically misaligned with current trust boundary and operating model. Any such shift would require explicit product redefinition, not incremental roadmap wording.</p>
+<p><strong>Q: How do we justify Rust investment to business stakeholders?</strong> Connect it to outcomes: deterministic behavior, lower classes of runtime defects, and better long-term maintainability for multi-provider logic. Avoid language-level debates detached from operational impact.</p>
+<p><strong>Q: What makes Tauri the right fit here?</strong> It supports local-first operator workflows while reusing Rust core logic across desktop and API paths. The key value is contract consistency, not UI novelty.</p>
+<p><strong>Q: How do we keep roadmap credible?</strong> Prefer conservative commitments with explicit constraints. Overpromising in platform roadmap erodes buyer trust faster than delivering fewer but reliable milestones.</p>
+<p><strong>Q: What should buyers ask during technical due diligence?</strong> Ask for evidence lineage examples, degraded-mode handling examples, and release gate artifacts for recent versions. Those three artifacts reveal platform maturity quickly.</p>
+
+
+<h2 id="strategy-field-notes">Field notes: platform roadmap governance in practice</h2>
+<p>Roadmap quality depends on disciplined scope language. We classify work as committed, in-progress, exploratory, or deferred. Only committed work should appear in customer expectation paths. This avoids accidental promise inflation. Another practical rule is to pair every major roadmap item with a retirement or simplification plan. Platforms get brittle when capability grows but legacy assumptions are never removed.</p>
+<p>For architecture continuity, we evaluate roadmap proposals against the series principles: boundary clarity, deterministic evidence, reliable runtime behavior, and auditable delivery. If a proposal improves one area while weakening another, we force a design tradeoff review before implementation starts. This keeps the product coherent as it scales.</p>
+<p>Finally, we treat trust as a measurable roadmap outcome. Features that improve explainability, reproducibility, and handoff clarity are prioritized because they reduce organizational drag and increase long-term adoption quality.</p>
+
+<h2 id="data-sources">Data sources for this chapter</h2>
+<ul>
+<li><a href="../help.html">Documentation Center</a> and <a href="../security.html">Security</a>: local-first runtime and trust-boundary baseline.</li>
+<li><a href="../blog-series.html">Release Ledger</a> and <a href="../roadmap.html">Roadmap</a>: platform evolution and quality-governance evidence.</li>
+<li>Repository release and QA scripts plus Windows stability constraints documented in project runbooks.</li>
+</ul>
+
+<h2 id="series-close">Series close</h2>
+<p>This technical whitepaper series is designed as one connected argument, not five isolated posts: boundaries (<a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>), model integrity (<a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>), runtime reliability (<a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>), delivery governance (<a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>), and platform tradeoffs (<a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>).</p>
+<p>Use the five chapters together during architecture review and rollout planning. Reading one in isolation will miss key constraints that are intentionally distributed across the sequence.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

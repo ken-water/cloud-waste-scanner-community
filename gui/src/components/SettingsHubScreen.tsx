@@ -157,7 +157,7 @@ export function SettingsHubScreen({ onNavigate }: SettingsHubScreenProps) {
                     <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{item.description}</p>
                     {!allowed && (
                       <p className="mt-4 inline-flex rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800 dark:border-amber-400/40 dark:bg-amber-500/10 dark:text-amber-200">
-                        {lockHint || "Upgrade required"}
+                        {lockHint || "Not available in this build"}
                       </p>
                     )}
                   </button>

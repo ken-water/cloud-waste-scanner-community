@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040" role="img" aria-labelledby="t d">
+<title id="t">QA Governance and Release Gate Pipeline</title>
+<desc id="d">Engineering quality controls from recent release waves.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#fffaf0"/>
+    <stop offset="100%" stop-color="#eef8f6"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#f0a83b"/>
+    <stop offset="100%" stop-color="#49c6b7"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+  </marker>
+</defs>
+<rect width="1800" height="1040" fill="url(#bg)"/>
+<rect x="40" y="40" width="1720" height="960" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+<rect x="70" y="64" width="1660" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">QA Governance and Release Gate Pipeline</text>
+<g filter="url(#softShadow)"><rect x="100" y="220" width="240" height="150" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="220" width="8" height="150" rx="8" fill="#1f6feb"/>
+<foreignObject x="124" y="238" width="200" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Gate 1</div></foreignObject>
+<foreignObject x="124" y="292" width="200" height="66"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Security Audit</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="390" y="220" width="240" height="150" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="390" y="220" width="8" height="150" rx="8" fill="#49c6b7"/>
+<foreignObject x="414" y="238" width="200" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Gate 2</div></foreignObject>
+<foreignObject x="414" y="292" width="200" height="66"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Fault Injection</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="680" y="220" width="240" height="150" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="680" y="220" width="8" height="150" rx="8" fill="#14b8a6"/>
+<foreignObject x="704" y="238" width="200" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Gate 3</div></foreignObject>
+<foreignObject x="704" y="292" width="200" height="66"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Perf Guard</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="970" y="220" width="240" height="150" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="970" y="220" width="8" height="150" rx="8" fill="#0c1724"/>
+<foreignObject x="994" y="238" width="200" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Gate 4</div></foreignObject>
+<foreignObject x="994" y="292" width="200" height="66"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Coverage Risk</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1260" y="220" width="440" height="150" rx="16" fill="#0b1220" stroke="#0c1724" stroke-width="2"/></g>
+<rect x="1260" y="220" width="8" height="150" rx="8" fill="#60a5fa"/>
+<foreignObject x="1284" y="238" width="400" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#d8e1ee;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Gate 5</div></foreignObject>
+<foreignObject x="1284" y="292" width="400" height="66"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#d8e1ee;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Release Closeout Evidence</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="100" y="430" width="760" height="500" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="100" y="430" width="8" height="500" rx="8" fill="#0c1724"/>
+<foreignObject x="124" y="448" width="720" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">What Is Enforced</div></foreignObject>
+<foreignObject x="124" y="502" width="720" height="416"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">• Secret-pattern checks and security-config regression checks<br/>• Resilience negative-path tests and recovery drills<br/>• Performance baseline and regression guard<br/>• Changed-file coverage and uncovered-budget policy<br/>• QA artifact index and phase closeout reports</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="920" y="430" width="780" height="500" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/></g>
+<rect x="920" y="430" width="8" height="500" rx="8" fill="#1f6feb"/>
+<foreignObject x="944" y="448" width="740" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0c1724;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Why It Matters</div></foreignObject>
+<foreignObject x="944" y="502" width="740" height="416"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">• Release lines carry auditable proof, not narrative-only claims<br/>• Security/reliability regressions are caught before rollout<br/>• Coverage governance keeps risk visible while moving to 95%<br/>• Engineering, security, and product share one decision package<br/>• Enterprise due diligence becomes faster and cleaner</div></foreignObject>
+<path d="M 340,300 Q 360,300 390,300" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 630,300 Q 660,300 680,300" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 920,300 Q 940,300 970,300" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1210,300 Q 1240,300 1260,300" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

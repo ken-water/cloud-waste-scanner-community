@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+  <title id="t">Cloud governance maturity ladder</title>
+  <desc id="d">Three-stage maturity ladder from discover to optimize to prevent, with required control gates between each phase.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#eef8f6"/>
+    </linearGradient>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0a83b"/>
+      <stop offset="100%" stop-color="#49c6b7"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#0c1724"/>
+    </marker>
+  </defs>
+
+  <rect width="1700" height="980" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1620" height="900" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  <rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#header)"/>
+  <text x="100" y="116" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">FinOps Maturity Ladder: Discover, Optimize, Prevent</text>
+
+  <g filter="url(#cardShadow)">
+    <rect x="120" y="190" width="460" height="620" rx="20" fill="#eef8f6" stroke="#99f6e4" stroke-width="2"/>
+    <rect x="620" y="190" width="460" height="620" rx="20" fill="#fdf7ea" stroke="#d8e1ee" stroke-width="2"/>
+    <rect x="1120" y="190" width="460" height="620" rx="20" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+  </g>
+
+  <foreignObject x="152" y="220" width="396" height="560">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif; color:#0c1724;">
+      <div style="font-size:30px;font-weight:700;margin-bottom:10px;">1. Discover</div>
+      <div style="font-size:20px;line-height:1.35;color:#0c1724;">Build repeatable visibility for idle and orphaned resources across providers.</div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0 8px;">Control gates</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Stable finding taxonomy</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Time-bounded scan cadence</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Team-visible evidence exports</div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0 8px;">Exit criteria</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">At least 3 weeks of consistent findings with low duplicate noise.</div>
+    </div>
+  </foreignObject>
+
+  <foreignObject x="652" y="220" width="396" height="560">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif; color:#0c1724;">
+      <div style="font-size:30px;font-weight:700;margin-bottom:10px;">2. Optimize</div>
+      <div style="font-size:20px;line-height:1.35;color:#0c1724;">Convert findings into assigned actions with owner, due date, and validation proof.</div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0 8px;">Control gates</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Owner routing by workload boundary</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Weekly triage and closure board</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Re-open policy for disputed findings</div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0 8px;">Exit criteria</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">Closure lead time is stable and recurring waste classes trend downward.</div>
+    </div>
+  </foreignObject>
+
+  <foreignObject x="1152" y="220" width="396" height="560">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif; color:#0c1724;">
+      <div style="font-size:30px;font-weight:700;margin-bottom:10px;">3. Prevent</div>
+      <div style="font-size:20px;line-height:1.35;color:#0c1724;">Embed policy checks in delivery workflows so known debt classes do not regenerate.</div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0 8px;">Control gates</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• CI or scheduled guardrail checks</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Exception approval with expiry</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">• Quarterly policy tuning review</div>
+      <div style="font-size:21px;font-weight:700;margin:18px 0 8px;">Exit criteria</div>
+      <div style="font-size:19px;line-height:1.35;color:#0c1724;">Known classes stay below target thresholds without emergency cleanup cycles.</div>
+    </div>
+  </foreignObject>
+
+  <path d="M580,500 L620,500" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+  <path d="M1080,500 L1120,500" fill="none" stroke="#1f6feb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+
+  <g filter="url(#cardShadow)">
+    <rect x="120" y="840" width="1460" height="90" rx="16" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <foreignObject x="150" y="860" width="1400" height="54">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#0c1724;">
+      Practical rule: do not jump to prevention before discover and optimize are stable. Preventive automation built on weak evidence creates noise and policy fatigue.
+    </div>
+  </foreignObject>
+</svg>

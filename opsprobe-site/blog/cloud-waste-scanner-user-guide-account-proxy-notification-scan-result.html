@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Cost Optimization Tools: Account, Proxy, Notifications | Cloud Waste Scanner</title>
+  <meta name="description" content="Configure cloud account access, proxy routing, and notification channels for reliable local-first scan results and team handoff.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Guides</div>
+      <h1>Cloud Waste Scanner User Guide Part 8: Configure Account, Proxy, Notification, and Scan Result Workflow for Cloud Cost Optimization Tools</h1>
+      <p class="lead">Configure cloud account access, proxy routing, and notification channels for reliable local-first scan results and team handoff.</p>
+      <div class="meta-line">2026-03-10 · Product Guides</div>
+      <div class="article-body" data-article-body><div data-blog-body>
+                <p>
+                    Teams usually do not fail at finding waste. They fail at routing and execution. This guide fixes that exact gap in one practical run.
+                </p>
+                
+
+                <section id="quick-start">
+                    <h2>Quick Start Steps</h2>
+                    <ol>
+                        <li>Open the guide workflow in Cloud Waste Scanner and keep scope minimal for first validation.</li>
+                        <li>Run connection validation first, then execute one controlled scan cycle.</li>
+                        <li>Export local evidence and assign owners for the next weekly closure loop.</li>
+                    </ol>
+                    <p>Cloud Waste Scanner runs entirely in your local environment. Your cloud credentials and scan results never leave your machine.</p>
+                </section>
+
+                <p id="seo-keyword-context">Teams evaluating cloud cost optimization tools usually operationalize this flow with cloud cost optimization for devops and privacy first cloud cost tool. This guide keeps cloud cost optimization tools practical for weekly execution without adding control-plane friction.</p>
+
+<p>
+                    If you are evaluating cloud governance tools, this page helps you validate real day-to-day usability: account setup, proxy routing, notification ownership, scan result execution, and report export quality.
+                </p>
+                <p>
+                    Treat this as a hands-on benchmark for <strong>cloud cost optimization tools</strong>: finish one full cycle, then decide whether your team can run it weekly without extra process overhead.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp?v=2.5.14.2" alt="Cloud Waste Scanner dashboard showing cost breakdown, monitor trend, governance trend, and failure mix.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Target state: dashboard trends are visible and your daily workflow can move from detection to execution.
+                    </figcaption>
+                </figure>
+
+                <h2>1) Create at least one working notification channel first</h2>
+                <p>
+                    Open <strong>Settings</strong> → <strong>Notifications</strong>, click <strong>Add Channel</strong>, and pick the method that your team already checks every day.
+                    Cloud Waste Scanner currently supports:
+                </p>
+                <ul>
+                    <li>Slack Webhook</li>
+                    <li>Microsoft Teams</li>
+                    <li>Discord Webhook</li>
+                    <li>Telegram Bot</li>
+                    <li>WhatsApp (Meta API)</li>
+                    <li>Email Report</li>
+                    <li>Generic Webhook</li>
+                </ul>
+                <p>
+                    Use <strong>Send Test Notification</strong> before saving. A saved channel without a successful test is usually where weekly follow-up breaks.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Notification method selector listing Slack, Teams, Discord, Telegram, WhatsApp, Email, and Generic Webhook.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Configure and test one channel first, then add others without interrupting your scan cadence.
+                    </figcaption>
+                </figure>
+
+                <h2>2) Add account routing with both proxy and owner channels</h2>
+                <p>
+                    Go to <strong>Settings</strong> → <strong>Cloud Accounts</strong> → <strong>Add Account</strong>.
+                    Fill credentials, then set:
+                </p>
+                <ul>
+                    <li><strong>Account Proxy</strong>: Direct, default policy, or a named proxy profile.</li>
+                    <li><strong>Account Notification Channel</strong>: all active channels or a multi-select list of specific channels.</li>
+                </ul>
+                <p>
+                    Click <strong>Test Connection</strong>, then <strong>Save</strong>. This verification step does not consume scan quota.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Add Account panel showing provider, account proxy, and account notification channel multi-select.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Bind routing and ownership while creating the account so findings are delivered to the right people from the first scan.
+                    </figcaption>
+                </figure>
+
+                <h2>3) Run scan from Dashboard and handle findings in Scan Result</h2>
+                <ol>
+                    <li>Open <strong>Dashboard</strong> and click <strong>Start Cloud Scan</strong>.</li>
+                    <li>Select one or two accounts in the scan wizard for the first run.</li>
+                    <li>After scan completion, the app navigates to <strong>Scan Result</strong> automatically.</li>
+                </ol>
+                <p>
+                    On Scan Result, filter by provider, multi-select findings, and split work into:
+                </p>
+                <ul>
+                    <li><strong>Ignore</strong> for items already handled outside the app.</li>
+                    <li><strong>Generate Plan</strong> for actions that need explicit execution and traceability.</li>
+                </ul>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Scan wizard target step selecting accounts for the next scan.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Keep first-run scope tight so you can validate quality and ownership quickly.
+                    </figcaption>
+                </figure>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Scan Result table with selected findings and action bar for Ignore and Generate Plan.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Select high-impact findings first and convert them into an execution plan.
+                    </figcaption>
+                </figure>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Execution Plan Review modal showing planned actions and Execute via API button.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Review planned actions, download for approval if needed, then execute through API.
+                    </figcaption>
+                </figure>
+
+                <h2>4) Export practical evidence in both CSV and PDF</h2>
+                <p>
+                    Export from <strong>Scan Result</strong>, <strong>Resources</strong>, <strong>History</strong>, or <strong>Governance</strong> depending on the audience.
+                    For most teams:
+                </p>
+                <ul>
+                    <li><strong>CSV</strong> goes to engineering and FinOps for bulk tracking.</li>
+                    <li><strong>PDF</strong> goes to review meetings and approval flows.</li>
+                </ul>
+                <p>
+                    In PDF export options, enable <strong>Add checklist columns</strong> so ownership and custom actions can be recorded in the same artifact.
+                    This is where daily operations become reliable <strong>cloud cost reporting automation</strong> instead of ad hoc screenshots.
+                </p>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Export Report Configuration modal with Add checklist columns option.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Enable checklist columns when the report will be used for execution tracking.
+                    </figcaption>
+                </figure>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Exported PDF report table including recommended action and custom checklist columns.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        The exported checklist format keeps suggested actions and custom actions in one review file.
+                    </figcaption>
+                </figure>
+
+                <h2>5) Keep a weekly loop with Monitor and Governance windows</h2>
+                <p>
+                    Use the same time window across pages so weekly decisions stay comparable.
+                    The practical baseline is to review <strong>7d</strong>, <strong>30d</strong>, and <strong>90d</strong> in both Monitor and Governance.
+                </p>
+                <ul>
+                    <li><strong>Monitor</strong> answers resource behavior and account health over time.</li>
+                    <li><strong>Governance</strong> answers whether findings are being processed with stable execution quality.</li>
+                </ul>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Infrastructure Monitor page with 7d, 30d, 90d controls and provider trend charts.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Monitor keeps resource-level behavior and account status visible across rolling windows.
+                    </figcaption>
+                </figure>
+
+                <figure>
+                    <div>
+                        <div><span></span><span></span><span></span></div>
+                        <div>
+                    <img src="images/product-guide-part8-2026/part8-dashboard-overview.webp" alt="Governance page with savings trend, throughput, provider breakdown, and account coverage tables.">
+                        </div>
+                    </div>
+                    <figcaption>
+                        Governance confirms whether scan findings are turning into measurable execution outcomes.
+                    </figcaption>
+                </figure>
+
+                <h2>Next in the series</h2>
+                <p>
+                    Continue with <a href="cloud-waste-scanner-user-guide-dashboard-monitor-governance-scan-result.html">Part 9: how to read Dashboard, Scan Result, Governance, and Monitor after a scan</a>.
+                    It shows the reading order that helps a new teammate get useful work done without bouncing between pages.
+                </p>
+                <p>
+                    If your team is comparing multiple <strong>cloud cost optimization tools</strong>, run this exact sequence on each candidate product and compare execution friction, not only dashboard appearance.
+                </p>
+                <p>
+                    Browse all posts: <a href="../blog.html">Cloud Waste Scanner Blog</a>.
+                </p>
+            </div>
+
+                <section id="troubleshooting-api-errors">
+                    <h2>Troubleshooting and API Errors</h2>
+                    <p>If setup or scan validation fails, use a fixed triage order so your team can resolve issues without guessing.</p>
+                    <ul>
+                        <li>Start with <a href="../help.html">Troubleshooting</a> for staged checks and recovery flow.</li>
+                        <li>Review <a href="../help.html">API Errors</a> to map provider responses to next actions.</li>
+                        <li>Verify scope and mode in <a href="../help.html#provider-setup">Provider Credentials</a> before rerunning scans.</li>
+                    </ul>
+                </section>
+
+                <section id="finops-execution-insight">
+                    <h2>FinOps Execution Insight</h2>
+                    <ul>
+                        <li>Treat each scan as an operating loop: validate inputs, run once, export evidence, and assign owners.</li>
+                        <li>Prioritize findings your team can close this week, not the longest possible list.</li>
+                        <li>Keep evidence local and review-ready so engineering, finance, and management can align fast.</li>
+                    </ul>
+                </section>
+
+                <section id="when-to-use-cws-vs-others">
+                    <h2>When to Use CWS vs. Other Approaches</h2>
+                    <p>Use Cloud Waste Scanner when you need local-first credential control, deep waste visibility across storage/network/database, and exportable operator evidence. Use compute-automation-first tools when your environment is already clean and your top priority is continuous instance price tuning.</p>
+                    <p>For a complementary perspective, see <a href="industry-intelligence-spotio-vs-local-first-cws.html">Spot.io vs Local-First CWS</a>.</p>
+                </section>
+
+
+                <section id="declarative-conclusions">
+                    <h2>Declarative Conclusions</h2>
+                    <ul>
+                        <li>CWS is a local-first scanner, meaning credentials and scan outputs remain on your machine by default.</li>
+                        <li>Cloud waste is usually an ownership and review-rhythm failure, not just a pricing failure.</li>
+                        <li>A repeatable FinOps loop needs cloud asset inventory plus exportable evidence, not dashboard-only visibility.</li>
+                    </ul>
+                </section>
+
+                <section id="execution-links">
+                    <h2>Execution Paths</h2>
+                    <p>Continue with related guides or move directly to evaluation and procurement steps.</p>
+                    <div>
+                        <a href="industry-intelligence-spotio-vs-local-first-cws.html">Industry Comparison</a>
+                        <a href="cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Incident Story</a>
+                        <a href="../pricing.html">View Pricing</a>
+                        <a href="../blog.html">Open Blog</a>
+                    </div>
+                </section>
+
+<div>
+                <div>
+                    <div>Try Cloud Waste Scanner</div>
+                    <h3>Run This Workflow Today</h3>
+                    <div>
+                        <a href="/download/">
+                            Download App
+                        </a>
+                        <a href="../pricing.html">
+                            View Pricing
+                        </a>
+                    </div>
+                    <p>Save your first $1,000 before the next billing cycle.</p>
+                </div>
+            </div></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /archive/
+
+Sitemap: https://cloud-waste-scanner.com/sitemap.xml

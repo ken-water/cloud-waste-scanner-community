@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 Cloud Cost Leaks Teams Miss in Monthly Reviews | Cloud Waste Scanner</title>
+  <meta name="description" content="5 Cloud Cost Leaks Teams Miss in Monthly Reviews: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Founder Notes</div>
+      <h1>5 Cloud Cost Leaks Teams Miss in Monthly Reviews</h1>
+      <p class="lead">5 Cloud Cost Leaks Teams Miss in Monthly Reviews: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.</p>
+      <div class="meta-line">2026-01-27 · Founder Notes</div>
+      <div class="article-body" data-article-body><p>
+                In most monthly reviews, the same argument comes back: "we already cleaned up last week, why is the bill still high?" The answer is usually a set of resources that look harmless but keep billing quietly. These are the five leaks we see most often in audits.
+            </p>
+
+            <hr>
+
+            <h3>1. The "Idle" NAT Gateway</h3>
+            <div>
+                Cost: ~$32.85 / month per gateway
+            </div>
+            <p>
+                Developers often spin up a private VPC with a NAT Gateway for a quick test. When they delete the EC2 instances, they often forget the NAT Gateway.
+            </p>
+            <p>
+                <strong>The Trap:</strong> AWS charges an hourly rate for NAT Gateways <em>even if zero traffic flows through them</em>. If you have 5 dev environments, that’s <strong>$165/month</strong> wasted on absolute silence.
+            </p>
+
+            <h3>2. The "Stopped" Elastic IP</h3>
+            <div>
+                Cost: $3.60 / month per IP
+            </div>
+            <p>
+                Most people know that unattached IPs cost money. But did you know that an IP attached to a <strong>stopped</strong> instance also costs money?
+            </p>
+            <p>
+                AWS treats IPv4 addresses as a scarce resource. If you aren't using it (because your VM is off), they penalize you. Our scanner specifically checks for this "Attached-but-Stopped" state.
+            </p>
+
+            <h3>3. The Zombie RDS</h3>
+            <div>
+                Cost: $15 - $500+ / month
+            </div>
+            <p>
+                We often find RDS instances that are "Available" (running) but haven't had a single connection in weeks. These are usually leftovers from a feature branch or a POC.
+            </p>
+            <p>
+                <strong>Our Solution:</strong> We query CloudWatch metrics for `DatabaseConnections`. If the max connection count is 0 for 7 days, it's a zombie. Kill it.
+            </p>
+
+            <h3>4. Old AMIs & Snapshots</h3>
+            <div>
+                Cost: Storage fees accumulate indefinitely
+            </div>
+            <p>
+                Every time your CI/CD pipeline builds a new image, it creates an AMI and a Snapshot. Fast forward a year, and you have 2,000 old images storing terabytes of data.
+            </p>
+            <p>
+                Manual cleanup is terrifying because you might delete the base image for Production. <strong>Cloud Waste Scanner</strong> cross-references running instances to ensure we never touch an active AMI.
+            </p>
+
+            <h3>5. The Low-Traffic EC2</h3>
+            <p>
+                Just because an instance is "Running" doesn't mean it's useful. We frequently see `m5.large` instances with 0.1% CPU utilization.
+            </p>
+            <p>
+                Simple scripts miss these because they read state, not behavior. We correlate low CPU and low network activity to catch machines that are technically alive but operationally empty.
+            </p>
+
+            <h2>How to use this list</h2>
+            <p>
+                Use these five checks as a monthly review baseline, then confirm each item with exports the team can actually discuss. A useful review is not a tour of the bill. It is a short list of findings that somebody can close.
+            </p>
+            <p>
+                For deeper root-cause patterns behind these checks, read <a href="deep-finops-anatomy.html">Deep FinOps Anatomy</a>. If you want incident-style examples for team onboarding, use <a href="cloud-waste-horror-stories.html">Cloud Waste Horror Stories</a>.
+            </p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

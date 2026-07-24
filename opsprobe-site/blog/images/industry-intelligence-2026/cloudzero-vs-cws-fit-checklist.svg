@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="920" viewBox="0 0 1700 920" role="img" aria-labelledby="t2 d2">
+  <title id="t2">Fit checklist for choosing CloudZero or CWS</title>
+  <desc id="d2">Decision matrix for technical buyers by operating model, security boundary, and team economics.</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#eef8f6"/>
+    </linearGradient>
+    <linearGradient id="titleGrad2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0a83b"/>
+      <stop offset="100%" stop-color="#49c6b7"/>
+    </linearGradient>
+    <filter id="softShadow2" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0c1724" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1700" height="920" fill="url(#bg2)"/>
+  <rect x="40" y="40" width="1620" height="840" rx="28" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  <rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#titleGrad2)"/>
+  <text x="100" y="116" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Fit Checklist for Technical Buyers</text>
+
+  <g filter="url(#softShadow2)">
+    <rect x="100" y="190" width="710" height="610" rx="20" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <rect x="100" y="190" width="10" height="610" rx="8" fill="#f59e0b"/>
+  <text x="136" y="250" font-size="30" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#0c1724">CloudZero usually fits better when</text>
+  <foreignObject x="136" y="284" width="640" height="490">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:21px;font-weight:500;line-height:1.45;color:#0c1724;overflow:hidden;">
+      <div>1) You need product-level unit economics and deep showback dashboards.</div>
+      <div style="margin-top:12px;">2) A dedicated FinOps function governs attribution across many BUs.</div>
+      <div style="margin-top:12px;">3) External SaaS custody is acceptable after vendor risk and procurement review.</div>
+      <div style="margin-top:12px;">4) Executive dashboard depth matters more than local operator control.</div>
+      <div style="margin-top:12px;">5) Spend-linked pricing is acceptable for your current scale model.</div>
+    </div>
+  </foreignObject>
+
+  <g filter="url(#softShadow2)">
+    <rect x="890" y="190" width="710" height="610" rx="20" fill="#ffffff" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <rect x="890" y="190" width="10" height="610" rx="8" fill="#16a34a"/>
+  <text x="926" y="250" font-size="30" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#0c1724">CWS usually fits better when</text>
+  <foreignObject x="926" y="284" width="640" height="490">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:21px;font-weight:500;line-height:1.45;color:#0c1724;overflow:hidden;">
+      <div>1) Local-first runtime and strict credential custody are non-negotiable.</div>
+      <div style="margin-top:12px;">2) Compliance posture limits broad third-party metadata sharing.</div>
+      <div style="margin-top:12px;">3) Your team needs forensic evidence exports for execution handoff.</div>
+      <div style="margin-top:12px;">4) SMB or startup economics require predictable tooling cost.</div>
+      <div style="margin-top:12px;">5) Engineers prefer API-first operations and local integration flows.</div>
+    </div>
+  </foreignObject>
+
+  <g filter="url(#softShadow2)">
+    <rect x="280" y="822" width="1140" height="40" rx="14" fill="#fffaf0" stroke="#d8e1ee" stroke-width="2"/>
+  </g>
+  <text x="850" y="848" text-anchor="middle" font-size="19" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="600" fill="#0c1724">Both models can reduce waste. Decide by trust boundary, review burden, and operating rhythm.</text>
+</svg>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Whitepaper P3: Performance, Reliability, Rollout | Cloud Waste Scanner</title>
+  <meta name="description" content="Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns: technical architecture guidance for Cloud Waste Scanner data models.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Whitepapers</div>
+      <h1>Tech Whitepaper P3: Performance, Reliability, Rollout</h1>
+      <p class="lead">Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns: technical architecture guidance for Cloud Waste Scanner data models.</p>
+      <div class="meta-line">2026-03-18 · Whitepapers</div>
+      <div class="article-body" data-article-body><section>
+<p>Technical Whitepaper Series</p>
+<p>Read in order for full context: architecture -> data model -> performance -> quality gates -> platform roadmap.</p>
+<div>
+<a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p>Part 2 established deterministic findings. Part 3 asks the operational question: does that model still hold when scans run at scale, under API quotas, through proxies, and during partial failure conditions?</p>
+<p>This chapter focuses on cloud cost optimization for devops teams that need repeatable scans, not one-off benchmark numbers, while still integrating with cloud cost management software and cloud cost reporting automation workflows.</p>
+<p>When cloud cost optimization for devops is treated as a weekly operating loop, throughput tuning, reliability controls, and rollout guardrails become directly auditable.</p>
+
+<h2 id="chapter-continuity">From model integrity to runtime integrity</h2>
+<p>In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>, we required deterministic policy behavior. This chapter focuses on runtime behavior that preserves that determinism under stress. In <a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>, we map those runtime expectations to explicit QA and release gates.</p>
+
+<h2 id="perf-budget">1. Performance budget: what “fast enough” means in cloud governance</h2>
+<p>For governance tooling, speed is constrained by two external realities: provider rate limits and network variability. "Fast" is not peak request burst; "fast" is stable completion of a full review cycle without triggering throttling storms or producing unreliable partial output.</p>
+<p>We treat performance as a budgeted system:</p>
+<ul>
+<li>API request concurrency per provider/account segment.</li>
+<li>Retry and backoff windows by error class.</li>
+<li>Scan timeout ceilings to prevent indefinite hangs in restricted paths.</li>
+<li>Degraded-mode output rules when a subset of providers fails.</li>
+</ul>
+<figure>
+<img src="../images/whitepapers/performance-reliability.svg" alt="Performance and reliability model with concurrency controls, rate-limit strategy, and restricted-network rollout guidance." loading="lazy" decoding="async">
+<figcaption>Figure 3-1. Throughput and reliability control model used by local-first scans.</figcaption>
+</figure>
+<p>Figure 3-1 is the operating baseline for this chapter: throughput is budgeted by provider-aware concurrency, reliability is enforced by explicit failure classes, and rollout expands only after constrained-path verification.</p>
+<p>In other words, throughput, reliability, and rollout are one control loop rather than three independent tuning knobs.</p>
+
+<h2 id="throttle">2. Throttling-safe concurrency strategy</h2>
+<p>Cloud APIs are not homogeneous. One provider endpoint might allow aggressive pagination while another enforces strict request windows. Instead of one global concurrency number, CWS uses provider-aware pacing and adaptive backoff based on observed error patterns.</p>
+<p>Operationally this means:</p>
+<ul>
+<li>Concurrency is set to preserve completion probability, not benchmark screenshots.</li>
+<li>Rate-limit events are classified separately from transport failures and permission failures.</li>
+<li>Backoff policy is predictable and visible, so operators can explain slower scans without guessing.</li>
+</ul>
+<p>This discipline prevents the classic anti-pattern where a tool appears fast in small test accounts but collapses under enterprise account fan-out.</p>
+
+<h2 id="reliability">3. Reliability model: partial failure without silent data corruption</h2>
+<p>Reliability in this context means preserving decision quality when failures are partial. If one provider or region times out, the engine should still return valid findings for reachable scope and mark missing segments explicitly.</p>
+<ul>
+<li><strong>Stage/reason classification:</strong> failures carry structured context (for example: proxy_connect, target_connect, config_validate).</li>
+<li><strong>Partial-result mode:</strong> completed scopes are emitted with clear gaps, not silently dropped.</li>
+<li><strong>Retry policy:</strong> transient transport failures are retried; deterministic config failures are surfaced immediately.</li>
+<li><strong>Operator diagnostics:</strong> logs and UI surfaces map failure class to next action.</li>
+</ul>
+<p>This avoids a common governance risk: teams acting on an incomplete scan while believing it was complete.</p>
+
+<h2 id="restricted-network">4. Restricted-network rollout patterns</h2>
+<p>Enterprise environments often require explicit egress control, proxy segmentation, and audited route decisions. The product supports this by separating scan path and notification path, allowing operators to align each channel with policy.</p>
+<figure>
+<img src="../images/whitepapers/tech-part3-rollout-decision-ladder.svg" alt="Rollout decision ladder for constrained networks and throttling-safe expansion." loading="lazy" decoding="async">
+<figcaption>Figure T3-2. Rollout decision ladder: pilot scope, guard rails, degraded mode, and expansion decisions.</figcaption>
+</figure>
+<p>Practical rollout pattern:</p>
+<ol>
+<li>Validate local API runtime and token flow.</li>
+<li>Validate proxy reachability to provider endpoints in scope.</li>
+<li>Run small-scope baseline scan with explicit account subset.</li>
+<li>Expand scope gradually while monitoring rate-limit and timeout classes.</li>
+<li>Lock a repeatable profile for weekly governance review.</li>
+</ol>
+<p>That progression is slower than one-click full-scope scans, but it dramatically reduces false negatives and rollout rollback cycles.</p>
+
+<h2 id="case-study">5. Case study: scan stability beats burst speed</h2>
+<p>In one internal validation path, a high-concurrency test produced shorter elapsed time on first run but generated unstable retry storms and inconsistent completion in later runs. A lower concurrency setting increased median elapsed time but produced deterministic completion and cleaner failure diagnostics. For governance workflows, the second profile is the one that scales operationally.</p>
+<p>Why this matters to business outcomes: review meetings depend on trusted evidence at a known cadence. A faster-but-erratic scan is operationally more expensive than a slower predictable scan because teams lose confidence in findings and re-run jobs manually.</p>
+
+<h2 id="zero-agent">6. Zero-agent runtime implications</h2>
+<p>Zero-agent architecture removes cloud-side deployment overhead and reduces the risk surface of long-lived in-cloud collectors. The tradeoff is that endpoint hardening and runtime governance are now clearly customer-side responsibilities. This is an explicit design choice, not an omission.</p>
+<p>Operational implications include:</p>
+<ul>
+<li>Endpoint patching and local credential hygiene remain mandatory.</li>
+<li>Proxy and route policy become first-class rollout controls.</li>
+<li>Execution evidence must include runtime context for audits.</li>
+</ul>
+
+<h2 id="measurement">7. Measurement and evidence discipline</h2>
+<p>Performance claims should be tied to repeatable method, not headline numbers. Our baseline method records scope size, provider mix, network policy profile, timeout/retry parameters, and completion status classes. This is enough to compare profiles honestly without pretending there is one universal scan speed.</p>
+<p>For external technical review, report these metrics together:</p>
+<ul>
+<li>Scope size (accounts/projects and resource families).</li>
+<li>Completion ratio per provider.</li>
+<li>Rate-limit and timeout incidence by stage/reason.</li>
+<li>Median and p95 scan duration under fixed profile.</li>
+</ul>
+
+
+<h2 id="rollout-playbook-appendix">Rollout playbook appendix: repeatable sequence for constrained environments</h2>
+<p>Many rollout failures are sequence failures, not software failures. Teams start with full scope, hit proxy gaps, trigger provider throttling, then conclude the tool is unstable. A stable sequence is more reliable: start narrow, confirm transport assumptions, then expand scope with measurable control points. For practical rollout we recommend a five-phase ladder.</p>
+<p><strong>Phase 1: Runtime sanity.</strong> Validate local API health, token behavior, and baseline logging before any provider scan. If local runtime checks fail, provider debugging is wasted effort.</p>
+<p><strong>Phase 2: Network path validation.</strong> Validate proxy and direct routes per provider group. Record route policy explicitly. Mixed environments often require one path for provider APIs and another for notifications.</p>
+<p><strong>Phase 3: Pilot scope.</strong> Scan a small, representative account group that includes at least one expected finding category (for example idle compute or unattached storage). This confirms end-to-end evidence generation.</p>
+<p><strong>Phase 4: Controlled expansion.</strong> Increase account scope gradually while monitoring stage/reason failure distribution and scan completion ratio. Do not increase scope and concurrency simultaneously; that masks root causes.</p>
+<p><strong>Phase 5: Governance lock-in.</strong> Once behavior is stable, freeze a baseline profile for weekly operations. Changes to concurrency or timeout should follow the same change protocol as policy updates.</p>
+<p>For reliability, record an operations baseline after each phase: scope size, completion ratio, median duration, top failure classes, and remediation notes. This baseline history becomes invaluable when incidents occur months later. Without it, teams rely on memory and anecdote.</p>
+<p>Another practical point is communication: report degraded scans as degraded, not failed or successful. A degraded scan can still provide useful findings if missing scope is explicit. This distinction helps stakeholders make informed decisions instead of all-or-nothing reactions.</p>
+<p>Lastly, avoid "hero tuning" by a single operator. Every runtime profile should be reproducible by another team member with the same documented configuration. If only one person can keep scans stable, reliability is fragile regardless of software quality.</p>
+
+
+
+<h2 id="runtime-faq">Implementation FAQ: performance and reliability operations</h2>
+<p><strong>Q: Should we always increase concurrency to reduce scan time?</strong> No. Increase only when completion ratio and failure-class distribution remain stable. Faster scans with unstable completion are usually a net loss for weekly governance.</p>
+<p><strong>Q: How do we classify timeout incidents quickly?</strong> Use stage/reason grouping first: transport path issue, target endpoint issue, or configuration issue. This narrows remediation faster than provider-by-provider guessing.</p>
+<p><strong>Q: When should we mark a run degraded instead of failed?</strong> Mark degraded when a subset of scope completed with valid evidence and missing scope is explicit. Mark failed when core evidence integrity is compromised or completion is too low for safe decision-making.</p>
+<p><strong>Q: How do we prevent repeated rollout regressions?</strong> Keep a baseline profile artifact and require explicit approval for runtime parameter changes. Most regressions come from silent profile drift rather than code defects.</p>
+<p><strong>Q: What do technical buyers care about most here?</strong> Predictable completion and explainable failure handling. Buyers accept slower scans when they can trust outputs and recovery paths.</p>
+
+
+<h2 id="runtime-field-notes">Field notes: reliability patterns from rollout practice</h2>
+<p>In constrained environments, the most common false diagnosis is confusing connectivity success with scan success. A health check can pass while deep scan calls fail against region-specific or service-specific endpoints. Teams should test representative endpoints during pilot, not only a single status route. Another pattern is timeout inflation as a substitute for root-cause analysis. Raising timeouts can hide route misconfiguration and extend incident duration. Prefer stage/reason triage first, then adjust timeout and concurrency with measured intent.</p>
+<p>A practical operating pattern is "one change per run" during rollout: change either scope, network route, concurrency, or timeout, but not multiple dimensions at once. This keeps cause-and-effect clear and dramatically shortens stabilization time.</p>
+
+<h2 id="data-sources">Data sources for this chapter</h2>
+<ul>
+<li><a href="../help.html">Troubleshooting flow</a> and <a href="../blog/network-proxy-setup-restricted-environments.html">Restricted network guide</a> for stage/reason failure taxonomy.</li>
+<li><code>scripts/local_stack_check.sh</code> and local validation flow for runtime baseline checks.</li>
+<li><a href="../api.html">API Playbooks</a> for controlled rollout and export workflows.</li>
+</ul>
+
+<h2 id="next-part">Next: from runtime behavior to delivery governance</h2>
+<p><a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a> explains how these runtime expectations are encoded into release gates, audit artifacts, and coverage governance.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

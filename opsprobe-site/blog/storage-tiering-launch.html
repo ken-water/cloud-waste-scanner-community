@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From Compute Cleanup to Storage Tiering in v1.10 | Cloud Waste Scanner</title>
+  <meta name="description" content="From Compute Cleanup to Storage Tiering: What Changed in v1.10: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence.">
+  <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <script defer src="../js/blog-toc.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a>
+      <nav class="nav-links" aria-label="Primary"><a href="../index.html">Home</a><a href="../pricing.html">Beta</a><a href="../skills.html">Skills</a><a href="../blog.html" aria-current="page">Blog</a><a href="../solutions.html">Solutions</a><a href="../help.html">Help</a></nav>
+      <div class="nav-actions"><a class="btn primary" href="../download/">Download</a></div>
+    </div>
+  </header>
+  <main class="section">
+  <div class="container article-layout">
+    <aside class="blog-sidebar" aria-label="Article table of contents">
+      <section class="blog-sidebar-card" data-blog-toc-card>
+        <h2>On this page</h2>
+        <div class="toc-links" data-blog-toc></div>
+      </section>
+    </aside>
+    <article class="article">
+      <div class="eyebrow">Product Updates</div>
+      <h1>From Compute Cleanup to Storage Tiering in v1.10</h1>
+      <p class="lead">From Compute Cleanup to Storage Tiering: What Changed in v1.10: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence.</p>
+      <div class="meta-line">2026-01-31 · Product Updates</div>
+      <div class="article-body" data-article-body><p>Most teams already know how to delete obvious idle compute. The harder part is storage: old data that still matters, but no longer belongs on the most expensive tier.</p>
+            <p>That is the core of v1.10. The release expands provider coverage and pushes the product from compute-only cleanup into storage lifecycle analysis, where the decision is often not delete, but move, retain, and lower the bill without creating data-loss risk.</p>
+
+            <h2>Wider provider coverage without changing the workflow</h2>
+            <p>Real cloud estates are rarely cleanly standardized. Some teams live on AWS, Azure, and GCP. Others keep regional workloads on Alibaba Cloud, Tencent Cloud, Baidu Cloud, Oracle, IBM, or smaller providers that still matter in day-to-day operations.</p>
+            <p>The point of broader support is not logo count. It is fewer tab switches and fewer review meetings split by provider.</p>
+
+            <div>
+                <h3>Engineering notebook: every provider speaks a different dialect</h3>
+                <p>The hard work here was not just adding endpoints. Authentication and request signing differ by provider. AWS uses SigV4, Tencent mixes TC3 and older COS signatures, Baidu has its own canonical rules, and Oracle depends on RSA-SHA256 request signing with private-key handling. The product hides that complexity so the operator does not need to.</p>
+            </div>
+
+            <h2>Why storage tiering matters more than another delete rule</h2>
+            <p>Plenty of tools can tell you that an empty bucket should be removed. That is useful, but not where most enterprise storage waste sits. The bigger problem is older data that is still retained for reporting, audit, or recovery, while standard storage pricing continues month after month.</p>
+            <p>Storage tiering analysis looks for that pattern. If a large bucket has no transition or expiration policy, the product can flag it for review and estimate the savings from moving colder data into cheaper classes.</p>
+
+            <h2>What the review checks actually examine</h2>
+            <ol>
+                <li><strong>Lifecycle policy coverage:</strong> large buckets without transition or expiration rules are surfaced because they usually deserve an explicit decision.</li>
+                <li><strong>Potential savings:</strong> the report estimates the difference between standard tiers and colder archive tiers, so the meeting can start with a number instead of a guess.</li>
+                <li><strong>Provider-aware detection:</strong> tiering advice adapts to what each platform already exposes, such as storage class metadata or provider-specific bucket behavior.</li>
+            </ol>
+
+            <h2>A safer vocabulary for operators</h2>
+            <p>One reason storage reviews go nowhere is operator anxiety. If the UI only knows how to say delete, teams will postpone the discussion. The newer archive action changes that. It tells the operator exactly what kind of move is being suggested: keep the data, lower the storage cost.</p>
+            <p>That distinction matters in weekly review because it reduces the emotional weight of the recommendation and helps non-engineering reviewers understand the difference between cost reduction and destructive cleanup.</p>
+
+            <blockquote>These buckets are cold but still needed. Move them to archive tier and save without taking deletion risk.</blockquote>
+
+            <h2>Why this release line mattered</h2>
+            <p>With v1.10, the product moved from finding obviously dead resources to supporting a broader review loop: find, tier, verify, and defend the decision in front of the team that owns the data.</p>
+            <p>For compute-side optimization in the same operating model, review <a href="rightsizing-launch.html">Rightsizing Launch</a>. For recurring leak patterns that pair with storage reviews, see <a href="hidden-cloud-costs.html">5 Hidden Cloud Costs</a>.</p></div>
+      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+    </article>
+  </div>
+</main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div><a class="brand" href="../index.html"><img src="../assets/product-icon.svg" alt="Cloud Waste Scanner"><span>Cloud Waste Scanner</span></a><p style="margin-top:14px; max-width:320px;">Local-first cloud waste review with commercial licensing and clear evidence outputs.</p></div>
+      <div><h3>Product</h3><div class="footer-links"><a href="../pricing.html">Public Beta</a><a href="../download/">Download</a><a href="../solutions.html">Solutions</a><a href="../api.html">API</a></div></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="../blog.html">Blog</a><a href="../blog-series.html">Blog Series</a><a href="../skills.html">Skills</a><a href="../roadmap.html">Roadmap</a></div></div>
+      <div><h3>Support</h3><div class="footer-links"><a href="../help.html">Help</a><a href="../feedback.html">Feedback</a><a href="../recover.html">Recover License</a></div></div>
+      <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
+    </div>
+  </footer>
+</body>
+</html>

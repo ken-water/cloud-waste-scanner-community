@@ -260,9 +260,11 @@ pub(crate) fn summarize_error_text(raw: &str, max_chars: usize) -> String {
 pub(crate) fn normalize_runtime_plan_type(value: &str) -> String {
     match value.trim().to_ascii_lowercase().as_str() {
         "subscription" => "monthly".to_string(),
-        "per-use" => "starter".to_string(),
+        "per-use" | "per_use" => "starter".to_string(),
+        "public-beta" | "public_beta" | "beta" => "public_beta".to_string(),
         "starter" => "starter".to_string(),
         "trial" => "trial".to_string(),
+        "trial_expired" | "expired_trial" => "trial_expired".to_string(),
         "monthly" => "monthly".to_string(),
         "yearly" => "yearly".to_string(),
         "lifetime" => "lifetime".to_string(),
@@ -298,18 +300,20 @@ pub(crate) struct RuntimeCapabilitySnapshot {
     pub(crate) plan_type: String,
     pub(crate) edition: String,
     pub(crate) is_trial: bool,
+    pub(crate) trial_expires_at: Option<i64>,
+    pub(crate) trial_days_remaining: Option<i64>,
     pub(crate) entitlements: RuntimeEntitlements,
     pub(crate) capabilities: RuntimeCapabilityFlags,
 }
 
 pub(crate) fn resolve_runtime_edition(plan_type: &str, is_trial: bool) -> String {
-    if is_trial {
-        return "community".to_string();
-    }
     match normalize_runtime_plan_type(plan_type).as_str() {
-        "enterprise" | "advanced" | "site" => "enterprise".to_string(),
-        "team" | "monthly" | "yearly" | "lifetime" | "pro" => "team".to_string(),
-        "starter" | "trial" | "community" | "oss" | "free" => "community".to_string(),
+        "trial_expired" => "community".to_string(),
+        "public_beta" => "public_beta".to_string(),
+        "trial" if is_trial => "enterprise".to_string(),
+        "monthly" | "yearly" | "lifetime" | "pro" | "team" | "enterprise" | "advanced" | "site" => "enterprise".to_string(),
+        "starter" | "community" | "oss" | "free" => "community".to_string(),
+        "trial" => "community".to_string(),
         _ => "community".to_string(),
     }
 }
@@ -317,7 +321,7 @@ pub(crate) fn resolve_runtime_edition(plan_type: &str, is_trial: bool) -> String
 pub(crate) fn build_runtime_entitlements(plan_type: &str, is_trial: bool) -> RuntimeEntitlements {
     let edition = resolve_runtime_edition(plan_type, is_trial);
     match edition.as_str() {
-        "enterprise" => RuntimeEntitlements {
+        "enterprise" | "public_beta" => RuntimeEntitlements {
             local_scan: true,
             basic_report: true,
             resource_details: true,
@@ -339,13 +343,24 @@ pub(crate) fn build_runtime_entitlements(plan_type: &str, is_trial: bool) -> Run
             sso: false,
             scim: false,
         },
-        _ => RuntimeEntitlements {
-            local_scan: true,
-            basic_report: true,
-            resource_details: !is_trial,
-            local_api: !is_trial,
+        _ if normalize_runtime_plan_type(plan_type) == "trial_expired" => RuntimeEntitlements {
+            local_scan: false,
+            basic_report: false,
+            resource_details: false,
+            local_api: false,
             team_workspace: false,
             scheduled_audits: false,
+            audit_log: false,
+            sso: false,
+            scim: false,
+        },
+        _ => RuntimeEntitlements {
+            local_scan: false,
+            basic_report: false,
+            resource_details: is_trial,
+            local_api: is_trial,
+            team_workspace: false,
+            scheduled_audits: is_trial,
             audit_log: false,
             sso: false,
             scim: false,
@@ -380,6 +395,8 @@ pub(crate) fn build_runtime_capability_snapshot(
         plan_type: normalized_plan_type,
         edition,
         is_trial,
+        trial_expires_at: None,
+        trial_days_remaining: None,
         entitlements,
         capabilities,
     }
@@ -406,7 +423,7 @@ pub(crate) fn summarize_for_trial(results: &[WastedResource]) -> Vec<WastedResou
         region: "-".to_string(),
         resource_type: "Estimated Waste".to_string(),
         details: format!(
-            "Potential waste found across your selected accounts. Community mode keeps detailed findings local on this machine ({} findings).",
+            "Potential waste found across your selected accounts. Unlicensed mode keeps detailed findings local on this machine ({} findings).",
             results.len()
         ),
         estimated_monthly_cost: total_savings,
@@ -665,24 +682,44 @@ mod tests {
     fn runtime_plan_type_normalization_handles_legacy_values() {
         assert_eq!(normalize_runtime_plan_type("subscription"), "monthly");
         assert_eq!(normalize_runtime_plan_type("per-use"), "starter");
+        assert_eq!(normalize_runtime_plan_type("per_use"), "starter");
+        assert_eq!(
+            normalize_runtime_plan_type("expired_trial"),
+            "trial_expired"
+        );
         assert_eq!(normalize_runtime_plan_type(" yearly "), "yearly");
     }
 
     #[test]
     fn runtime_edition_and_entitlements_follow_plan_boundaries() {
-        assert_eq!(resolve_runtime_edition("trial", true), "community");
-        assert_eq!(resolve_runtime_edition("monthly", false), "team");
+        assert_eq!(resolve_runtime_edition("trial", true), "enterprise");
+        assert_eq!(resolve_runtime_edition("trial_expired", true), "community");
+        assert_eq!(resolve_runtime_edition("monthly", false), "enterprise");
         assert_eq!(resolve_runtime_edition("enterprise", false), "enterprise");
 
-        let community = build_runtime_entitlements("starter", false);
-        assert!(community.local_scan);
-        assert!(!community.team_workspace);
-        assert!(!community.sso);
+        let unlicensed = build_runtime_entitlements("starter", false);
+        assert!(!unlicensed.local_scan);
+        assert!(!unlicensed.basic_report);
+        assert!(!unlicensed.resource_details);
+        assert!(!unlicensed.local_api);
+        assert!(!unlicensed.team_workspace);
+        assert!(!unlicensed.sso);
 
-        let team = build_runtime_entitlements("yearly", false);
-        assert!(team.team_workspace);
-        assert!(team.scheduled_audits);
-        assert!(!team.sso);
+        let paid = build_runtime_entitlements("yearly", false);
+        assert!(paid.team_workspace);
+        assert!(paid.scheduled_audits);
+        assert!(paid.audit_log);
+        assert!(paid.sso);
+
+        let trial = build_runtime_entitlements("trial", true);
+        assert!(trial.local_scan);
+        assert!(trial.team_workspace);
+        assert!(trial.audit_log);
+
+        let expired = build_runtime_entitlements("trial_expired", true);
+        assert!(!expired.local_scan);
+        assert!(!expired.local_api);
+        assert!(!expired.team_workspace);
 
         let enterprise = build_runtime_entitlements("enterprise", false);
         assert!(enterprise.sso);
