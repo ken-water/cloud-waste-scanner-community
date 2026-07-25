@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Whitepaper P2: Control Matrix and Safeguards</title>
+    <meta name="description" content="Control Matrix and Operational Safeguards: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Security Whitepaper P2: Control Matrix and Safeguards">
+    <meta property="og:description" content="Control Matrix and Operational Safeguards: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/security-whitepaper-cover.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Security Whitepaper P2: Control Matrix and Safeguards">
+    <meta name="twitter:description" content="Control Matrix and Operational Safeguards: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/security-whitepaper-cover.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html",
+      "headline": "Security Whitepaper P2: Control Matrix and Safeguards",
+      "description": "Control Matrix and Operational Safeguards: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.",
+      "datePublished": "2026-03-18",
+      "dateModified": "2026-03-18",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/whitepapers/security-part2-control-matrix-layers.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Security Whitepaper P2: Control Matrix and Safeguards",
+          "item": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="blog-shell">
+                <article class="blog-main min-w-0">
+                    <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                        <div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Security Whitepaper</a><span class="blog-divider-dot">/</span><span>Part 2</span></div>
+                        <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-indigo-700 uppercase bg-indigo-50 rounded-full">Security Whitepaper</span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Control Matrix and Operational Safeguards</h1>
+                        <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 2 maps architecture claims to controls, evidence points, and operator safeguards that can be reviewed by security and compliance teams.</p>
+                        <div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-18">Mar 18, 2026</time><span class="blog-reading-time">Reading time: 7 min</span></div>
+                    </header>
+
+                    <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Security Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Read in order: trust boundary -&gt; control matrix -&gt; verification -&gt; token hardening -&gt; transport and auditability.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Part 2 converts the threat model from Part 1 into a working control matrix. This chapter is written for teams preparing security sign-off and rollout checklists, not for marketing narratives.</p>
+
+<h2 id="chapter-continuity" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Why this chapter follows threat modeling</h2>
+<p><a href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Part 1</a> defined boundary and threat assumptions. Part 2 translates those assumptions into practical controls: preventive, detective, and procedural. <a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a> then verifies whether those controls actually work in operations.</p>
+
+<h2 id="control-method" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Control matrix method</h2>
+<p>Each control entry answers four questions: what risk it addresses, where it is enforced, who owns it, and how to verify it. Without those four fields, control catalogs become documentation overhead and fail during incidents.</p>
+
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/security-part2-control-matrix-layers.svg" alt="Control matrix layers for preventive, detective, procedural, and assurance controls." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure S2-1. Control matrix layers across risk coverage and ownership.</figcaption>
+</figure>
+<h2 id="preventive-controls" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Preventive controls</h2>
+<ul>
+<li><strong>Least-privilege credential scope:</strong> restrict provider permissions to required scan and review path.</li>
+<li><strong>Environment separation:</strong> isolate production and non-production credentials and profiles.</li>
+<li><strong>Token access control:</strong> require bearer token for protected local API routes.</li>
+<li><strong>Route governance:</strong> use explicit proxy profiles for environments with controlled egress.</li>
+</ul>
+<p>These controls reduce exposure probability but do not by themselves prove operational readiness. Verification is still required.</p>
+
+<h2 id="detective-controls" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Detective controls</h2>
+<ul>
+<li><strong>Structured failure taxonomy:</strong> stage/reason diagnostics for faster root-cause isolation.</li>
+<li><strong>Operational logs:</strong> local runtime evidence for execution path and error context.</li>
+<li><strong>Review artifacts:</strong> export packs supporting cross-team evidence review.</li>
+<li><strong>Release traceability:</strong> release notes and ledger alignment for behavior change auditing.</li>
+</ul>
+<p>Detective controls are essential for controlled recovery. Prevention failures happen; detection quality determines recovery time and incident communication quality.</p>
+
+<h2 id="procedural-controls" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Procedural controls</h2>
+<ul>
+<li>Owner-based review before destructive remediation actions.</li>
+<li>Credential rotation cadence and documented revocation process.</li>
+<li>Change-management linkage between release notes and operational runbooks.</li>
+<li>Post-incident review that updates control runbooks and checklist items.</li>
+</ul>
+<p>Procedural controls are often underestimated. In multi-team environments, they are usually the difference between one-hour containment and multi-day confusion.</p>
+
+<h2 id="control-to-proof" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Control-to-proof mapping</h2>
+<p>For each control, capture a proof artifact and review cadence. Examples include:</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/security-part2-control-proof-cycle.svg" alt="Control-to-proof cycle from statement to evidence artifact." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure S2-2. Control-to-proof cycle with review cadence and exception register.</figcaption>
+</figure>
+<ul>
+<li>token-enforced endpoint checks with expected unauthorized response behavior;</li>
+<li>proxy-profile test logs for route validation;</li>
+<li>checksum verification records for installer or package rollouts;</li>
+<li>release evidence packets tied to roadmap and ledger entries.</li>
+</ul>
+<p>This mapping makes audits faster because reviewers do not need to guess where evidence lives.</p>
+
+<h2 id="case-study" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6. Case study: control gaps that usually appear in first rollout</h2>
+<p>The first rollout often reveals three predictable gaps. First, credentials are scoped too broadly "for convenience" and never reduced. Second, token controls are enabled but not validated against real misuse scenarios. Third, runbooks contain control statements without proof references. Teams can close these gaps quickly by enforcing control-to-proof mapping as a release requirement.</p>
+<p>The key lesson is that control statements should be treated as executable policy, not policy prose. If a control cannot be verified in under ten minutes, it is likely incomplete.</p>
+
+<h2 id="implementation-faq" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation FAQ for control owners</h2>
+<p><strong>Q: Should we prioritize preventive or detective controls first?</strong> Prioritize a minimum set of both. Preventive-only strategies fail when incidents occur and no diagnostics exist.</p>
+<p><strong>Q: How do we avoid control fatigue?</strong> Keep control entries short, map each to one owner, and remove duplicate controls that do not produce distinct evidence.</p>
+<p><strong>Q: What does "good enough" look like for first production wave?</strong> Least privilege, token enforcement, route validation, release integrity proof, and owner-approved remediation workflow.</p>
+
+<h2 id="control-operations-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Control operations notes: keeping the matrix usable</h2>
+<p>Control matrices often degrade after launch because entries become stale or too detailed to maintain. To avoid this, keep each control entry concise and action-oriented: objective, owner, verification method, and evidence location. If an entry requires a full page to explain, split it into independent controls with separate owners.</p>
+<p>Another practical issue is uneven ownership maturity. Some controls have clear security ownership, while others sit between platform and operations. For hybrid controls, assign one accountable owner and one supporting owner; avoid shared ownership without accountability. During incidents, "joint ownership" without clear accountability causes delays.</p>
+<p>A third issue is control overlap across teams. Different teams may create similar controls with different naming. Standardize naming and maintain a single matrix source to prevent duplicate reporting and audit confusion. Control sprawl is a hidden cost that reduces reviewer confidence.</p>
+<p>Finally, review control exceptions regularly. Exceptions are normal in real environments, but unreviewed exceptions become permanent risk. Keep exception records with expiry date, risk statement, and remediation plan. This makes risk acceptance explicit rather than accidental.</p>
+<h2 id="matrix-review-check" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Matrix review check for operational readiness</h2>
+<ul>
+<li>Every high-risk control has an owner and proof artifact.</li>
+<li>Every exception has expiry and remediation timeline.</li>
+<li>Every critical control appears in both runbook and periodic verification list.</li>
+<li>Control naming is consistent across docs, dashboards, and release evidence.</li>
+</ul>
+
+<h2 id="control-audit-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Control audit notes: avoiding documentation theater</h2>
+<p>A control matrix can look complete while still being weak in audit context. The most common cause is missing evidence linkage. A control says "token rotation enforced," but there is no reference to actual rotation records or revocation tests. To prevent this, require each high-risk control to include one machine-verifiable or log-verifiable proof path. This keeps controls anchored to operations.</p>
+<p>Another practical improvement is evidence aging policy. Proof artifacts lose value when too old. Define freshness thresholds for each control category. For example, token and route controls should have fresher evidence than static policy statements. During quarterly review, flag stale evidence as control debt and assign remediation owner.</p>
+<p>Finally, run one cross-functional control review each quarter with security, platform, and operations owners in the same room. The objective is to detect interpretation drift early. If teams interpret the same control differently, incident response quality drops even if the control text is technically correct.</p>
+
+<h2 id="appendix-control-quality" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Appendix: control quality scoring and maintenance</h2>
+<p>A practical way to sustain control quality is to score each control quarterly on four dimensions: clarity, evidence quality, ownership clarity, and operational burden. Controls with high burden and low evidence value should be redesigned or removed. Controls with low clarity should be rewritten in operator language and paired with one concrete verification method. This scoring approach helps teams improve control systems without adding unnecessary complexity.</p>
+<p>Another important practice is dependency mapping between controls. Some controls depend on others to be meaningful. For instance, route governance controls may depend on token hardening controls for complete protection. Mapping dependencies prevents isolated control optimization that leaves systemic gaps.</p>
+<p>For audits, retain a control-change log that records why controls were added, changed, or retired. This log provides context that auditors often ask for when reviewing evolving control environments. Without change context, even strong current controls can appear inconsistent historically.</p>
+<p>In day-to-day operations, rotate control review leadership among security and operations owners. This cross-ownership review model reduces blind spots and improves shared understanding of practical constraints.</p>
+
+<h2 id="data-sources" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Data sources for this chapter</h2>
+<ul>
+<li><a href="../api-token-guide.html">API Token Guide</a> and <a href="../api-reference.html">API Reference</a> for auth and route controls.</li>
+<li><a href="../documentation.html#troubleshooting-flow">Troubleshooting flow</a> for diagnostic taxonomy expectations.</li>
+<li><a href="../release-ledger.html">Release Ledger</a> and <a href="../roadmap.html">Roadmap</a> for control evolution evidence.</li>
+</ul>
+
+<h2 id="next-part" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next: verification and incident readiness</h2>
+<p>Continue to <a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a> for verification sequence, incident triage structure, and operator readiness checks.</p>
+
+
+<section class="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Security Review Checklist</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900">Download the operator checklist used in enterprise reviews</h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Use this checklist in architecture review, rollout sign-off, and recurring governance audits.</p>
+<div class="mt-5">
+<a href="../files/security-review-checklist-v1.pdf" download class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors">Download Security Review Checklist</a>
+</div>
+</section>
+</div>
+
+                    <div class="cws-cta-panel mt-16">
+                        <div class="cws-cta-inner text-center">
+                            <div class="cws-cta-kicker mx-auto">Security Review Workflow</div>
+                            <h3 class="cws-cta-title mt-4">Validate this control path in your own environment</h3>
+                            <p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p>
+                            <div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div>
+                        </div>
+                    </div>
+                </article>
+                <aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

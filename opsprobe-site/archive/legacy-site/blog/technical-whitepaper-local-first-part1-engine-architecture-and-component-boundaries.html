@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Whitepaper P1: Engine Architecture and Boundaries</title>
+    <meta name="description" content="Engine Architecture and Component Boundaries: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Tech Whitepaper P1: Engine Architecture and Boundaries">
+    <meta property="og:description" content="Engine Architecture and Component Boundaries: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/tech-whitepaper-cover.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tech Whitepaper P1: Engine Architecture and Boundaries">
+    <meta name="twitter:description" content="Engine Architecture and Component Boundaries: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/tech-whitepaper-cover.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html",
+      "headline": "Tech Whitepaper P1: Engine Architecture and Boundaries",
+      "description": "Engine Architecture and Component Boundaries: technical architecture guidance for Cloud Waste Scanner data models, reliability, auditability, and rollout.",
+      "datePublished": "2026-03-18",
+      "dateModified": "2026-03-18",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/whitepapers/tech-architecture-boundaries.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Tech Whitepaper P1: Engine Architecture and Boundaries",
+          "item": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+<main class="pt-24 pb-16">
+<section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8"><div class="blog-shell"><article class="blog-main min-w-0">
+<header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+<div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Whitepaper Series</a><span class="blog-divider-dot">/</span><span>Technical Part 1</span></div>
+<span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-blue-700 uppercase bg-blue-50 rounded-full">Technical Whitepaper Â· v1.0 Â· 2026-03</span>
+<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Engine Architecture and Component Boundaries</h1>
+<p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 1 explains how Cloud Waste Scanner separates orchestration, scan execution, provider adapters, and evidence outputs so multi-cloud governance stays auditable and maintainable.</p>
+<div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-blue-100 text-blue-700 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-18">Mar 18, 2026</time><span class="blog-reading-time">Reading time: 8 min</span></div>
+</header>
+<div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Technical Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Read in order for full context: architecture -&gt; data model -&gt; performance -&gt; quality gates -&gt; platform roadmap.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Part 1 sets the baseline for this technical series. If you are evaluating Cloud Waste Scanner in an architecture board, this chapter answers one question first: where exactly does each responsibility live, and how do we prevent responsibility drift as provider coverage grows?</p>
+
+<h2 id="chapter-continuity" class="text-3xl font-bold text-slate-900 mt-10 mb-4">How this chapter connects to the rest of the series</h2>
+<p>Read this chapter as the system boundary map. In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a> we move from boundaries to the normalized findings model that crosses those boundaries. In <a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a> we test whether that model still works under concurrency pressure, network constraints, and provider throttling. In <a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a> and <a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>, we explain how quality discipline and stack choices keep those decisions stable over time.</p>
+
+<h2 id="runtime-layers" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Runtime layers and ownership boundaries</h2>
+<p>The runtime is intentionally split into three layers:</p>
+<ul>
+<li><strong>Operator control layer (desktop):</strong> account selection, scan scope, export intent, local token management.</li>
+<li><strong>Execution layer (Rust core):</strong> provider calls, normalization, heuristics, policy evaluation, and deterministic result generation.</li>
+<li><strong>Evidence layer:</strong> local API responses, dashboard summaries, PDF/CSV outputs, and release-facing audit artifacts.</li>
+</ul>
+<p>This split is not cosmetic. It prevents a common failure mode in cloud governance tools: UI and policy logic becoming tightly coupled so every policy change requires a risky front-end rewrite. By isolating policy and normalization in the core layer, the desktop can evolve independently while the evidence contract remains stable for automation and compliance review.</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/tech-architecture-boundaries.svg" alt="Local-first engine architecture showing Tauri orchestrator, Rust core, provider plugins, and local evidence outputs." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure 1-1. Architecture boundary map: orchestration, core engine, plugin adapters, and local evidence outputs.</figcaption>
+</figure>
+
+<h2 id="component-contracts" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Component contracts: what each layer may and may not do</h2>
+<p>In design reviews we enforce explicit "can" and "cannot" lists:</p>
+<ul>
+<li>The desktop layer can collect operator input and trigger local API operations; it cannot interpret raw provider payloads directly.</li>
+<li>The core layer can evaluate policy against normalized entities; it cannot silently rewrite operator-selected scope.</li>
+<li>The evidence layer can format outputs for finance and platform teams; it cannot invent derived fields that policy did not produce.</li>
+</ul>
+<p>These constraints are there to preserve auditability. If a finding appears in a PDF, reviewers should be able to trace it back to one deterministic pipeline: provider payload -&gt; normalized entity -&gt; policy rule -&gt; export projection. No hidden branch should exist in the presentation layer.</p>
+
+<h2 id="plugin-system" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Provider plugin system and why it exists</h2>
+<p>Multi-cloud support fails quickly without a plugin contract. Providers differ in pagination shape, retry semantics, response naming, and eventual consistency behavior. CWS isolates those differences through provider adapters that emit a shared normalized model.</p>
+<ul>
+<li><strong>Adapter responsibility:</strong> map provider-native payloads to canonical entities with source references.</li>
+<li><strong>Core responsibility:</strong> evaluate policy only on canonical fields.</li>
+<li><strong>Output responsibility:</strong> preserve both canonical values and source lineage so reviewers can verify context.</li>
+</ul>
+<p>The practical impact is straightforward: adding or updating a provider should not force a rewrite of policy semantics. If it does, the contract is broken.</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/provider-plugin-system.svg" alt="Provider plugin contract with shared adapter interface for AWS, Azure, GCP, Alibaba and other clouds." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure 1-2. Plugin contract: one adapter interface across heterogeneous cloud APIs.</figcaption>
+</figure>
+
+<h2 id="local-first-path" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Local-first execution path and trust implications</h2>
+<ol>
+<li>Operator configures accounts and credentials locally.</li>
+<li>Provider API calls are executed from the operator environment.</li>
+<li>Findings are normalized and scored locally.</li>
+<li>Evidence artifacts are generated locally for handoff and review.</li>
+</ol>
+<p>That path keeps credential custody under operator control. It does not remove operational responsibility from the customer side; endpoint hygiene, proxy governance, and local runtime controls still matter. But it avoids the extra risk class of centralizing cloud credentials in a hosted scanning plane.</p>
+
+<h2 id="engineering-case" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Engineering case: boundary drift during provider expansion</h2>
+<p>A practical case from roadmap execution: when provider coverage expanded, the fastest short-term option was to add provider-specific severity interpretation in front-end renderers. We rejected that approach. Instead, we moved classification rules into core policy outputs and kept UI rendering data-driven. This added short-term work, but it prevented a long-term class of review bugs where two screens show the same resource with different priority labels.</p>
+<p>Why include this case? Because architecture debt in governance products usually appears in interpretation mismatches, not compile errors. The cost shows up in weekly review friction and delayed cleanup actions.</p>
+
+<h2 id="tradeoffs" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6. Explicit tradeoffs and non-goals</h2>
+<ul>
+<li><strong>Non-goal:</strong> a fully hosted scanner that accepts customer cloud credentials by default.</li>
+<li><strong>Tradeoff:</strong> local-first reduces central credential risk but increases endpoint-side operational expectations.</li>
+<li><strong>Tradeoff:</strong> plugin contracts improve maintainability but require ongoing provider-API adaptation work.</li>
+<li><strong>Non-goal:</strong> fully automatic destructive actions without review context.</li>
+</ul>
+
+
+<h2 id="architecture-review-checklist" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Architecture review checklist and practical pitfalls</h2>
+<p>Teams usually approve architecture too quickly and pay the price later in operational confusion. To avoid that, we use a concrete review checklist before broad rollout. First, verify that policy decisions are produced only by the core layer and never by ad-hoc front-end logic. Second, verify that adapter output can be traced to provider payload fields without manual interpretation. Third, verify that exports contain enough context for finance and operations reviewers to reach the same conclusion independently. Fourth, verify that failure states are explicit; silent fallback behavior should be treated as a defect, not a convenience feature.</p>
+<p>One practical pitfall is boundary leakage during urgent feature work. A team needs a provider-specific exception, adds logic in the nearest layer, and promises to refactor later. In most organizations, "later" does not arrive. Six months after launch, the architecture diagram still looks clean while the code path has become inconsistent across providers. The preventive measure is simple but strict: every provider-specific branch must live in the adapter or in versioned policy. If it appears in rendering logic or export templates, the reviewer should block the change.</p>
+<p>Another pitfall is implicit ownership. A multi-cloud product naturally attracts multiple stakeholders: platform engineering, cloud operations, finance analysts, and security reviewers. If ownership boundaries are not documented, every incident turns into a routing problem before it becomes a technical problem. Our recommendation is to map ownership directly to runtime layers: desktop behavior owned by product application engineering, core evaluation behavior owned by scan engine maintainers, and evidence format contracts jointly owned by operations and governance. This ownership map should be visible in onboarding docs and release checklists.</p>
+<p>A third pitfall is treating architecture docs as static. In practice, architecture is a living contract. Provider APIs change, runtime behavior evolves, and exported evidence requirements shift as organizations mature. To keep the contract alive, include architecture-boundary impact in release notes whenever a change touches adapter contracts, canonical fields, or evidence projection rules. This is less about formality and more about preventing drift between what teams believe the system does and what it actually does.</p>
+<p>Finally, architecture validation should include one dry-run review meeting, not just engineering tests. Ask a platform engineer, a finance reviewer, and a security reviewer to inspect the same exported package and answer three questions: what happened, why it was classified, and what action is safe. If the three answers diverge, the architecture may be technically correct but operationally weak. That feedback loop is often the fastest way to identify missing context in your evidence model.</p>
+
+
+
+<h2 id="boundary-faq" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation FAQ: boundary decisions in real teams</h2>
+<p><strong>Q: Why not collapse UI and policy to ship faster?</strong> Because short-term speed here usually creates long-term governance inconsistency. Once UI starts interpreting provider-specific fields directly, policy behavior diverges from exported evidence and review meetings become arguments about tooling behavior. Keeping policy in core avoids this drift.</p>
+<p><strong>Q: What is the smallest boundary set we can keep?</strong> At minimum, separate provider adaptation, policy evaluation, and output projection. If these three concerns mix, regression risk rises sharply during provider updates and release triage becomes expensive.</p>
+<p><strong>Q: How do we verify boundaries in code review?</strong> Add review prompts: Does this change introduce provider-specific branching outside adapters? Does it modify canonical fields without versioned migration notes? Does it add output fields that are not traceable to policy outputs? If any answer is yes, request refactor before merge.</p>
+<p><strong>Q: How do we present this to non-engineering stakeholders?</strong> Use one slide and one example. Show the path from provider payload to normalized finding to action recommendation. Then show a real resource example with evidence lineage. Non-engineering teams usually accept architecture decisions quickly when traceability is visible.</p>
+<p><strong>Q: What breaks first when boundaries are weak?</strong> Usually not performance. What breaks first is trust: two outputs disagree, ownership is ambiguous, and teams postpone action because they cannot prove confidence. Strong boundaries are the cheapest way to protect trust at scale.</p>
+
+
+<h2 id="data-sources" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Data sources for this chapter</h2>
+<ul>
+<li><a href="../documentation.html#core-concepts">Documentation - Core Concepts</a>: trust-boundary and local-first model.</li>
+<li><a href="../providers.html">Provider directory</a>: breadth pressure that motivates adapter boundaries.</li>
+<li><a href="../roadmap.html">Roadmap</a> and <a href="../release-ledger.html">Release Ledger</a>: evidence of iterative provider and architecture evolution.</li>
+</ul>
+<p>All claims in this chapter are grounded in repository-visible architecture behavior and public product documentation, not synthetic benchmark marketing numbers.</p>
+
+<h2 id="next-part" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next: from architecture to deterministic findings</h2>
+<p>In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>, we move one level deeper: the normalized findings schema, evidence lineage, and policy determinism rules that make architecture boundaries operationally useful.</p>
+</div>
+<div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Technical Evaluation Workflow</div><h3 class="cws-cta-title mt-4">Validate this control path in your own environment</h3><p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p><div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div></div></div>
+</article><aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside></div></section>
+</main>
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+  <title id="t">Compliance mapping control evidence model</title>
+  <desc id="d">Mapping governance control intent to evidence artifacts for SOC2, ISO27001, and GDPR support workflows.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8fbff"/><stop offset="100%" stop-color="#eef3ff"/></linearGradient>
+    <linearGradient id="head" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0a66c2"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+    <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#1d4ed8"/></marker>
+  </defs>
+  <rect width="1700" height="980" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1620" height="900" rx="28" fill="#fff" stroke="#dbeafe" stroke-width="2"/>
+  <rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#head)"/>
+  <text x="100" y="116" font-size="34" font-family="Inter,Segoe UI,Arial,sans-serif" font-weight="700" fill="#fff">Compliance Mapping: Control Intent to Runtime Evidence</text>
+
+  <g filter="url(#shadow)">
+    <rect x="130" y="220" width="420" height="220" rx="18" fill="#ecfeff" stroke="#99f6e4" stroke-width="2"/>
+    <rect x="640" y="220" width="420" height="220" rx="18" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+    <rect x="1150" y="220" width="420" height="220" rx="18" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+    <rect x="130" y="520" width="420" height="300" rx="18" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+    <rect x="640" y="520" width="420" height="300" rx="18" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="2"/>
+    <rect x="1150" y="520" width="420" height="300" rx="18" fill="#fef2f2" stroke="#fecaca" stroke-width="2"/>
+  </g>
+
+  <foreignObject x="160" y="246" width="360" height="180"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Segoe UI,Arial,sans-serif;"><div style="font-size:25px;font-weight:700;color:#0f172a;">SOC2 Readiness</div><div style="font-size:18px;line-height:1.35;color:#334155;">Security, availability, confidentiality, processing integrity through traceable closure evidence.</div></div></foreignObject>
+  <foreignObject x="670" y="246" width="360" height="180"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Segoe UI,Arial,sans-serif;"><div style="font-size:25px;font-weight:700;color:#0f172a;">ISO27001 Alignment</div><div style="font-size:18px;line-height:1.35;color:#334155;">Control-family mapping for access, operations, change, and supplier workflows.</div></div></foreignObject>
+  <foreignObject x="1180" y="246" width="360" height="180"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Segoe UI,Arial,sans-serif;"><div style="font-size:25px;font-weight:700;color:#0f172a;">GDPR Support</div><div style="font-size:18px;line-height:1.35;color:#334155;">Data-minimized metadata handling, retention control, and role-scoped export access.</div></div></foreignObject>
+
+  <foreignObject x="160" y="548" width="360" height="260"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Segoe UI,Arial,sans-serif;"><div style="font-size:24px;font-weight:700;color:#0f172a;">Control Inputs</div><div style="font-size:18px;line-height:1.35;color:#334155;">Finding class taxonomy, owner route, exception expiry, risk lane, retention class.</div></div></foreignObject>
+  <foreignObject x="670" y="548" width="360" height="260"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Segoe UI,Arial,sans-serif;"><div style="font-size:24px;font-weight:700;color:#0f172a;">Evidence Pipeline</div><div style="font-size:18px;line-height:1.35;color:#334155;">Approval record, execution timestamp, validation proof, rollback pointer, export manifest.</div></div></foreignObject>
+  <foreignObject x="1180" y="548" width="360" height="260"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter,Segoe UI,Arial,sans-serif;"><div style="font-size:24px;font-weight:700;color:#0f172a;">Review Artifacts</div><div style="font-size:18px;line-height:1.35;color:#334155;">Audit packet, procurement response, executive summary, residual risk register update.</div></div></foreignObject>
+
+  <path d="M340,440 L340,520" fill="none" stroke="#2563eb" stroke-width="4" marker-end="url(#arrowHead)"/>
+  <path d="M850,440 L850,520" fill="none" stroke="#2563eb" stroke-width="4" marker-end="url(#arrowHead)"/>
+  <path d="M1360,440 L1360,520" fill="none" stroke="#2563eb" stroke-width="4" marker-end="url(#arrowHead)"/>
+  <path d="M550,670 L640,670" fill="none" stroke="#2563eb" stroke-width="4" marker-end="url(#arrowHead)"/>
+  <path d="M1060,670 L1150,670" fill="none" stroke="#2563eb" stroke-width="4" marker-end="url(#arrowHead)"/>
+</svg>

@@ -24,9 +24,12 @@ For current Community usage, interpret licensing and repository intent according
 
 1. `LICENSE` on current `main`
 2. `README.md` on current `main`
-3. This transition file
+3. `RELEASE_AND_DELIVERY_BASELINE.md` on current `main`
+4. This transition file
 
 in that order.
+
+If older package metadata, historical release bodies, or legacy commercial wording conflict with the files above, treat the current `main` branch files above as authoritative.
 
 ## Commercial Use
 

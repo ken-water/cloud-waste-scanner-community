@@ -3,6 +3,8 @@
 ## Positioning
 Community is the local-first discovery and evidence layer.
 
+Community is the shipped baseline on `main`.
+
 It is intended for operators and small teams who need to:
 - scan cloud resources locally
 - inspect findings on one machine

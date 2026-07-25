@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v3.1.0: Handoff Packages and Governance Lifecycle Closure | CWS</title>
+  <meta name="description" content="Cloud Waste Scanner v3.1.0 adds persistent handoff packages, stronger governance lifecycle closure metrics, and explicit reopen controls for owner reassignment.">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/blog/governance-handoff-lifecycle-v3-1-0.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="v3.1.0: Handoff Packages and Governance Lifecycle Closure | CWS">
+  <meta property="og:description" content="CWS v3.1.0 turns handoff into a persistent local object, adds lifecycle closure metrics, and makes reopen semantics explicit before closed findings move back into execution.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/blog/governance-handoff-lifecycle-v3-1-0.html">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/governance-handoff-v3-1-0-hero.webp">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="v3.1.0: Handoff Packages and Governance Lifecycle Closure | CWS">
+  <meta name="twitter:description" content="Persistent handoff packages, lifecycle execution metrics, and explicit reopen controls for local-first governance teams.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/governance-handoff-v3-1-0-hero.webp">
+  <meta name="featured-image" content="images/governance-handoff-v3-1-0-hero.webp">
+  <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../logo.png">
+  <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/governance-handoff-lifecycle-v3-1-0.html",
+      "headline": "v3.1.0: Handoff Packages and Governance Lifecycle Closure | CWS",
+      "description": "Cloud Waste Scanner v3.1.0 adds persistent handoff packages, stronger governance lifecycle closure metrics, and explicit reopen controls for owner reassignment.",
+      "datePublished": "2026-07-03",
+      "dateModified": "2026-07-03",
+      "author": {
+        "@type": "Person",
+        "name": "Ken"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/governance-handoff-v3-1-0-hero.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/governance-handoff-lifecycle-v3-1-0.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "v3.1.0: Handoff Packages and Governance Lifecycle Closure | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/governance-handoff-lifecycle-v3-1-0.html"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3XFEVKW2GG');
+  </script>
+</head>
+<body class="bg-white text-slate-600 antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="../blog-series.html?series=release-notes#release-notes">Release Notes</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+<main class="pt-24 pb-16">
+<section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="blog-shell">
+<article class="blog-main min-w-0">
+<header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-left">
+<div class="blog-breadcrumb justify-start"><a href="../blog.html">Blog</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=release-notes#release-notes">Release Notes</a><span class="blog-divider-dot">/</span><span>v3.1.0</span></div>
+<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">v3.1.0: Handoff Packages and Governance Lifecycle Closure</h1>
+<p class="text-xl text-slate-600 leading-relaxed">This release turns handoff into a persistent local package, adds closure-focused governance metrics, and requires explicit reopen reasoning before closed findings move back into owner execution.</p>
+<div class="blog-meta-row mt-5"><time datetime="2026-07-03">July 3, 2026</time><span>&bull;</span><span>9 min read</span><span>&bull;</span><span>Product Updates</span></div>
+</header>
+
+<figure class="my-8"><img src="images/governance-handoff-v3-1-0-hero.webp" alt="Cloud Waste Scanner v3.1.0 release banner showing scan results, governance review, and handoff export" class="w-full rounded-2xl border border-slate-200 bg-white" loading="lazy"><figcaption class="mt-3 text-sm text-slate-500">v3.1.0 focuses the operator workflow on three linked stages: prioritize findings, review governance closure, and hand off evidence cleanly.</figcaption></figure>
+
+<div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<p class="lead text-2xl text-slate-600 mb-8">Finding waste is only the first step. Teams still need to package evidence for the next owner, measure whether findings actually close, and avoid reopening work without context. v3.1.0 sharpens that part of the workflow.</p>
+
+<h2>What changed in v3.1.0</h2>
+<ul>
+<li><strong>Persistent handoff packages:</strong> handoff exports are now stored as local package records instead of existing only as files that can be lost or detached from context.</li>
+<li><strong>Lifecycle closure metrics:</strong> governance reporting now includes lifecycle totals, open backlog, assigned/in-progress/verified counts, overdue open findings, reopened open findings, and derived closure rates.</li>
+<li><strong>Explicit reopen controls:</strong> closed findings can no longer slip back into assignment without a reopen reason. The UI now asks for that reason before reassignment.</li>
+<li><strong>Stronger validation:</strong> new tests cover handoff persistence, lifecycle execution summaries, and governance scorecard rate calculations.</li>
+</ul>
+
+<h2>Why this matters</h2>
+<p>Before this release, a team could detect waste and even export evidence, but the execution trail still had weak spots:</p>
+<ul>
+<li>handoff files could be regenerated without a stable local record;</li>
+<li>governance metrics told you how scans were performing, but not whether execution was actually closing findings;</li>
+<li>a closed item could be reassigned without a clear operator-visible reopen step.</li>
+</ul>
+<p>v3.1.0 tightens those gaps. The result is better continuity between the person who finds waste, the person who reviews it, and the person who owns action.</p>
+
+<h2>Operator benefits</h2>
+<ul>
+<li><strong>Less evidence drift:</strong> recent handoff packages remain available locally for re-export and audit review.</li>
+<li><strong>Safer ownership changes:</strong> a closed finding now needs an explicit reopen explanation before it moves back into assigned execution.</li>
+<li><strong>Better weekly review:</strong> governance views now show closure rate, overdue open count, and reopened open count, not just detection-side metrics.</li>
+<li><strong>Cleaner lifecycle semantics:</strong> when work moves backward, outdated phase timestamps are cleared so the record matches the true workflow state.</li>
+</ul>
+
+<h2>Finance and governance value</h2>
+<p>For finance, handoff packaging is more useful when the underlying record is stable and re-runnable. For governance reviewers, detection metrics alone are not enough. They need to know:</p>
+<ul>
+<li>how many findings are still open,</li>
+<li>how many are overdue,</li>
+<li>how many had to be reopened,</li>
+<li>and whether closure is improving over time.</li>
+</ul>
+<p>Those are now first-class parts of the local governance scorecard.</p>
+
+<h2>How to use it</h2>
+<p>From the scan results screen:</p>
+<ol>
+<li>Create a handoff package from the current filtered or selected scope.</li>
+<li>Use the stored package list to re-export the same package later as TXT, CSV, or JSON.</li>
+<li>Open Governance to review closure rate, overdue open findings, and reopened open findings.</li>
+<li>If a closed finding must go back to an owner, enter a reopen reason during reassignment so the lifecycle record stays explainable.</li>
+</ol>
+
+<h2>Who should care first</h2>
+<ul>
+<li><strong>Solo operators:</strong> you now get better local continuity between scan, export, and follow-up without adding a hosted dependency.</li>
+<li><strong>Manager-review teams:</strong> governance views are more useful for weekly operating rhythm because they include execution health, not only scan yield.</li>
+<li><strong>Audit-sensitive environments:</strong> explicit reopen reasoning reduces ambiguity when an item that was previously marked closed returns to active work.</li>
+</ul>
+
+<h2>Implementation notes</h2>
+<p>This release keeps the Community boundary intact. Evidence stays local. Handoff packages are stored locally. The workflow is stronger, but it is still local-first rather than SaaS-coordinated.</p>
+<p>The repository now also includes targeted regression coverage for:</p>
+<ul>
+<li>handoff package persistence and retrieval;</li>
+<li>lifecycle execution summary calculations;</li>
+<li>governance scorecard lifecycle-derived rates;</li>
+<li>reopen and rollback timestamp semantics.</li>
+</ul>
+
+<h2>Versioning note</h2>
+<p>This release is aligned to the active Community line. The repository and shipped application packaging now move together at <code>3.1.0</code> to avoid conflict with the existing Community <code>3.0.1</code> release and the Pro <code>3.0.3</code> line.</p>
+</div>
+
+<div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Use v3.1.0</div><h3 class="cws-cta-title mt-4">Package evidence locally, measure closure, and require explicit reopen context before work moves backward.</h3><div class="cws-cta-actions cws-cta-actions-inline mt-6"><a href="../download/" class="cws-cta-btn cws-cta-btn-primary">Download App</a><a href="../blog-series.html?series=release-notes#release-notes" class="cws-cta-btn cws-cta-btn-secondary">Browse Release Notes</a></div></div></div>
+</article>
+
+<aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+</div>
+</section>
+</main>
+
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">&copy; Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../skills.html">Skills</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</footer>
+<script src="../js/analytics.js" defer></script>
+<script src="../js/lightbox.js" defer></script>
+<script src="../js/share-links.js?v=2.6.38.0" defer></script>
+</body>
+</html>

@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Knowledge Hub - Cloud Waste Scanner</title>
+<meta content="Cloud governance guides, trust notes, product workflows, and operating models for teams that need enterprise-ready cloud cost control." name="description"/>
+<link href="https://cloud-waste-scanner.com/blog.html" rel="canonical"/>
+<meta content="website" property="og:type"/>
+<meta content="Knowledge Hub - Cloud Waste Scanner" property="og:title"/>
+<meta content="Cloud governance guides, trust notes, product workflows, and operating models for teams that need enterprise-ready cloud cost control." property="og:description"/>
+<meta content="https://cloud-waste-scanner.com/blog.html" property="og:url"/>
+<meta content="https://cloud-waste-scanner.com/blog/images/industry-intelligence-2026/harness-main-2026.webp" property="og:image"/>
+<meta content="Cloud Waste Scanner" property="og:site_name"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Knowledge Hub - Cloud Waste Scanner" name="twitter:title"/>
+<meta content="Cloud governance guides, trust notes, product workflows, and operating models for teams that need enterprise-ready cloud cost control." name="twitter:description"/>
+<meta content="https://cloud-waste-scanner.com/blog/images/industry-intelligence-2026/harness-main-2026.webp" name="twitter:image"/>
+<link href="styles.css?v=1.16.68.0" rel="stylesheet"/>
+<link href="logo.png" rel="icon" type="image/png"/>
+<style>
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .hub-grid {
+            background-image:
+                linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+    </style>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-600 antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="index.html"><img alt="Logo" class="h-8 w-8" src="logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="skills.html">Skills</a></div>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="download/">App</a></div></div>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-24">
+<section class="relative overflow-hidden border-b border-slate-100 bg-gradient-to-b from-white to-slate-50">
+<div class="absolute inset-0 hub-grid opacity-70"></div>
+<div class="absolute -left-20 top-10 h-72 w-72 rounded-full bg-indigo-100/60 blur-3xl"></div>
+<div class="absolute right-0 top-0 h-80 w-80 rounded-full bg-sky-100/60 blur-3xl"></div>
+<div class="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+<section class="text-center mb-10">
+<div class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Knowledge Hub</div>
+<h1 class="mt-6 text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight">Cloud governance guides, stories, and operating notes</h1>
+<p class="mt-5 max-w-3xl mx-auto text-xl text-slate-500">Product setup, trust boundaries, operator stories, and release context for teams evaluating Cloud Waste Scanner as an enterprise governance tool.</p>
+</section>
+<div class="grid gap-4 md:grid-cols-3 mb-8">
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Archive size</p>
+<p class="mt-2 text-4xl font-extrabold text-slate-900">67</p>
+<p class="mt-2 text-base text-slate-600">Published articles visible from one page.</p>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Coverage</p>
+<p class="mt-2 text-4xl font-extrabold text-slate-900">8</p>
+<p class="mt-2 text-base text-slate-600">Tracks spanning product guides, trust, strategy, and release lines.</p>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Last updated</p>
+<p class="mt-2 text-2xl font-extrabold text-slate-900">July 3, 2026</p>
+<p class="mt-2 text-base text-slate-600">Newest post: v3.1.0: Handoff Packages and Governance Lifecycle Closure</p>
+</div>
+</div>
+<div class="flex flex-wrap justify-center gap-3"><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Industry Intelligence <span class="ml-1 text-slate-400">9</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Whitepapers <span class="ml-1 text-slate-400">18</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Product Guides <span class="ml-1 text-slate-400">10</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Security &amp; Trust <span class="ml-1 text-slate-400">3</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">FinOps Strategy <span class="ml-1 text-slate-400">4</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Incident Series <span class="ml-1 text-slate-400">5</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Product Updates <span class="ml-1 text-slate-400">12</span></span><span class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Founder Notes <span class="ml-1 text-slate-400">6</span></span></div>
+</div>
+</section>
+<div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+<section class="mb-16">
+<article class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+<div class="grid lg:grid-cols-[1.02fr_0.98fr]">
+<div class="p-8 md:p-10">
+<div class="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+<span class="rounded-full bg-indigo-100 px-3 py-1 font-bold uppercase tracking-wide text-indigo-700">Featured</span>
+<span>Product Updates</span>
+<span>9 min read</span>
+<time>Jul 03, 2026</time>
+</div>
+<h2 class="mt-5 text-4xl font-bold tracking-tight text-slate-900">
+<a class="hover:text-indigo-600 transition-colors" href="blog/governance-handoff-lifecycle-v3-1-0.html">v3.1.0: Handoff Packages and Governance Lifecycle Closure</a>
+</h2>
+<p class="mt-5 text-lg leading-8 text-slate-600">Cloud Waste Scanner v3.1.0 adds persistent handoff packages, closure-oriented governance metrics, and explicit reopen controls before closed findings move back into owner execution.</p>
+<div class="mt-8 flex flex-col sm:flex-row gap-3">
+<a class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-base font-bold text-white hover:bg-indigo-700 transition-colors" href="blog/governance-handoff-lifecycle-v3-1-0.html">Read Featured Article</a>
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="download/">Download App</a>
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="search.html">Search Site</a>
+</div>
+</div>
+<div class="bg-slate-50 p-6 md:p-8 flex items-center justify-center">
+<img alt="v3.1.0: Handoff Packages and Governance Lifecycle Closure" class="max-h-[460px] w-full object-contain" decoding="async" loading="lazy" src="blog/images/governance-handoff-v3-1-0-hero.webp"/>
+</div>
+</div>
+</article>
+</section>
+<section class="mb-16">
+<div class="flex items-end justify-between gap-4 mb-8">
+<div>
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Start Here</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900">Three entry points for different kinds of readers</h2>
+</div>
+</div>
+<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+<article class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Product Guides</p>
+<h2 class="mt-3 text-3xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-waste-scanner-user-guide-choose-what-to-scan-first.html">Cloud Cost Optimization Tools: Choose What to Scan First</a></h2>
+<p class="mt-3 text-sm font-semibold text-slate-500">8 min read · Mar 15, 2026</p>
+<p class="mt-4 text-lg leading-8 text-slate-600">Prioritize what to scan first in cloud cost reviews to reduce noise, improve signal quality, and accelerate actionable remediation.</p>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Security &amp; Trust</p>
+<h2 class="mt-3 text-3xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/engineering-trust-customer-value-esg.html">Cloud Governance: Engineering Trust That Scales</a></h2>
+<p class="mt-3 text-sm font-semibold text-slate-500">5 min read · Feb 23, 2026</p>
+<p class="mt-4 text-lg leading-8 text-slate-600">How Cloud Waste Scanner turns a cloud governance framework into reliable execution outcomes, customer value, and measurable</p>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">FinOps Strategy</p>
+<h2 class="mt-3 text-3xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/deep-finops-anatomy.html">Inside a $50k Cloud Leak: What Scripts Missed</a></h2>
+<p class="mt-3 text-sm font-semibold text-slate-500">3 min read · Feb 03, 2026</p>
+<p class="mt-4 text-lg leading-8 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. A postmortem of recurring cloud cost leaks like idle NAT</p>
+</article>
+</div>
+</section>
+<section class="mb-16">
+<div class="flex items-end justify-between gap-4 mb-8">
+<div>
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Collections</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900">Follow the product by guide, story, architecture, or release line</h2>
+</div>
+</div>
+<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer" data-series-card="user-guide" onclick="window.location.href='blog-series.html?series=user-guide#user-guide'">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Collection</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog-series.html?series=user-guide#user-guide">User Guide</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Practical product walkthroughs that help a team get from setup to repeatable weekly execution.</p>
+<p class="mt-4 text-sm font-bold text-indigo-600">11 articles</p>
+<div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+<p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Quick links</p>
+<div class="mt-3 flex flex-wrap gap-2"><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/first-scan-in-15-minutes.html">Start with First Scan</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/network-proxy-setup-restricted-environments.html">Proxy Setup Playbook</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="pricing.html">View Pricing</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="sample-report.html">View Sample Report</a></div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer" data-series-card="incident-series" onclick="window.location.href='blog-series.html?series=incident-series#incident-series'">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Collection</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog-series.html?series=incident-series#incident-series">Incident Series</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Incident-driven stories about cloud bills, operator mistakes, and the trust boundaries that changed the outcome.</p>
+<p class="mt-4 text-sm font-bold text-indigo-600">5 articles</p>
+<div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+<p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Quick links</p>
+<div class="mt-3 flex flex-wrap gap-2"><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Ghost Resources Case</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html">The Boss &amp; Bill Story</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="download/">Download Trial</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="sample-report.html">View Sample Report</a></div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer" data-series-card="industry-intelligence" onclick="window.location.href='blog-series.html?series=industry-intelligence#industry-intelligence'">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Collection</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog-series.html?series=industry-intelligence#industry-intelligence">Industry Intelligence</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Case-first execution story with quantified savings, owner discipline, and local-first governance rhythm.</p>
+<p class="mt-4 text-sm font-bold text-indigo-600">9 articles</p>
+<div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+<p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Quick links</p>
+<div class="mt-3 flex flex-wrap gap-2"><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-spotio-vs-local-first-cws.html">Spot.io vs CWS</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-cloudzero-vs-local-first-cws.html">CloudZero vs CWS</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="pricing.html">View Pricing</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="provider-credentials.html">Provider Credentials</a></div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer" data-series-card="founder-notes" onclick="window.location.href='blog-series.html?series=founder-notes#founder-notes'">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Collection</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog-series.html?series=founder-notes#founder-notes">Founder Notes</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Architectural and product essays about why local-first, execution safety, and trust boundaries matter.</p>
+<p class="mt-4 text-sm font-bold text-indigo-600">6 articles</p>
+<div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+<p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Quick links</p>
+<div class="mt-3 flex flex-wrap gap-2"><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part1.html">Origins Part 1</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part2-local-first.html">Origins Part 2</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="security.html">Security</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="roadmap.html">Roadmap</a></div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer" data-series-card="release-notes" onclick="window.location.href='blog-series.html?series=release-notes#release-notes'">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Collection</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog-series.html?series=release-notes#release-notes">Release Notes</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Release-line articles that explain what changed, what got sharper, and what teams can use now.</p>
+<p class="mt-4 text-sm font-bold text-indigo-600">10 articles</p>
+<div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+<p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Quick links</p>
+<div class="mt-3 flex flex-wrap gap-2"><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/governance-handoff-lifecycle-v3-1-0.html">v3.1.0 Closure</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/v2-launch-global.html">v2 Launch Global</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/community-skills-github-codex-claude-release.html">Community Skills</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/evolution-of-control-v1-16.html">Control Evolution</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="release-ledger.html">Release Ledger</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="roadmap.html">Roadmap</a></div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-indigo-300 hover:bg-indigo-50/30 transition-colors cursor-pointer" data-series-card="whitepaper-series" onclick="window.location.href='blog-series.html?series=whitepaper-series#whitepaper-series'">
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Collection</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog-series.html?series=whitepaper-series#whitepaper-series">Whitepaper Series</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Security, technical, and industry whitepapers for architecture review, control validation, and rollout readiness.</p>
+<p class="mt-4 text-sm font-bold text-indigo-600">18 articles</p>
+<div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+<p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Quick links</p>
+<div class="mt-3 flex flex-wrap gap-2"><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Security Whitepaper P1</a><a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Technical Whitepaper P1</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="security.html">Security</a><a class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors" href="api-center.html">API Center</a></div>
+</div>
+</article>
+</div>
+</section>
+<section class="mb-16">
+<div class="flex items-end justify-between gap-4 mb-8">
+<div>
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Browse by Track</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900">Category views that still stay readable when the archive gets large</h2>
+</div>
+</div>
+<div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Industry Intelligence</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">9</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a href="blog/customer-value-30-day-cloud-waste-control.html" class="hover:text-slate-900 transition-colors">A 30-Day Cloud Waste Turnaround: What Actually Worked<span class="block text-sm font-medium text-slate-400 mt-1">May 26, 2026 · 12 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-intelligence-harness-finops-vs-local-first-cws.html">Harness FinOps vs CWS: Platform Engineering vs Local-First Forensics<span class="block text-sm font-medium text-slate-400 mt-1">Apr 22, 2026 · 10 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-intelligence-spotio-vs-local-first-cws.html">Cloud Cost Optimization Tools: Spot.io vs CWS<span class="block text-sm font-medium text-slate-400 mt-1">Apr 07, 2026 · 10 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-intelligence-cloudcustodian-vs-local-first-cws.html">Cloud Cost Optimization Tools: CloudCustodian vs CWS<span class="block text-sm font-medium text-slate-400 mt-1">Mar 30, 2026 · 10 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-intelligence-cast-ai-vs-local-first-cws.html">Cloud Cost Optimization Tools: CAST AI vs CWS in 2026<span class="block text-sm font-medium text-slate-400 mt-1">Mar 26, 2026 · 11 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Whitepapers</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">18</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-solutions-whitepaper-part1-invisible-cloud-debt-and-sovereign-governance.html">Industry Whitepaper P1: Invisible Cloud Debt<span class="block text-sm font-medium text-slate-400 mt-1">Mar 19, 2026 · 8 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-solutions-whitepaper-part2-regulated-environments-control-evidence-and-change-review.html">Industry Whitepaper P2: Regulated Change Control<span class="block text-sm font-medium text-slate-400 mt-1">Mar 19, 2026 · 7 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html">Industry Whitepaper P3: CI/CD and Runtime Guardrails<span class="block text-sm font-medium text-slate-400 mt-1">Mar 19, 2026 · 7 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/industry-solutions-whitepaper-part4-industry-playbooks-finance-saas-and-platform-teams.html">Industry Whitepaper P4: Finance, SaaS, Platform Playbooks<span class="block text-sm font-medium text-slate-400 mt-1">Mar 19, 2026 · 7 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Product Guides</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">11</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/cloud-waste-scanner-user-guide-choose-what-to-scan-first.html">Cloud Cost Optimization Tools: Choose What to Scan First<span class="block text-sm font-medium text-slate-400 mt-1">Mar 15, 2026 · 8 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/cloud-waste-scanner-user-guide-dashboard-monitor-governance-scan-result.html">Cloud Cost Optimization Tools: Dashboard and Governance Views<span class="block text-sm font-medium text-slate-400 mt-1">Mar 12, 2026 · 6 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/cloud-waste-scanner-user-guide-account-proxy-notification-scan-result.html">Cloud Cost Optimization Tools: Account, Proxy, Notifications<span class="block text-sm font-medium text-slate-400 mt-1">Mar 10, 2026 · 4 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/cloud-waste-scanner-user-guide-core-setup.html">Cloud Cost Optimization Tools: Core Setup in 30 Minutes<span class="block text-sm font-medium text-slate-400 mt-1">Mar 09, 2026 · 3 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Security &amp; Trust</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">3</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/engineering-trust-customer-value-esg.html">Cloud Governance: Engineering Trust That Scales<span class="block text-sm font-medium text-slate-400 mt-1">Feb 23, 2026 · 5 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/enterprise-grade-safety-v1-14.html">Safer Governance with Execution Plans and Local API<span class="block text-sm font-medium text-slate-400 mt-1">Feb 01, 2026 · 2 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/local-first-finops.html">Why Local-First Matters in FinOps<span class="block text-sm font-medium text-slate-400 mt-1">Jan 26, 2026 · 3 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">FinOps Strategy</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">4</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/deep-finops-anatomy.html">Inside a $50k Cloud Leak: What Scripts Missed<span class="block text-sm font-medium text-slate-400 mt-1">Feb 03, 2026 · 3 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/cloud-waste-horror-stories.html">3 Expensive Cloud Incidents and Their Fixes<span class="block text-sm font-medium text-slate-400 mt-1">Jan 29, 2026 · 2 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/the-idle-fallacy.html">Why Fixed Idle Thresholds Miss Real Cloud Waste<span class="block text-sm font-medium text-slate-400 mt-1">Jan 28, 2026 · 2 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/hidden-cloud-costs.html">5 Cloud Cost Leaks Teams Miss in Monthly Reviews<span class="block text-sm font-medium text-slate-400 mt-1">Jan 27, 2026 · 3 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Incident Series</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">5</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Cloud Cost Management Software Story P5: Ghost Resources<span class="block text-sm font-medium text-slate-400 mt-1">Apr 07, 2026 · 9 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/the-christmas-gift-in-the-server-room.html">Cloud Cost Management Software Story: Christmas Gift<span class="block text-sm font-medium text-slate-400 mt-1">Mar 24, 2026 · 8 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">Cloud Cost Management Software Story: Prices Jumped<span class="block text-sm font-medium text-slate-400 mt-1">Mar 20, 2026 · 6 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/march-rain-disappearing-coins.html">Cloud Cost Management Software Story: March Rain<span class="block text-sm font-medium text-slate-400 mt-1">Mar 17, 2026 · 3 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Product Updates</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">10</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/governance-handoff-lifecycle-v3-1-0.html">v3.1.0: Handoff Packages and Governance Lifecycle Closure<span class="block text-sm font-medium text-slate-400 mt-1">Jul 03, 2026 · 9 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/community-skills-github-codex-claude-release.html">Community Skills Now Ship for GitHub, Codex, and Claude<span class="block text-sm font-medium text-slate-400 mt-1">Jun 15, 2026 · 8 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/ai-runtime-k8s-gpu-governance-v2-9-21.html">v2.9.21: Local-First AI Runtime and Kubernetes GPU Governance<span class="block text-sm font-medium text-slate-400 mt-1">May 15, 2026 · 9 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/kubernetes-container-scanning-v2-9-19.html">v2.9.19: Local-First Kubernetes and Container Waste Scanning<span class="block text-sm font-medium text-slate-400 mt-1">Apr 28, 2026 · 11 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/customer-first-shipping-feedback-loop.html">Operator Feedback That Shaped Recent Releases<span class="block text-sm font-medium text-slate-400 mt-1">Feb 16, 2026 · 7 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/evolution-of-control-v1-16.html">CWS Pro v1.16.3: Policy, Monitor 2.0, Smart Scans<span class="block text-sm font-medium text-slate-400 mt-1">Feb 04, 2026 · 3 min read</span></a></li></ul>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center justify-between gap-3">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Founder Notes</p>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">6</span>
+</div>
+<ul class="mt-4 space-y-4 text-base font-semibold text-slate-700"><li><a class="hover:text-slate-900 transition-colors" href="blog/interview-origins-part6-operating-model-compounding-governance.html">Founder Notes P6: Operating Model for Durable Savings<span class="block text-sm font-medium text-slate-400 mt-1">Feb 13, 2026 · 6 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/interview-origins-part5-policy-simulation-edge-cases-reporting.html">Founder Notes P5: Simulation, Edge Cases, Reporting<span class="block text-sm font-medium text-slate-400 mt-1">Feb 11, 2026 · 3 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/interview-origins-part4-safe-automation.html">Founder Notes P4: Safe Automation Without Blind Deletion<span class="block text-sm font-medium text-slate-400 mt-1">Feb 09, 2026 · 3 min read</span></a></li><li><a class="hover:text-slate-900 transition-colors" href="blog/interview-origins-part3.html">Founder Notes P3: Unifying 15+ Cloud Providers<span class="block text-sm font-medium text-slate-400 mt-1">Feb 07, 2026 · 3 min read</span></a></li></ul>
+</div>
+</div>
+</section>
+<section id="full-archive">
+<div class="flex flex-col gap-6 mb-8">
+<div>
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Full Archive</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900">Every article, one searchable archive</h2>
+<p class="mt-3 max-w-3xl text-lg text-slate-600">This page keeps working as the archive grows because everything is filterable, searchable, and paged instead of becoming a wall of links.</p>
+</div>
+<div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 md:p-6">
+<div class="grid gap-4 lg:grid-cols-[1fr_auto]">
+<label class="block">
+<span class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Search</span>
+<input class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" id="hub-search" placeholder="Search by title, topic, or series" type="search"/>
+</label>
+<div class="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-600 lg:min-w-[220px]">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Archive size</p>
+<p class="mt-2 text-2xl font-extrabold text-slate-900">67</p>
+<p class="mt-1">articles currently published</p>
+</div>
+</div>
+<div class="mt-5 flex flex-wrap gap-3">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="search.html">Search the whole site</a>
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog-series.html">Browse by series</a>
+</div>
+<div class="mt-5">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Filter by category</p>
+<div class="mt-3 flex flex-wrap gap-2"><button class="rounded-full border border-slate-900 bg-slate-900 px-4 py-2 text-sm font-bold text-white" data-category-filter="All" type="button">All</button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Industry Intelligence" type="button">Industry Intelligence <span class="ml-1 text-slate-400">9</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Whitepapers" type="button">Whitepapers <span class="ml-1 text-slate-400">18</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Product Guides" type="button">Product Guides <span class="ml-1 text-slate-400">10</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Security &amp; Trust" type="button">Security &amp; Trust <span class="ml-1 text-slate-400">3</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="FinOps Strategy" type="button">FinOps Strategy <span class="ml-1 text-slate-400">4</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Incident Series" type="button">Incident Series <span class="ml-1 text-slate-400">5</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Product Updates" type="button">Product Updates <span class="ml-1 text-slate-400">12</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-category-filter="Founder Notes" type="button">Founder Notes <span class="ml-1 text-slate-400">6</span></button></div>
+</div>
+<div class="mt-5">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Filter by year</p>
+<div class="mt-3 flex flex-wrap gap-2"><button class="rounded-full border border-slate-900 bg-slate-900 px-4 py-2 text-sm font-bold text-white" data-year-filter="All" type="button">All years</button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-year-filter="2026" type="button">2026</button></div>
+</div>
+<div class="mt-5">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Filter by topic</p>
+<div class="mt-3 flex flex-wrap gap-2"><button class="rounded-full border border-slate-900 bg-slate-900 px-4 py-2 text-sm font-bold text-white" data-topic-filter="All" type="button">All topics</button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Setup" type="button">Setup <span class="ml-1 text-slate-400">10</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Governance" type="button">Governance <span class="ml-1 text-slate-400">13</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Local-first" type="button">Local-first <span class="ml-1 text-slate-400">27</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Security" type="button">Security <span class="ml-1 text-slate-400">11</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="FinOps" type="button">FinOps <span class="ml-1 text-slate-400">33</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Automation" type="button">Automation <span class="ml-1 text-slate-400">9</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Release" type="button">Release <span class="ml-1 text-slate-400">13</span></button><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700" data-topic-filter="Skills" type="button">Skills <span class="ml-1 text-slate-400">1</span></button></div>
+</div>
+<div class="mt-5">
+<label class="block max-w-xs">
+<span class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Sort archive</span>
+<select class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" id="hub-sort">
+<option value="newest">Newest first</option>
+<option value="oldest">Oldest first</option>
+<option value="read_desc">Longest read first</option>
+<option value="read_asc">Shortest read first</option>
+<option value="title_asc">Title A-Z</option>
+</select>
+</label>
+</div>
+</div>
+</div>
+<div class="hidden rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-lg text-slate-500" id="archive-empty">No articles match the current filters.</div>
+<div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm font-semibold text-slate-500">
+<p id="archive-status">Showing all articles</p>
+<p>Page size: <span class="text-slate-700">9</span></p>
+</div>
+<div class="grid gap-4" id="archive-grid">
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="v3.1.0 handoff packages and governance lifecycle closure cloud waste scanner v3.1.0 turns handoff into a persistent local package adds closure-oriented governance metrics and requires explicit reopen reasoning before closed findings move back into owner execution. product updates release notes release governance" data-topics="Release|Governance" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jul 03, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">9 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/governance-handoff-lifecycle-v3-1-0.html">v3.1.0: Handoff Packages and Governance Lifecycle Closure</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Cloud Waste Scanner v3.1.0 turns handoff into a persistent local package, adds closure-oriented governance metrics, and requires explicit reopen reasoning before closed findings move back into owner execution.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/governance-handoff-lifecycle-v3-1-0.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="community skills now ship for github codex and claude cloud waste scanner community skills ship as github codex and claude compatible packages for explaining auditing and turning local scan evidence into safer action product updates release notes skills local-first automation" data-topics="Release|Skills|Local-first|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jun 15, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Skills</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/community-skills-github-codex-claude-release.html">Community Skills Now Ship for GitHub, Codex, and Claude</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Cloud Waste Scanner Community Skills now ship as GitHub, Codex, and Claude-compatible packages for explaining, auditing, and turning local scan evidence into safer action.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/community-skills-github-codex-claude-release.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="a 30-day cloud waste turnaround what actually worked case-first 30-day execution story with quantified savings owner discipline and local-first governance rhythm. product updates finops governance" data-topics="FinOps|Governance" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">May 26, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">12 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/customer-value-30-day-cloud-waste-control.html">A 30-Day Cloud Waste Turnaround: What Actually Worked</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Case-first 30-day execution story with quantified savings, owner discipline, and local-first governance rhythm.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/customer-value-30-day-cloud-waste-control.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="v2.9.21 local-first ai runtime and kubernetes gpu governance cloud waste scanner v2.9.21 adds local ai runtime scanning kubernetes gpu summary and ai governance report apis for operator-ready cost control. product updates release notes release local-first finops automation" data-topics="Release|Local-first|FinOps|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">May 15, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">9 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/ai-runtime-k8s-gpu-governance-v2-9-21.html">v2.9.21: Local-First AI Runtime and Kubernetes GPU Governance</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Cloud Waste Scanner v2.9.21 adds local-first AI runtime scanning, Kubernetes GPU capacity summary, and AI governance report APIs for operator-ready cost control.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/ai-runtime-k8s-gpu-governance-v2-9-21.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="v2.9.19 local-first kubernetes and container waste scanning cloud waste scanner v2.9.19 adds local-first kubernetes and container waste scanning through read-only kubectl api routes governance reports and action plans. product updates release notes release local-first finops" data-topics="Release|Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Apr 28, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">11 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/kubernetes-container-scanning-v2-9-19.html">v2.9.19: Local-First Kubernetes and Container Waste Scanning</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scanning through read-only kubectl, API routes, governance reports, and action plans.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/kubernetes-container-scanning-v2-9-19.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="harness finops vs cws: platform engineering vs local-first forensics harness finops vs cloud waste scanner comparison 2026: platform-integrated cost orchestration versus local-first infrastructure forensics and direct resource reclamation. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Apr 22, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">10 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-harness-finops-vs-local-first-cws.html">Harness FinOps vs CWS: Platform Engineering vs Local-First Forensics</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Harness FinOps vs Cloud Waste Scanner Comparison 2026: platform-integrated cost orchestration versus local-first infrastructure forensics and direct resource reclamation.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-harness-finops-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Incident Series" data-search="cloud cost management software story p5: ghost resources incident series part 5: jack, rose, and jerry traced orphaned resources, restored ownership, and recovered budget with a local-first workflow. incident series incident series finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Apr 07, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">9 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Cloud Cost Management Software Story P5: Ghost Resources</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Incident Series Part 5: Jack, Rose, and Jerry traced orphaned resources, restored ownership, and recovered budget with a local-first workflow.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost optimization tools: spot.io vs cws spot.io vs cloud waste scanner comparison 2026: compute price automation versus local-first deep cloud waste scanning across the full estate. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Apr 07, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">10 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-spotio-vs-local-first-cws.html">Cloud Cost Optimization Tools: Spot.io vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Spot.io vs Cloud Waste Scanner Comparison 2026: compute price automation versus local-first deep cloud waste scanning across the full estate.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-spotio-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost optimization tools: cloudcustodian vs cws cloudcustodian vs cloud waste scanner comparison 2026: policy-as-code governance depth versus local-first waste scanning and cleanup prioritization. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 30, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">10 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-cloudcustodian-vs-local-first-cws.html">Cloud Cost Optimization Tools: CloudCustodian vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">CloudCustodian vs Cloud Waste Scanner Comparison 2026: policy-as-code governance depth versus local-first waste scanning and cleanup prioritization.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-cloudcustodian-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost optimization tools: cast ai vs cws in 2026 cast ai vs cloud waste scanner comparison 2026: kubernetes automation depth vs full-estate local-first cloud waste scanning for finops teams. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 26, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">11 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-cast-ai-vs-local-first-cws.html">Cloud Cost Optimization Tools: CAST AI vs CWS in 2026</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">CAST AI vs Cloud Waste Scanner Comparison 2026: Kubernetes automation depth vs full-estate local-first cloud waste scanning for FinOps teams.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-cast-ai-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost management software: cloudhealth vs cws cloudhealth vs cloud waste scanner comparison 2026: enterprise compliance workflows versus local-first execution speed for smb and lean platform teams. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 24, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">9 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-cloudhealth-vs-local-first-cws.html">Cloud Cost Management Software: CloudHealth vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">CloudHealth vs Cloud Waste Scanner Comparison 2026: enterprise compliance workflows versus local-first execution speed for SMB and lean platform teams.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-cloudhealth-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Incident Series" data-search="cloud cost management software story: christmas gift incident series part 4: before peak season, jack, rose, and jerry found overprovisioned capacity and turned fear-driven requests into cleanup actions. incident series incident series finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 24, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/the-christmas-gift-in-the-server-room.html">Cloud Cost Management Software Story: Christmas Gift</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Incident Series Part 4: before peak season, Jack, Rose, and Jerry found overprovisioned capacity and turned fear-driven requests into cleanup actions.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/the-christmas-gift-in-the-server-room.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost management software: kubecost vs cws kubecost vs cloud waste scanner comparison 2026: kubernetes cost allocation versus full-estate cloud waste scanning beyond container boundaries. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 23, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">12 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-kubecost-vs-local-first-cws.html">Cloud Cost Management Software: Kubecost vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Kubecost vs Cloud Waste Scanner Comparison 2026: Kubernetes cost allocation versus full-estate cloud waste scanning beyond container boundaries.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-kubecost-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost management tools: prosperops vs cws prosperops vs cloud waste scanner comparison 2026: commitment portfolio optimization versus local-first cloud resource hygiene and hidden waste detection. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 21, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">11 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-prosperops-vs-local-first-cws.html">Cloud Cost Management Tools: ProsperOps vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">ProsperOps vs Cloud Waste Scanner Comparison 2026: commitment portfolio optimization versus local-first cloud resource hygiene and hidden waste detection.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-prosperops-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost management software: vantage vs cws vantage vs cloud waste scanner comparison 2026: dashboard-led saas finops visibility versus local-first infrastructure scanning with action-ready evidence. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 20, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">10 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-vantage-vs-local-first-cws.html">Cloud Cost Management Software: Vantage vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Vantage vs Cloud Waste Scanner Comparison 2026: dashboard-led SaaS FinOps visibility versus local-first infrastructure scanning with action-ready evidence.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-vantage-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Incident Series" data-search="cloud cost management software story: prices jumped incident series part 3: after a sudden cloud price hike, jack, rose, and jerry use local-first evidence to recover margin before budget lock. incident series incident series finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 20, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">6 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">Cloud Cost Management Software Story: Prices Jumped</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Incident Series Part 3: after a sudden cloud price hike, Jack, Rose, and Jerry use local-first evidence to recover margin before budget lock.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p1: invisible cloud debt scan cloud costs and optimize faster with cloud waste scanner. industry solutions whitepaper part 1 explains why hidden cloud whitepapers whitepaper series governance" data-topics="Governance" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part1-invisible-cloud-debt-and-sovereign-governance.html">Industry Whitepaper P1: Invisible Cloud Debt</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Industry Solutions Whitepaper Part 1 explains why hidden cloud</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part1-invisible-cloud-debt-and-sovereign-governance.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p2: regulated change control scan cloud costs and optimize faster with cloud waste scanner. part 2 translates local-first cloud governance into regulated whitepapers whitepaper series release" data-topics="Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part2-regulated-environments-control-evidence-and-change-review.html">Industry Whitepaper P2: Regulated Change Control</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Part 2 translates local-first cloud governance into regulated</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part2-regulated-environments-control-evidence-and-change-review.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p3: ci/cd and runtime guardrails scan cloud costs and optimize faster with cloud waste scanner. part 3 shows how to embed cloud governance into delivery whitepapers whitepaper series " data-topics="" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html">Industry Whitepaper P3: CI/CD and Runtime Guardrails</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Part 3 shows how to embed cloud governance into delivery</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p4: finance, saas, platform playbooks scan cloud costs and optimize faster with cloud waste scanner. part 4 provides practical industry playbooks for cloud whitepapers whitepaper series " data-topics="" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part4-industry-playbooks-finance-saas-and-platform-teams.html">Industry Whitepaper P4: Finance, SaaS, Platform Playbooks</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Part 4 provides practical industry playbooks for cloud</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part4-industry-playbooks-finance-saas-and-platform-teams.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p5: rollout roadmap and kpi governance scan cloud costs and optimize faster with cloud waste scanner. part 5 closes the industry solutions whitepaper with a 90-day whitepapers whitepaper series governance automation" data-topics="Governance|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part5-rollout-roadmap-governance-kpis-and-executive-reporting.html">Industry Whitepaper P5: Rollout Roadmap and KPI Governance</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Part 5 closes the industry solutions whitepaper with a 90-day</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part5-rollout-roadmap-governance-kpis-and-executive-reporting.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p6: security and compliance mapping scan cloud costs and optimize faster with cloud waste scanner. part 6 maps local-first cloud governance operations to soc2 whitepapers whitepaper series governance local-first security" data-topics="Governance|Local-first|Security" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part6-security-and-compliance-mapping-for-local-first-governance.html">Industry Whitepaper P6: Security and Compliance Mapping</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Part 6 maps local-first cloud governance operations to SOC2</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part6-security-and-compliance-mapping-for-local-first-governance.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper p7: local-first vs saas selection scan cloud costs and optimize faster with cloud waste scanner. part 7 provides a procurement-ready selection matrix covering whitepapers whitepaper series local-first" data-topics="Local-first" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-part7-procurement-and-selection-matrix-local-first-vs-saas.html">Industry Whitepaper P7: Local-First vs SaaS Selection</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Part 7 provides a procurement-ready selection matrix covering</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-part7-procurement-and-selection-matrix-local-first-vs-saas.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="industry whitepaper appendix: terms, metrics, checklists scan cloud costs and optimize faster with cloud waste scanner. appendix for the industry solutions whitepaper series whitepapers whitepaper series " data-topics="" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-solutions-whitepaper-appendix-terms-metrics-templates-and-checklists.html">Industry Whitepaper Appendix: Terms, Metrics, Checklists</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Appendix for the Industry Solutions Whitepaper series</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-solutions-whitepaper-appendix-terms-metrics-templates-and-checklists.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Industry Intelligence" data-search="cloud cost management platform: cloudzero vs cws cloudzero vs cloud waste scanner comparison 2026: saas cost attribution analytics vs local-first infrastructure forensics and actionable waste remediation. industry intelligence industry intelligence local-first finops" data-topics="Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 19, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">9 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-cyan-100 text-cyan-700">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Industry Intelligence</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/industry-intelligence-cloudzero-vs-local-first-cws.html">Cloud Cost Management Platform: CloudZero vs CWS</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">CloudZero vs Cloud Waste Scanner Comparison 2026: SaaS cost attribution analytics vs local-first infrastructure forensics and actionable waste remediation.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/industry-intelligence-cloudzero-vs-local-first-cws.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="tech whitepaper p5: rust+tauri tradeoffs and roadmap scan cloud costs and optimize faster with cloud waste scanner. technical whitepaper part 5 explains rust and tauri engineering whitepapers whitepaper series local-first" data-topics="Local-first" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Technical Whitepaper Part 5 explains Rust and Tauri engineering</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="tech whitepaper p4: quality gates and auditability scan cloud costs and optimize faster with cloud waste scanner. technical whitepaper part 4 maps code audit gates, qa whitepapers whitepaper series local-first" data-topics="Local-first" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Tech Whitepaper P4: Quality Gates and Auditability</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Technical Whitepaper Part 4 maps code audit gates, QA</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="tech whitepaper p3: performance, reliability, rollout scan cloud costs and optimize faster with cloud waste scanner. technical whitepaper part 3 covers performance controls whitepapers whitepaper series local-first" data-topics="Local-first" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Tech Whitepaper P3: Performance, Reliability, Rollout</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Technical Whitepaper Part 3 covers performance controls</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="tech whitepaper p2: findings model and policy evaluation scan cloud costs and optimize faster with cloud waste scanner. technical whitepaper part 2 details normalized findings schema whitepapers whitepaper series local-first" data-topics="Local-first" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Tech Whitepaper P2: Findings Model and Policy Evaluation</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Technical Whitepaper Part 2 details normalized findings schema</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="tech whitepaper p1: engine architecture and boundaries scan and optimization guide. technical whitepaper part 1 details local-first engine architecture, component boundaries, and whitepapers whitepaper series local-first" data-topics="Local-first" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Tech Whitepaper P1: Engine Architecture and Boundaries</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan and optimization guide. Technical Whitepaper Part 1 details local-first engine architecture, component boundaries, and</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="security whitepaper p5: transport integrity and auditability scan cloud costs and optimize faster with cloud waste scanner. security whitepaper part 5 covers transport integrity whitepapers whitepaper series local-first security" data-topics="Local-first|Security" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">6 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Security Whitepaper P5: Transport Integrity and Auditability</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Security Whitepaper Part 5 covers transport integrity</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="security whitepaper p4: token lifecycle and api hardening scan and optimization guide. security whitepaper part 4 documents token lifecycle controls, local api hardening, and whitepapers whitepaper series local-first security automation" data-topics="Local-first|Security|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">6 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Security Whitepaper P4: Token Lifecycle and API Hardening</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan and optimization guide. Security Whitepaper Part 4 documents token lifecycle controls, local API hardening, and</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="security whitepaper p3: verification and incident readiness scan cloud costs and optimize faster with cloud waste scanner. security whitepaper part 3 provides verification checklists whitepapers whitepaper series local-first security" data-topics="Local-first|Security" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">6 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Security Whitepaper P3: Verification and Incident Readiness</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Security Whitepaper Part 3 provides verification checklists</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="security whitepaper p2: control matrix and safeguards scan cloud costs and optimize faster with cloud waste scanner. security whitepaper part 2 maps local-first controls to daily whitepapers whitepaper series local-first security release" data-topics="Local-first|Security|Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Security Whitepaper P2: Control Matrix and Safeguards</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Security Whitepaper Part 2 maps local-first controls to daily</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Whitepapers" data-search="security whitepaper p1: threat model and trust boundary scan and optimization guide. security whitepaper part 1 defines threat actors, trust assumptions, and the local-first trust whitepapers whitepaper series local-first security" data-topics="Local-first|Security" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 18, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700">Whitepapers</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Whitepaper Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Security Whitepaper P1: Threat Model and Trust Boundary</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan and optimization guide. Security Whitepaper Part 1 defines threat actors, trust assumptions, and the local-first trust</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Incident Series" data-search="cloud cost management software story: march rain incident series part 2: rose, jack, and jerry trace repeated cloud leakage, including orphaned resources and idle network costs, with local-first scans. incident series incident series finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 17, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/march-rain-disappearing-coins.html">Cloud Cost Management Software Story: March Rain</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Incident Series Part 2: Rose, Jack, and Jerry trace repeated cloud leakage, including orphaned resources and idle network costs, with local-first scans.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/march-rain-disappearing-coins.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost optimization tools: choose what to scan first prioritize what to scan first in cloud cost reviews to reduce noise, improve signal quality, and accelerate actionable remediation. product guides user guide setup finops" data-topics="Setup|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 15, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">8 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-waste-scanner-user-guide-choose-what-to-scan-first.html">Cloud Cost Optimization Tools: Choose What to Scan First</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Prioritize what to scan first in cloud cost reviews to reduce noise, improve signal quality, and accelerate actionable remediation.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-waste-scanner-user-guide-choose-what-to-scan-first.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Incident Series" data-search="cloud cost management software: boss saw the bill incident series part 1: jack, rose, and jerry turn a cloud bill panic into a local-first finops workflow with ownership-ready findings. incident series incident series finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 14, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">5 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Incident Series</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html">Cloud Cost Management Software: Boss Saw the Bill</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Incident Series Part 1: Jack, Rose, and Jerry turn a cloud bill panic into a local-first FinOps workflow with ownership-ready findings.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost optimization tools: dashboard and governance views learn how to interpret dashboard, monitor, governance, and scan result views in the right order for weekly operational decisions. product guides user guide setup governance finops" data-topics="Setup|Governance|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 12, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">6 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-waste-scanner-user-guide-dashboard-monitor-governance-scan-result.html">Cloud Cost Optimization Tools: Dashboard and Governance Views</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Learn how to interpret Dashboard, Monitor, Governance, and Scan Result views in the right order for weekly operational decisions.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-waste-scanner-user-guide-dashboard-monitor-governance-scan-result.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost optimization tools: account, proxy, notifications configure cloud account access, proxy routing, and notification channels for reliable local-first scan results and team handoff. product guides user guide setup finops automation" data-topics="Setup|FinOps|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 10, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">4 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-waste-scanner-user-guide-account-proxy-notification-scan-result.html">Cloud Cost Optimization Tools: Account, Proxy, Notifications</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Configure cloud account access, proxy routing, and notification channels for reliable local-first scan results and team handoff.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-waste-scanner-user-guide-account-proxy-notification-scan-result.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost optimization tools: core setup in 30 minutes step-by-step core setup for cloud waste scanner: account onboarding, proxy checks, notifications, and first local-first scan readiness. product guides user guide setup finops" data-topics="Setup|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 09, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-waste-scanner-user-guide-core-setup.html">Cloud Cost Optimization Tools: Core Setup in 30 Minutes</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Step-by-step core setup for Cloud Waste Scanner: account onboarding, proxy checks, notifications, and first local-first scan readiness.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-waste-scanner-user-guide-core-setup.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="how to run a weekly cloud governance framework operational playbook for running a weekly cloud governance framework with local-first scans, ownership mapping, and repeatable closure loops. product guides user guide setup governance" data-topics="Setup|Governance" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 08, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-governance-framework-weekly-operating-playbook.html">How to Run a Weekly Cloud Governance Framework</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Operational playbook for running a weekly cloud governance framework with local-first scans, ownership mapping, and repeatable closure loops.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-governance-framework-weekly-operating-playbook.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud governance tools: taxonomy and api reporting practical guide to standardize cloud governance categories and api output for consistent weekly review, escalation, and remediation. product guides user guide setup governance automation" data-topics="Setup|Governance|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 05, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-governance-tools-taxonomy-trends-api.html">Cloud Governance Tools: Taxonomy and API Reporting</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Practical guide to standardize cloud governance categories and API output for consistent weekly review, escalation, and remediation.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-governance-tools-taxonomy-trends-api.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost reporting automation: weekly governance configure notification-driven weekly cloud governance from local-first scan alerts to closure tracking and team accountability. product guides user guide setup governance finops" data-topics="Setup|Governance|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 04, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">4 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/notification-driven-weekly-cloud-governance.html">Cloud Cost Reporting Automation: Weekly Governance</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Configure notification-driven weekly cloud governance from local-first scan alerts to closure tracking and team accountability.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/notification-driven-weekly-cloud-governance.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost reporting automation: scan results to team rhythm step-by-step guide to convert local scan findings into weekly finops execution with owners, review cadence, and audit-ready reporting. product guides user guide setup governance finops" data-topics="Setup|Governance|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 03, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/scan-results-to-team-weekly-rhythm.html">Cloud Cost Reporting Automation: Scan Results to Team Rhythm</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Step-by-step guide to convert local scan findings into weekly FinOps execution with owners, review cadence, and audit-ready reporting.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/scan-results-to-team-weekly-rhythm.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="self hosted cloud cost optimization: proxy setup guide how to configure proxy routing for local-first cloud audits in restricted environments, without exposing cloud credentials to third-party services. product guides user guide setup finops" data-topics="Setup|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Mar 02, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/network-proxy-setup-restricted-environments.html">Self Hosted Cloud Cost Optimization: Proxy Setup Guide</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">How to configure proxy routing for local-first cloud audits in restricted environments, without exposing cloud credentials to third-party services.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/network-proxy-setup-restricted-environments.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Guides" data-search="cloud cost optimization tools: local-first audit in 15 minutes how to install and run a local-first aws audit in cloud waste scanner in 15 minutes, with no cloud credentials shared to third-party services. product guides user guide setup local-first finops" data-topics="Setup|Local-first|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 28, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">5 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-sky-100 text-sky-700">Product Guides</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">User Guide</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Setup</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/first-scan-in-15-minutes.html">Cloud Cost Optimization Tools: Local-First Audit in 15 Minutes</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">How to install and run a local-first AWS audit in Cloud Waste Scanner in 15 minutes, with no cloud credentials shared to third-party services.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/first-scan-in-15-minutes.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Security &amp; Trust" data-search="cloud governance: engineering trust that scales how cloud waste scanner turns a cloud governance framework into reliable execution outcomes, customer value, and measurable security &amp; trust standalone governance security" data-topics="Governance|Security" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 23, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">5 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-700">Security &amp; Trust</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/engineering-trust-customer-value-esg.html">Cloud Governance: Engineering Trust That Scales</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">How Cloud Waste Scanner turns a cloud governance framework into reliable execution outcomes, customer value, and measurable</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/engineering-trust-customer-value-esg.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="operator feedback that shaped recent releases a release retrospective showing how operator feedback changed proxy routing, diagnostics, scan behavior, and deployment product updates standalone release" data-topics="Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 16, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">7 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/customer-first-shipping-feedback-loop.html">Operator Feedback That Shaped Recent Releases</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">A release retrospective showing how operator feedback changed proxy routing, diagnostics, scan behavior, and deployment</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/customer-first-shipping-feedback-loop.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Founder Notes" data-search="founder notes p6: operating model for durable savings scan cloud costs and optimize faster with cloud waste scanner. founder notes part 6: how teams keep savings durable with founder notes founder notes governance" data-topics="Governance" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 13, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">6 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-violet-100 text-violet-700">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/interview-origins-part6-operating-model-compounding-governance.html">Founder Notes P6: Operating Model for Durable Savings</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Founder Notes Part 6: how teams keep savings durable with</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part6-operating-model-compounding-governance.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Founder Notes" data-search="founder notes p5: simulation, edge cases, reporting scan cloud costs and optimize faster with cloud waste scanner. founder notes part 5: why policy simulation and edge-case founder notes founder notes automation" data-topics="Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 11, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-violet-100 text-violet-700">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/interview-origins-part5-policy-simulation-edge-cases-reporting.html">Founder Notes P5: Simulation, Edge Cases, Reporting</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Founder Notes Part 5: why policy simulation and edge-case</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part5-policy-simulation-edge-cases-reporting.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Founder Notes" data-search="founder notes p4: safe automation without blind deletion founder notes part 4: how cloud waste scanner turns findings into auditable execution with risk scoring, approvals, and founder notes founder notes security automation" data-topics="Security|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 09, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-violet-100 text-violet-700">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/interview-origins-part4-safe-automation.html">Founder Notes P4: Safe Automation Without Blind Deletion</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Founder Notes Part 4: how Cloud Waste Scanner turns findings into auditable execution with risk scoring, approvals, and</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part4-safe-automation.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Founder Notes" data-search="founder notes p3: unifying 15+ cloud providers scan cloud costs and optimize faster with cloud waste scanner. founder notes part 3: how we used rust traits and async runtime founder notes founder notes " data-topics="" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 07, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-violet-100 text-violet-700">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Founder Notes</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/interview-origins-part3.html">Founder Notes P3: Unifying 15+ Cloud Providers</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Founder Notes Part 3: how we used Rust traits and async runtime</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part3.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Founder Notes" data-search="founder notes p2: local-first as a trust model scan cloud costs and optimize faster with cloud waste scanner. founder notes part 2: why local-first architecture improves founder notes founder notes local-first security" data-topics="Local-first|Security" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 06, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-violet-100 text-violet-700">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/interview-origins-part2-local-first.html">Founder Notes P2: Local-First as a Trust Model</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Founder Notes Part 2: why Local-First architecture improves</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part2-local-first.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Founder Notes" data-search="founder notes p1: why cloud waste persists scan cloud costs and optimize faster with cloud waste scanner. founder notes part 1: why cloud waste persists even with mature founder notes founder notes finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 05, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-violet-100 text-violet-700">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Founder Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/interview-origins-part1.html">Founder Notes P1: Why Cloud Waste Persists</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Founder Notes Part 1: why cloud waste persists even with mature</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/interview-origins-part1.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="cws pro v1.16.3: policy, monitor 2.0, smart scans what changed in v1.16.3: policy engine upgrades, monitor redesign, and smarter scan workflow for enterprise cloud cost governance. product updates release notes release" data-topics="Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 04, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/evolution-of-control-v1-16.html">CWS Pro v1.16.3: Policy, Monitor 2.0, Smart Scans</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">What changed in v1.16.3: policy engine upgrades, monitor redesign, and smarter scan workflow for enterprise cloud cost governance.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/evolution-of-control-v1-16.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="FinOps Strategy" data-search="inside a $50k cloud leak: what scripts missed scan cloud costs and optimize faster with cloud waste scanner. a postmortem of recurring cloud cost leaks like idle nat finops strategy standalone finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 03, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-700">FinOps Strategy</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/deep-finops-anatomy.html">Inside a $50k Cloud Leak: What Scripts Missed</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. A postmortem of recurring cloud cost leaks like idle NAT</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/deep-finops-anatomy.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Security &amp; Trust" data-search="safer governance with execution plans and local api scan cloud costs and optimize faster with cloud waste scanner. v1.14 adds execution plans, local api automation, and security &amp; trust release notes governance security automation" data-topics="Governance|Security|Automation" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Feb 01, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-700">Security &amp; Trust</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Governance</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Automation</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/enterprise-grade-safety-v1-14.html">Safer Governance with Execution Plans and Local API</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. v1.14 adds Execution Plans, Local API automation, and</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/enterprise-grade-safety-v1-14.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="v1.10: 15-provider coverage without 15 tools v1.10 expands cloud waste scanner to 15 cloud providers and keeps one local-first workflow for scan, review, and cleanup actions. product updates release notes release" data-topics="Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 31, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/v2-launch-global.html">v1.10: 15-Provider Coverage Without 15 Tools</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">v1.10 expands Cloud Waste Scanner to 15 cloud providers and keeps one local-first workflow for scan, review, and cleanup actions.</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/v2-launch-global.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="from compute cleanup to storage tiering in v1.10 scan cloud costs and optimize faster with cloud waste scanner. how v1.10 expanded cloud coverage and storage tiering checks so product updates release notes release" data-topics="Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 31, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/storage-tiering-launch.html">From Compute Cleanup to Storage Tiering in v1.10</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. How v1.10 expanded cloud coverage and storage tiering checks so</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/storage-tiering-launch.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="rightsizing in practice: cut waste safely scan cloud costs and optimize faster with cloud waste scanner. new rightsizing checks detect consistently underused instances product updates release notes finops release" data-topics="FinOps|Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 30, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/rightsizing-launch.html">Rightsizing in Practice: Cut Waste Safely</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. New rightsizing checks detect consistently underused instances</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/rightsizing-launch.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="rightsizing for azure and gcp is live cloud waste scanner rightsizing now covers azure and google cloud so teams can review oversized instances in one local-first product updates release notes finops release" data-topics="FinOps|Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 30, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/global-rightsizing.html">Rightsizing for Azure and GCP Is Live</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Cloud Waste Scanner rightsizing now covers Azure and Google Cloud so teams can review oversized instances in one local-first</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/global-rightsizing.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="FinOps Strategy" data-search="3 expensive cloud incidents and their fixes scan cloud costs and optimize faster with cloud waste scanner. three real incidents, from nat gateway processing fees to finops strategy standalone finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 29, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-700">FinOps Strategy</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/cloud-waste-horror-stories.html">3 Expensive Cloud Incidents and Their Fixes</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Three real incidents, from NAT gateway processing fees to</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/cloud-waste-horror-stories.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="FinOps Strategy" data-search="why fixed idle thresholds miss real cloud waste scan cloud costs and optimize faster with cloud waste scanner. why hardcoded cpu thresholds misclassify cloud resources, and finops strategy standalone finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 28, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-700">FinOps Strategy</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/the-idle-fallacy.html">Why Fixed Idle Thresholds Miss Real Cloud Waste</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Why hardcoded CPU thresholds misclassify cloud resources, and</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/the-idle-fallacy.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Product Updates" data-search="cws pro v1.0: what we actually shipped cloud waste scanner pro v1.0 ships deep scans across aws, azure, gcp, alibaba, and digitalocean with local-first credentials product updates release notes release" data-topics="Release" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 27, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">2 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700">Product Updates</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release Notes</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Release</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/v1-launch.html">CWS Pro v1.0: What We Actually Shipped</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Cloud Waste Scanner Pro v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/v1-launch.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="FinOps Strategy" data-search="5 cloud cost leaks teams miss in monthly reviews scan cloud costs and optimize faster with cloud waste scanner. five recurring cloud cost leaks we keep seeing in audits, from finops strategy standalone finops" data-topics="FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 27, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-700">FinOps Strategy</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/hidden-cloud-costs.html">5 Cloud Cost Leaks Teams Miss in Monthly Reviews</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Scan cloud costs and optimize faster with Cloud Waste Scanner. Five recurring cloud cost leaks we keep seeing in audits, from</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/hidden-cloud-costs.html">Read</a>
+</div>
+</div>
+</article>
+<article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-article-row="" data-category="Security &amp; Trust" data-search="why local-first matters in finops a clear trust-boundary explanation of why cloud waste scanner keeps credentials local and what the hosted side actually does security &amp; trust standalone local-first security finops" data-topics="Local-first|Security|FinOps" data-year="2026">
+<div class="grid gap-4 lg:grid-cols-[140px_1fr_140px]">
+<div>
+<p class="text-xs font-bold uppercase tracking-wide text-slate-500">Jan 26, 2026</p>
+<p class="mt-2 text-sm font-semibold text-slate-500">3 min read</p>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-700">Security &amp; Trust</span>
+<span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Local-first</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">Security</span><span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">FinOps</span>
+</div>
+<h3 class="mt-3 text-2xl font-bold text-slate-900"><a class="hover:text-indigo-600 transition-colors" href="blog/local-first-finops.html">Why Local-First Matters in FinOps</a></h3>
+<p class="mt-3 text-base leading-7 text-slate-600">A clear trust-boundary explanation of why Cloud Waste Scanner keeps credentials local and what the hosted side actually does</p>
+</div>
+<div class="lg:text-right lg:self-center">
+<a class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors" href="blog/local-first-finops.html">Read</a>
+</div>
+</div>
+</article>
+</div>
+<div class="mt-6 flex flex-wrap items-center justify-center gap-2" id="archive-pagination"></div>
+</section>
+</div>
+</main>
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="logo.png"/>
+<p class="text-sm text-slate-500">&copy; Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="skills.html">Skills</a>
+<a class="block hover:text-slate-900 transition-colors" href="pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</footer>
+<script defer="" src="js/analytics.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const search = document.getElementById('hub-search');
+        const sort = document.getElementById('hub-sort');
+        const categoryButtons = Array.from(document.querySelectorAll('[data-category-filter]'));
+        const yearButtons = Array.from(document.querySelectorAll('[data-year-filter]'));
+        const topicButtons = Array.from(document.querySelectorAll('[data-topic-filter]'));
+        const rows = Array.from(document.querySelectorAll('[data-article-row]'));
+        const emptyState = document.getElementById('archive-empty');
+        const pagination = document.getElementById('archive-pagination');
+        const status = document.getElementById('archive-status');
+        const pageSize = 9;
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+        let activeCategory = 'All';
+        let activeYear = 'All';
+        let activeTopic = 'All';
+        let activeSort = 'newest';
+        let currentPage = 1;
+        let filteredRows = rows.slice();
+
+        function updateButtonState(buttons, active, attr) {
+            buttons.forEach((button) => {
+                const selected = button.getAttribute(attr) === active;
+                button.classList.toggle('bg-slate-900', selected);
+                button.classList.toggle('text-white', selected);
+                button.classList.toggle('border-slate-900', selected);
+                button.classList.toggle('bg-white', !selected);
+                button.classList.toggle('text-slate-700', !selected);
+                button.classList.toggle('border-slate-300', !selected);
+            });
+        }
+
+        function renderPagination(totalPages) {
+            if (!pagination) {
+                return;
+            }
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            const buttons = [];
+            const prevDisabled = currentPage === 1;
+            const prevClasses = prevDisabled
+                ? 'rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-bold text-slate-400 cursor-not-allowed'
+                : 'rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors';
+            buttons.push(`<button type=\"button\" data-page-nav=\"prev\" class=\"${prevClasses}\" ${prevDisabled ? 'disabled aria-disabled=\"true\"' : ''}>Prev</button>`);
+            for (let page = 1; page <= totalPages; page += 1) {
+                const activeClasses = page === currentPage
+                    ? 'border-slate-900 bg-slate-900 text-white'
+                    : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50';
+                buttons.push(`<button type=\"button\" data-page=\"${page}\" class=\"rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${activeClasses}\">${page}</button>`);
+            }
+            const nextDisabled = currentPage === totalPages;
+            const nextClasses = nextDisabled
+                ? 'rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-bold text-slate-400 cursor-not-allowed'
+                : 'rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors';
+            buttons.push(`<button type=\"button\" data-page-nav=\"next\" class=\"${nextClasses}\" ${nextDisabled ? 'disabled aria-disabled=\"true\"' : ''}>Next</button>`);
+            pagination.innerHTML = buttons.join('');
+            pagination.querySelectorAll('[data-page]').forEach((button) => {
+                button.addEventListener('click', function () {
+                    currentPage = Number(this.getAttribute('data-page')) || 1;
+                    renderPage();
+                });
+            });
+            pagination.querySelectorAll('[data-page-nav]').forEach((button) => {
+                button.addEventListener('click', function () {
+                    const nav = this.getAttribute('data-page-nav');
+                    if (nav === 'prev' && currentPage > 1) {
+                        currentPage -= 1;
+                    }
+                    if (nav === 'next' && currentPage < totalPages) {
+                        currentPage += 1;
+                    }
+                    renderPage();
+                });
+            });
+        }
+
+        function renderPage() {
+            const total = filteredRows.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+            const start = total === 0 ? 0 : (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            rows.forEach((row) => row.classList.add('hidden'));
+            filteredRows.slice(start, end).forEach((row) => row.classList.remove('hidden'));
+            emptyState.classList.toggle('hidden', total > 0);
+            if (status) {
+                status.textContent = total === 0
+                    ? 'No matching articles'
+                    : `Showing ${start + 1}-${end} of ${total} matching articles`;
+            }
+            syncUrl(total > 0 ? totalPages : 1);
+            renderPagination(totalPages);
+        }
+
+        function syncUrl(totalPages) {
+            const next = new URL(window.location.href);
+            const nextParams = next.searchParams;
+            const term = (search && search.value ? search.value : '').trim();
+            if (term) nextParams.set('q', term); else nextParams.delete('q');
+            if (activeCategory !== 'All') nextParams.set('category', activeCategory); else nextParams.delete('category');
+            if (activeYear !== 'All') nextParams.set('year', activeYear); else nextParams.delete('year');
+            if (activeTopic !== 'All') nextParams.set('topic', activeTopic); else nextParams.delete('topic');
+            if (activeSort !== 'newest') nextParams.set('sort', activeSort); else nextParams.delete('sort');
+            if (currentPage > 1 && currentPage <= totalPages) nextParams.set('page', String(currentPage)); else nextParams.delete('page');
+            window.history.replaceState({}, '', `${next.pathname}${next.search ? next.search : ''}${next.hash}`);
+        }
+
+        function initializeFromUrl() {
+            const q = (params.get('q') || '').trim();
+            const category = params.get('category');
+            const year = params.get('year');
+            const topic = params.get('topic');
+            const sortParam = params.get('sort');
+            const pageParam = Number(params.get('page') || '1');
+            if (search && q) search.value = q;
+            if (category && categoryButtons.some((button) => button.getAttribute('data-category-filter') === category)) {
+                activeCategory = category;
+            }
+            if (year && yearButtons.some((button) => button.getAttribute('data-year-filter') === year)) {
+                activeYear = year;
+            }
+            if (topic && topicButtons.some((button) => button.getAttribute('data-topic-filter') === topic)) {
+                activeTopic = topic;
+            }
+            if (sort && sortParam && Array.from(sort.options).some((option) => option.value === sortParam)) {
+                activeSort = sortParam;
+                sort.value = sortParam;
+            }
+            if (Number.isFinite(pageParam) && pageParam > 0) {
+                currentPage = pageParam;
+            }
+        }
+
+        function applyFilters(resetPage) {
+            const term = (search && search.value ? search.value : '').trim().toLowerCase();
+            filteredRows = rows.filter((row) => {
+                const haystack = row.getAttribute('data-search') || '';
+                const category = row.getAttribute('data-category') || '';
+                const year = row.getAttribute('data-year') || '';
+                const topics = (row.getAttribute('data-topics') || '').split('|').filter(Boolean);
+                const matchText = !term || haystack.includes(term);
+                const matchCategory = activeCategory === 'All' || category === activeCategory;
+                const matchYear = activeYear === 'All' || year === activeYear;
+                const matchTopic = activeTopic === 'All' || topics.includes(activeTopic);
+                return matchText && matchCategory && matchYear && matchTopic;
+            });
+            filteredRows.sort((a, b) => {
+                const timeA = Date.parse(a.querySelector('p')?.textContent || '') || 0;
+                const timeB = Date.parse(b.querySelector('p')?.textContent || '') || 0;
+                const readA = Number((a.textContent.match(/(\d+)\s*min read/i) || [0, 0])[1]) || 0;
+                const readB = Number((b.textContent.match(/(\d+)\s*min read/i) || [0, 0])[1]) || 0;
+                const titleA = (a.querySelector('h3 a')?.textContent || '').trim().toLowerCase();
+                const titleB = (b.querySelector('h3 a')?.textContent || '').trim().toLowerCase();
+                if (activeSort === 'oldest') return timeA - timeB;
+                if (activeSort === 'read_desc') return readB - readA || timeB - timeA;
+                if (activeSort === 'read_asc') return readA - readB || timeB - timeA;
+                if (activeSort === 'title_asc') return titleA.localeCompare(titleB);
+                return timeB - timeA;
+            });
+            if (resetPage) {
+                currentPage = 1;
+            }
+            updateButtonState(categoryButtons, activeCategory, 'data-category-filter');
+            updateButtonState(yearButtons, activeYear, 'data-year-filter');
+            updateButtonState(topicButtons, activeTopic, 'data-topic-filter');
+            renderPage();
+        }
+
+        categoryButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                activeCategory = this.getAttribute('data-category-filter');
+                applyFilters(true);
+            });
+        });
+
+        yearButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                activeYear = this.getAttribute('data-year-filter');
+                applyFilters(true);
+            });
+        });
+
+        topicButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                activeTopic = this.getAttribute('data-topic-filter');
+                applyFilters(true);
+            });
+        });
+
+        if (search) {
+            search.addEventListener('input', function () {
+                applyFilters(true);
+            });
+        }
+        if (sort) {
+            sort.addEventListener('change', function () {
+                activeSort = this.value || 'newest';
+                applyFilters(true);
+            });
+        }
+
+        initializeFromUrl();
+        applyFilters(true);
+    });
+    </script>
+</body>
+</html>

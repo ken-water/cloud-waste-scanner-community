@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Whitepaper P4: Token Lifecycle and API Hardening</title>
+    <meta name="description" content="Token Lifecycle and API Hardening: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Security Whitepaper P4: Token Lifecycle and API Hardening">
+    <meta property="og:description" content="Token Lifecycle and API Hardening: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/security-whitepaper-cover.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Security Whitepaper P4: Token Lifecycle and API Hardening">
+    <meta name="twitter:description" content="Token Lifecycle and API Hardening: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/security-whitepaper-cover.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html",
+      "headline": "Security Whitepaper P4: Token Lifecycle and API Hardening",
+      "description": "Token Lifecycle and API Hardening: security review guidance for local-first cloud governance, credential boundaries, controls, and audit readiness.",
+      "datePublished": "2026-03-18",
+      "dateModified": "2026-03-18",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/whitepapers/security-part4-token-lifecycle-ops.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Security Whitepaper P4: Token Lifecycle and API Hardening",
+          "item": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="blog-shell">
+                <article class="blog-main min-w-0">
+                    <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                        <div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Security Whitepaper</a><span class="blog-divider-dot">/</span><span>Part 4</span></div>
+                        <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-indigo-700 uppercase bg-indigo-50 rounded-full">Security Whitepaper</span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Token Lifecycle and API Hardening</h1>
+                        <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 4 documents concrete token and local API controls already shipped in product docs and release lines.</p>
+                        <div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-18">Mar 18, 2026</time><span class="blog-reading-time">Reading time: 6 min</span></div>
+                    </header>
+
+                    <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Security Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Read in order: trust boundary -&gt; control matrix -&gt; verification -&gt; token hardening -&gt; transport and auditability.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Part 4 focuses on one of the highest-leverage control surfaces: token lifecycle and local API hardening. Most practical security incidents in local workflows start here, not in theoretical zero-day scenarios.</p>
+
+<h2 id="chapter-continuity" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Why this chapter follows verification readiness</h2>
+<p><a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a> defined verification cadence and incident structure. Part 4 applies that structure to token and API controls where misuse risk is concentrated. <a href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a> closes with transport integrity and auditability controls for full rollout confidence.</p>
+
+<h2 id="token-lifecycle" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Token lifecycle model</h2>
+<p>Token lifecycle should be explicit: issue, distribute minimally, rotate, revoke, and verify revocation. Missing one step creates dormant risk that only appears during incident response.</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/security-part4-token-lifecycle-ops.svg" alt="Token lifecycle operations from issue through revocation and governance checks." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure S4-1. Token lifecycle operations with validation and governance checkpoints.</figcaption>
+</figure>
+<ul>
+<li><strong>Issue:</strong> scoped token generated for local API protection.</li>
+<li><strong>Distribute:</strong> controlled to operators and automation contexts that require it.</li>
+<li><strong>Rotate:</strong> scheduled or event-driven rotation with owner accountability.</li>
+<li><strong>Revoke:</strong> old tokens invalidated and confirmed with negative tests.</li>
+</ul>
+
+<h2 id="api-hardening" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. API hardening baseline</h2>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/security-part4-api-hardening-surface.svg" alt="Local API hardening surface and regression test boundaries." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure S4-2. Local API hardening surface with guardrails and regression output signals.</figcaption>
+</figure>
+<ul>
+<li>Require auth for protected routes.</li>
+<li>Reject malformed or unauthorized requests deterministically.</li>
+<li>Constrain network exposure to expected local or controlled paths.</li>
+<li>Preserve structured error responses for operator triage.</li>
+</ul>
+<p>Hardening should be measurable. A policy statement without a test is not a control.</p>
+
+<h2 id="rotation-patterns" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Rotation and revocation patterns</h2>
+<p>Operationally stable pattern:</p>
+<ol>
+<li>Create replacement token.</li>
+<li>Update dependent local integrations.</li>
+<li>Validate new token behavior across required endpoints.</li>
+<li>Revoke old token.</li>
+<li>Run explicit unauthorized checks with revoked token.</li>
+</ol>
+<p>This sequence avoids service disruption while still shrinking old-token exposure windows.</p>
+
+<h2 id="misuse-scenarios" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Misuse scenarios and expected defenses</h2>
+<ul>
+<li><strong>Token copied to unmanaged script:</strong> detect with failed auth or unexpected usage pattern and rotate.</li>
+<li><strong>Stale token retained in legacy automation:</strong> detect via verification drift checks and clean-up runbook.</li>
+<li><strong>Route exposure beyond intended scope:</strong> detect through network policy review and local listener checks.</li>
+</ul>
+<p>Incident readiness improves when misuse scenarios are rehearsed before production escalation.</p>
+
+<h2 id="case-study" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Case study: rotation without revocation proof</h2>
+<p>A common process mistake is rotating tokens but skipping explicit revocation tests. Teams believe they reduced risk, but old tokens still work in one forgotten automation path. The fix is straightforward: make revoked-token negative tests mandatory in rotation checklist and tie completion to release or operational gate closure.</p>
+
+<h2 id="integration-guidance" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6. Integration guidance for enterprise operators</h2>
+<ul>
+<li>Store tokens in controlled local secret mechanisms under endpoint policy.</li>
+<li>Separate production and non-production automation channels.</li>
+<li>Keep token inventory with owner mapping and expiry/rotation metadata.</li>
+<li>Require operational sign-off when token scope expands.</li>
+</ul>
+<p>This guidance reduces orphaned credentials and improves incident accountability.</p>
+
+<h2 id="implementation-faq" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation FAQ for token owners</h2>
+<p><strong>Q: How often should tokens rotate?</strong> Use policy-driven cadence tied to risk class and incident history; avoid indefinite tokens.</p>
+<p><strong>Q: Is token hardening enough without transport controls?</strong> No. Token and transport controls are complementary. Part 5 addresses transport integrity and evidence for auditability.</p>
+<p><strong>Q: What is the minimal proof for a completed token rotation?</strong> issuance record, integration update confirmation, revoked-token rejection test result, and owner sign-off.</p>
+
+<h2 id="token-program-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Token program notes: making lifecycle controls sustainable</h2>
+<p>Token controls usually fail due to process drift, not cryptography. Teams generate strong tokens but lose inventory discipline over time. Keep a token register with owner, scope, creation date, last rotation date, and linked automation dependencies. Without inventory, revocation events become guesswork.</p>
+<p>Rotation reliability also depends on change sequencing. If revocation happens before dependent automation is updated, teams may bypass controls under pressure. Use staged rotation with validation checkpoints and defined rollback behavior. Document the sequence in one-page SOP and keep it accessible to on-call operators.</p>
+<p>Another common gap is insufficient negative testing. Positive tests confirm new token works; negative tests confirm old token does not. Both are required. Missing negative tests leaves hidden exposure in legacy scripts and forgotten environments.</p>
+<p>For governance, report token lifecycle metrics monthly: rotation adherence, stale-token count, orphan-token count, and unauthorized rejection trend. These metrics expose process health earlier than incident counts.</p>
+<h2 id="token-check" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Token hardening check for security committee</h2>
+<ul>
+<li>Token inventory exists and is owner-complete.</li>
+<li>Rotation records include both positive and negative validation evidence.</li>
+<li>Revocation process has tested rollback and escalation path.</li>
+<li>Token scope expansion requires explicit approval record.</li>
+</ul>
+
+<h2 id="api-hardening-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">API hardening notes: practical boundaries for local operations</h2>
+<p>Local API security is often evaluated as if it were a public internet API. That can lead to over-engineering in low-risk contexts and under-engineering in high-risk contexts. The better approach is risk-tiered hardening: enforce strict auth and route constraints by default, then add transport and exposure controls aligned to deployment environment.</p>
+<p>Another practical issue is configuration drift between environments. Production paths may enforce stricter controls than test paths, but teams sometimes promote scripts without validating assumptions. Include environment-specific hardening checks in release gates and require explicit approval when controls differ by environment.</p>
+<p>Finally, include hardening regression tests in change review for any endpoint behavior change. Endpoint behavior drift can silently weaken controls even when token policy remains unchanged. Regression tests preserve control intent across feature evolution.</p>
+
+<h2 id="appendix-token-governance" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Appendix: token governance for multi-team environments</h2>
+<p>In multi-team environments, token lifecycle governance requires role clarity. Define three roles: issuer, consumer, and approver. The issuer manages creation and revocation. The consumer operates integrations and reports anomalies. The approver authorizes scope expansion and exception handling. This simple role model reduces ambiguity during urgent changes.</p>
+<p>For enterprise controls, keep token usage inventory linked to system purpose. A token without declared purpose should be treated as governance debt and removed or reclassified. Purpose linkage also helps incident response teams assess impact quickly when token compromise is suspected.</p>
+<p>A second best practice is pre-approved emergency rotation procedure. During incidents, teams should not design rotation steps from scratch. Maintain a tested emergency path that includes communication template, dependency checks, rollback conditions, and post-event verification tasks.</p>
+<p>Third, align token policy with developer workflow realities. If policy is too rigid for valid automation use-cases, teams may create unmanaged workarounds. Governance should protect systems while remaining operationally usable.</p>
+
+<h2 id="data-sources" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Data sources for this chapter</h2>
+<ul>
+<li><a href="../api-token-guide.html">API Token Guide</a> and <a href="../api-reference.html">API Reference</a> for auth semantics and endpoint expectations.</li>
+<li><a href="../documentation.html">Documentation Center</a> for local API and runtime context.</li>
+<li><a href="../release-ledger.html">Release Ledger</a> for token/control related hardening traceability.</li>
+</ul>
+
+<h2 id="next-part" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next: transport integrity and auditability</h2>
+<p>Continue to <a href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a> for HTTPS/proxy integrity checks, audit evidence packaging, and security review closeout model.</p>
+
+
+<section class="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Security Review Checklist</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900">Download the operator checklist used in enterprise reviews</h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Use this checklist in architecture review, rollout sign-off, and recurring governance audits.</p>
+<div class="mt-5">
+<a href="../files/security-review-checklist-v1.pdf" download class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors">Download Security Review Checklist</a>
+</div>
+</section>
+</div>
+
+                    <div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Security Review Workflow</div><h3 class="cws-cta-title mt-4">Validate this control path in your own environment</h3><p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p><div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div></div></div>
+                </article>
+                <aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

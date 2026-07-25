@@ -3,11 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Delete Unused Load Balancers in DigitalOcean | Cloud Waste Scanner</title>
-  <meta name="description" content="Step-by-step guide to finding and deleting Unused Load Balancers in DigitalOcean to save money. Automate this with Cloud Waste Scanner.">
+  <title>Review and clean up Unused Load Balancers in DigitalOcean</title>
+  <meta name="description" content="Find and review Unused Load Balancers in DigitalOcean with local scan evidence before making cleanup decisions.">
   <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/solutions/digitalocean-load-balancers-cleanup">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="Review and clean up Unused Load Balancers in DigitalOcean">
+  <meta property="og:description" content="Find and review Unused Load Balancers in DigitalOcean with local scan evidence before making cleanup decisions.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/solutions/digitalocean-load-balancers-cleanup">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Review and clean up Unused Load Balancers in DigitalOcean">
+  <meta name="twitter:description" content="Find and review Unused Load Balancers in DigitalOcean with local scan evidence before making cleanup decisions.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="../styles.css">
   <script defer src="../js/blog-toc.js"></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script id="cws-jsonld" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Solutions",
+          "item": "https://cloud-waste-scanner.com/solutions"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Review and clean up Unused Load Balancers in DigitalOcean",
+          "item": "https://cloud-waste-scanner.com/solutions/digitalocean-load-balancers-cleanup"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I delete every flagged Unused Load Balancers item?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Treat every finding as a review candidate. Confirm ownership, usage history, dependency risk, and change approval before cleanup."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why use a local scan before cleanup?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A local scan keeps credentials on your machine and gives the team evidence it can export, review, and attach to the cleanup decision."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -19,47 +87,49 @@
   </header>
   <main class="section">
   <div class="container article">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../solutions.html">Solutions</a><span aria-hidden="true">/</span><span>Review and clean up Unused Load Balancers in DigitalOcean</span></nav>
     <div class="eyebrow">Solution</div>
-    <h1>How to Delete Unused Load Balancers in DigitalOcean</h1>
-    <p class="lead">Step-by-step guide to finding and deleting Unused Load Balancers in DigitalOcean to save money. Automate this with Cloud Waste Scanner.</p>
-    <div class="article-body"><p>
-                Unused Load Balancers are one of the most common sources of wasted cloud spend in DigitalOcean. 
-                They often get left behind when instances are terminated or projects are deleted.
-            </p>
+    <h1>Review and clean up Unused Load Balancers in DigitalOcean</h1>
+    <p class="lead">Find and review Unused Load Balancers in DigitalOcean with local scan evidence before making cleanup decisions.</p>
+    <div class="article-body"><p>Unused Load Balancers can create recurring waste in DigitalOcean when ownership, usage, or lifecycle rules drift. Start with evidence, confirm the resource is no longer needed, and only then move to cleanup.</p>
 
-            <h2>The Manual Way (Hard)</h2>
-            <p>To find these manually in DigitalOcean Console:</p>
+            <h2>Manual review path</h2>
+            <p>For a manual review:</p>
             <ol>
                 <li>Log in to the DigitalOcean Console.</li>
                 <li>Navigate to the Compute/Storage section.</li>
                 <li>Filter for resources with status "Available" or "Unattached".</li>
                 <li>Check the "Last Attached" date to ensure safety.</li>
-                <li>Select and delete each one manually.</li>
+                <li>Review each candidate, confirm ownership and dependency risk, then clean it up through your normal change process.</li>
             </ol>
-            <p>Repeating this for every region is tedious and error-prone.</p>
+            <p>Repeating this for every region is tedious, and the risk is higher when there is no evidence trail.</p>
 
-            <h2>The Automated Way (Easy)</h2>
+            <h2>Local scan path</h2>
             <p>
-                <strong>Cloud Waste Scanner</strong> automates this process. It scans all regions in DigitalOcean simultaneously and identifies Unused Load Balancers that have been idle for more than 7 days.
+                <strong>Cloud Waste Scanner</strong> scans locally, groups likely Unused Load Balancers waste, and gives your team evidence to review before cleanup.
             </p>
 
             <figure>
-                <img src="../images/scan-results.png" alt="Scan Results">
-                <figcaption>Identify Unused Load Balancers in seconds.</figcaption>
+                <img src="../images/scan-results.png" width="1493" height="893" loading="lazy" decoding="async" alt="Cloud Waste Scanner scan results view">
+                <figcaption>Review likely Unused Load Balancers waste with supporting scan evidence.</figcaption>
             </figure>
 
             <h3>Key Benefits</h3>
             <ul>
-                <li><strong>Safe:</strong> We check for usage metrics before flagging.</li>
-                <li><strong>Fast:</strong> Scan 20+ regions in under 30 seconds.</li>
+                <li><strong>Evidence first:</strong> Review usage, ownership, and dependency signals before cleanup.</li>
+                <li><strong>Broad coverage:</strong> Scan multiple regions without changing console context.</li>
                 <li><strong>Local-First:</strong> Your DigitalOcean credentials never leave your computer.</li>
             </ul>
 
             <div>
-                <h3>Stop Overpaying for DigitalOcean</h3>
-                <p>Download the scanner and see how much you can save today.</p>
-                <a href="../download/">Download App</a>
-            </div></div>
+                <h3>Review before cleanup</h3><p>Use local scan evidence to decide what is safe to change.</p><a href="../download/">Download App</a>
+            
+
+            <h2>Common review questions</h2>
+            <h3>Should I delete every flagged Unused Load Balancers item?</h3>
+            <p>No. Treat every finding as a review candidate. Confirm ownership, usage history, dependency risk, and change approval before cleanup.</p>
+            <h3>Why use a local scan before cleanup?</h3>
+            <p>A local scan keeps credentials on your machine and gives the team evidence it can export, review, and attach to the cleanup decision.</p></div></div>
     <div class="card article-cta"><h3>Review this waste locally.</h3><p>Install the app, connect the provider with read-only access first, and export evidence before cleanup.</p><a class="btn primary" href="../download/">Download App</a></div>
   </div>
 </main>

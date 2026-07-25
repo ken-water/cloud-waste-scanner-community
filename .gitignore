@@ -12,8 +12,12 @@
 .env
 node_modules
 /gui/node_modules
+/.cargo/
+/admin-backend/
 tmp/
-releases/
+releases/*
+!releases/site/
+!releases/site/**
 data/
 __pycache__/
 *.pyc

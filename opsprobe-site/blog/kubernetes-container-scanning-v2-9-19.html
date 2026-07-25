@@ -3,11 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | Cloud Waste Scanner</title>
-  <meta name="description" content="Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.">
+  <title>v2.9.19: Kubernetes Scans Without a Cluster Agent</title>
+  <meta name="description" content="v2.9.19 added Kubernetes scanning without asking teams to install a cluster agent or hosted collector.">
   <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="v2.9.19: Kubernetes Scans Without a Cluster Agent">
+  <meta property="og:description" content="v2.9.19 added Kubernetes scanning without asking teams to install a cluster agent or hosted collector.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="v2.9.19: Kubernetes Scans Without a Cluster Agent">
+  <meta name="twitter:description" content="v2.9.19 added Kubernetes scanning without asking teams to install a cluster agent or hosted collector.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="../styles.css">
   <script defer src="../js/blog-toc.js"></script>
+  <script defer src="../js/article-enhance.js"></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script id="cws-jsonld" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "v2.9.19: Kubernetes Scans Without a Cluster Agent",
+  "description": "v2.9.19 added Kubernetes scanning without asking teams to install a cluster agent or hosted collector.",
+  "url": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19",
+  "image": "https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp",
+  "author": {
+    "@type": "Organization",
+    "name": "Cloud Waste Scanner"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Cloud Waste Scanner",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloud-waste-scanner.com/assets/product-icon.svg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19"
+  },
+  "datePublished": "2026-04-28",
+  "dateModified": "2026-07-25"
+}
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -26,18 +72,20 @@
       </section>
     </aside>
     <article class="article">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../blog.html">Blog</a><span aria-hidden="true">/</span><span>v2.9.19: Kubernetes Scans Without a Cluster Agent</span></nav>
+    
       <div class="eyebrow">Product Updates</div>
-      <h1>v2.9.19: No Agent Cloud Cost Optimization for Kubernetes</h1>
-      <p class="lead">Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.</p>
+      <h1>v2.9.19: Kubernetes Scans Without a Cluster Agent</h1>
+      <p class="lead">v2.9.19 added Kubernetes scanning without asking teams to install a cluster agent or hosted collector.</p>
       <div class="meta-line">2026-04-28 · Product Updates</div>
       <div class="article-body" data-article-body><p>Container platforms changed how teams ship software, but they did not make waste disappear. In many environments, Kubernetes simply moved cloud waste behind a scheduler, a namespace, or a storage claim.</p>
 
 <p>That is the reason v2.9.19 matters. Cloud Waste Scanner now supports <strong>local-first Kubernetes and container waste scanning</strong>. The implementation is deliberately practical: it runs through local <code>kubectl</code>, uses the kubeconfig and context you choose, keeps data on your machine, and returns evidence that an operator can review without installing a SaaS collector inside the cluster.</p>
 
-<p>This is not a cosmetic checkbox. Kubernetes is where many teams now hide expensive infrastructure decisions: node pools sized for last quarter's launch, PersistentVolumes left behind after namespace cleanup, public LoadBalancer services that nobody owns, and replica settings that drift from current traffic. A monthly cloud bill rarely explains those relationships. A cluster dashboard rarely connects them to cross-cloud waste. CWS now helps bridge that gap with <strong>no agent cloud cost optimization</strong> for platform teams that need evidence before cleanup.</p>
+<p>This is not a cosmetic checkbox. Kubernetes is where many teams now hide expensive infrastructure decisions: node pools sized for last quarter's launch, PersistentVolumes left behind after namespace cleanup, public LoadBalancer services that nobody owns, and replica settings that drift from current traffic. A monthly cloud bill rarely explains those relationships. A cluster dashboard rarely connects them to cross-cloud waste. CWS now helps bridge that gap for platform teams that need evidence before cleanup.</p>
 
 <h2 id="what-shipped">What shipped in v2.9.19</h2>
-<p>The new scan lane adds Kubernetes as a first-class local scan target. current users can run the workflow from the app, and automation users can drive it through the Local API. The current implementation is intentionally read-only and evidence-oriented, making it a practical no agent cloud cost optimization path for teams that need cloud governance tools and cloud cost optimization for DevOps without installing a collector.</p>
+<p>The new scan lane adds Kubernetes as a first-class local scan target. Current users can run the workflow from the app, and automation users can drive it through the Local API. The implementation is intentionally read-only and evidence-oriented, so teams can review cluster waste without installing a collector.</p>
 
 <div>
 <table>
@@ -191,5 +239,6 @@ Content-Type: application/json
       <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
     </div>
   </footer>
+  <script src="../js/share-links.js" defer></script>
 </body>
 </html>

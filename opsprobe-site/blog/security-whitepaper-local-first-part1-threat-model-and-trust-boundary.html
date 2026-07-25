@@ -3,11 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Whitepaper P1: Threat Model and Trust Boundary | Cloud Waste Scanner</title>
-  <meta name="description" content="Privacy First Cloud Cost Tool Threat Model and Trust Boundary: security review guidance for local-first cloud governance, credential boundaries, controls.">
+  <title>Threat Model and Trust Boundary | Cloud Waste Scanner</title>
+  <meta name="description" content="This part defines what Cloud Waste Scanner touches, what stays local, and which assumptions matter for security review.">
   <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="Threat Model and Trust Boundary | Cloud Waste Scanner">
+  <meta property="og:description" content="This part defines what Cloud Waste Scanner touches, what stays local, and which assumptions matter for security review.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Threat Model and Trust Boundary | Cloud Waste Scanner">
+  <meta name="twitter:description" content="This part defines what Cloud Waste Scanner touches, what stays local, and which assumptions matter for security review.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="../styles.css">
   <script defer src="../js/blog-toc.js"></script>
+  <script defer src="../js/article-enhance.js"></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script id="cws-jsonld" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Threat Model and Trust Boundary",
+  "description": "This part defines what Cloud Waste Scanner touches, what stays local, and which assumptions matter for security review.",
+  "url": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary",
+  "image": "https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp",
+  "author": {
+    "@type": "Organization",
+    "name": "Cloud Waste Scanner"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Cloud Waste Scanner",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloud-waste-scanner.com/assets/product-icon.svg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary"
+  },
+  "datePublished": "2026-03-18",
+  "dateModified": "2026-07-25"
+}
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -26,9 +72,11 @@
       </section>
     </aside>
     <article class="article">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../blog.html">Blog</a><span aria-hidden="true">/</span><span>Threat Model and Trust Boundary</span></nav>
+    
       <div class="eyebrow">Whitepapers</div>
-      <h1>Security Whitepaper P1: Threat Model and Trust Boundary</h1>
-      <p class="lead">Privacy First Cloud Cost Tool Threat Model and Trust Boundary: security review guidance for local-first cloud governance, credential boundaries, controls.</p>
+      <h1>Threat Model and Trust Boundary</h1>
+      <p class="lead">This part defines what Cloud Waste Scanner touches, what stays local, and which assumptions matter for security review.</p>
       <div class="meta-line">2026-03-18 · Whitepapers</div>
       <div class="article-body" data-article-body><section>
 <p>Security Whitepaper Series</p>
@@ -43,8 +91,8 @@
 </section>
 
 <p>Part 1 is the entry point for security and architecture review. Before discussing controls, we define who we defend against, what we assume, and where the trust boundary is enforced in day-to-day operations.</p>
-<p>This baseline is written for teams evaluating a privacy first cloud cost tool in regulated environments where cloud governance framework evidence and no agent cloud cost optimization constraints are both required.</p>
-<p>The same privacy first cloud cost tool boundary model is reused in later parts so security reviewers can validate one consistent trust envelope end to end.</p>
+<p>This baseline is written for teams that need to understand the trust boundary before approving a local scanner in a regulated environment.</p>
+<p>The later chapters reuse the same boundary model so reviewers can evaluate controls without reinterpreting the architecture each time.</p>
 
 <h2 id="chapter-continuity">How Part 1 connects to the rest of the security track</h2>
 <p>This chapter defines the threat model and trust assumptions. <a href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a> maps those assumptions to explicit controls. <a href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a> turns the controls into verification routines and incident readiness practice. <a href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a> and <a href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a> go deeper on token and transport integrity where implementation details matter most.</p>
@@ -160,5 +208,6 @@
       <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
     </div>
   </footer>
+  <script src="../js/share-links.js" defer></script>
 </body>
 </html>

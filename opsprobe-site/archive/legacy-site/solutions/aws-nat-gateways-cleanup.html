@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Delete Idle NAT Gateways in AWS - Cloud Waste Scanner</title>
+    <meta name="description" content="Step-by-step guide to finding and deleting Idle NAT Gateways in AWS to save money. Automate this with Cloud Waste Scanner.">
+    <link href="../../styles.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../logo.png">
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+
+    <header>
+        <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                        <img src="../../logo.png" class="h-8 w-8" alt="Logo">
+                        <span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span>
+                    </a>
+                    <div class="hidden md:flex gap-8 items-center text-sm font-medium text-slate-600">
+                        <a href="../../index.html" class="hover:text-indigo-600 transition-colors">Home</a>
+                        <a href="../../index.html#features" class="hover:text-indigo-600 transition-colors">Features</a>
+                        <a href="../../roadmap.html" class="hover:text-indigo-600 transition-colors">Roadmap</a>
+                        <a href="../../enterprise.html" class="hover:text-indigo-600 transition-colors">Enterprise</a>
+                        <a href="../../security.html" class="hover:text-indigo-600 transition-colors">Security</a>
+                        <a href="../blog.html" class="hover:text-indigo-600 transition-colors">Blog</a>
+                        <a href="../../help.html" class="hover:text-indigo-600 transition-colors">Help</a>
+                    </div>
+                    <a href="../../index.html#download" class="hidden md:inline-flex items-center justify-center px-5 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-lg hover:shadow-indigo-500/30">
+                        Download
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 py-32">
+        <article class="prose prose-lg prose-slate mx-auto">
+            <h1>How to Find and Delete Idle NAT Gateways in AWS</h1>
+            <p class="lead">
+                Idle NAT Gateways are one of the most common sources of wasted cloud spend in AWS. 
+                They often get left behind when instances are terminated or projects are deleted.
+            </p>
+
+            <h2>The Manual Way (Hard)</h2>
+            <p>To find these manually in AWS Console:</p>
+            <ol>
+                <li>Log in to the AWS Console.</li>
+                <li>Navigate to the Compute/Storage section.</li>
+                <li>Filter for resources with status "Available" or "Unattached".</li>
+                <li>Check the "Last Attached" date to ensure safety.</li>
+                <li>Select and delete each one manually.</li>
+            </ol>
+            <p>Repeating this for every region is tedious and error-prone.</p>
+
+            <h2>The Automated Way (Easy)</h2>
+            <p>
+                <strong>Cloud Waste Scanner Pro</strong> automates this process. It scans all regions in AWS simultaneously and identifies Idle NAT Gateways that have been idle for more than 7 days.
+            </p>
+
+            <figure class="my-8">
+                <img src="../../images/scan-results.png" alt="Scan Results" class="rounded-xl shadow-lg border border-slate-200">
+                <figcaption>Identify Idle NAT Gateways in seconds.</figcaption>
+            </figure>
+
+            <h3>Key Benefits</h3>
+            <ul>
+                <li><strong>Safe:</strong> We check for usage metrics before flagging.</li>
+                <li><strong>Fast:</strong> Scan 20+ regions in under 30 seconds.</li>
+                <li><strong>Local-First:</strong> Your AWS credentials never leave your computer.</li>
+            </ul>
+
+            <div class="my-12 p-8 bg-slate-50 rounded-2xl border border-slate-200 text-center">
+                <h3 class="mt-0 text-slate-900">Stop Overpaying for AWS</h3>
+                <p>Download the free scanner and see how much you can save today.</p>
+                <a href="../../index.html#download" class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-indigo-700 transition-colors">Download Free Scanner</a>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-white border-t border-slate-100 py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <img src="../../logo.png" class="h-6 w-6 grayscale opacity-50" alt="Logo">
+                <p class="text-sm text-slate-500">&copy; 2017-2026 Cloud Waste Scanner</p>
+            </div>
+            <div class="flex space-x-8 text-sm font-medium text-slate-500">
+                <a href="../../privacy.html" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+                <a href="../../recover.html" class="hover:text-slate-900 transition-colors">Lost License?</a>
+                <a href="../../terms.html" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+                <a href="mailto:ken@upp.ltd" class="hover:text-slate-900 transition-colors">Contact Support</a>
+                <a href="../../solutions.html" class="hover:text-slate-900 transition-colors">Use Cases</a>
+                <a href="../../help.html" class="hover:text-slate-900 transition-colors">Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

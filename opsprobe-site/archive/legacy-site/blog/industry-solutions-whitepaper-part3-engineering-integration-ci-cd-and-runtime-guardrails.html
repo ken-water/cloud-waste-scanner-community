@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industry Whitepaper P3: CI/CD and Runtime Guardrails | CWS</title>
+    <meta name="description" content="Engineering Integration: CI/CD and Runtime Guardrails for Cloud Governance: local-first governance guidance for evidence review, rollout planning.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Industry Whitepaper P3: CI/CD and Runtime Guardrails | CWS">
+    <meta property="og:description" content="Engineering Integration: CI/CD and Runtime Guardrails for Cloud Governance: local-first governance guidance for evidence review, rollout planning.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/industry-solutions-whitepaper-2026/part3-delivery-guardrail-loop.svg">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Industry Whitepaper P3: CI/CD and Runtime Guardrails | CWS">
+    <meta name="twitter:description" content="Engineering Integration: CI/CD and Runtime Guardrails for Cloud Governance: local-first governance guidance for evidence review, rollout planning.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/industry-solutions-whitepaper-2026/part3-delivery-guardrail-loop.svg">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html",
+      "headline": "Industry Whitepaper P3: CI/CD and Runtime Guardrails | CWS",
+      "description": "Engineering Integration: CI/CD and Runtime Guardrails for Cloud Governance: local-first governance guidance for evidence review, rollout planning.",
+      "datePublished": "2026-03-19",
+      "dateModified": "2026-03-19",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/industry-solutions-whitepaper-2026/part3-delivery-guardrail-loop.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Industry Whitepaper P3: CI/CD and Runtime Guardrails | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part3-engineering-integration-ci-cd-and-runtime-guardrails.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+<main class="pt-24 pb-16">
+<section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8"><div class="blog-shell"><article class="blog-main min-w-0">
+<header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+<div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Whitepaper Series</a><span class="blog-divider-dot">/</span><span>Industry Solutions Part 3</span></div>
+<span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-cyan-700 uppercase bg-cyan-50 rounded-full">Industry Solutions Whitepaper Â· Part 3 Â· v1.0 Â· 2026-03</span>
+<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Engineering Integration: CI/CD and Runtime Guardrails for Cloud Governance for cloud governance tools</h1>
+<p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 3 is execution-first: where governance rules live in pipelines, what to gate before merge, and how to keep runtime scans fast and reliable under provider limits.</p>
+<div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-cyan-100 text-cyan-700 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-19">Mar 19, 2026</time><span class="blog-reading-time">Reading time: 7 min</span></div>
+</header>
+<div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+
+<p>Cloud governance tools work best when execution and ownership are explicit. This chapter extends a cloud governance framework with practical cloud finops decision loops so cloud governance tools remain measurable and repeatable.</p>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Industry Solutions Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Part 2 defined control evidence in regulated operations. Part 3 moves into engineering delivery systems where debt is either prevented or reintroduced.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-part1-invisible-cloud-debt-and-sovereign-governance.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-part2-regulated-environments-control-evidence-and-change-review.html">Part 2</a>
+<span class="rounded-lg border border-slate-300 bg-white px-3 py-1.5">Part 3</span>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-part4-industry-playbooks-finance-saas-and-platform-teams.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-part5-rollout-roadmap-governance-kpis-and-executive-reporting.html">Part 5</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-part6-security-and-compliance-mapping-for-local-first-governance.html">Part 6</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-part7-procurement-and-selection-matrix-local-first-vs-saas.html">Part 7</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="industry-solutions-whitepaper-appendix-terms-metrics-templates-and-checklists.html">Appendix</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Cloud debt becomes expensive when governance remains a monthly reporting activity instead of a delivery-time control. Part 3 defines where governance checks belong in engineering systems and how to keep those checks fast enough for real release cadence.</p>
+
+<h2 id="delivery-gap" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1) The delivery gap: optimization discovered too late</h2>
+<p>Teams often run cost scans after incidents or billing alarms. That timing guarantees reactive behavior. By the time a weekly report surfaces idle artifacts, the release that created them is already history. Ownership is blurred, context is lost, and remediation competes with new sprint commitments.</p>
+<p>The practical fix is to split checks across three timing layers:</p>
+<ul>
+<li><strong>Commit-time or PR-time:</strong> policy linting for obvious anti-patterns and missing lifecycle tags.</li>
+<li><strong>Scheduled runtime scan:</strong> drift detection across real accounts after deployment activity.</li>
+<li><strong>Release closeout:</strong> evidence validation that high-risk findings have owners and planned resolution windows.</li>
+</ul>
+<p>This layered model prevents false certainty. PR checks catch obvious mistakes early, runtime scans catch environment reality, and closeout checks protect governance accountability.</p>
+
+<h2 id="pipeline-gates" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2) Pipeline gates that teams will not bypass</h2>
+<p>Pipeline gates fail when they are either too weak to matter or too heavy to tolerate. In cloud governance, sustainable gates are concise and deterministic. Recommended gate set:</p>
+<ul>
+<li><strong>Tag completeness gate:</strong> owner, environment, and retention intent required for deployable resources.</li>
+<li><strong>Policy severity gate:</strong> block only high-confidence violations; warn on low-confidence heuristics.</li>
+<li><strong>Exception expiry gate:</strong> temporary bypass requires explicit expiry date and approver identity.</li>
+</ul>
+<p>The anti-pattern is âblock everything unless manually approved.â Teams quickly learn to game that model with broad exception scopes. Better to keep hard-fail lanes narrow and enforce tight exception expiration.</p>
+<p>When introducing gates, start with measurement mode for one sprint. Publish false-positive rates per rule. Rules with unclear precision should not become hard blockers yet. This step builds trust and avoids defensive behavior from delivery teams.</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="images/industry-solutions-whitepaper-2026/part3-delivery-guardrail-loop.svg" alt="Delivery guardrail loop for CI, scheduled scans, and release closeout evidence." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure IS-4. Delivery guardrail loop linking commit-time checks, scheduled scans, and release-time evidence closeout.</figcaption>
+</figure>
+
+<h2 id="runtime" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3) Runtime guardrails: provider limits, retries, and deterministic failure classes</h2>
+<p>Engineering teams trust governance systems only when failure behavior is predictable. Runtime controls therefore matter as much as policy content. Three controls are foundational:</p>
+<ul>
+<li><strong>Bounded concurrency:</strong> maximize throughput while respecting provider API limits.</li>
+<li><strong>Retry taxonomy:</strong> distinguish transient provider failures from policy or authorization failures.</li>
+<li><strong>Deterministic result states:</strong> success, partial-success, blocked, and unknown states must be explicit.</li>
+</ul>
+<p>Without this structure, teams interpret scan variability as product instability. Once trust drops, operators stop routing decisions through governance workflows and return to ad-hoc scripts.</p>
+<p>For larger estates, separate scan scheduling by account criticality. High-change environments run tighter intervals with narrower scope. Stable environments run broader scans with relaxed cadence. One global schedule usually creates avoidable load spikes and unclear prioritization.</p>
+
+<h2 id="ownership" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4) Ownership routing in engineering language</h2>
+<p>Governance findings should map to service ownership, not only cloud-account ownership. A single account often hosts multiple teams and release trains. Routing by account alone creates ticket ping-pong.</p>
+<p>An effective routing model uses two keys: service boundary and finding class. Example: orphaned snapshots from data services route to database platform owners; idle load balancers route to edge or networking owners. This split lowers reassignment churn and shortens closure lead time.</p>
+<p>If your organization has no stable service-owner map yet, start with an interim matrix in the evidence packet. Even a manually maintained owner matrix is better than account-level ambiguity.</p>
+
+<h2 id="verification" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5) Verification design: prove prevention, not only cleanup</h2>
+<p>Most teams celebrate total âsavings identified.â Mature teams track recurrence rates by finding class. If the same class reappears every sprint, governance has not improved; only cleanup workload has increased.</p>
+<p>Recommended verification set:</p>
+<ul>
+<li>Recurrence rate per finding class (four-week rolling window).</li>
+<li>Median closure lead time by owner group.</li>
+<li>Exception expiration compliance rate.</li>
+<li>Ratio of potential savings to realized savings within defined windows.</li>
+</ul>
+<p>These measures connect engineering behavior to financial outcomes. They also reduce argument cycles between platform and finance because both functions can inspect the same trend definitions.</p>
+
+
+<h2 id="rate-limit" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6) Provider rate limits: operational engineering details</h2>
+<p>Rate-limit behavior is where many governance integrations fail silently. Teams configure high parallelism in test accounts, then encounter throttling in larger estates and assume the scanner is unreliable. The fix is not simply lowering concurrency. It is managing concurrency as a policy with feedback from real runtime behavior.</p>
+<p>A robust pattern is account-bucket scheduling: group accounts by change intensity and API sensitivity, then apply bounded worker pools per bucket. When transient throttling appears, backoff windows should widen only for affected buckets, not for the entire estate. This keeps throughput stable while preventing global slowdown.</p>
+<p>Teams should also track retry inflation ratio as an operational metric. If retry volume rises without corresponding finding volume growth, capacity policy needs tuning before quality degrades.</p>
+
+<h2 id="change-failure" class="text-3xl font-bold text-slate-900 mt-10 mb-4">7) Change-failure handling and rollback confidence</h2>
+<p>Governance workflows need explicit failure semantics. A failed action is not the same as a failed scan. A failed action should preserve context: what was attempted, by whom, with which prerequisite checks, and what rollback decision followed. Without this chain, teams lose trust in closure metrics.</p>
+<p>A practical model is to classify failures into four buckets: authorization failure, dependency conflict, provider transient, and policy mismatch. Each bucket should map to a next action owner. This removes ambiguity and reduces âstuck in triageâ states.</p>
+<p>When rollback is required, closure should remain open until post-rollback validation confirms the environment returned to expected state. Marking rollback as closure can hide recurring debt classes and distort recurrence metrics.</p>
+
+<h2 id="team-adoption" class="text-3xl font-bold text-slate-900 mt-10 mb-4">8) Team adoption strategy for guardrail programs</h2>
+<p>Engineering adoption improves when guardrails are presented as reliability controls, not only cost controls. Developers respond faster when they see concrete impact on release quality: fewer emergency cleanups, fewer ownership disputes, and shorter post-release review cycles.</p>
+<p>Start with a small set of high-confidence rules and publish a monthly ârules kept vs rules tunedâ note. This transparency shows that governance is an engineering system that can evolve, not a static compliance burden. Over time, it builds the credibility needed to expand rule coverage.</p>
+
+
+<h2 id="economics" class="text-3xl font-bold text-slate-900 mt-10 mb-4">9) Cost of control vs cost of recurrence</h2>
+<p>Engineering leaders often ask whether guardrail overhead outweighs savings. The wrong way to answer is by comparing one scan run cost to one avoided artifact. The right comparison is recurrence economics: how many repeated cleanup cycles are avoided once a class is prevented at source.</p>
+<p>For example, if an idle network resource class reappears every sprint, the recurring triage, ownership reassignment, and post-change verification time can exceed direct cloud spend impact. Guardrails reduce both cash waste and coordination waste. This is why programs with moderate immediate savings can still deliver high organizational return.</p>
+<p>To keep this transparent, publish a quarterly âprevention dividendâ note: classes with reduced recurrence, estimated engineering hours reclaimed, and observed reduction in exception churn. These indicators help product leadership understand why governance belongs in delivery budgets, not only in finance reviews.</p>
+
+
+<h2 id="industry-pain-signals" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Industry Pain Signals and Required Outcomes</h2>
+<p><strong>SaaS and internet teams.</strong> Pain signal: recurring debt classes after each sprint despite good dashboards. Required outcome: CI and post-release guardrails that prevent regeneration at source.</p>
+<p><strong>Fintech and payments.</strong> Pain signal: strict controls increase lead time when runtime failures are ambiguous. Required outcome: deterministic failure classes and rollback-safe closure states.</p>
+<p><strong>Healthcare.</strong> Pain signal: operators hesitate to automate because exception boundaries are unclear. Required outcome: clear risk lanes and evidence-backed approval triggers.</p>
+<p><strong>Manufacturing and retail.</strong> Pain signal: large account estates hit provider throttling during global scans. Required outcome: bucketed scheduling with bounded concurrency and retry governance.</p>
+
+<h2 id="implementation" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation Checklist for Part 3</h2>
+<ul>
+<li>Deploy a three-layer timing model: PR checks, scheduled scans, release closeout.</li>
+<li>Use strict hard-fail gates only for high-confidence policy violations.</li>
+<li>Classify runtime failures into deterministic states and expose them in reports.</li>
+<li>Route findings by service boundary plus finding class, not account alone.</li>
+<li>Track recurrence as a first-class KPI to prove prevention maturity.</li>
+</ul>
+
+<h2 id="internal-links" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Related Internal References</h2>
+<ul>
+<li><a href="industry-solutions-whitepaper-part2-regulated-environments-control-evidence-and-change-review.html">Part 2</a>: control evidence and review governance baseline.</li>
+<li><a href="../api-playbooks.html">API Playbooks</a>: automation patterns for scheduled or scoped execution.</li>
+<li><a href="../metrics-definition.html">Metrics Definition</a>: normalized KPI semantics for recurrence and closure metrics.</li>
+<li><a href="../roadmap.html">Roadmap</a>: release-line context for rollout phases and operational scope.</li>
+</ul>
+
+<h2 id="next" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next Chapter</h2>
+<p>Continue to <a href="industry-solutions-whitepaper-part4-industry-playbooks-finance-saas-and-platform-teams.html"><strong>Part 4: Industry Playbooks for Finance, SaaS, and Platform Teams</strong></a> to map these controls into real operating models and team-specific execution rhythms.</p>
+</div>
+<div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Industry Solutions Workflow</div><h3 class="cws-cta-title mt-4">Run this industry playbook in your own environment</h3><p class="cws-cta-copy mx-auto mt-4 mb-6">Use the same governance pattern your team just reviewed and validate it with real account evidence.</p><div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div></div></div>
+</article><aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside></div></section>
+</main>
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

@@ -4,9 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roadmap | Cloud Waste Scanner</title>
-  <meta name="description" content="Current Cloud Waste Scanner roadmap for provider coverage, reporting, lifecycle governance, and local-first workflow improvements.">
+  <meta name="description" content="Cloud Waste Scanner roadmap for local scan coverage, evidence quality, review workflows, API automation, and clear product boundaries.">
   <link rel="icon" href="assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/roadmap">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="Roadmap | Cloud Waste Scanner">
+  <meta property="og:description" content="Cloud Waste Scanner roadmap for local scan coverage, evidence quality, review workflows, API automation, and clear product boundaries.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/roadmap">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Roadmap | Cloud Waste Scanner">
+  <meta name="twitter:description" content="Cloud Waste Scanner roadmap for local scan coverage, evidence quality, review workflows, API automation, and clear product boundaries.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="styles.css">
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <header class="nav">
@@ -17,17 +34,109 @@
     </div>
   </header>
 
-  <main class="section">
+  <main class="section roadmap-page">
     <div class="container">
-      <div class="section-title">
+      <div class="section-title roadmap-hero">
         <div class="eyebrow">Roadmap</div>
         <h1>Practical improvements before platform sprawl.</h1>
-        <p>The roadmap keeps the product focused on fast local scans, stronger evidence, safer cleanup review, and simpler handoff.</p>
+        <p>Cloud Waste Scanner will stay focused on a tight operating loop: local scan, evidence review, owner handoff, and verified closure. This page is written as a product commitment, not a wishlist.</p>
       </div>
-      <div class="grid three" style="margin-top:28px;">
-        <article class="card"><div class="eyebrow">Now</div><h3>Handoff and lifecycle closure</h3><p style="margin-top:12px;">Keep improving evidence packages, reopened finding context, closure metrics, and weekly governance review.</p></article>
-        <article class="card"><div class="eyebrow">Next</div><h3>Provider and resource depth</h3><p style="margin-top:12px;">Expand high-confidence checks for compute, storage, network, database, and Kubernetes-related cost waste.</p></article>
-        <article class="card"><div class="eyebrow">Later</div><h3>Safer automation paths</h3><p style="margin-top:12px;">Improve review gates, rollback notes, export quality, and API-assisted internal workflows without moving scanning into a hosted control plane.</p></article>
+      <div class="roadmap-summary">
+        <div>
+          <strong>Now</strong>
+          <span>Make the first scan easier to trust and easier to hand off.</span>
+        </div>
+        <div>
+          <strong>Next</strong>
+          <span>Deepen expensive resource coverage without changing the local trust model.</span>
+        </div>
+        <div>
+          <strong>Later</strong>
+          <span>Add automation only where review gates and rollback context are clear.</span>
+        </div>
+      </div>
+      <div class="roadmap-board">
+        <section class="roadmap-lane">
+          <div class="roadmap-lane-head">
+            <span class="roadmap-status shipped">Shipping</span>
+            <h2>Evidence and first-run quality</h2>
+            <p>The scanner should be useful before a team creates a program around it.</p>
+          </div>
+          <article class="roadmap-item">
+            <div><span>01</span><strong>Finding explanations</strong></div>
+            <p>Sharper reasons, confidence labels, and caution notes for idle compute, unattached storage, snapshots, IPs, load balancers, and Kubernetes findings.</p>
+          </article>
+          <article class="roadmap-item">
+            <div><span>02</span><strong>Export packages</strong></div>
+            <p>PDF, CSV, and handoff manifests that help finance, engineering, and platform owners review the same evidence without chasing screenshots.</p>
+          </article>
+          <article class="roadmap-item">
+            <div><span>03</span><strong>Setup diagnostics</strong></div>
+            <p>Clearer feedback for credential scope, proxy routing, failed scan checks, and cases where no useful data was collected.</p>
+          </article>
+        </section>
+
+        <section class="roadmap-lane">
+          <div class="roadmap-lane-head">
+            <span class="roadmap-status planned">Planned</span>
+            <h2>Expensive waste coverage</h2>
+            <p>Depth matters most where the monthly bill can move materially.</p>
+          </div>
+          <article class="roadmap-item">
+            <div><span>04</span><strong>Kubernetes and GPU evidence</strong></div>
+            <p>Persistent volume drift, LoadBalancer services, node baselines, GPU reservations, and owner gaps brought into the same local review queue.</p>
+          </article>
+          <article class="roadmap-item">
+            <div><span>05</span><strong>Provider-specific checks</strong></div>
+            <p>More precise review paths for managed databases, storage lifecycle drift, network billing artifacts, and regional resource leftovers.</p>
+          </article>
+          <article class="roadmap-item">
+            <div><span>06</span><strong>Review grouping</strong></div>
+            <p>Better grouping by owner, account, provider, resource type, priority, and confidence so teams can split review work cleanly.</p>
+          </article>
+        </section>
+
+        <section class="roadmap-lane">
+          <div class="roadmap-lane-head">
+            <span class="roadmap-status research">Researching</span>
+            <h2>Automation with guardrails</h2>
+            <p>Automation should remove repeat work after the evidence model is strong enough.</p>
+          </div>
+          <article class="roadmap-item">
+            <div><span>07</span><strong>Local API workflows</strong></div>
+            <p>Scheduled local scans, internal reporting pipelines, and export automation without requiring a hosted collector.</p>
+          </article>
+          <article class="roadmap-item">
+            <div><span>08</span><strong>Execution plan review</strong></div>
+            <p>Approval notes, rollback context, masked exports, and policy simulation before recurring cleanup workflows are used.</p>
+          </article>
+          <article class="roadmap-item">
+            <div><span>09</span><strong>Team operating model</strong></div>
+            <p>Owner queues, closure tracking, reopened findings, and audit-friendly evidence history for teams that repeat the process weekly.</p>
+          </article>
+        </section>
+      </div>
+      <div class="roadmap-principles">
+        <article>
+          <strong>Non-negotiable boundary</strong>
+          <p>No hosted collector requirement for the core scan path. Credentials and raw scan output stay on the operator machine unless the operator chooses to export.</p>
+        </article>
+        <article>
+          <strong>What we will avoid</strong>
+          <p>No blind deletion workflow, no vague “AI optimization” button, and no broad platform expansion before local scan and handoff quality are excellent.</p>
+        </article>
+        <article>
+          <strong>How priorities move</strong>
+          <p>Operator feedback wins when it reduces review time, lowers cleanup risk, or makes evidence easier to defend in a real team process.</p>
+        </article>
+      </div>
+      <div class="roadmap-cta">
+        <div>
+          <div class="eyebrow">Influence the queue</div>
+          <h2>Send the blocked review, not a feature slogan.</h2>
+          <p>The most useful feedback is concrete: the provider, resource type, review step, evidence gap, and what decision the team could not make.</p>
+        </div>
+        <a class="btn primary" href="feedback.html?topic=roadmap">Share feedback</a>
       </div>
     </div>
   </main>

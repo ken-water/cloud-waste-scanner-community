@@ -39,25 +39,25 @@ window.CWS_SITE = {
   downloads: {
     windows: {
       label: "Windows installer",
-      file: "CloudWasteScanner_3.1.0_x64-setup.exe",
-      url: "/download/files/CloudWasteScanner_3.1.0_x64-setup.exe",
-      sha256: "12a1095262cb38e8d068e49d749455f5edb5a6d303aa2d7bd6c179dc4d61e962"
+      file: "CloudWasteScanner_3.1.1_x64-setup.exe",
+      url: "/download/files/CloudWasteScanner_3.1.1_x64-setup.exe",
+      sha256: "7e7d6460387495fbe9eccdc8ff2abbf0d58e3338c9bd03e2ef29b7f9dc9fd941"
     },
     linux: {
       label: "Linux packages",
       file: ".deb, .rpm, and AppImage",
-      debUrl: "/download/files/CloudWasteScanner_3.1.0_amd64.deb",
-      debSha256: "6600ccc7878b736bd9ca99919e190a36f30a553f5f7489dc88b53b5f8c9fa4ce",
-      rpmUrl: "/download/files/CloudWasteScanner-3.1.0-1.x86_64.rpm",
-      rpmSha256: "34a754ae416f530afc1a65deccefd50c645c5a03a7e9eaf44bb8695958233a98",
-      appImageUrl: "/download/files/CloudWasteScanner_3.1.0_amd64.AppImage",
-      appImageSha256: "e53faa60fa73eacbda5bcc777a4bcbd12d65cee849ea2900d6990786382dfa85"
+      debUrl: "/download/files/CloudWasteScanner_3.1.1_amd64.deb",
+      debSha256: "940f9e7cdc4d85e8c7b14a7f0f8a66b60157f3faf6abf3aa9157638b796ab70b",
+      rpmUrl: "/download/files/CloudWasteScanner-3.1.1-1.x86_64.rpm",
+      rpmSha256: "366ffc20b0527ddb4764e9e34ef3d71d7c7b6bb9f559451e88195769774c6697",
+      appImageUrl: "/download/files/CloudWasteScanner_3.1.1_amd64.AppImage",
+      appImageSha256: "bbe1e33c981d9706dcaa4848cb5ac3acf25ef12ee2b6a1f7b824a66def1a26c8"
     },
     macos: {
       label: "macOS DMG",
-      file: "CloudWasteScanner_3.1.0_universal.dmg",
-      url: "/download/files/CloudWasteScanner_3.1.0_universal.dmg",
-      sha256: "11e98a16a3775ba15a6bed4a4c2dd1b6799268f3858e7c86414ba5e06cc7eead"
+      file: "CloudWasteScanner_3.1.1_universal.dmg",
+      url: "https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.1.1/target_universal-apple-darwin_release_bundle_dmg_CloudWasteScanner_3.1.1_universal.dmg",
+      sha256: "Published after the macOS GitHub Actions release build completes."
     }
   }
 };

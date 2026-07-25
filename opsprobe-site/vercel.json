@@ -25,6 +25,24 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/files/(.*)",
+      "destination": "/download/files/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.cloud-waste-scanner.com"
+        }
+      ],
+      "destination": "https://cloud-waste-scanner.com/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/download",

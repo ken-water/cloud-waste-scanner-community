@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Whitepaper P3: Verification and Incident Readiness</title>
+    <meta name="description" content="Verification Checklist and Incident Readiness: security review guidance for local-first cloud governance, credential boundaries, controls, and audit.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Security Whitepaper P3: Verification and Incident Readiness">
+    <meta property="og:description" content="Verification Checklist and Incident Readiness: security review guidance for local-first cloud governance, credential boundaries, controls, and audit.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/security-whitepaper-cover.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Security Whitepaper P3: Verification and Incident Readiness">
+    <meta name="twitter:description" content="Verification Checklist and Incident Readiness: security review guidance for local-first cloud governance, credential boundaries, controls, and audit.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/security-whitepaper-cover.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html",
+      "headline": "Security Whitepaper P3: Verification and Incident Readiness",
+      "description": "Verification Checklist and Incident Readiness: security review guidance for local-first cloud governance, credential boundaries, controls, and audit.",
+      "datePublished": "2026-03-18",
+      "dateModified": "2026-03-18",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/whitepapers/security-part3-verification-cadence.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Security Whitepaper P3: Verification and Incident Readiness",
+          "item": "https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="blog-shell">
+                <article class="blog-main min-w-0">
+                    <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                        <div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Security Whitepaper</a><span class="blog-divider-dot">/</span><span>Part 3</span></div>
+                        <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-indigo-700 uppercase bg-indigo-50 rounded-full">Security Whitepaper</span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Verification Checklist and Incident Readiness</h1>
+                        <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 3 turns controls into operational checks: pre-rollout verification, runtime monitoring, and incident response routines.</p>
+                        <div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-18">Mar 18, 2026</time><span class="blog-reading-time">Reading time: 6 min</span></div>
+                    </header>
+
+                    <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Security Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Read in order: trust boundary -&gt; control matrix -&gt; verification -&gt; token hardening -&gt; transport and auditability.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part1-threat-model-and-trust-boundary.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part3-verification-checklist-and-incident-readiness.html">Part 3</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="security-whitepaper-local-first-part5-transport-integrity-and-operational-auditability.html">Part 5</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Part 3 is about proof, not intent. After defining threats and controls, teams need a repeatable verification routine and incident-readiness posture that survives real operational pressure.</p>
+
+<h2 id="chapter-continuity" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Bridge from control matrix to operational verification</h2>
+<p><a href="security-whitepaper-local-first-part2-control-matrix-and-operational-safeguards.html">Part 2</a> listed controls and owners. Part 3 defines how to verify them on a schedule, how to detect drift, and how to run first-response triage when something breaks. <a href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a> then zooms into token hardening, where many incidents begin.</p>
+
+<h2 id="verification-routine" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Verification routine design</h2>
+<p>A practical verification routine has three layers:</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/security-part3-verification-cadence.svg" alt="Verification cadence model across pre-rollout, periodic, and incident-triggered checks." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure S3-1. Verification cadence model and readiness metric envelope.</figcaption>
+</figure>
+<ul>
+<li><strong>Pre-rollout checks:</strong> boundary assumptions, token behavior, and route profile validity.</li>
+<li><strong>Periodic checks:</strong> control drift checks on token lifecycle, routes, and release-integrity process.</li>
+<li><strong>Incident-triggered checks:</strong> focused validation when alerts or anomalous behavior appears.</li>
+</ul>
+<p>This layered approach avoids two extremes: one-time verification theater and excessive manual testing overhead.</p>
+
+<h2 id="checklist-structure" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Verification checklist structure</h2>
+<p>Each checklist item should include expected signal and failure interpretation. Example fields:</p>
+<ul>
+<li>control id and objective;</li>
+<li>test command or operation path;</li>
+<li>expected output and failure signature;</li>
+<li>owner and escalation path;</li>
+<li>evidence artifact location.</li>
+</ul>
+<p>Without expected failure signatures, teams often misclassify healthy rejection behavior as product defects.</p>
+
+<h2 id="incident-readiness" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Incident readiness model</h2>
+<p>Incident readiness is primarily about response clarity. We recommend a four-step model:</p>
+<ol>
+<li>Classify event by scope and control class.</li>
+<li>Contain exposure path (credential, token, route, or artifact).</li>
+<li>Collect minimum evidence set for root-cause and stakeholder update.</li>
+<li>Apply corrective action and update checklist/runbook.</li>
+</ol>
+<p>This model keeps incident handling structured even when cross-team communication is noisy.</p>
+
+<h2 id="triage-taxonomy" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Triage taxonomy for faster root-cause isolation</h2>
+<p>Use stage/reason patterns as primary triage axis. For example:</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/security-part3-incident-response-lane.svg" alt="Incident response lane from detection to recovery and post-incident outputs." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure S3-2. Incident response lane with evidence bundle and post-incident control updates.</figcaption>
+</figure>
+<ul>
+<li><code>stage=config_validate</code>: missing local configuration or token/profile mismatch.</li>
+<li><code>stage=proxy_connect</code>: egress route or proxy endpoint issue.</li>
+<li><code>stage=target_connect</code>: upstream provider path blocked or unstable.</li>
+<li><code>reason=dispatch_failure</code>: request failure before provider status response.</li>
+</ul>
+<p>This taxonomy prevents expensive triage loops where teams rotate between provider console, endpoint checks, and proxy checks without a deterministic order.</p>
+
+<h2 id="case-study" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Case study: verification drift after initial launch</h2>
+<p>A common pattern: launch month has strict verification, quarter two relaxes routine, quarter three incident response slows because evidence paths are stale. The fix is not more tooling; it is verification cadence discipline. Keep periodic checks lightweight but non-optional and track completion the same way production tasks are tracked.</p>
+<p>Teams that keep this discipline usually detect route or token drift early, before it becomes a customer-facing outage or high-friction incident review.</p>
+
+<h2 id="readiness-metrics" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6. Readiness metrics that matter</h2>
+<ul>
+<li>percentage of checklist items completed on cadence;</li>
+<li>median time from alert to control-classified triage;</li>
+<li>percentage of incidents with complete evidence bundle;</li>
+<li>time to apply and verify corrective action.</li>
+</ul>
+<p>These metrics are operationally useful because they measure response quality, not only event volume.</p>
+
+<h2 id="implementation-faq" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation FAQ for incident owners</h2>
+<p><strong>Q: Should all checklist items run daily?</strong> No. Use risk-tier cadence. High-risk controls get tighter cadence; low-risk controls can run weekly or monthly.</p>
+<p><strong>Q: What is the fastest way to improve readiness?</strong> Enforce evidence bundle completeness for every incident and close each incident with runbook updates.</p>
+<p><strong>Q: How do we avoid false alarms overwhelming teams?</strong> Tune alert thresholds with triage outcomes, and separate signal alerts from configuration drift alerts.</p>
+
+<h2 id="incident-practice-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Incident practice notes: from checklist to behavior</h2>
+<p>Checklists are useful only if operators can execute them under stress. We recommend quarterly drill sessions where one person plays incident commander and another plays resolver. Use realistic failure scenarios: route outages, token misuse suspicion, or partial provider failures. Record where checklist wording causes hesitation; refine wording after each drill.</p>
+<p>Another recurring issue is incomplete evidence capture in the first ten minutes. Teams focus on recovery and forget to preserve context needed for root-cause and post-incident learning. To solve this, create a minimum evidence bundle template and automate as much collection as possible. A consistent evidence bundle improves both technical resolution and stakeholder communication.</p>
+<p>Communication cadence matters too. During incidents, stakeholders need predictable updates even when root-cause is unknown. Use short structured updates: scope, containment status, next verification step, and expected update time. This reduces escalation noise and protects resolver focus.</p>
+<p>Post-incident, do not close solely on technical fix. Update checklist items, runbook wording, and training notes. If those artifacts are unchanged, the same class of incident often returns in a few months.</p>
+<h2 id="readiness-questions" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Readiness questions before production expansion</h2>
+<ul>
+<li>Can operators classify common failures by stage/reason without escalation?</li>
+<li>Can the team produce a complete evidence bundle within one response cycle?</li>
+<li>Are rollback and containment decisions documented for each high-risk scenario?</li>
+<li>Are runbook and checklist updates enforced after incidents?</li>
+</ul>
+
+<h2 id="incident-governance-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Incident governance notes: preserving clarity under pressure</h2>
+<p>Security incidents in cloud-governance tooling often involve multiple teams and ambiguous ownership boundaries. To reduce friction, keep one incident command template with mandatory fields: incident class, affected control, immediate containment action, evidence bundle status, and next update timestamp. This format improves communication quality and limits duplicate escalation traffic.</p>
+<p>A second governance improvement is post-incident control validation. After corrective action, rerun only the control checks related to root-cause, then rerun the full baseline verification set on schedule. This two-step approach restores confidence quickly without delaying recovery behind full-suite revalidation.</p>
+<p>Third, classify recurring incidents as control-design problems, not operator mistakes. Repetition usually indicates ambiguous control language, weak runbook sequencing, or missing negative tests. Treat recurring patterns as product and process debt that requires structural fixes.</p>
+
+<h2 id="appendix-incident-operations" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Appendix: incident operations maturity model</h2>
+<p>Incident readiness matures in stages. Stage one focuses on basic containment and evidence capture. Stage two adds consistent triage taxonomy and communication cadence. Stage three integrates post-incident control updates and trend analysis. Stage four introduces predictive improvements based on recurring signal patterns. Organizations should identify their current stage and set realistic improvement goals rather than attempting to jump directly to advanced automation.</p>
+<p>To measure maturity, compare incident outcomes over time: containment speed, evidence completeness, stakeholder update quality, and recurrence rate. If recurrence remains high despite faster containment, root-cause remediation quality is likely weak. If evidence quality is low, improve evidence templates before expanding automation.</p>
+<p>Training should reflect this maturity model. New operators need scenario drills for stage/reason classification and runbook navigation. Senior responders need decision drills for tradeoff-heavy containment actions. This tiered training strategy improves resilience without overwhelming teams.</p>
+<p>Finally, treat incident narratives as security assets. A well-written incident summary becomes a reusable decision aid for future events and audit reviews, reducing repeated confusion during high-pressure windows.</p>
+
+<h2 id="data-sources" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Data sources for this chapter</h2>
+<ul>
+<li><a href="../documentation.html#troubleshooting-flow">Troubleshooting flow</a> and <a href="../api-playbooks.html">API Playbooks</a> for operational triage paths.</li>
+<li><a href="../security.html">Security</a> and <a href="../metrics-definition.html">Metrics Definition</a> for control and readiness metric context.</li>
+<li><a href="../release-ledger.html">Release Ledger</a> for incident-related release hardening evidence.</li>
+</ul>
+
+<h2 id="next-part" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next: token lifecycle and API hardening</h2>
+<p>Continue to <a href="security-whitepaper-local-first-part4-token-lifecycle-and-api-hardening.html">Part 4</a> for token creation, rotation, revocation patterns, and API hardening checks.</p>
+
+
+<section class="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Security Review Checklist</p>
+<h3 class="mt-2 text-2xl font-bold text-slate-900">Download the operator checklist used in enterprise reviews</h3>
+<p class="mt-3 text-base leading-7 text-slate-600">Use this checklist in architecture review, rollout sign-off, and recurring governance audits.</p>
+<div class="mt-5">
+<a href="../files/security-review-checklist-v1.pdf" download class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors">Download Security Review Checklist</a>
+</div>
+</section>
+</div>
+
+                    <div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Security Review Workflow</div><h3 class="cws-cta-title mt-4">Validate this control path in your own environment</h3><p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p><div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div></div></div>
+                </article>
+                <aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

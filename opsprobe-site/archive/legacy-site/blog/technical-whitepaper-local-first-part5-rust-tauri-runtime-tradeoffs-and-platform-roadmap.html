@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap</title>
+    <meta name="description" content="Rust + Tauri Runtime Tradeoffs and Platform Roadmap: technical architecture guidance for CWS data models, reliability, auditability, and rollout patterns.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap">
+    <meta property="og:description" content="Rust + Tauri Runtime Tradeoffs and Platform Roadmap: technical architecture guidance for CWS data models, reliability, auditability, and rollout patterns.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/tech-whitepaper-cover.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap">
+    <meta name="twitter:description" content="Rust + Tauri Runtime Tradeoffs and Platform Roadmap: technical architecture guidance for CWS data models, reliability, auditability, and rollout patterns.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/tech-whitepaper-cover.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html",
+      "headline": "Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap",
+      "description": "Rust + Tauri Runtime Tradeoffs and Platform Roadmap: technical architecture guidance for CWS data models, reliability, auditability, and rollout patterns.",
+      "datePublished": "2026-03-18",
+      "dateModified": "2026-03-18",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/whitepapers/rust-tauri-tradeoffs.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Tech Whitepaper P5: Rust+Tauri Tradeoffs and Roadmap",
+          "item": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+<main class="pt-24 pb-16">
+    <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="blog-shell">
+            <article class="blog-main min-w-0">
+                <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                    <div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Whitepaper Series</a><span class="blog-divider-dot">/</span><span>Technical Part 5</span></div>
+                    <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-blue-700 uppercase bg-blue-50 rounded-full">Technical Whitepaper Â· v1.0 Â· 2026-03</span>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Rust + Tauri Runtime Tradeoffs and Platform Roadmap</h1>
+                    <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 5 closes the technical track with runtime-stack rationale, known costs, and where roadmap constraints are explicit.</p>
+                    <div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-blue-100 text-blue-700 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-18">Mar 18, 2026</time><span class="blog-reading-time">Reading time: 8 min</span></div>
+                </header>
+                <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Technical Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Read in order for full context: architecture -&gt; data model -&gt; performance -&gt; quality gates -&gt; platform roadmap.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Part 5 closes the technical track. The previous chapters described architecture, data model, runtime behavior, and quality governance. This final chapter explains why the product stack is Rust + Tauri, where that choice is strong, and where it imposes cost that we accept deliberately.</p>
+
+<h2 id="chapter-continuity" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Final chapter context</h2>
+<p>If you came directly to this chapter, start with <a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a> for boundaries and <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a> for the findings model. This chapter assumes those decisions are already accepted and focuses on implementation tradeoffs.</p>
+
+<h2 id="stack-rationale" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Why Rust + Tauri for a local-first governance product</h2>
+<p>Rust is used for execution-critical paths because the scan engine combines concurrency, network I/O, normalization, and policy evaluation in one runtime. Strong type guarantees and explicit ownership rules reduce classes of runtime bugs that become expensive in long-lived governance tools.</p>
+<p>Tauri is used for operator experience because it supports desktop-native workflows while keeping the core logic in Rust. For local-first products, this is a practical fit: operators can run and review scans in their own environment without introducing a heavyweight in-cloud control plane.</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/rust-tauri-tradeoffs.svg" alt="Rust and Tauri engineering tradeoff matrix with benefits and limitations." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure 5-1. Runtime stack decision matrix: benefits, constraints, and long-term maintenance costs.</figcaption>
+</figure>
+
+<h2 id="strengths" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Strengths we rely on in production</h2>
+<ul>
+<li><strong>Execution predictability:</strong> Rust core supports controlled concurrency and deterministic policy paths.</li>
+<li><strong>Credential custody alignment:</strong> local-first runtime avoids default central credential aggregation.</li>
+<li><strong>Single-core logic path:</strong> CLI, desktop workflows, and local APIs share the same engine behavior.</li>
+<li><strong>Operational portability:</strong> desktop and local API flows fit teams that cannot expose broad inbound services.</li>
+</ul>
+<p>These strengths are practical, not theoretical. They directly support the review workflows described in earlier chapters.</p>
+
+<h2 id="costs" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Costs and tradeoffs we accept</h2>
+<p>No stack is free. The Rust + Tauri path introduces explicit costs:</p>
+<ul>
+<li><strong>Cross-platform packaging overhead:</strong> desktop distribution and signing pipelines require disciplined release engineering.</li>
+<li><strong>Specialized engineering investment:</strong> high-quality Rust contributions have a steeper onboarding curve than typical scripting stacks.</li>
+<li><strong>UI-runtime boundary work:</strong> keeping desktop experience smooth while preserving strict core contracts requires deliberate API design.</li>
+<li><strong>Provider maintenance burden:</strong> plugin contracts reduce chaos but do not eliminate ongoing API adaptation work.</li>
+</ul>
+<p>We keep these costs because they buy deterministic behavior and stronger trust boundaries in enterprise usage.</p>
+
+<h2 id="tauri-specific" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Tauri-specific platform considerations</h2>
+<p>Tauri is effective for local-first delivery, but there are important operational details:</p>
+<ul>
+<li>startup sequencing must preserve runtime invariants (state registration before state-dependent calls);</li>
+<li>platform-specific logging paths must be stable so support workflows can retrieve startup evidence quickly;</li>
+<li>installer format and signing requirements differ by target OS and must be reflected in release gates.</li>
+</ul>
+<p>These considerations are not edge cases. They shape day-to-day support quality.</p>
+
+<h2 id="roadmap" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Platform roadmap direction</h2>
+<p>Platform roadmap work is prioritized along three dimensions:</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/tech-part5-roadmap-tradeoff-matrix.svg" alt="Roadmap tradeoff matrix for stack decisions and adoption outcomes." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure T5-2. Roadmap tradeoff matrix: strengths, costs, filter criteria, and adoption outcomes.</figcaption>
+</figure>
+<ul>
+<li><strong>Deterministic evidence quality:</strong> stronger lineage, clearer rule-version traceability, and cleaner handoff exports.</li>
+<li><strong>Reliability governance:</strong> expanded fault-injection checks, tighter degraded-mode assertions, and better runtime diagnostics.</li>
+<li><strong>Delivery safety:</strong> higher coverage in high-risk modules and stricter release evidence gates.</li>
+</ul>
+<p>Roadmap language is intentionally conservative. We prefer explicit constraints over aggressive promises that cannot be validated.</p>
+
+<h2 id="what-not-building" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6. What we are not building (on purpose)</h2>
+<ul>
+<li>We are not pivoting to a default hosted credential-holding scanner model.</li>
+<li>We are not adding destructive one-click automation as default behavior without review context.</li>
+<li>We are not optimizing for vanity benchmark bursts at the expense of stable weekly completion.</li>
+</ul>
+<p>These non-goals preserve alignment with the operating model described across the series.</p>
+
+<h2 id="adoption-checklist" class="text-3xl font-bold text-slate-900 mt-10 mb-4">7. Adoption checklist for technical buyers</h2>
+<ol>
+<li>Validate trust-boundary expectations with security and infrastructure teams.</li>
+<li>Review policy model and evidence lineage requirements with operations and finance stakeholders.</li>
+<li>Run a restricted-scope baseline scan and verify degraded-mode and export behavior.</li>
+<li>Review release gate artifacts for the target version before broad rollout.</li>
+<li>Define ownership for provider plugin updates and threshold tuning cadence.</li>
+</ol>
+<p>Teams that complete this checklist typically avoid the two biggest rollout risks: governance ambiguity and expectation mismatch.</p>
+
+
+<h2 id="platform-strategy-appendix" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Platform strategy appendix: decision criteria for the next two years</h2>
+<p>Technical buyers usually ask one strategic question after stack review: can this platform evolve without forcing a disruptive migration? The short answer is yes, if three criteria remain true: core contracts remain stable, operational evidence remains auditable, and platform improvements are additive rather than contradictory to local-first principles.</p>
+<p>For stack evolution, we use explicit decision filters. A new capability should pass all filters before entering roadmap commitment:</p>
+<ul>
+<li>Does it preserve credential-custody guarantees?</li>
+<li>Does it strengthen deterministic evidence rather than adding opaque abstraction?</li>
+<li>Does it reduce operational friction for review workflows?</li>
+<li>Can it be validated through existing QA and release gate structure?</li>
+</ul>
+<p>If any answer is no, the feature stays exploratory.</p>
+<p>A second strategic consideration is plugin ecosystem growth. Provider expansion is valuable only when quality remains consistent. Rapid provider count growth without adapter quality discipline creates uneven confidence and support burden. We therefore prioritize adapter maturity signals: test depth, error taxonomy completeness, and evidence-lineage integrity. Coverage breadth follows, but not at the expense of reliability.</p>
+<p>A third consideration is platform ergonomics for enterprise operators. As deployments grow, teams need clearer controls for scope selection, schedule governance, and report handoff. Improving these controls usually has higher user value than adding isolated niche detections. In roadmap planning, we weight operator workflow quality heavily because it drives sustained adoption.</p>
+<p>A fourth consideration is release predictability. Enterprise teams value predictable behavior changes over frequent but noisy updates. This reinforces the strategy from Part 4: explicit gates, explicit release notes, and explicit rollback criteria. Predictability is not a marketing theme; it is a core adoption driver in regulated or risk-sensitive environments.</p>
+<p>Finally, we maintain explicit non-goals to avoid roadmap drift. Not every technically possible feature is strategically right for this product. The platform remains focused on local-first governance with evidence-first operation. Features that weaken that identity may look attractive in short-term demos but create long-term architectural and trust debt.</p>
+
+
+
+<h2 id="strategy-faq" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation FAQ: stack evolution without identity drift</h2>
+<p><strong>Q: Could we switch to a pure hosted model later?</strong> Technically possible, but strategically misaligned with current trust boundary and operating model. Any such shift would require explicit product redefinition, not incremental roadmap wording.</p>
+<p><strong>Q: How do we justify Rust investment to business stakeholders?</strong> Connect it to outcomes: deterministic behavior, lower classes of runtime defects, and better long-term maintainability for multi-provider logic. Avoid language-level debates detached from operational impact.</p>
+<p><strong>Q: What makes Tauri the right fit here?</strong> It supports local-first operator workflows while reusing Rust core logic across desktop and API paths. The key value is contract consistency, not UI novelty.</p>
+<p><strong>Q: How do we keep roadmap credible?</strong> Prefer conservative commitments with explicit constraints. Overpromising in platform roadmap erodes buyer trust faster than delivering fewer but reliable milestones.</p>
+<p><strong>Q: What should buyers ask during technical due diligence?</strong> Ask for evidence lineage examples, degraded-mode handling examples, and release gate artifacts for recent versions. Those three artifacts reveal platform maturity quickly.</p>
+
+
+<h2 id="strategy-field-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Field notes: platform roadmap governance in practice</h2>
+<p>Roadmap quality depends on disciplined scope language. We classify work as committed, in-progress, exploratory, or deferred. Only committed work should appear in customer expectation paths. This avoids accidental promise inflation. Another practical rule is to pair every major roadmap item with a retirement or simplification plan. Platforms get brittle when capability grows but legacy assumptions are never removed.</p>
+<p>For architecture continuity, we evaluate roadmap proposals against the series principles: boundary clarity, deterministic evidence, reliable runtime behavior, and auditable delivery. If a proposal improves one area while weakening another, we force a design tradeoff review before implementation starts. This keeps the product coherent as it scales.</p>
+<p>Finally, we treat trust as a measurable roadmap outcome. Features that improve explainability, reproducibility, and handoff clarity are prioritized because they reduce organizational drag and increase long-term adoption quality.</p>
+
+<h2 id="data-sources" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Data sources for this chapter</h2>
+<ul>
+<li><a href="../documentation.html">Documentation Center</a> and <a href="../security.html">Security</a>: local-first runtime and trust-boundary baseline.</li>
+<li><a href="../release-ledger.html">Release Ledger</a> and <a href="../roadmap.html">Roadmap</a>: platform evolution and quality-governance evidence.</li>
+<li>Repository release and QA scripts plus Windows stability constraints documented in project runbooks.</li>
+</ul>
+
+<h2 id="series-close" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Series close</h2>
+<p>This technical whitepaper series is designed as one connected argument, not five isolated posts: boundaries (<a href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>), model integrity (<a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>), runtime reliability (<a href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>), delivery governance (<a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>), and platform tradeoffs (<a href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>).</p>
+<p>Use the five chapters together during architecture review and rollout planning. Reading one in isolation will miss key constraints that are intentionally distributed across the sequence.</p>
+</div>
+                <div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Technical Evaluation Workflow</div><h3 class="cws-cta-title mt-4">Validate this control path in your own environment</h3><p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p><div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div></div></div>
+            </article>
+            <aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+        </div>
+    </section>
+</main>
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

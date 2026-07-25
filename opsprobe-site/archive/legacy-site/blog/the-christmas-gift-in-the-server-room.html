@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cost Management Software Story: Christmas Gift | CWS</title>
+    <meta name="description" content="Incident Series Part 4: before peak season, Jack, Rose, and Jerry found overprovisioned capacity and turned fear-driven requests into cleanup actions.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/the-christmas-gift-in-the-server-room.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cloud Cost Management Software Story: Christmas Gift | CWS">
+    <meta property="og:description" content="Incident Series Part 4: before peak season, Jack, Rose, and Jerry found overprovisioned capacity and turned fear-driven requests into cleanup actions.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/the-christmas-gift-in-the-server-room.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-1.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Cost Management Software Story: Christmas Gift | CWS">
+    <meta name="twitter:description" content="Incident Series Part 4: before peak season, Jack, Rose, and Jerry found overprovisioned capacity and turned fear-driven requests into cleanup actions.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-1.webp">
+
+    <meta name="featured-image" content="images/cloud-bill-stories-part4-2026/story4-1.webp">
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/the-christmas-gift-in-the-server-room.html",
+      "headline": "Cloud Cost Management Software Story: Christmas Gift | CWS",
+      "description": "Incident Series Part 4: before peak season, Jack, Rose, and Jerry found overprovisioned capacity and turned fear-driven requests into cleanup actions.",
+      "datePublished": "2026-03-24",
+      "dateModified": "2026-03-24",
+      "author": {
+        "@type": "Person",
+        "name": "Jack"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-1.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/the-christmas-gift-in-the-server-room.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Cloud Cost Management Software Story: Christmas Gift | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/the-christmas-gift-in-the-server-room.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why do teams overprovision most during peak-season planning?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Fear-driven procurement often prioritizes deniability over utilization evidence, which creates expensive idle capacity."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What changed behavior faster in this case: dashboards or ownership math?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ownership-linked spend math changed behavior faster because each team could see direct budget impact from unused resources."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How should DevOps teams turn this into a repeatable operating loop?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use local-first scans, short review cycles, and explicit owner handoff so capacity requests and cleanup actions stay evidence-based."
+      }
+    }
+  ]
+}
+    </script>
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="blog-shell">
+                <article class="blog-main min-w-0">
+                    <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                        <div class="blog-breadcrumb justify-center">
+                            <a href="../blog.html">Blog</a>
+                            <span class="blog-divider-dot">/</span>
+                            <a href="../blog-series.html#incident-series">Incident Series</a>
+                            <span class="blog-divider-dot">/</span>
+                            <span>Part 4</span>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-rose-700 uppercase bg-rose-50 rounded-full">Incident Series</span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Cloud Cost Management Software Story Part 4: The Christmas Gift in the Server Room</h1>
+                        <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Late October, one month before Black Friday: everyone asked for 300% more capacity. We found the opposite problem.</p>
+                        <div class="blog-meta-row mt-5">
+                            <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">J</span>
+                            <span>By <strong>Jack</strong></span>
+                            <span>&bull;</span>
+                            <time datetime="2026-03-24">Mar 24, 2026</time>
+                            <span class="blog-reading-time">Reading time: 8 min</span>
+                        </div>
+                    </header>
+
+                    <div class="mb-10 grid gap-4 md:grid-cols-3">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">The request stack</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">Every department wanted a bigger bunker</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Marketing asked for 300% expansion. Logistics and support copied the same fear in different words.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">The audit mode</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">Server room plus cloud, one ledger</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Jerry climbed racks. Rose audited invoices. I translated every machine into monthly dollars.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">The twist</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">Not shortage. Accountability insurance.</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Teams were buying expensive âjust in caseâ cover letters, not real resilience.</p>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+                        <p class="lead text-2xl text-slate-600 mb-8">I have seen this movie for thirty years in different costumes: panic buys capacity, panic forgets ownership, panic calls it strategy. This year, the title changed. The plot did not.</p>
+
+                        <h2 id="war-room" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. The war room where everyone was right and the bill was still wrong</h2>
+                        <p>It was late October 2025. The red leaves in Silicon Valley were still hanging on, but the calendar had already turned into holiday combat mode. At OmniCart, the 42nd-floor war room looked like a glass aquarium full of expensive worry.</p>
+                        <p>Rose, our CFO, had that expression finance people wear when numbers stop being numbers and start being legal evidence. Jerry, our CTO, had a dictionary-thick stack of capacity requests and the face of a man who had read all of them.</p>
+                        <p>Marketing wanted three times more compute. Operations wanted isolated clusters âjust in case.â Customer service wanted reserve pools for âpossible demand spikes.â Even departments that had never touched a production endpoint suddenly wanted dedicated infrastructure.</p>
+                        <p>Everyone had the same argument, polished in different fonts: if the sale crashes, blame will be expensive, so buy more machines now.</p>
+                        <p>I am Jack, the short, round architect in this story. My job was simple: translate fear into math before fear became procurement.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part4-2026/story4-1.webp" alt="Jack, Rose, and Jerry discussing budget pressure and holiday traffic plans in the war room." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">War-room math starts where fear-based estimates end.</figcaption>
+                        </figure>
+
+                        <h2 id="audit-month" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. One month of uncomfortable truth: physical racks, virtual waste</h2>
+                        <p>Rose set the rule: no more guesses, no more percentage drama, no more âindustry averageâ slides. We would run a full audit from basement metal to cloud accounts.</p>
+                        <p>Jerry and I went downstairs in anti-static suits and headlamps. If you have never crawled behind a proud enterprise rack at midnight, you have missed one of technologyâs great comedy genres. Labels from three reorganizations ago. Asset tags from dead projects. Cables with no known civilization.</p>
+                        <p>In a cold corner of Server Room Three, Jerry found the first âgiftâ: two rows of high-performance servers, clean enough to look ceremonial, still wrapped, never powered on. One full year of premium hardware and exactly zero watts of business value.</p>
+                        <p>Upstairs, Rose ran a parallel review with our <strong>cloud cost management software</strong> workflow and Rust-based scanners that later became CWS core playbooks. The cloud side was no better. Nearly one-third of virtual estates were either below five percent utilization or attached to no live business path at all.</p>
+                        <p>That week gave us a practical definition of <strong>cloud cost optimization tools</strong>: not pretty dashboards, but proof that a resource should exist at all.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part4-2026/story4-2.webp" alt="Jack and Jerry checking hardware inventory and asset labels in the server room." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">Physical inventory and cloud audit must meet in the same ledger.</figcaption>
+                        </figure>
+
+                        <h2 id="money-language" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. The report that changed behavior in 24 hours</h2>
+                        <p>I delivered one report and removed all technical nouns. No instance families. No CPU histograms. No storage classes. Only one column anyone could understand without translation: monthly dollars burned by each business line.</p>
+                        <p>Something magical happens when teams see waste tied to their own revenue line. People who could not find ten minutes for cleanup suddenly found two hours before lunch.</p>
+                        <p>Departments that had shouted âcritical capacity shortageâ started returning resources voluntarily. Not because we gave a better lecture, but because we charged the debate to the right ledger.</p>
+                        <p>Then the real bottleneck appeared, exactly where overprovisioning always hides it: a bad database query path, not missing hardware. We fixed the query, not the ego.</p>
+
+                        <h2 id="black-friday" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Black Friday night, and the question nobody wanted answered</h2>
+                        <p>Black Friday came. Systems held. Checkout stayed fast. The marketing team celebrated âinfrastructure readinessâ on social media with enough confidence to power a small city.</p>
+                        <p>On the terrace, with the city lights pretending everything in tech is rational, Jerry asked the question that cuts through all architecture diagrams:</p>
+                        <p><em>âIf we had never found those idle machines, would we still have survived the event?â</em></p>
+                        <p>Rose did not hesitate. âYes. Removing ghost assets gave us enough room. We did not need a fortress. We needed discipline.â</p>
+                        <p>Jerry looked at me again. âThen why did everyone fight so hard for more machines?â</p>
+                        <p>I told him the least romantic truth in the building. They were not buying capacity. They were buying deniability. If Black Friday failed, they could point at a purchase order and say they did everything possible. If Black Friday succeeded, they could claim a miracle.</p>
+                        <p>The so-called Christmas gift in the server room was not free hardware. It was a mirror. It showed that waste often survives not because nobody can see it, but because too many people benefit from not naming it.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part4-2026/story4-3.webp" alt="Jack, Rose, and Jerry reviewing final optimization results after the audit cycle." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">The best holiday gift was not extra capacity, but measurable waste removed.</figcaption>
+                        </figure>
+
+                        <h2 id="why-story-matters" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Why this story still matters for cloud cost optimization for devops teams</h2>
+                        <p>Modern teams need two things at once: survival-grade performance and audit-grade cost discipline. That is why this series keeps returning to local-first execution. You cannot remediate what you cannot prove, and you cannot prove consistently if every urgent review waits on external delays.</p>
+                        <p>For operators running <strong>cloud cost optimization for devops</strong>, the lesson is straightforward. Capacity planning should protect customers, not protect internal narratives. Keep evidence close, ownership explicit, and review cycles short enough that findings still matter.</p>
+                        <p>And if someone asks for a giant âsafety buffer,â ask one more question before approval: safety for the system, or safety for the person signing the request?</p>
+                        <p>Read the previous chapters for continuity: <a href="boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html">Cloud Cost Story: The Boss and the Surprise Bill</a>, <a href="march-rain-disappearing-coins.html">Cloud Cost Story P2: March Rain and Missing Coins</a>, and <a href="when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">Cloud Cost Story P3: When Prices Jumped Overnight</a>.</p>
+                    </div>
+
+                    <section id="ai-summary" class="mt-10 rounded-2xl border border-indigo-200 bg-indigo-50 p-6">
+                        <h2 class="m-0 text-2xl font-bold text-indigo-900">AI Summary for FinOps Architects</h2>
+                        <ul class="mt-4 space-y-2 text-base leading-7 text-slate-700">
+                            <li>Peak-season waste was driven by incentives and ownership gaps, not a true capacity shortage.</li>
+                            <li>Evidence in business language changed cleanup behavior faster than technical detail alone.</li>
+                            <li>Local-first review loops helped keep urgent decisions auditable without waiting on external systems.</li>
+                        </ul>
+                    </section>
+
+                    <section id="faq" class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Frequently Asked Questions</h2>
+                        <div class="mt-4 space-y-4 text-base leading-7 text-slate-700">
+                            <div>
+                                <p class="font-semibold text-slate-900">Why do teams overprovision most during peak-season planning?</p>
+                                <p>Fear-driven procurement often prioritizes deniability over utilization evidence, which creates expensive idle capacity.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">What changed behavior faster in this case: dashboards or ownership math?</p>
+                                <p>Ownership-linked spend math changed behavior faster because each team could see direct budget impact from unused resources.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">How should DevOps teams turn this into a repeatable operating loop?</p>
+                                <p>Use local-first scans, short review cycles, and explicit owner handoff so capacity requests and cleanup actions stay evidence-based.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="cws-cta-panel mt-16">
+                        <div class="cws-cta-inner text-center">
+                            <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                            <h3 class="cws-cta-title mt-4">Turn âjust in caseâ infrastructure into evidence-based capacity plans</h3>
+                            <p class="cws-cta-copy mx-auto mt-4 mb-6">Download the trial and run one audit cycle before your next traffic event.</p>
+                            <div class="cws-cta-actions cws-cta-actions-inline">
+                                <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a>
+                                <a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="blog-sidebar space-y-6">
+                    <section class="blog-sidebar-card" data-blog-toc-card>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                        <div class="space-y-1" data-blog-toc></div>
+                    </section>
+                    <section class="blog-security-note">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Story Note</p>
+                        <p class="text-base font-semibold leading-7 text-slate-900">Characters are fictional. Incentives are real.</p>
+                        <p class="text-sm leading-7 text-slate-600">This incident narrative reflects recurring patterns in enterprise cloud operations: over-allocation, unclear ownership, and delayed cost accountability.</p>
+                    </section>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+    <script src="../js/lightbox.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/share-links.js?v=2.6.39.0" defer></script>
+</body>
+</html>

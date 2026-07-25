@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1080" viewBox="0 0 1800 1080" role="img" aria-labelledby="t d">
+<title id="t">Local-First Engine Architecture</title>
+<desc id="d">Component boundaries and execution path.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fbff"/>
+    <stop offset="100%" stop-color="#eef3ff"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#0a66c2"/>
+    <stop offset="100%" stop-color="#3b82f6"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#1d4ed8"/>
+  </marker>
+</defs>
+<rect width="1800" height="1080" fill="url(#bg)"/>
+<rect x="40" y="40" width="1720" height="1000" rx="28" fill="#ffffff" stroke="#dbeafe" stroke-width="2"/>
+<rect x="70" y="64" width="1660" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Local-First Engine Architecture</text>
+<g filter="url(#softShadow)"><rect x="100" y="210" width="380" height="240" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="100" y="210" width="8" height="240" rx="8" fill="#2563eb"/>
+<foreignObject x="124" y="228" width="340" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Layer 1 · Tauri UI + Orchestrator</div></foreignObject>
+<foreignObject x="124" y="282" width="340" height="156"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Account setup, policy inputs, scan trigger, review workflow.<br/>No provider scan logic in this layer.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="540" y="210" width="620" height="320" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="540" y="210" width="8" height="320" rx="8" fill="#0ea5e9"/>
+<foreignObject x="564" y="228" width="580" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Layer 2 · Rust Core Engine</div></foreignObject>
+<foreignObject x="564" y="282" width="580" height="236"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Collector scheduler · normalization · policy evaluation<br/>Parallel workers with throttling-aware control<br/>Deterministic findings model for exports and local API</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="620" y="390" width="460" height="110" rx="16" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="620" y="390" width="8" height="110" rx="8" fill="#14b8a6"/>
+<foreignObject x="644" y="408" width="420" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Provider Plugins: AWS · Azure · Others</div></foreignObject>
+<foreignObject x="644" y="462" width="420" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">One adapter interface, provider-specific implementation.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1220" y="210" width="480" height="320" rx="16" fill="#0b1220" stroke="#334155" stroke-width="2"/></g>
+<rect x="1220" y="210" width="8" height="320" rx="8" fill="#60a5fa"/>
+<foreignObject x="1244" y="228" width="440" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#dbeafe;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Layer 3 · Local Evidence Outputs</div></foreignObject>
+<foreignObject x="1244" y="282" width="440" height="236"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#cbd5e1;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">Dashboard findings, PDF/CSV exports, local API payloads,<br/>and audit-ready review packs.</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="100" y="590" width="1600" height="360" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="100" y="590" width="8" height="360" rx="8" fill="#1d4ed8"/>
+<foreignObject x="124" y="608" width="1560" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Boundary Rules</div></foreignObject>
+<foreignObject x="124" y="662" width="1560" height="276"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">1. Provider collectors cannot write presentation models directly.<br/>2. Report generation reads normalized findings, not raw provider payload.<br/>3. Review package generation is local-first and deterministic.<br/>4. Hosted services are not in the provider-credential execution path.</div></foreignObject>
+<path d="M 480,340 Q 510,340 540,350" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1160,370 Q 1190,370 1220,370" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 870,530 Q 880,560 880,590" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

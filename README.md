@@ -12,16 +12,16 @@ Local-first cloud waste scanning for operators who want source-visible, producti
 
 This repository is the **Community Edition**.
 
-Community release line: `3.1.0`
+Community release line: `3.1.1`
 
 Note:
 
 - `3.0.0` marked the Community release line reset for the open client-first roadmap.
-- The current `3.1.0` release is the active Community release line for this repository and shipped application packaging.
+- The current `3.1.1` release is the active Community release line for this repository and shipped application packaging.
 - Active Community releases on current `main` should stay ahead of overlapping Pro numbering and use a Community-only forward line.
 - Historical Pro releases remain archived under `v1.x`, and pre-reset local-first releases remain archived under `v2.9.x`.
 - Binary version increments should still happen only when the shipped desktop or SDK artifacts themselves change.
-- The current desktop app package version in this repository is `3.1.0`.
+- The current desktop app package version in this repository is `3.1.1`.
 - Current delivery/version baseline is documented in `RELEASE_AND_DELIVERY_BASELINE.md`.
 
 - Community is local-first discovery and evidence generation.
@@ -31,6 +31,8 @@ Note:
 - This repository is distributed under a **non-commercial license** (see `LICENSE`).
 
 For commercial use, managed support, or enterprise rollout terms, contact the maintainers via the project website.
+
+Paid product license and commercial purchase terms are documented separately in `COMMERCIAL-LICENSE.md` and on the website at `license.html` and `terms.html`.
 
 Scope references:
 - Community: `COMMUNITY_SCOPE.md`

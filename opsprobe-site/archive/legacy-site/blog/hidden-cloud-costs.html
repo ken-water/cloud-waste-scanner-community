@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Cloud Cost Leaks Teams Miss in Monthly Reviews | CWS</title>
+    <meta name="description" content="5 Cloud Cost Leaks Teams Miss in Monthly Reviews: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/hidden-cloud-costs.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="5 Cloud Cost Leaks Teams Miss in Monthly Reviews | CWS">
+    <meta property="og:description" content="5 Cloud Cost Leaks Teams Miss in Monthly Reviews: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/hidden-cloud-costs.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/first-scan-15min-2026/identified-waste.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="5 Cloud Cost Leaks Teams Miss in Monthly Reviews | CWS">
+    <meta name="twitter:description" content="5 Cloud Cost Leaks Teams Miss in Monthly Reviews: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/first-scan-15min-2026/identified-waste.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/hidden-cloud-costs.html",
+      "headline": "5 Cloud Cost Leaks Teams Miss in Monthly Reviews | CWS",
+      "description": "5 Cloud Cost Leaks Teams Miss in Monthly Reviews: practical Cloud Waste Scanner guidance for local-first cloud cost review, evidence handoff, and safer.",
+      "datePublished": "2026-01-27",
+      "dateModified": "2026-01-27",
+      "author": {
+        "@type": "Person",
+        "name": "Rose"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/dashboard-overview-1280.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/hidden-cloud-costs.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "5 Cloud Cost Leaks Teams Miss in Monthly Reviews | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/hidden-cloud-costs.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+
+                    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="blog-shell">
+        <article class="blog-main min-w-0">
+            <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                <div class="blog-breadcrumb justify-center">
+                    <a href="../blog.html">Blog</a>
+                    <span class="blog-divider-dot">/</span>
+                    <a href="../blog-series.html">Insights</a>
+                    <span class="blog-divider-dot">/</span>
+                    <span>Hidden Cloud Cost Leaks</span>
+                </div>
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider">Strategy</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mt-6 mb-6 leading-tight tracking-tight">5 Cloud Cost Leaks Teams Miss in Monthly Reviews</h1>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <div class="flex items-center justify-center gap-3 text-slate-500 text-sm font-medium">
+                    <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">R</span>
+                    <span>By <strong>Rose</strong></span>
+                    <span>â¢</span>
+                    <time datetime="2026-01-27">Jan 27, 2026</time>
+                    <span>â¢</span>
+                    <span>3 min read</span>
+                </div>
+            </header>
+
+            <div class="mb-10 grid gap-4 md:grid-cols-3">
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Pattern</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">Quiet monthly leakage</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">The expensive items are often the ones nobody notices because they still look normal in a quick review.</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Risk</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">State without behavior</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Running state alone does not tell you whether a resource still earns its monthly cost.</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Use</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">A standing review checklist</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Use these five patterns as a fixed monthly check before the next bill review turns into argument.</p>
+                </div>
+            </div>
+
+            <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+            <p>
+                In most monthly reviews, the same argument comes back: "we already cleaned up last week, why is the bill still high?" The answer is usually a set of resources that look harmless but keep billing quietly. These are the five leaks we see most often in audits.
+            </p>
+
+            <hr class="my-24 h-[2px] border-0 bg-slate-200 shadow-[0_1px_0_rgba(255,255,255,0.8)] rounded-full">
+
+            <h3 class="text-2xl font-bold text-slate-900 mt-12 mb-4">1. The "Idle" NAT Gateway</h3>
+            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6 text-red-800 font-mono text-xl">
+                Cost: ~$32.85 / month per gateway
+            </div>
+            <p>
+                Developers often spin up a private VPC with a NAT Gateway for a quick test. When they delete the EC2 instances, they often forget the NAT Gateway.
+            </p>
+            <p>
+                <strong>The Trap:</strong> AWS charges an hourly rate for NAT Gateways <em>even if zero traffic flows through them</em>. If you have 5 dev environments, thatâs <strong>$165/month</strong> wasted on absolute silence.
+            </p>
+
+            <h3 class="text-2xl font-bold text-slate-900 mt-12 mb-4">2. The "Stopped" Elastic IP</h3>
+            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6 text-red-800 font-mono text-xl">
+                Cost: $3.60 / month per IP
+            </div>
+            <p>
+                Most people know that unattached IPs cost money. But did you know that an IP attached to a <strong>stopped</strong> instance also costs money?
+            </p>
+            <p>
+                AWS treats IPv4 addresses as a scarce resource. If you aren't using it (because your VM is off), they penalize you. Our scanner specifically checks for this "Attached-but-Stopped" state.
+            </p>
+
+            <h3 class="text-2xl font-bold text-slate-900 mt-12 mb-4">3. The Zombie RDS</h3>
+            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6 text-red-800 font-mono text-xl">
+                Cost: $15 - $500+ / month
+            </div>
+            <p>
+                We often find RDS instances that are "Available" (running) but haven't had a single connection in weeks. These are usually leftovers from a feature branch or a POC.
+            </p>
+            <p>
+                <strong>Our Solution:</strong> We query CloudWatch metrics for `DatabaseConnections`. If the max connection count is 0 for 7 days, it's a zombie. Kill it.
+            </p>
+
+            <h3 class="text-2xl font-bold text-slate-900 mt-12 mb-4">4. Old AMIs & Snapshots</h3>
+            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6 text-red-800 font-mono text-xl">
+                Cost: Storage fees accumulate indefinitely
+            </div>
+            <p>
+                Every time your CI/CD pipeline builds a new image, it creates an AMI and a Snapshot. Fast forward a year, and you have 2,000 old images storing terabytes of data.
+            </p>
+            <p>
+                Manual cleanup is terrifying because you might delete the base image for Production. <strong>Cloud Waste Scanner Pro</strong> cross-references running instances to ensure we never touch an active AMI.
+            </p>
+
+            <h3 class="text-2xl font-bold text-slate-900 mt-12 mb-4">5. The Low-Traffic EC2</h3>
+            <p>
+                Just because an instance is "Running" doesn't mean it's useful. We frequently see `m5.large` instances with 0.1% CPU utilization.
+            </p>
+            <p>
+                Simple scripts miss these because they read state, not behavior. We correlate low CPU and low network activity to catch machines that are technically alive but operationally empty.
+            </p>
+
+            <h2 class="text-3xl font-bold text-slate-900 mt-12 mb-4">How to use this list</h2>
+            <p>
+                Use these five checks as a monthly review baseline, then confirm each item with exports the team can actually discuss. A useful review is not a tour of the bill. It is a short list of findings that somebody can close.
+            </p>
+            <p>
+                For deeper root-cause patterns behind these checks, read <a href="deep-finops-anatomy.html" class="text-indigo-600 hover:underline">Deep FinOps Anatomy</a>. If you want incident-style examples for team onboarding, use <a href="cloud-waste-horror-stories.html" class="text-indigo-600 hover:underline">Cloud Waste Horror Stories</a>.
+            </p>
+            </div>
+<div class="cws-cta-panel mt-16">
+                <div class="cws-cta-inner text-center">
+                <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                <h3 class="cws-cta-title mt-4">Run the same checks in your own environment</h3>
+                <p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p>
+                <div class="cws-cta-actions cws-cta-actions-inline">
+                    <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">
+                        Download Trial
+                    </a>
+                    <a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">
+                        View Pricing
+                    </a>
+                </div>
+            </div>
+            </div>
+                </article>
+        <aside class="blog-sidebar space-y-6">
+            <section class="blog-sidebar-card" data-blog-toc-card>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                <div class="space-y-1" data-blog-toc></div>
+            </section>
+            <section class="blog-security-note">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Review Note</p>
+                <p class="text-base font-semibold leading-7 text-slate-900">Hidden Cloud Cost Leaks</p>
+                <p class="text-sm leading-7 text-slate-600">This page lists the quiet waste patterns that survive monthly reviews and require a more disciplined operating routine.</p>
+            </section>
+        </aside>
+        </div>
+        </section>
+    </main>
+
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+    <script src="../js/lightbox.js" defer></script>
+    <script src="../js/share-links.js?v=2.6.38.0" defer></script>
+</body>
+</html>

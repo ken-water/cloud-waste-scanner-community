@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Cloud Waste Scanner</title>
+    <meta name="description" content="Static checkout handoff for Cloud Waste Scanner. Open a hosted payment link or use email fallback without a self-hosted checkout API.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="js/commerce-config.js" defer></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-700 antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <main class="mx-auto flex min-h-screen max-w-6xl items-center px-4 py-10 sm:px-6 lg:px-8">
+        <div class="grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+            <section class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+                <a href="pricing.html" class="text-sm font-semibold text-indigo-700 hover:underline">← Back to pricing</a>
+                <p class="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Plan Selected</p>
+                <h1 id="plan-name" class="mt-3 text-4xl font-extrabold text-slate-900">Loading…</h1>
+                <p id="plan-price" class="mt-3 text-xl font-semibold text-slate-600"></p>
+                <p id="plan-description" class="mt-5 text-base leading-7 text-slate-600"></p>
+
+                <div class="mt-8 rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">Zero self-hosted checkout path</p>
+                    <p class="mt-2 text-sm leading-7 text-slate-700">This page is static. It opens a hosted payment link when one is configured. If a payment link has not been added yet, it falls back to a prefilled purchase email.</p>
+                </div>
+
+                <div class="mt-8 flex flex-col gap-3">
+                    <a id="checkout-action" href="mailto:service@cloud-waste-scanner.com" class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-base font-bold text-white hover:bg-slate-800 transition-colors">Continue</a>
+                    <a href="download/" class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 transition-colors">Review Downloads First</a>
+                </div>
+                <p id="checkout-note" class="mt-4 text-sm leading-7 text-slate-500"></p>
+            </section>
+
+            <section class="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-8 text-white shadow-xl">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-200">How to operate at near-zero website cost</p>
+                <h2 class="mt-3 text-3xl font-extrabold">Replace backend work with static configuration.</h2>
+                <div class="mt-8 grid gap-4">
+                    <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <h3 class="text-lg font-bold">1. Website</h3>
+                        <p class="mt-2 text-sm leading-7 text-indigo-100">Serve `index.html`, `pricing.html`, `checkout.html`, and `download/` from static hosting. No app server required.</p>
+                    </article>
+                    <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <h3 class="text-lg font-bold">2. Payments</h3>
+                        <p class="mt-2 text-sm leading-7 text-indigo-100">Use processor-hosted links instead of `/api/paddle/checkout-link`. Update only `js/commerce-config.js` when the links are ready.</p>
+                    </article>
+                    <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <h3 class="text-lg font-bold">3. Delivery</h3>
+                        <p class="mt-2 text-sm leading-7 text-indigo-100">Point users to direct package assets. Those can live on GitHub Releases or public object storage instead of your own server.</p>
+                    </article>
+                    <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <h3 class="text-lg font-bold">4. Licensing</h3>
+                        <p class="mt-2 text-sm leading-7 text-indigo-100">Use emailed license files, offline activation data, or manual fulfillment instead of a license recovery API.</p>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const config = window.CWS_COMMERCE || {};
+            const plans = (config && config.pricing) || {};
+            const email = config.supportEmail || "service@cloud-waste-scanner.com";
+            const params = new URLSearchParams(window.location.search);
+            const requestedPlan = params.get("plan") || "yearly";
+            const currentPlan = plans[requestedPlan] || plans.yearly || {
+                name: "Yearly",
+                priceLabel: "$99 / year",
+                description: "Default commercial plan."
+            };
+            const paymentLinks = config.paymentLinks || {};
+            const paymentLink = paymentLinks[requestedPlan] || "";
+
+            document.getElementById("plan-name").textContent = currentPlan.name;
+            document.getElementById("plan-price").textContent = currentPlan.priceLabel;
+            document.getElementById("plan-description").textContent = currentPlan.description;
+
+            const subject = encodeURIComponent("Cloud Waste Scanner purchase - " + currentPlan.name);
+            const body = encodeURIComponent(
+                "I want to buy Cloud Waste Scanner.\n\n" +
+                "Plan: " + currentPlan.name + "\n" +
+                "Price: " + currentPlan.priceLabel + "\n" +
+                "Website version: " + (config.version || "3.1.0") + "\n"
+            );
+            const mailto = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+
+            const action = document.getElementById("checkout-action");
+            const note = document.getElementById("checkout-note");
+            if (paymentLink) {
+                action.href = paymentLink;
+                action.target = "_blank";
+                action.rel = "noopener noreferrer";
+                action.textContent = "Open Hosted Checkout";
+                note.textContent = "Hosted payment link is configured. This purchase flow does not require your own checkout backend.";
+            } else {
+                action.href = mailto;
+                action.textContent = "Email to Purchase";
+                note.textContent = "Hosted payment link is not configured yet. The page falls back to a prefilled purchase email so the website still works without a backend.";
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -4,10 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Download | Cloud Waste Scanner</title>
-  <meta name="description" content="Download Cloud Waste Scanner builds for Windows, Linux, and macOS.">
+  <meta name="description" content="Download Cloud Waste Scanner for Windows, macOS, and Linux, then verify the package before connecting cloud accounts.">
   <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/download">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="Download | Cloud Waste Scanner">
+  <meta property="og:description" content="Download Cloud Waste Scanner for Windows, macOS, and Linux, then verify the package before connecting cloud accounts.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/download">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Download | Cloud Waste Scanner">
+  <meta name="twitter:description" content="Download Cloud Waste Scanner for Windows, macOS, and Linux, then verify the package before connecting cloud accounts.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="../styles.css">
   <script src="../js/site-config.js" defer></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <header class="nav">
@@ -26,54 +43,86 @@
         <p>Choose the package that matches your operating system, then verify the published checksum before installing in production environments.</p>
       </div>
 
-      <div class="grid three" style="margin-top:28px;">
-        <article class="card">
-          <p class="eyebrow">Windows</p>
-          <h3>3.1.0 x64 installer</h3>
-          <ul>
-            <li>File: CloudWasteScanner_3.1.0_x64-setup.exe</li>
-            <li>Recommended for Windows 10 and Windows 11</li>
-            <li>SHA256: <code>12a1095262cb38e8d068e49d749455f5edb5a6d303aa2d7bd6c179dc4d61e962</code></li>
-          </ul>
-          <a class="btn primary" style="margin-top:18px;" href="files/CloudWasteScanner_3.1.0_x64-setup.exe">Download Windows</a>
+      <section class="download-recommendation" aria-label="Recommended first download">
+        <div>
+          <div class="eyebrow">Recommended first step</div>
+          <h2>Install one desktop build, then run one read-only scan.</h2>
+          <p>Start with your current workstation. Keep credentials local, verify the package, and expand to more accounts only after the first evidence package looks useful.</p>
+        </div>
+        <div class="download-quick-actions" aria-label="Quick downloads">
+          <a class="btn primary" href="/download/files/CloudWasteScanner_3.1.1_x64-setup.exe">Windows</a>
+          <a class="btn primary" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.1.1/target_universal-apple-darwin_release_bundle_dmg_CloudWasteScanner_3.1.1_universal.dmg">macOS</a>
+          <a class="btn" href="#linux-downloads">Linux packages</a>
+        </div>
+      </section>
+
+      <section class="onboarding-rail" aria-label="First scan onboarding">
+        <article>
+          <span>1</span>
+          <h3>Download and verify</h3>
+          <p>Choose the package for this machine and compare the SHA256 checksum before wider rollout.</p>
         </article>
-        <article class="card">
-          <p class="eyebrow">Linux</p>
-          <h3>3.1.0 deb, rpm, AppImage</h3>
+        <article>
+          <span>2</span>
+          <h3>Use read-only access</h3>
+          <p>Start with one provider account and a narrow scope so the first findings are easy to review.</p>
+        </article>
+        <article>
+          <span>3</span>
+          <h3>Export the evidence</h3>
+          <p>Share the PDF or CSV output with the owner before a cleanup decision is made.</p>
+        </article>
+      </section>
+
+      <div id="platform-packages" class="grid three download-grid" style="margin-top:28px;">
+        <article id="linux-downloads" class="card download-card">
+          <p class="eyebrow">Windows</p>
+          <h3>3.1.1 x64 installer</h3>
           <ul>
-            <li>DEB SHA256: <code>6600ccc7878b736bd9ca99919e190a36f30a553f5f7489dc88b53b5f8c9fa4ce</code></li>
-            <li>RPM SHA256: <code>34a754ae416f530afc1a65deccefd50c645c5a03a7e9eaf44bb8695958233a98</code></li>
-            <li>AppImage SHA256: <code>e53faa60fa73eacbda5bcc777a4bcbd12d65cee849ea2900d6990786382dfa85</code></li>
+            <li>File: CloudWasteScanner_3.1.1_x64-setup.exe</li>
+            <li>Recommended for Windows 10 and Windows 11</li>
+            <li>SHA256: <code>7e7d6460387495fbe9eccdc8ff2abbf0d58e3338c9bd03e2ef29b7f9dc9fd941</code></li>
+          </ul>
+          <a class="btn primary" style="margin-top:18px;" href="/download/files/CloudWasteScanner_3.1.1_x64-setup.exe">Download Windows</a>
+        </article>
+        <article class="card download-card">
+          <p class="eyebrow">Linux</p>
+          <h3>3.1.1 deb, rpm, AppImage</h3>
+          <ul>
+            <li>DEB SHA256: <code>940f9e7cdc4d85e8c7b14a7f0f8a66b60157f3faf6abf3aa9157638b796ab70b</code></li>
+            <li>RPM SHA256: <code>366ffc20b0527ddb4764e9e34ef3d71d7c7b6bb9f559451e88195769774c6697</code></li>
+            <li>AppImage SHA256: <code>bbe1e33c981d9706dcaa4848cb5ac3acf25ef12ee2b6a1f7b824a66def1a26c8</code></li>
             <li>Recommended for Ubuntu, Debian, RHEL-compatible, and portable desktop use</li>
           </ul>
           <div class="inline-actions" style="margin-top:18px;">
-            <a class="btn primary" href="files/CloudWasteScanner_3.1.0_amd64.deb">Download DEB</a>
-            <a class="btn" href="files/CloudWasteScanner-3.1.0-1.x86_64.rpm">RPM</a>
-            <a class="btn" href="files/CloudWasteScanner_3.1.0_amd64.AppImage">AppImage</a>
+            <a class="btn primary" href="/download/files/CloudWasteScanner_3.1.1_amd64.deb">Download DEB</a>
+            <a class="btn" href="/download/files/CloudWasteScanner-3.1.1-1.x86_64.rpm">RPM</a>
+            <a class="btn" href="/download/files/CloudWasteScanner_3.1.1_amd64.AppImage">AppImage</a>
           </div>
         </article>
-        <article class="card">
+        <article class="card download-card">
           <p class="eyebrow">macOS</p>
-          <h3>3.1.0 Universal DMG</h3>
+          <h3>3.1.1 Universal DMG</h3>
           <ul>
-            <li>File: CloudWasteScanner_3.1.0_universal.dmg</li>
+            <li>File: CloudWasteScanner_3.1.1_universal.dmg</li>
             <li>Recommended for Apple Silicon and Intel macOS users</li>
-            <li>SHA256: <code>11e98a16a3775ba15a6bed4a4c2dd1b6799268f3858e7c86414ba5e06cc7eead</code></li>
+            <li>SHA256: published in the GitHub release after the macOS build completes.</li>
           </ul>
-          <a class="btn primary" style="margin-top:18px;" href="files/CloudWasteScanner_3.1.0_universal.dmg">Download macOS</a>
+          <a class="btn primary" style="margin-top:18px;" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.1.1/target_universal-apple-darwin_release_bundle_dmg_CloudWasteScanner_3.1.1_universal.dmg">Download macOS</a>
         </article>
       </div>
 
       <div class="grid two" style="margin-top:18px;">
         <article class="card">
           <div class="eyebrow">Install safely</div>
-          <h3>Verify the package before wider rollout.</h3>
-          <p style="margin-top:12px;">Use the checksum shown with each package, start with one account, and run the first scan in read-only mode.</p>
+          <h3>What to expect from the first run.</h3>
+          <p style="margin-top:12px;">The first useful scan should produce a short evidence list, not a giant dashboard. Review confidence, owner hints, and cleanup risk before expanding scope.</p>
         </article>
         <article class="card">
-          <div class="eyebrow">First scan</div>
-          <h3>Start small, then expand coverage.</h3>
-          <p style="margin-top:12px;">Connect one cloud account first, review the findings, then add more accounts once the workflow is trusted.</p>
+          <div class="eyebrow">Need help</div>
+          <h3>Keep the setup path close.</h3>
+          <p style="margin-top:12px;">Use the setup guide if proxy settings, provider credentials, or first scan scope are not obvious.</p>
+          <a class="btn" style="margin-top:18px;" href="../help.html">Read setup guide</a>
         </article>
       </div>
     </div>

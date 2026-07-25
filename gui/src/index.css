@@ -28,11 +28,21 @@
 }
 
 @layer base {
+  html.dark,
+  html.dark body,
+  html.dark #root {
+    background: #020617;
+    color: #e2e8f0;
+  }
+
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: Inter, "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
@@ -80,6 +90,142 @@
 }
 
 @layer components {
+  .cws-app-shell {
+    background:
+      radial-gradient(circle at top left, rgba(20, 184, 166, 0.08), transparent 34rem),
+      linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  }
+
+  .dark .cws-app-shell {
+    background:
+      radial-gradient(circle at top left, rgba(20, 184, 166, 0.09), transparent 34rem),
+      linear-gradient(180deg, #020617 0%, #0f172a 100%);
+  }
+
+  .cws-app-main {
+    background:
+      linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.98));
+  }
+
+  .dark .cws-app-main {
+    background:
+      linear-gradient(180deg, rgba(2, 6, 23, 0.98), rgba(15, 23, 42, 0.98));
+  }
+
+  .cws-topbar-signals span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.9rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #475569;
+    padding: 0 0.65rem;
+    white-space: nowrap;
+  }
+
+  .dark .cws-topbar-signals span {
+    border-color: #1e293b;
+    background: #0f172a;
+    color: #cbd5e1;
+  }
+
+  .cws-app-sidebar {
+    box-shadow: 12px 0 30px rgba(15, 23, 42, 0.04);
+  }
+
+  .dark .cws-app-sidebar {
+    box-shadow: 12px 0 30px rgba(0, 0, 0, 0.18);
+  }
+
+  .cws-sidebar-brand {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  }
+
+  .dark .cws-sidebar-brand {
+    background:
+      linear-gradient(180deg, rgba(2, 6, 23, 0.98), rgba(15, 23, 42, 0.98));
+  }
+
+  .cws-menu-button {
+    min-height: 2.55rem;
+    border: 1px solid transparent;
+  }
+
+  .cws-menu-button:hover {
+    border-color: rgba(148, 163, 184, 0.28);
+  }
+
+  .cws-page-shell {
+    background:
+      radial-gradient(circle at 5% 0%, rgba(20, 184, 166, 0.08), transparent 28rem),
+      #f8fafc;
+  }
+
+  .dark .cws-page-shell {
+    background:
+      radial-gradient(circle at 5% 0%, rgba(20, 184, 166, 0.06), transparent 28rem),
+      #0f172a;
+  }
+
+  .cws-page-shell-inner {
+    width: 100%;
+  }
+
+  .cws-page-header h1 {
+    letter-spacing: 0;
+  }
+
+  .dark .cws-page-header {
+    background: transparent;
+    color: #e2e8f0;
+  }
+
+  .dark .cws-page-header h1 {
+    color: #f8fafc;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+  }
+
+  .cws-page-header-actions {
+    align-items: flex-start;
+  }
+
+  .cws-page-shell button,
+  .cws-topbar button,
+  .cws-app-sidebar button {
+    outline: none;
+  }
+
+  .cws-page-shell button:focus-visible,
+  .cws-topbar button:focus-visible,
+  .cws-app-sidebar button:focus-visible,
+  .cws-page-shell input:focus-visible,
+  .cws-page-shell select:focus-visible {
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.24);
+  }
+
+  .cws-page-shell .rounded-2xl {
+    border-radius: 1rem;
+  }
+
+  .cws-page-shell .rounded-xl {
+    border-radius: 0.8rem;
+  }
+
+  .cws-page-shell table {
+    font-size: 0.875rem;
+  }
+
+  .cws-page-shell th {
+    white-space: nowrap;
+  }
+
+  .cws-page-shell td {
+    vertical-align: top;
+  }
+
   @media (max-width: 1279px) {
     .cws-app-shell {
       font-size: 0.95rem;
@@ -100,6 +246,11 @@
 
     .cws-page-shell {
       padding: 1.25rem;
+    }
+
+    .cws-topbar {
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
     .cws-page-shell-inner {
@@ -139,9 +290,78 @@
       padding: 1rem;
     }
 
+    .cws-topbar-signals {
+      width: 100%;
+    }
+
+    .cws-topbar-signals span {
+      flex: 1 1 10rem;
+      justify-content: center;
+    }
+
     .cws-page-header h1 {
       font-size: 1.5rem;
       line-height: 1.9rem;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .cws-app-shell {
+      min-width: 0;
+    }
+
+    .cws-app-sidebar {
+      width: 12.25rem;
+    }
+
+    .cws-sidebar-brand {
+      padding: 0.9rem;
+    }
+
+    .cws-sidebar-brand .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cws-app-sidebar nav {
+      padding: 0.75rem;
+    }
+
+    .cws-nav-group-title {
+      padding-left: 0.4rem;
+      padding-right: 0.4rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+    }
+
+    .cws-menu-button {
+      gap: 0.5rem;
+      padding: 0.55rem 0.5rem;
+    }
+
+    .cws-menu-button svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .cws-menu-label {
+      font-size: 0.8rem;
+    }
+
+    .cws-topbar {
+      position: static;
+    }
+
+    .cws-topbar-signals span {
+      flex-basis: calc(50% - 0.25rem);
+      padding-inline: 0.45rem;
+    }
+
+    .cws-page-header {
+      padding: 1rem;
+    }
+
+    .cws-page-header-actions {
+      width: 100%;
     }
   }
 }

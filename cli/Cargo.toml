@@ -2,6 +2,7 @@
 name = "cloud-waste-scanner-cli"
 version.workspace = true
 edition.workspace = true
+license-file.workspace = true
 
 [dependencies]
 cloud-waste-scanner-core = { path = "../core" }

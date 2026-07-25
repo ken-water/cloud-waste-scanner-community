@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cost Management Software Story: March Rain | CWS</title>
+    <meta name="description" content="Incident Series Part 2: Rose, Jack, and Jerry trace repeated cloud leakage, including orphaned resources and idle network costs, with local-first scans.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/march-rain-disappearing-coins.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cloud Cost Management Software Story: March Rain | CWS">
+    <meta property="og:description" content="Incident Series Part 2: Rose, Jack, and Jerry trace repeated cloud leakage, including orphaned resources and idle network costs, with local-first scans.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/march-rain-disappearing-coins.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part2-2026/march-bill-shock.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Cost Management Software Story: March Rain | CWS">
+    <meta name="twitter:description" content="Incident Series Part 2: Rose, Jack, and Jerry trace repeated cloud leakage, including orphaned resources and idle network costs, with local-first scans.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part2-2026/march-bill-shock.webp">
+
+    <meta name="featured-image" content="images/cloud-bill-stories-part2-2026/march-bill-shock.webp">
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/march-rain-disappearing-coins.html",
+      "headline": "Cloud Cost Management Software Story: March Rain | CWS",
+      "description": "Incident Series Part 2: Rose, Jack, and Jerry trace repeated cloud leakage, including orphaned resources and idle network costs, with local-first scans.",
+      "datePublished": "2026-03-17",
+      "dateModified": "2026-03-17",
+      "author": {
+        "@type": "Person",
+        "name": "Rose"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part2-2026/march-bill-shock.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/march-rain-disappearing-coins.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Cloud Cost Management Software Story: March Rain | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/march-rain-disappearing-coins.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why do cloud bills keep rising after one cleanup pass?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because manual cleanup usually removes visible waste but misses recurring orphaned resources across network, storage, and multi-cloud edges."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which hidden resources commonly survive manual remediation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Idle Elastic IPs, orphaned test volumes, and forgotten load balancers are common sources of repeated leakage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does a local-first workflow help weekly governance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It keeps credentials local while generating repeatable findings and alerts that can be routed to owners each cycle."
+      }
+    }
+  ]
+}
+    </script>
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="blog-shell">
+                <article class="blog-main min-w-0">
+                    <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                        <div class="blog-breadcrumb justify-center">
+                            <a href="../blog.html">Blog</a>
+                            <span class="blog-divider-dot">/</span>
+                            <a href="../blog-series.html#incident-series">Incident Series</a>
+                            <span class="blog-divider-dot">/</span>
+                            <span>Part 2</span>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-rose-700 uppercase bg-rose-50 rounded-full">Incident Series</span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Cloud Cost Management Software Story Part 2: March Rain and the Disappearing Coins</h1>
+                        <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Rose traced a doubling cloud bill. Jack cleaned one leak and met another. Jerry brought Telegram-backed local-first scanning, and the room finally moved from guessing to action.</p>
+                        <div class="blog-meta-row mt-5">
+                            <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-rose-100 text-rose-600 font-bold">R</span>
+                            <span>By <strong>Rose</strong></span>
+                            <span>&bull;</span>
+                            <time datetime="2026-03-17">Mar 17, 2026</time>
+                            <span class="blog-reading-time">Reading time: 3 min</span>
+                        </div>
+                    </header>
+
+                    <div class="mb-10 grid gap-4 md:grid-cols-3">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">March shock</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">The SLB line would not stop climbing</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Rose spotted a month-over-month jump and asked the question every operator dreads.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">April whisper</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">Elastic IPs were still charging</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">One leak was gone, but hidden idle resources kept billing in the background.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Resolution</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">Telegram alerts gave instant clarity</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">A single local-first scan exposed waste across AWS, Azure, and Hetzner in minutes.</p>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+                        <p class="lead text-2xl text-slate-600 mb-8">This chapter is about a pattern most teams know too well: you fix one obvious cloud leak, then the quieter ones keep draining budget in the background.</p>
+
+                        <h2 id="march-rain-bill-shock" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. March rain: the SLB bill that would not quiet down</h2>
+                        <p>Cold rain hit the Wyoming office windows all afternoon. Inside, Rose held a printed cloud bill with the kind of calm that makes engineers nervous.</p>
+                        <p>She stopped at Jack's desk and asked one clear question: why did March cloud spend jump so hard, and why was the load balancer line still singing after stress tests were supposed to be closed?</p>
+                        <p>Jack answered the way overloaded operators do. He opened AWS, Azure, and other provider consoles, pointing at terminated compute and saying he had shut things down. Then Jerry dropped the line that changed the room: you killed the servers, but you left the microphones. SLB still bills when it stays active.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part2-2026/march-bill-shock.webp" alt="March billing review with Rose holding a cloud invoice while Jack realizes idle SLB resources were left active." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">Compute was gone. The forgotten network edge was not.</figcaption>
+                        </figure>
+
+                        <h2 id="april-ghost-whisper" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. April wind: ghost costs kept whispering</h2>
+                        <p>Jack spent a full weekend cleaning everything he could find. For a moment, everyone thought the incident was behind them.</p>
+                        <p>Mid-April, Rose came back. SLB spend had dropped, but unused Elastic IP charges were still coming through. The pattern was obvious now: manual cleanup removed visible waste, not systemic waste.</p>
+                        <p>Jack described it perfectly: he was plugging holes in sand. Close one leak, another appeared. In multi-cloud environments, console-by-console operations cannot guarantee cost hygiene.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part2-2026/april-ghost-costs.webp" alt="April review where Jack looks stressed while Rose and Jerry stand behind him as hidden resource costs continue." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">One clean-up cycle did not end the leak pattern.</figcaption>
+                        </figure>
+
+                        <h2 id="telegram-verdict" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. The Telegram verdict: from suspicion to evidence in five minutes</h2>
+                        <p>Jerry finally ended the debate. He told Jack to stop fighting bills with memory and browser tabs and run Cloud Waste Scanner in local-first mode, where credentials stay on the operator side.</p>
+                        <p>Setup took about five minutes. Before Jack could leave for water, a Telegram alert landed with actionable findings:</p>
+                        <ul>
+                            <li><strong>AWS:</strong> 5 idle Elastic IPs.</li>
+                            <li><strong>Azure:</strong> 3 orphaned test volumes.</li>
+                            <li><strong>Hetzner:</strong> 1 un-released test load balancer.</li>
+                        </ul>
+                        <p>That single alert ended guesswork. Rose smiled for the first time that week and made the finance point everyone could agree on: the scan cost less than the loose change hidden in one missed leak.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part2-2026/telegram-verdict.webp" alt="Jack, Rose, and Jerry seeing Telegram cloud waste alerts and finally resolving the monthly budget leak." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">Evidence arrived fast enough to change behavior, not just reports.</figcaption>
+                        </figure>
+
+                        <h2 id="why-this-matters" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Why this story matters for real teams</h2>
+                        <p>Cloud waste rarely comes from one dramatic mistake. It comes from small leftovers across services, providers, and ownership boundaries.</p>
+                        <p>What helped this team was not a heroic spreadsheet. It was a repeatable review path: local-first scan, clear findings, fast alerting, and handoff-ready outputs for cleanup owners.</p>
+                        <p>In practice, that is what teams expect from a <strong>privacy first cloud cost tool</strong>: control of credentials and enough evidence to act without guesswork.</p>
+                        <p>And as the number of providers grows, the same workflow starts to behave like one of the few <strong>cloud governance tools</strong> that operators can keep using every week.</p>
+                        <p>That is the operating difference between seeing a bad bill and controlling the next one.</p>
+                        <p>For full series continuity, read <a href="boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html" class="text-indigo-600 hover:underline">Boss Saw the Cloud Bill</a> and <a href="when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html" class="text-indigo-600 hover:underline">When Cloud Prices Went Up, We Found Profit in 15 Minutes</a>.</p>
+                    </div>
+
+                    <section id="ai-summary" class="mt-10 rounded-2xl border border-indigo-200 bg-indigo-50 p-6">
+                        <h2 class="m-0 text-2xl font-bold text-indigo-900">AI Summary for FinOps Architects</h2>
+                        <ul class="mt-4 space-y-2 text-base leading-7 text-slate-700">
+                            <li>One cleanup cycle is not governance; repeated scans and ownership routing are required.</li>
+                            <li>Most recurring leakage came from orphaned and low-visibility resources, not headline infrastructure.</li>
+                            <li>Local-first scanning delivered fast incident evidence without introducing key-custody risk.</li>
+                        </ul>
+                    </section>
+
+                    <section id="faq" class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Frequently Asked Questions</h2>
+                        <div class="mt-4 space-y-4 text-base leading-7 text-slate-700">
+                            <div>
+                                <p class="font-semibold text-slate-900">Why do cloud bills keep rising after one cleanup pass?</p>
+                                <p>Because manual cleanup usually removes visible waste but misses recurring orphaned resources across network, storage, and multi-cloud edges.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">Which hidden resources commonly survive manual remediation?</p>
+                                <p>Idle Elastic IPs, orphaned test volumes, and forgotten load balancers are common sources of repeated leakage.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">How does a local-first workflow help weekly governance?</p>
+                                <p>It keeps credentials local while generating repeatable findings and alerts that can be routed to owners each cycle.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="cws-cta-panel mt-16">
+                        <div class="cws-cta-inner text-center">
+                            <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                            <h3 class="cws-cta-title mt-4">Run the same review path without sending cloud credentials to anyone</h3>
+                            <p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p>
+                            <div class="cws-cta-actions cws-cta-actions-inline">
+                                <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a>
+                                <a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="blog-sidebar space-y-6">
+                    <section class="blog-sidebar-card" data-blog-toc-card>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                        <div class="space-y-1" data-blog-toc></div>
+                    </section>
+                    <section class="blog-security-note">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Story Note</p>
+                        <p class="text-base font-semibold leading-7 text-slate-900">Names are fictional. Operating pain is real.</p>
+                        <p class="text-sm leading-7 text-slate-600">This series is written from patterns seen in real cloud cost incidents: hidden network resources, delayed detection, and manual cleanup fatigue.</p>
+                    </section>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

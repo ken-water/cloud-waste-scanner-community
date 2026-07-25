@@ -3,13 +3,19 @@
 ## Positioning
 Team is the governance execution layer.
 
+## Current Status
+
+Team should currently be treated as preview/planned rather than GA.
+
+This repository already contains some gated local foundations for Team workflows, but the full Team promise should not be treated as substantially complete until `TEAM_CLOSURE_PLAN.md` is substantially complete.
+
 It is intended for teams that already have findings and now need to:
 - assign ownership
 - track remediation lifecycle
 - organize people into operating structure
 - produce audience-specific handoff packages
 
-## Included in Team
+## Intended Team Capabilities
 
 ### Organization and ownership
 - Org unit management

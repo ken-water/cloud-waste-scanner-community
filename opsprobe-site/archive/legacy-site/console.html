@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CWS Admin Console</title>
+    <meta name="description" content="Cloud Waste Scanner admin console for operational review, feedback handling, and internal service monitoring.">
+    <link href="styles.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans" x-data="adminApp()">
+
+    <!-- Login -->
+    <div x-show="!authenticated" class="h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-xl shadow-xl w-full max-w-sm">
+            <h2 class="text-xl font-bold mb-4">Admin Login</h2>
+            <input type="text" x-model="username" @keyup.enter="login" class="w-full p-3 border rounded mb-4" placeholder="Username">
+            <input type="password" x-model="password" @keyup.enter="login" class="w-full p-3 border rounded mb-4" placeholder="Password">
+            <button @click="login" class="w-full bg-slate-900 text-white py-3 rounded font-bold">Access Console</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div x-show="authenticated" class="min-h-screen">
+        <header class="bg-slate-900 text-white p-6 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold">CWS Command Center</h1>
+                <div class="flex gap-4 text-sm">
+                    <button @click="activeTab = 'dashboard'" :class="activeTab === 'dashboard' ? 'text-white' : 'text-slate-400'">Dashboard</button>
+                    <button @click="activeTab = 'feedback'" :class="activeTab === 'feedback' ? 'text-white' : 'text-slate-400'">Feedback Inbox</button>
+                    <button @click="logout" class="text-red-400 ml-4">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto p-6">
+            
+            <!-- Stats -->
+            <div x-show="activeTab === 'dashboard'" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-xs text-slate-500 uppercase font-bold">Total Revenue</div>
+                        <div class="text-3xl font-extrabold text-green-600 mt-2" x-text="'$' + stats.revenue.toFixed(2)"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-xs text-slate-500 uppercase font-bold">Active Licenses</div>
+                        <div class="text-3xl font-extrabold text-indigo-600 mt-2" x-text="stats.orders"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-xs text-slate-500 uppercase font-bold">Page Views (Total)</div>
+                        <div class="text-3xl font-extrabold text-slate-700 mt-2" x-text="stats.pv_total"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-xs text-slate-500 uppercase font-bold">Clicks Today</div>
+                        <div class="text-3xl font-extrabold text-orange-500 mt-2" x-text="stats.clicks_today"></div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 font-bold">Recent Orders</div>
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-slate-50 text-slate-500">
+                            <tr>
+                                <th class="p-4">Email</th>
+                                <th class="p-4">Type</th>
+                                <th class="p-4">Amount</th>
+                                <th class="p-4">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="order in stats.recent_orders">
+                                <tr class="border-b border-slate-50 last:border-0">
+                                    <td class="p-4 font-mono" x-text="order.email"></td>
+                                    <td class="p-4 capitalize" x-text="order.type"></td>
+                                    <td class="p-4 font-bold" x-text="'$' + order.amount"></td>
+                                    <td class="p-4 text-slate-500" x-text="formatDate(order.date)"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Feedback Inbox -->
+            <div x-show="activeTab === 'feedback'" class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <span class="font-bold">User Feedback</span>
+                        <span class="text-xs bg-slate-100 px-2 py-1 rounded" x-text="stats.feedback ? stats.feedback.length + ' items' : '0 items'"></span>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                        <template x-for="item in stats.feedback">
+                            <div class="p-6 hover:bg-slate-50 transition-colors">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 rounded text-xs font-bold uppercase"
+                                              :class="item.type === 'bug' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'"
+                                              x-text="item.type"></span>
+                                        <span class="text-xs text-slate-400 font-mono" x-text="'v' + item.version"></span>
+                                    </div>
+                                    <span class="text-xs text-slate-400" x-text="formatDate(item.date)"></span>
+                                </div>
+                                <p class="text-slate-800 my-3 whitespace-pre-wrap" x-text="item.message"></p>
+                                <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-100">
+                                    <div class="flex items-center gap-4">
+                                        <div class="text-sm text-slate-500" x-text="item.email || 'Anonymous'"></div>
+                                        
+                                        <!-- Admin Controls -->
+                                        <select 
+                                            x-model="item.status" 
+                                            @change="updateFeedback(item)"
+                                            class="text-xs border rounded p-1 bg-white"
+                                        >
+                                            <option value="new">New</option>
+                                            <option value="planned">Planned</option>
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="released">Released</option>
+                                        </select>
+
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" x-model="item.is_public" @change="updateFeedback(item)" class="rounded text-indigo-600">
+                                            <span class="text-xs font-medium text-slate-600">Public</span>
+                                        </label>
+                                    </div>
+
+                                    <a x-show="item.email" 
+                                       :href="'mailto:' + item.email + '?subject=Re: Cloud Waste Scanner Feedback (' + item.type + ')'"
+                                       class="text-sm text-indigo-600 hover:underline font-medium flex items-center gap-1">
+                                        Reply via Email &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function adminApp() {
+            const ADMIN_USERNAME = 'cwsAdmin';
+            const AUTH_STORAGE_KEY = 'cws_admin_auth';
+            const LOGIN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+            return {
+                authenticated: false,
+                username: '',
+                password: '',
+                activeTab: 'dashboard',
+                stats: { revenue: 0, orders: 0, pv_total: 0, feedback: [] },
+
+                async updateFeedback(item) {
+                    try {
+                        await fetch('https://cloud-waste-scanner.com/api/admin/feedback/update', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                id: item.id, 
+                                secret: this.password,
+                                status: item.status,
+                                is_public: item.is_public
+                            })
+                        });
+                    } catch (e) {
+                        alert('Update failed');
+                    }
+                },
+
+                async login(options = {}) {
+                    const persist = options.persist !== false;
+                    if (this.username !== ADMIN_USERNAME) {
+                        alert('Invalid Username');
+                        return;
+                    }
+                    try {
+                        const res = await fetch('https://cloud-waste-scanner.com/api/admin/stats', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ secret: this.password })
+                        });
+                        if (res.ok) {
+                            this.stats = await res.json();
+                            this.authenticated = true;
+                            if (persist) {
+                                localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+                                    username: this.username,
+                                    password: this.password,
+                                    expiresAt: Date.now() + LOGIN_TTL_MS
+                                }));
+                            }
+                        } else {
+                            alert('Invalid Password');
+                        }
+                    } catch (e) {
+                        alert('Network Error');
+                    }
+                },
+
+                logout() {
+                    this.authenticated = false;
+                    this.username = '';
+                    this.password = '';
+                    localStorage.removeItem(AUTH_STORAGE_KEY);
+                },
+
+                init() {
+                    const saved = localStorage.getItem(AUTH_STORAGE_KEY);
+                    if (!saved) return;
+                    try {
+                        const parsed = JSON.parse(saved);
+                        if (!parsed || parsed.username !== ADMIN_USERNAME || !parsed.password || !parsed.expiresAt) {
+                            localStorage.removeItem(AUTH_STORAGE_KEY);
+                            return;
+                        }
+                        if (Date.now() >= Number(parsed.expiresAt)) {
+                            localStorage.removeItem(AUTH_STORAGE_KEY);
+                            return;
+                        }
+                        this.username = parsed.username;
+                        this.password = parsed.password;
+                        this.login({ persist: false });
+                    } catch (_e) {
+                        localStorage.removeItem(AUTH_STORAGE_KEY);
+                    }
+                },
+
+                formatDate(ts) {
+                    return new Date(ts * 1000).toLocaleString();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

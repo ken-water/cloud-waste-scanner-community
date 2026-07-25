@@ -6,8 +6,25 @@
   <title>Public Beta | Cloud Waste Scanner</title>
   <meta name="description" content="Cloud Waste Scanner is free during the public beta while we collect first-scan feedback.">
   <link rel="icon" href="assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/pricing">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="Public Beta | Cloud Waste Scanner">
+  <meta property="og:description" content="Cloud Waste Scanner is free during the public beta while we collect first-scan feedback.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/pricing">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Public Beta | Cloud Waste Scanner">
+  <meta name="twitter:description" content="Cloud Waste Scanner is free during the public beta while we collect first-scan feedback.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="styles.css">
   <script src="js/site-config.js" defer></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <header class="nav">
@@ -26,59 +43,54 @@
         <p>Cloud Waste Scanner is free during the public beta. Download the app, run a local read-only scan, and send feedback about what worked, what blocked you, and what would make the next scan more useful.</p>
         <p style="margin-top:14px; color:#0f766e; font-weight:800;">No purchase is required during the public beta.</p>
       </div>
-      <div class="grid three" style="margin-top:28px;">
-        <article class="card">
-          <p class="eyebrow">1. Download</p>
-          <div class="price"><strong>Free</strong><span class="cadence">public beta</span></div>
-          <p style="margin-top:14px;">Install the Windows, Linux, or macOS build and start with one cloud account.</p>
-          <ul>
-            <li>Local-first desktop app</li>
-            <li>Read-only scan workflow</li>
-            <li>No checkout required</li>
-          </ul>
-          <a class="btn primary" style="margin-top:18px;" href="download/">Download Free</a>
+      <section class="beta-panel" aria-label="Public beta participation">
+        <div>
+          <div class="eyebrow">Beta access</div>
+          <h2>No checkout. No hosted collector. Start with one local scan.</h2>
+          <p>The beta is meant to test whether Cloud Waste Scanner can produce a useful evidence package from real first scans. The commercial packaging can wait until the workflow is sharp.</p>
+        </div>
+        <div class="inline-actions">
+          <a class="btn primary" href="download/">Download Free</a>
+          <a class="btn" href="feedback.html">Send feedback</a>
+        </div>
+      </section>
+
+      <div class="beta-path">
+        <article>
+          <span>01</span>
+          <h3>Install the desktop build</h3>
+          <p>Use the Windows, macOS, or Linux package on the machine where you can safely run a read-only provider scan.</p>
         </article>
-        <article class="card dark">
-          <p class="eyebrow" style="background:rgba(255,255,255,0.08); color:#dbeafe; border-color:rgba(255,255,255,0.12);">2. Scan</p>
-          <div class="price"><strong>Local</strong><span class="cadence">read-only</span></div>
-          <p style="margin-top:14px;">Run the scanner locally. Cloud credentials stay on your machine.</p>
-          <ul>
-            <li>Find obvious waste first</li>
-            <li>Review evidence before cleanup</li>
-            <li>Export findings for team review</li>
-          </ul>
-          <a class="btn accent" style="margin-top:18px;" href="help.html">Read setup guide</a>
+        <article>
+          <span>02</span>
+          <h3>Run a narrow first scan</h3>
+          <p>Start with one account and a small scope. The goal is a short list your team can actually review.</p>
         </article>
-        <article class="card">
-          <p class="eyebrow">3. Feedback</p>
-          <div class="price"><strong>Shape</strong><span class="cadence">the product</span></div>
-          <p style="margin-top:14px;">Tell us where the first useful scan succeeded or failed.</p>
-          <ul>
-            <li>Provider coverage gaps</li>
-            <li>False positives and missing findings</li>
-            <li>Report and workflow needs</li>
-          </ul>
-          <a class="btn primary" style="margin-top:18px;" href="feedback.html">Send feedback</a>
+        <article>
+          <span>03</span>
+          <h3>Report what blocked review</h3>
+          <p>Useful feedback is specific: missing provider coverage, false positives, unclear evidence, export gaps, or setup friction.</p>
         </article>
       </div>
 
-      <div class="grid two" style="margin-top:18px;">
-        <article class="card">
+      <div class="beta-scope">
+        <article>
           <div class="eyebrow">Included now</div>
           <h3>Everything needed for a first useful review.</h3>
           <ul>
             <li>Windows, Linux, and macOS packages.</li>
             <li>Provider setup guidance.</li>
+            <li>Read-only scan workflow.</li>
             <li>Finding evidence for cleanup review.</li>
           </ul>
         </article>
-        <article class="card">
-          <div class="eyebrow">Why free beta</div>
-          <h3>Usage feedback matters more than checkout optimization right now.</h3>
+        <article>
+          <div class="eyebrow">Not the focus yet</div>
+          <h3>We are not optimizing checkout before the workflow is trusted.</h3>
           <ul>
-            <li>We want more real first-scan data.</li>
-            <li>We want to learn which workflows deserve paid packaging later.</li>
-            <li>We will keep the local-first trust boundary clear.</li>
+            <li>No purchase is required during public beta.</li>
+            <li>No hosted collector requirement is being added to the core path.</li>
+            <li>No blind cleanup automation without review gates.</li>
           </ul>
         </article>
       </div>

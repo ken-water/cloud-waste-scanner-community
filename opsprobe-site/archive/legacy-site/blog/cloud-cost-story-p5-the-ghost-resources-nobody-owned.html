@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cost Management Software Story P5: Ghost Resources</title>
+    <meta name="description" content="Incident Series Part 5: Jack, Rose, and Jerry traced orphaned resources, restored ownership, and recovered budget with a local-first workflow.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cloud Cost Management Software Story P5: Ghost Resources">
+    <meta property="og:description" content="Incident Series Part 5: Jack, Rose, and Jerry traced orphaned resources, restored ownership, and recovered budget with a local-first workflow.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-3.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Cost Management Software Story P5: Ghost Resources">
+    <meta name="twitter:description" content="Incident Series Part 5: Jack, Rose, and Jerry traced orphaned resources, restored ownership, and recovered budget with a local-first workflow.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-3.webp">
+
+    <meta name="featured-image" content="images/cloud-bill-stories-part4-2026/story4-3.webp">
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html",
+      "headline": "Cloud Cost Story P5: The Ghost Resources Nobody Owned",
+      "description": "Incident Series Part 5: Jack, Rose, and Jerry traced ghost resources, rebuilt ownership, and cut cloud leakage using a local-first evidence workflow.",
+      "datePublished": "2026-04-07",
+      "dateModified": "2026-04-07",
+      "author": {
+        "@type": "Person",
+        "name": "Jack"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-3.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Cloud Cost Story P5: The Ghost Resources Nobody Owned",
+          "item": "https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are ghost resources in cloud cost management?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ghost resources are active billable assets with unclear or missing ownership, such as unattached volumes, stale snapshots, idle NAT gateways, and abandoned test environments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does ownership matter more than one-time cleanup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Without owner mapping, the same resources usually return after one-off cleanup. Ownership ties remediation to teams and keeps savings durable across monthly cycles."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can local-first scanning still support finance reporting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A local-first workflow can still export finance-ready evidence in CSV and PDF formats while keeping credentials on the operator side."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When should teams pair this with automation platforms?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Teams often run deep cleanup and ownership reconstruction first, then apply automation platforms for steady-state optimization where workload patterns are stable."
+      }
+    }
+  ]
+}
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3XFEVKW2GG');
+    </script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html",
+      "headline": "Cloud Cost Management Software Story P5: Ghost Resources",
+      "description": "Incident Series Part 5: Jack, Rose, and Jerry traced orphaned resources, restored ownership, and recovered budget with a local-first workflow.",
+      "datePublished": "2026-04-07",
+      "dateModified": "2026-04-07",
+      "author": {
+        "@type": "Person",
+        "name": "Jack"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part4-2026/story4-3.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Cloud Cost Management Software Story P5: Ghost Resources",
+          "item": "https://cloud-waste-scanner.com/blog/cloud-cost-story-p5-the-ghost-resources-nobody-owned.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+<main class="pt-24 pb-16">
+    <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="blog-shell">
+            <article class="blog-main min-w-0">
+                <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                    <div class="blog-breadcrumb justify-center">
+                        <a href="../blog.html">Blog</a>
+                        <span class="blog-divider-dot">/</span>
+                        <a href="../blog-series.html#incident-series">Incident Series</a>
+                        <span class="blog-divider-dot">/</span>
+                        <span>Part 5</span>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-rose-700 uppercase bg-rose-50 rounded-full">Incident Series</span>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Cloud Cost Management Software Story P5: The Ghost Resources Nobody Owned</h1>
+                    <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Traffic was flat. Revenue was flat. Cloud spend was up 42% after one long weekend. Jack, Rose, and Jerry had to answer one question: who owns the leak?</p>
+                    <div class="blog-meta-row mt-5">
+                        <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">J</span>
+                        <span>By <strong>Jack</strong></span>
+                        <span>&bull;</span>
+                        <time datetime="2026-04-07">Apr 07, 2026</time>
+                        <span class="blog-reading-time">Reading time: 9 min</span>
+                    </div>
+                </header>
+
+                <div class="mb-10 grid gap-4 md:grid-cols-3">
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">The shock</p>
+                        <p class="mt-2 text-lg font-bold text-slate-900">Weekend cost +42%</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">No launch. No outage. No growth spike. The bill moved anyway.</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">The root cause</p>
+                        <p class="mt-2 text-lg font-bold text-slate-900">Ghost resources with no owner</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Unattached volumes, stale snapshots, and idle gateways were billing quietly.</p>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">The outcome</p>
+                        <p class="mt-2 text-lg font-bold text-slate-900">Ownership fixed, waste dropped</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">Once ownership was mapped and evidence shared, cleanup happened in one sprint.</p>
+                    </div>
+                </div>
+
+                <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+                    <p class="lead text-2xl text-slate-600 mb-8">Cloud cost incidents rarely begin as technical failures. They begin as ownership failures. This story is based on a recurring pattern we keep seeing in SMB and mid-market environments, and it shows where cloud cost management software changes outcomes.</p>
+
+                    <h2 id="midnight-call" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. The 3:07 a.m. message</h2>
+                    <p>At 3:07 a.m. on Monday, Jerry sent one line in the operator channel: <em>"Spend alert. We jumped again. Nobody touched production."</em></p>
+                    <p>By 8:30, we were in the same room. Rose had the finance export open. I had the weekly trend chart. Jerry had six tabs of cloud console noise and no clean answer. The uncomfortable part was simple: usage graphs looked normal, but the bill did not.</p>
+                    <p>Rose drew a hard line: no blame-first conversation, no emergency provisioning, no "let's just wait one more week." We needed evidence we could hand to finance and engineering in the same hour.</p>
+
+                    <h2 id="ghost-layer" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. The ghost layer under normal operations</h2>
+                    <p>We ran a local-first deep scan with CWS and grouped findings by ownership confidence. The pattern was familiar and still painful:</p>
+                    <ul>
+                        <li>An unattached EBS cluster from an experiment that ended two quarters ago.</li>
+                        <li>A 50 TB snapshot set tagged "temporary" from a decommissioned migration branch.</li>
+                        <li>A high-tier NAT gateway serving a VPC with zero active compute workloads.</li>
+                        <li>Orphaned elastic IP addresses attached to nothing, still chargeable.</li>
+                    </ul>
+                    <p>None of these were headline incidents. Together they were an invoice-shaped leak. This is the ghost resource paradox: each item looks too small to escalate, but the total is large enough to hit board-level attention.</p>
+                    <figure class="blog-shot">
+                        <div class="blog-shot-frame">
+                            <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                            <div class="blog-shot-media">
+                                <img src="images/cloud-bill-stories-part4-2026/story4-3.webp" alt="Jack, Rose, and Jerry reviewing ghost cloud resources and ownership evidence in a local-first audit." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-slate-500 mt-3 text-center">Normal dashboards can miss ghost resources when ownership is missing.</figcaption>
+                    </figure>
+
+                    <h2 id="workflow" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. The workflow that ended the argument</h2>
+                    <p>Instead of debating screenshots, we used one four-step flow:</p>
+                    <p><strong>CWS Workflow:</strong> Scan (read-only) â Group (by owner) â Evidence (finance-ready) â Action (controlled closure).</p>
+                    <p>That changed behavior immediately. Rose got a clean CSV by business owner. Jerry got a resource-by-resource closure queue. I got what every operator needs in a tense room: one source of truth everyone can read.</p>
+                    <blockquote>
+                        <p><strong>We did not fix cost first. We fixed ownership first. Cost followed.</strong></p>
+                    </blockquote>
+                    <p>By Friday, 73% of the identified ghost resources were closed or down-tiered. The remaining 27% had named owners and explicit deadlines, which was already a governance upgrade from "nobody knows."</p>
+
+                    <h2 id="business-value" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Why this mattered to finance, engineering, and management</h2>
+                    <p>Finance did not need another 50-page "possible savings" deck. They needed verifiable evidence tied to ownership and expected monthly impact. Engineering did not need policy theater. They needed a closure queue that avoided risky production edits. Management needed one sentence: <em>this leak has owners now.</em></p>
+                    <p>That is where local-first architecture matters for SMB teams. We did not wait for long security reviews to upload credentials into a new SaaS control plane. We kept keys local, generated evidence quickly, and moved straight to accountable action.</p>
+                    <p>In practice, teams used cloud cost reporting automation to give finance a stable weekly format while engineering executed closure tasks. They also treated CWS as a privacy first cloud cost tool so security review stayed lightweight and did not block remediation.</p>
+
+                    <h2 id="key-takeaway" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Key takeaway for FinOps operators</h2>
+                    <p><strong>Definitive takeaway:</strong> Cost optimization fails when ownership is optional. Tools that expose ghost assets and owner gaps before automation loops can prevent repeat leakage.</p>
+                    <p>If your weekly cost review feels like archaeology, start with ghost-resource discovery and owner mapping before arguing about unit price optimization. When cloud cost management software is tied to ownership workflows, savings persist longer than one cleanup sprint.</p>
+
+                    <section id="ai-summary" class="mt-12 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-6">
+                        <h3 class="m-0 text-2xl font-bold text-indigo-900">AI Summary for FinOps Architects</h3>
+                        <ul class="mt-4 space-y-2 text-lg text-indigo-900">
+                            <li>Ghost resources create hidden leakage when ownership metadata is incomplete or stale.</li>
+                            <li>Local-first evidence workflows reduce both security friction and decision latency.</li>
+                            <li>Ownership reconstruction is a prerequisite for durable cloud savings, not a side task.</li>
+                        </ul>
+                    </section>
+
+                    <section id="scope-limits" class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                        <h3 class="m-0 text-2xl font-bold text-slate-900">Scope and Limits</h3>
+                        <p class="mt-4 text-lg text-slate-700">This incident narrative is designed for governance and operating decisions, not for benchmarking one vendor as a universal winner. Teams with extreme real-time autoscaling needs may still prioritize specialized automation stacks. In many environments, deep waste scanning and automation perform best as complementary layers.</p>
+                    </section>
+
+                    <section id="faq" class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+                        <h3 class="m-0 text-2xl font-bold text-slate-900">FAQ</h3>
+                        <div class="mt-4 space-y-4 text-lg text-slate-700">
+                            <div>
+                                <p class="font-semibold text-slate-900">What are ghost resources in cloud cost management?</p>
+                                <p>Billable assets with unclear owners, including unattached volumes, stale snapshots, idle gateways, or forgotten test environments.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">Why does ownership matter more than one-time cleanup?</p>
+                                <p>Without ownership mapping, the same classes of waste usually return within one or two cycles.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">Can local-first scanning still support finance reporting?</p>
+                                <p>Yes. Teams can export review-ready CSV and PDF evidence while keeping credentials under operator custody.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">Should this replace specialized automation tools?</p>
+                                <p>Not necessarily. For many teams, deep cleanup and ownership reconstruction should come first, then automation can optimize the remaining valid footprint.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mt-8 rounded-2xl border border-rose-200 bg-rose-50/50 p-6">
+                        <h3 class="m-0 text-2xl font-bold text-rose-900">Next in Incident Series</h3>
+                        <p class="mt-4 text-lg text-rose-900">Continue with earlier chapters: <a href="boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html">Cloud Cost Story: The Boss and the Surprise Bill</a>, <a href="march-rain-disappearing-coins.html">Cloud Cost Story P2: March Rain and Missing Coins</a>, <a href="when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">Cloud Cost Story P3: When Prices Jumped Overnight</a>, and <a href="the-christmas-gift-in-the-server-room.html">Cloud Cost Story P4: Christmas Gift in the Server Room</a>.</p>
+                    </section>
+                </div>
+
+                <div class="cws-cta-panel mt-16">
+                    <div class="cws-cta-inner text-center">
+                        <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                        <h3 class="cws-cta-title mt-4">Find ghost resources before they become monthly leakage</h3>
+                        <p class="cws-cta-copy mx-auto mt-4 mb-6">Run a local-first audit, map ownership, and ship action-ready evidence for finance and engineering.</p>
+                        <div class="cws-cta-actions cws-cta-actions-inline">
+                            <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Start 15-Minute Trial Audit</a>
+                            <a href="../sample-report.html" class="cws-cta-btn cws-cta-btn-secondary">View Sample Report</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="blog-sidebar space-y-6">
+                <section class="blog-sidebar-card" data-blog-toc-card>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                    <div class="space-y-1" data-blog-toc></div>
+                </section>
+                <section class="blog-security-note">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Story Note</p>
+                    <p class="text-base font-semibold leading-7 text-slate-900">Characters are fictional. Incident patterns are real.</p>
+                    <p class="text-sm leading-7 text-slate-600">This post mirrors common FinOps incidents involving orphaned assets, weak ownership, and delayed remediation loops.</p>
+                </section>
+            </aside>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+<script src="../js/analytics.js" defer></script>
+<script src="../js/lightbox.js" defer></script>
+<script src="../js/share-links.js?v=2.6.39.0" defer></script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | CWS</title>
+    <meta name="description" content="Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | CWS">
+    <meta property="og:description" content="Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/dashboard-overview-1280.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | CWS">
+    <meta name="twitter:description" content="Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/dashboard-overview-1280.webp">
+
+    <meta name="featured-image" content="../images/dashboard-overview-1280.webp">
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19.html",
+      "headline": "v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | CWS",
+      "description": "Cloud Waste Scanner v2.9.19 adds local-first Kubernetes and container waste scans with read-only kubectl, governance reports, and action plans.",
+      "datePublished": "2026-04-28",
+      "dateModified": "2026-04-28",
+      "author": {
+        "@type": "Person",
+        "name": "Ken"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/dashboard-overview-1280.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "v2.9.19: No Agent Cloud Cost Optimization for Kubernetes | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-600 antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+<main class="pt-24 pb-16">
+<section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="blog-shell">
+<article class="blog-main min-w-0">
+<header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+<div class="blog-breadcrumb justify-center">
+<a href="../blog-series.html?series=release-notes#release-notes">Release Notes</a>
+<span class="blog-divider-dot">/</span>
+<a href="../release-ledger.html">Release Ledger</a>
+<span class="blog-divider-dot">/</span>
+<span>v2.9.19 Kubernetes and Container Scanning</span>
+</div>
+<span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-rose-600 uppercase bg-rose-50 rounded-full">Product Update</span>
+<h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">v2.9.19: No Agent Cloud Cost Optimization for Kubernetes</h1>
+<p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Cloud Waste Scanner now scans Kubernetes objects through local read-only <code>kubectl</code>, connects the results to cloud waste evidence, and exposes the workflow through the Local API.</p>
+<div class="blog-meta-row mt-5">
+<span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">K</span>
+<span>By <strong>Ken</strong></span>
+<span>&bull;</span>
+<time datetime="2026-04-28">Apr 28, 2026</time>
+<span class="blog-reading-time">Reading time: 11 min</span>
+</div>
+</header>
+
+<div class="mb-10 grid gap-4 md:grid-cols-3">
+<div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">New Scan Surface</p>
+<p class="mt-2 text-lg font-bold text-slate-900">Kubernetes inventory and findings</p>
+<p class="mt-2 text-sm leading-6 text-slate-600">Pods, nodes, workloads, services, PVs, PVCs, governance summaries, and action plans.</p>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Trust Boundary</p>
+<p class="mt-2 text-lg font-bold text-slate-900">Local kubectl, read-only permissions</p>
+<p class="mt-2 text-sm leading-6 text-slate-600">Kubeconfig and scan output stay on the operator machine. CWS does not require a hosted cluster collector.</p>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Operator Value</p>
+<p class="mt-2 text-lg font-bold text-slate-900">Find cloud waste behind containers</p>
+<p class="mt-2 text-sm leading-6 text-slate-600">Surface orphan PVs, underused node baselines, risky LoadBalancer services, and owner gaps.</p>
+</div>
+</div>
+
+<div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<p class="lead text-2xl text-slate-600 mb-8">Container platforms changed how teams ship software, but they did not make waste disappear. In many environments, Kubernetes simply moved cloud waste behind a scheduler, a namespace, or a storage claim.</p>
+
+<p>That is the reason v2.9.19 matters. Cloud Waste Scanner now supports <strong>local-first Kubernetes and container waste scanning</strong>. The implementation is deliberately practical: it runs through local <code>kubectl</code>, uses the kubeconfig and context you choose, keeps data on your machine, and returns evidence that an operator can review without installing a SaaS collector inside the cluster.</p>
+
+<p>This is not a cosmetic checkbox. Kubernetes is where many teams now hide expensive infrastructure decisions: node pools sized for last quarter's launch, PersistentVolumes left behind after namespace cleanup, public LoadBalancer services that nobody owns, and replica settings that drift from current traffic. A monthly cloud bill rarely explains those relationships. A cluster dashboard rarely connects them to cross-cloud waste. CWS now helps bridge that gap with <strong>no agent cloud cost optimization</strong> for platform teams that need evidence before cleanup.</p>
+
+<h2 id="what-shipped" class="text-3xl font-bold text-slate-900 mt-10 mb-4">What shipped in v2.9.19</h2>
+<p>The new scan lane adds Kubernetes as a first-class local scan target. Community users can run the workflow from the app, and automation users can drive it through the Local API. The current implementation is intentionally read-only and evidence-oriented, making it a practical no agent cloud cost optimization path for teams that need cloud governance tools and cloud cost optimization for DevOps without installing a collector.</p>
+
+<div class="not-prose my-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+<tr><th class="px-4 py-3">Capability</th><th class="px-4 py-3">What CWS reads</th><th class="px-4 py-3">Why it matters</th></tr>
+</thead>
+<tbody class="divide-y divide-slate-100 text-slate-700">
+<tr><td class="px-4 py-3 font-semibold">Context discovery</td><td class="px-4 py-3"><code>kubectl config get-contexts</code></td><td class="px-4 py-3">Operators can choose the exact cluster context before scanning.</td></tr>
+<tr><td class="px-4 py-3 font-semibold">Pods and workloads</td><td class="px-4 py-3">Pods, Deployments, StatefulSets, DaemonSets</td><td class="px-4 py-3">Find replica drift, restart pressure, owner signals, and workload hygiene gaps.</td></tr>
+<tr><td class="px-4 py-3 font-semibold">Nodes</td><td class="px-4 py-3">Cluster nodes and capacity metadata</td><td class="px-4 py-3">Review low-request utilization and managed node-pool baseline risks.</td></tr>
+<tr><td class="px-4 py-3 font-semibold">Persistent storage</td><td class="px-4 py-3">PersistentVolumes and PersistentVolumeClaims</td><td class="px-4 py-3">Detect orphaned PVs and storage claims that survive application migrations.</td></tr>
+<tr><td class="px-4 py-3 font-semibold">Services</td><td class="px-4 py-3">ClusterIP, NodePort, LoadBalancer services</td><td class="px-4 py-3">Flag public exposure and cost review candidates such as idle LoadBalancers.</td></tr>
+<tr><td class="px-4 py-3 font-semibold">Governance outputs</td><td class="px-4 py-3">Findings, summary, action plan, MCP tool payloads</td><td class="px-4 py-3">Turn cluster evidence into a review queue, not just raw JSON.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="why-local-first" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Why we chose local kubectl instead of a hosted collector</h2>
+<p>There are powerful Kubernetes cost tools that deploy agents, exporters, or SaaS-connected collectors. Those tools can be valuable when the goal is continuous allocation, chargeback, or deep namespace economics. CWS is solving a different immediate problem: <strong>evidence-first waste discovery that respects the operator trust boundary</strong>.</p>
+
+<p>The v2.9.19 Kubernetes lane uses your local <code>kubectl</code> environment. That means:</p>
+<ul>
+<li>Your kubeconfig remains on your workstation or controlled jump host.</li>
+<li>The scan uses the Kubernetes permissions already granted to that context.</li>
+<li>The output is generated locally and can be reviewed before being shared.</li>
+<li>No in-cluster agent is required for this scan lane.</li>
+<li>No hosted inventory plane receives your cluster object list.</li>
+</ul>
+
+<div class="rounded-2xl border-l-4 border-emerald-500 bg-emerald-50 p-6 my-8 not-prose">
+<p class="text-lg font-bold text-emerald-900">CWS is a local-first scanner: Kubernetes credentials and scan results stay in your environment unless you intentionally export or share them.</p>
+</div>
+
+<h2 id="what-findings-look-like" class="text-3xl font-bold text-slate-900 mt-10 mb-4">What kinds of waste can this reveal?</h2>
+<p>The first Kubernetes release focuses on practical signals that often show up in real platform operations. It is not trying to replace a full allocation engine. It is trying to answer a simpler question: <em>what should the platform team inspect this week because it may still be billing, exposing risk, or lacking an owner?</em></p>
+
+<h3 id="orphaned-persistent-volumes" class="text-2xl font-bold text-slate-900 mt-8 mb-3">1. Orphaned PersistentVolumes after migrations</h3>
+<p>A team migrates a service from one namespace to another. The old Deployment is gone. The old PVC is deleted. But the backing PV is still present, or the cloud disk behind it still exists. Kubernetes often makes storage safe by default; safety can become spend if nobody follows through.</p>
+<p>CWS can read PV and PVC state, then help the operator review which volumes no longer map cleanly to live workloads. In a combined cloud-plus-Kubernetes review, that evidence can be compared against cloud-side disks and snapshots.</p>
+
+<h3 id="node-baseline-drift" class="text-2xl font-bold text-slate-900 mt-8 mb-3">2. Node baseline drift in managed clusters</h3>
+<p>Managed Kubernetes teams often set a node-pool minimum during a launch week and forget to lower it after traffic normalizes. The cluster is healthy, dashboards look green, and the waste hides as a baseline floor.</p>
+<p>v2.9.19 builds on the earlier EKS/GKE/AKS node-pool signal work by making Kubernetes local scan context visible in the same operating story. The team can now review cluster object signals and cloud-side capacity posture together instead of treating them as separate audits.</p>
+
+<h3 id="loadbalancer-review" class="text-2xl font-bold text-slate-900 mt-8 mb-3">3. LoadBalancer services that nobody owns</h3>
+<p>A Kubernetes <code>Service</code> of type <code>LoadBalancer</code> can create a real cloud-side load balancer. If the service remains after the application is retired, the cloud bill may keep moving even when no developer recognizes the name in the provider console.</p>
+<p>CWS highlights these service-level review candidates so platform teams can ask the right ownership question before deleting anything: is this still attached to a live application path, or is it a leftover exposure and spend item?</p>
+
+<h3 id="replica-and-owner-gaps" class="text-2xl font-bold text-slate-900 mt-8 mb-3">4. Replica drift and owner gaps</h3>
+<p>Not every Kubernetes waste signal is a direct invoice line. Some are governance failures that lead to waste later: unlabeled workloads, missing owner hints, replicas set above current operational need, or namespace patterns that make chargeback impossible.</p>
+<p>CWS surfaces these as execution context. The goal is not automatic deletion. The goal is to create a concrete review list for platform teams and application owners.</p>
+
+<h2 id="case-study" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Case study: the migration that left storage behind</h2>
+<p>Consider a SaaS team that recently moved a reporting service from an older namespace into a new platform-managed namespace. The migration was successful. Customers saw no downtime. The engineering team closed the ticket.</p>
+
+<p>Three weeks later, the cloud bill still showed higher-than-expected storage spend. The provider console listed several disks with names that looked like Kubernetes artifacts. The platform team could not confidently answer whether those disks were safe to delete because the application team had already moved on.</p>
+
+<p>With the new CWS workflow, the review looked like this:</p>
+<ol>
+<li>The operator selected the production kubeconfig and context in CWS.</li>
+<li>CWS ran a local read-only Kubernetes scan through <code>kubectl</code>.</li>
+<li>The scan listed PVs, PVCs, workloads, pods, services, and owner-related metadata.</li>
+<li>The team compared old namespace storage claims with current workload state.</li>
+<li>CWS generated findings and an action-plan view for review, not blind deletion.</li>
+<li>The platform owner exported the evidence and assigned two cleanup actions: confirm one PV, snapshot one disk for safety, and delete the confirmed orphan after approval.</li>
+</ol>
+
+<p>The important part was not that a tool said "delete this." The important part was that the team finally had evidence across the Kubernetes layer and the cloud resource layer. That evidence shortened a review that might have taken hours of console clicking and Slack archaeology.</p>
+
+<h2 id="how-to-run" class="text-3xl font-bold text-slate-900 mt-10 mb-4">How to run a Kubernetes scan</h2>
+<p>The desktop flow is designed for operators who already use <code>kubectl</code>. You provide a kubeconfig path and, optionally, a specific context. CWS validates the request, runs the local scan, and stores the latest Kubernetes inventory and findings locally.</p>
+
+<div class="not-prose my-8 rounded-2xl border border-slate-200 bg-slate-950 p-5 text-sm text-slate-100 overflow-x-auto">
+<pre><code>POST /v1/k8s/scans
+Authorization: Bearer YOUR_LOCAL_API_TOKEN
+Content-Type: application/json
+
+{
+  "kubeconfig_path": "~/.kube/config",
+  "kube_context": "prod-us-east"
+}</code></pre>
+</div>
+
+<p>You can also include Kubernetes in a broader scan request:</p>
+
+<div class="not-prose my-8 rounded-2xl border border-slate-200 bg-slate-950 p-5 text-sm text-slate-100 overflow-x-auto">
+<pre><code>POST /v1/scans
+Authorization: Bearer YOUR_LOCAL_API_TOKEN
+Content-Type: application/json
+
+{
+  "selected_accounts": ["aws-prod", "gcp-platform"],
+  "include_kubernetes": true,
+  "kubeconfig_path": "~/.kube/config",
+  "kube_context": "prod-us-east"
+}</code></pre>
+</div>
+
+<p>After the scan, the Local API exposes inventory and review endpoints:</p>
+<ul>
+<li><code>GET /v1/k8s/contexts</code> for kubeconfig contexts.</li>
+<li><code>GET /v1/k8s/findings</code> for Kubernetes waste findings.</li>
+<li><code>GET /v1/k8s/nodes</code>, <code>/pods</code>, <code>/workloads</code>, <code>/services</code>, <code>/persistent-volumes</code>, and <code>/persistent-volume-claims</code> for inventory review.</li>
+<li><code>GET /v1/reports/k8s-governance</code> for a governance summary.</li>
+<li><code>GET /v1/reports/k8s-action-plan</code> for an execution-oriented cleanup plan.</li>
+<li><code>GET /v1/mcp/tools/k8s-governance</code> and <code>/v1/mcp/tools/k8s-action-plan</code> for MCP-ready automation payloads.</li>
+</ul>
+
+<h2 id="who-benefits" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Who benefits first?</h2>
+<p>This release is especially useful for teams that already run Kubernetes but do not want another always-on collector just to answer weekly hygiene questions. It fits several situations:</p>
+<ul>
+<li><strong>Platform teams</strong> that need a fast read-only review before a cleanup meeting.</li>
+<li><strong>SaaS teams</strong> that migrated services and need to verify leftover PVs, services, and node baselines.</li>
+<li><strong>Security-sensitive teams</strong> that cannot send kubeconfig, cluster inventory, or cloud account data to a hosted SaaS by default.</li>
+<li><strong>FinOps operators</strong> who need Kubernetes evidence next to cloud-side waste evidence.</li>
+<li><strong>SMB engineering teams</strong> that need practical cleanup evidence without deploying a full enterprise cost allocation stack.</li>
+</ul>
+
+<h2 id="current-boundaries" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Current boundaries and what comes next</h2>
+<p>We should be explicit about the boundary. v2.9.19 uses local <code>kubectl</code>. It is not yet a direct kube-apiserver SDK client. It does not attempt to replace specialized allocation tools such as Kubecost or OpenCost for deep chargeback. It is focused on local-first evidence collection, waste review, and practical governance output.</p>
+
+<p>The next Team and Enterprise work is about workflow, not just more scan calls:</p>
+<ul>
+<li>Shared owner queues for Kubernetes findings.</li>
+<li>Recurring closure history for platform teams.</li>
+<li>Namespace/team mapping for accountability.</li>
+<li>Deeper HPA, request/limit, and drift analysis.</li>
+<li>Optional alignment with allocation context for finance review.</li>
+<li>Procurement and compliance packaging for larger organizations.</li>
+</ul>
+
+<h2 id="finops-execution-insight" class="text-3xl font-bold text-slate-900 mt-10 mb-4">FinOps Execution Insight</h2>
+<ul>
+<li><strong>Kubernetes waste is not only a cluster problem.</strong> It often becomes cloud waste through disks, load balancers, node baselines, and ownership drift.</li>
+<li><strong>Local-first scanning changes the security conversation.</strong> Teams can inspect Kubernetes evidence without installing a hosted collector or exporting kubeconfig data.</li>
+<li><strong>The right first outcome is a cleanup queue, not blind automation.</strong> v2.9.19 gives operators evidence, governance summaries, and action plans so humans can close waste safely.</li>
+</ul>
+
+<h2 id="where-to-read-next" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Where to read next</h2>
+<p>For route-level details, read the <a href="../api-reference.html#group-kubernetes">Kubernetes API reference</a>. For a runnable workflow, use <a href="../api-playbooks.html#playbook-10-kubernetes-container-waste-scan">Playbook 10: Kubernetes and Container Waste Scan</a>. For the public capability record, see the <a href="../release-ledger.html">Release Ledger</a> and <a href="../roadmap.html">Roadmap</a>.</p>
+</div>
+
+<div class="cws-cta-panel mt-16">
+<div class="cws-cta-inner text-center">
+<div class="cws-cta-kicker mx-auto">Try the Kubernetes scan lane</div>
+<h3 class="cws-cta-title mt-4">Download the Community build and run a local-first cluster review</h3>
+<p class="cws-cta-copy mx-auto mt-4 mb-6">Start with read-only Kubernetes evidence, then connect it to cloud waste review before the next billing cycle.</p>
+<div class="cws-cta-actions cws-cta-actions-inline">
+<a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Community</a>
+<a href="../api-playbooks.html#playbook-10-kubernetes-container-waste-scan" class="cws-cta-btn cws-cta-btn-secondary">Read the K8s Playbook</a>
+</div>
+</div>
+</div>
+</article>
+<aside class="blog-sidebar space-y-6">
+<section class="blog-sidebar-card" data-blog-toc-card>
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+<div class="space-y-1" data-blog-toc></div>
+</section>
+<section class="blog-security-note">
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Release Note</p>
+<p class="text-base font-semibold leading-7 text-slate-900">Kubernetes scanning is now a shipped Community capability.</p>
+<p class="text-sm leading-7 text-slate-600">This article explains current scope, practical value, API entry points, and what remains planned for Team and Enterprise lanes.</p>
+</section>
+</aside>
+</div>
+</section>
+</main>
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/lightbox.js" defer></script>
+    <script src="../js/share-links.js?v=2.6.38.0" defer></script>
+</body>
+</html>

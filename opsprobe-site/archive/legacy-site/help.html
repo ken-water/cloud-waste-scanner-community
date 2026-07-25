@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start Guide - Cloud Waste Scanner</title>
+    <meta name="description" content="Get to your first useful Cloud Waste Scanner result fast with quick-start setup, provider connection steps, safe cleanup guidance, and common operating answers.">
+    <link href="styles.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "How fast can I see useful results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most teams can move from install to first useful findings in about 15 minutes. Start in demo mode if you want to preview the workflow before scanning live accounts."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Is it safe to enter my cloud keys?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Cloud Waste Scanner is a local-first application. Your keys are encrypted and stored on your own machine. They are not transmitted to our servers."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Does it automatically delete resources?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The scanner identifies likely waste first. Cleanup remains an explicit user action so teams can move quickly without surprise deletion."
+        }
+      }]
+    }
+    </script>
+    <style>
+        .prose h3 { margin-top: 2.5rem; margin-bottom: 1rem; font-weight: 700; color: #1e293b; font-size: 1.5rem; }
+        .prose h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 600; color: #334155; font-size: 1.1rem; }
+        .prose p { margin-bottom: 1rem; line-height: 1.7; color: #475569; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #475569; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose code { background-color: #f1f5f9; padding: 0.2rem 0.4rem; rounded: 0.25rem; font-family: monospace; font-size: 0.85em; color: #0f172a; border: 1px solid #e2e8f0; }
+        .prose pre { background-color: #1e293b; color: #f8fafc; padding: 1rem; rounded: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; font-size: 0.9em; }
+        .prose img { border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin: 1.5rem 0; border: 1px solid #e2e8f0; }
+        
+        /* Sticky Sidebar Highlight */
+        aside a:hover { color: #4f46e5; }
+        aside ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        aside ul ul li a { color: #64748b; font-size: 0.85rem; }
+        aside ul ul li a:hover { color: #4f46e5; }
+    </style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased scroll-smooth">
+
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <nav class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <img src="logo.png" class="h-8 w-8" alt="Logo">
+                <span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span>
+            </a>
+            <div class="hidden md:flex gap-8 items-center text-sm font-medium text-slate-600">
+                <a href="index.html" class="hover:text-indigo-600 transition-colors">Home</a>
+                <a href="index.html#features" class="hover:text-indigo-600 transition-colors">Features</a>
+                <a href="roadmap.html" class="hover:text-indigo-600 transition-colors">Roadmap</a>
+                <a href="enterprise.html" class="hover:text-indigo-600 transition-colors">Enterprise</a>
+                <a href="security.html" class="hover:text-indigo-600 transition-colors">Security</a>
+                <a href="blog.html" class="hover:text-indigo-600 transition-colors">Blog</a>
+                <a href="help.html" class="text-indigo-600 font-bold">Help</a>
+            </div>
+            <a href="index.html#download" data-funnel-step="help" data-funnel-action="return_home_download" data-funnel-placement="header_primary" class="text-sm font-bold text-white bg-slate-900 px-5 py-2.5 rounded-full hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20">Start First Scan</a>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <div class="flex flex-col md:flex-row gap-12">
+            
+            <!-- Sidebar -->
+            <aside class="w-full md:w-64 flex-shrink-0">
+                <div class="sticky top-28 space-y-8 max-h-[80vh] overflow-y-auto pr-2">
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Getting Started</h5>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li><a href="#first-scan-path">15-Minute Path</a></li>
+                            <li><a href="#installation">Installation</a></li>
+                            <li><a href="#activation">Activation</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Provider Setup</h5>
+                        <ul class="space-y-2 text-sm text-slate-600 border-l border-slate-200 ml-1 pl-4">
+                            <li><a href="#aws">AWS</a></li>
+                            <li><a href="#azure">Azure</a></li>
+                            <li><a href="#gcp">Google Cloud</a></li>
+                            <li><a href="#alibaba">Alibaba Cloud</a></li>
+                            <li><a href="#digitalocean">DigitalOcean</a></li>
+                            <li><a href="#cloudflare">Cloudflare</a></li>
+                            <li><a href="#vultr">Vultr</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Configuration</h5>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li><a href="#scan-policies">Scan Policies</a></li>
+                            <li><a href="#network-proxy">Network & Proxy</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Usage</h5>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li><a href="#running-scans">Running Scans</a></li>
+                            <li><a href="#cleanup">Cleanup & Safety</a></li>
+                            <li><a href="#reporting">Reporting</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <article class="prose max-w-3xl flex-1 pb-24">
+                <h1 class="text-4xl font-extrabold text-slate-900 mb-6">Quick Start and Setup Guide</h1>
+                <p class="text-lg mb-8">This guide is organized to get you from install to first useful findings quickly, then help you tighten setup for recurring review.</p>
+
+                <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-6 py-5 mb-10">
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700 mb-2">Fast path</p>
+                    <p class="text-slate-700 mb-0">Most teams can install, connect one account, and review the first meaningful waste findings in about 15 minutes. Start with read-only access and use demo mode if you want to preview the workflow first.</p>
+                </div>
+
+                <section id="first-scan-path" class="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-6 mb-10">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">15-Minute First Scan Path</h2>
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                            <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">0-5 min</p>
+                            <p class="mt-2 font-bold text-slate-900">Install locally</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-600">Download the package for your platform and open the app. Use the <a href="download/" class="text-indigo-600 underline">download center</a> if you need checksums or pinned files.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                            <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">5-10 min</p>
+                            <p class="mt-2 font-bold text-slate-900">Connect one account</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-600">Add one provider with read-only access first. This is the fastest safe way to confirm whether the product finds actionable waste in your environment.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                            <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">10-15 min</p>
+                            <p class="mt-2 font-bold text-slate-900">Review and share</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-600">Run the scan, review the highest-confidence findings, and export or share the result before deciding whether to broaden usage.</p>
+                        </div>
+                    </div>
+                    <div class="mt-5 flex flex-col sm:flex-row gap-3">
+                        <a href="download/" data-funnel-step="help" data-funnel-action="open_download_center" data-funnel-placement="first_scan_path_download" class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-3 text-base font-bold text-white hover:bg-slate-800 transition-colors">Open Download Center</a>
+                        <a href="#running-scans" data-funnel-step="help" data-funnel-action="jump_running_scans" data-funnel-placement="first_scan_path_running_scans" class="inline-flex items-center justify-center rounded-xl border border-slate-300 px-5 py-3 text-base font-bold text-slate-700 hover:bg-white transition-colors">Jump to Running Scans</a>
+                    </div>
+                </section>
+
+                <hr class="my-8 border-slate-200">
+
+                <section id="installation">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Installation</h2>
+                    <p>Cloud Waste Scanner is a standalone desktop application. It does not require agents on your servers, so the quickest path is to install locally and run one read-only scan.</p>
+                    <div class="flex gap-4 my-4">
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded text-sm font-bold">Windows .exe</span>
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded text-sm font-bold">macOS .dmg</span>
+                        <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded text-sm font-bold">Linux .AppImage</span>
+                    </div>
+                    <p>Use the <a href="download/" class="text-indigo-600 underline">download center</a> if you need pinned package links, SHA256 values, or OS-specific install guidance.</p>
+                </section>
+
+                <section id="activation">
+                    <h3>Activation</h3>
+                    <p>If you are evaluating the product, start with demo mode or the smallest paid plan that matches your certainty. If you are using a paid plan, enter the license key sent to your email. If you have lost your key, use the <a href="recover.html" class="text-indigo-600 underline">Recovery Tool</a>.</p>
+                </section>
+
+                <hr class="my-12 border-slate-200">
+
+                <h2 class="text-3xl font-bold text-slate-900 mb-8">Provider Setup Guide</h2>
+                <p>Go to <strong>Settings &gt; Cloud Accounts</strong> and click <strong>"Add Account"</strong>. For the fastest safe start, connect one account with read-only access first, then expand only after the initial findings are useful.</p>
+                
+                <img src="images/settings-add-account.webp" alt="Add Cloud Account Modal" class="w-full rounded-xl shadow-lg border border-slate-200 my-6">
+
+                <section id="aws" class="pt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/aws.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="AWS">
+                        AWS Configuration
+                    </h3>
+                    <p><strong>Required Credentials:</strong></p>
+                    <ul>
+                        <li><code>Access Key ID</code></li>
+                        <li><code>Secret Access Key</code></li>
+                        <li><code>Default Region</code> (e.g., us-east-1)</li>
+                    </ul>
+                    <p><strong>Recommended IAM Policy (ReadOnly):</strong></p>
+                    <pre><code>arn:aws:iam::aws:policy/ReadOnlyAccess</code></pre>
+                    <p>If you want to use the <strong>Cleanup</strong> feature, you will need to add explicit permissions like <code>ec2:DeleteVolume</code>, <code>ec2:ReleaseAddress</code>, etc.</p>
+                </section>
+
+                <section id="azure" class="pt-8 border-t border-slate-100 mt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/azure.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="Azure">
+                        Azure Configuration
+                    </h3>
+                    <p><strong>Required Credentials (Service Principal):</strong></p>
+                    <ul>
+                        <li><code>Subscription ID</code></li>
+                        <li><code>Tenant ID</code></li>
+                        <li><code>Client ID</code> (Application ID)</li>
+                        <li><code>Client Secret</code></li>
+                    </ul>
+                    <p><strong>Role Assignment:</strong> Assign the <code>Reader</code> role to the Service Principal at the Subscription level for scanning. Assign <code>Contributor</code> if you wish to use cleanup features.</p>
+                </section>
+
+                <section id="gcp" class="pt-8 border-t border-slate-100 mt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/gcp.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="GCP">
+                        Google Cloud Configuration
+                    </h3>
+                    <p><strong>Required Credentials:</strong></p>
+                    <ul>
+                        <li><code>Service Account JSON Key</code> (Paste the full content)</li>
+                    </ul>
+                    <p><strong>Required APIs:</strong> Compute Engine API, Cloud Monitoring API.</p>
+                </section>
+
+                <section id="alibaba" class="pt-8 border-t border-slate-100 mt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/alibaba.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="Alibaba">
+                        Alibaba Cloud
+                    </h3>
+                    <p><strong>Required Credentials:</strong></p>
+                    <ul>
+                        <li><code>AccessKey ID</code></li>
+                        <li><code>AccessKey Secret</code></li>
+                        <li><code>Region ID</code> (e.g., cn-hangzhou)</li>
+                    </ul>
+                </section>
+
+                <section id="digitalocean" class="pt-8 border-t border-slate-100 mt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/digitalocean.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="DigitalOcean">
+                        DigitalOcean
+                    </h3>
+                    <p><strong>Required Credentials:</strong></p>
+                    <ul>
+                        <li><code>Personal Access Token</code> (Read Scope for scanning, Write Scope for cleanup)</li>
+                    </ul>
+                </section>
+
+                <section id="cloudflare" class="pt-8 border-t border-slate-100 mt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/cloudflare.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="Cloudflare">
+                        Cloudflare
+                    </h3>
+                    <p>Scans for unused DNS records, inactive Workers, and R2 buckets.</p>
+                    <p><strong>Required Credentials:</strong></p>
+                    <ul>
+                        <li><code>API Token</code> (Template: Read all resources)</li>
+                        <li><code>Account ID</code> (Found in the dashboard URL or Overview)</li>
+                    </ul>
+                </section>
+
+                <section id="vultr" class="pt-8 border-t border-slate-100 mt-8">
+                    <h3 class="flex items-center gap-3">
+                        <img src="images/logos/vultr.svg" class="h-8 w-8 !m-0 !shadow-none !border-0" alt="Vultr">
+                        Vultr
+                    </h3>
+                    <p><strong>Required Credentials:</strong></p>
+                    <ul>
+                        <li><code>API Key</code></li>
+                    </ul>
+                </section>
+
+                <hr class="my-12 border-slate-200">
+
+                <section id="scan-policies">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Scan Policies</h2>
+                    <p>Customize what "Idle" means for your organization under <strong>Settings > Scan Policies</strong>.</p>
+                    
+                    <img src="images/settings-policies.webp" alt="Scan Policies Configuration" class="w-full rounded-xl shadow-lg border border-slate-200 my-6">
+
+                    <ul class="mt-4">
+                        <li><strong>Idle CPU Threshold (1-20%):</strong> Instances below this average CPU usage are flagged.</li>
+                        <li><strong>Network Threshold (1-1000MB):</strong> Instances with total network I/O below this limit are flagged.</li>
+                        <li><strong>Lookback Period (1-30 Days):</strong> How far back to analyze metrics. Setting this to 30 days provides higher confidence but slower scans.</li>
+                    </ul>
+                </section>
+
+                <section id="network-proxy" class="pt-8 border-t border-slate-100 mt-8">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Network & Proxy</h2>
+                    <p>Supports HTTP/HTTPS and SOCKS5 proxies for corporate environments.</p>
+                    
+                    <img src="images/settings-network.webp" alt="Network Proxy Settings" class="w-full rounded-xl shadow-lg border border-slate-200 my-6">
+                </section>
+
+                <hr class="my-12 border-slate-200">
+
+                <section id="running-scans">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Running Scans</h2>
+                    <ol class="list-decimal pl-5 space-y-2 mb-6">
+                        <li>Navigate to the <strong>Monitor</strong> tab.</li>
+                        <li>Click the <strong>Refresh/Scan</strong> icon in the top right.</li>
+                        <li>Wait for the progress bar. Results are aggregated from all connected providers.</li>
+                    </ol>
+                    <img src="images/dashboard-overview.webp" alt="Dashboard Overview" class="w-full rounded-xl shadow-lg border border-slate-200 mb-6">
+                </section>
+
+                <section id="cleanup" class="pt-8">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Cleanup & Safety</h2>
+                    <p>1. Go to the <strong>Resources</strong> tab to view the list of wasted resources.</p>
+                    <p>2. Select the items you want to delete using the checkboxes.</p>
+                    <p>3. Click the red <strong>"Clean Up"</strong> button in the floating bar.</p>
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 my-4">
+                        <p class="text-amber-700 text-sm"><strong>Safety Check:</strong> The app will double-check the status of the resource before attempting deletion to prevent race conditions.</p>
+                    </div>
+                </section>
+
+                <section id="reporting" class="pt-8">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Reporting</h2>
+                    <p>Click <strong>"PDF Report"</strong> on the Resources screen to generate a professional summary.</p>
+                    
+                    <img src="images/monitor-export.webp" alt="PDF Export Configuration" class="w-full rounded-xl shadow-lg border border-slate-200 my-6">
+                </section>
+
+            </article>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-100 py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" class="h-6 w-6 grayscale opacity-50" alt="Logo">
+                <p class="text-sm text-slate-500">&copy; 2017-2026 Cloud Waste Scanner</p>
+            </div>
+            <div class="flex space-x-8 text-sm font-medium text-slate-500">
+                <a href="privacy.html" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+                <a href="recover.html" class="hover:text-slate-900 transition-colors">Lost License?</a>
+                <a href="terms.html" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+                <a href="mailto:ken@upp.ltd" class="hover:text-slate-900 transition-colors">Contact Support</a>
+                <a href="solutions.html" class="hover:text-slate-900 transition-colors">Use Cases</a><a href="help.html" class="hover:text-slate-900 transition-colors">Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        const API_URL = 'https://cloud-waste-scanner.com/api/track';
+        const FUNNEL_STATE_KEY = 'cws_first_scan_funnel_state';
+
+        function track(event, meta = {}) {
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ event, meta: { ...meta, ref: document.referrer, url: window.location.pathname, hash: window.location.hash || null } })
+            }).catch(console.error);
+        }
+
+        function readFunnelState() {
+            try {
+                return JSON.parse(sessionStorage.getItem(FUNNEL_STATE_KEY) || 'null');
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function writeFunnelState(meta = {}) {
+            try {
+                sessionStorage.setItem(FUNNEL_STATE_KEY, JSON.stringify({
+                    ...meta,
+                    ts: Date.now()
+                }));
+            } catch (_) {}
+        }
+
+        const funnelState = readFunnelState();
+        const currentHash = window.location.hash || '';
+        track('first_scan_funnel_view', {
+            step: currentHash === '#running-scans' ? 'running_scans' : 'help',
+            prev_step: funnelState?.step || null,
+            prev_action: funnelState?.action || null,
+            prev_placement: funnelState?.placement || null
+        });
+
+        if (currentHash === '#first-scan-path') {
+            track('first_scan_funnel_view', {
+                step: 'first_scan_path_anchor',
+                prev_step: funnelState?.step || null,
+                prev_action: funnelState?.action || null,
+                prev_placement: funnelState?.placement || null
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-funnel-step]').forEach((el) => {
+                el.addEventListener('click', () => {
+                    const step = el.dataset.funnelStep || 'help';
+                    const action = el.dataset.funnelAction || 'click';
+                    const placement = el.dataset.funnelPlacement || null;
+                    const target = el.getAttribute('href') || null;
+                    writeFunnelState({ step, action, placement, target });
+                    track('first_scan_funnel_click', { step, action, placement, target });
+                });
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

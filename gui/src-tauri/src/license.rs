@@ -38,6 +38,19 @@ pub struct LicensePayload {
     pub max_hosts: Option<i64>,  // 资源数量限制 (50)
 }
 
+impl LicenseType {
+    pub fn plan_type(&self) -> &'static str {
+        match self {
+            LicenseType::Trial => "trial",
+            LicenseType::Starter => "starter",
+            LicenseType::Monthly | LicenseType::Subscription => "monthly",
+            LicenseType::Yearly => "yearly",
+            LicenseType::Lifetime => "lifetime",
+            LicenseType::PerUse => "starter",
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct OrderHistoryEntry {
     pub order_ref: String,
@@ -79,6 +92,35 @@ pub struct StartTrialResponse {
     pub license_key: String,
     pub trial_expires_at: Option<i64>,
     pub message: Option<String>,
+}
+
+pub fn status_from_payload(payload: &LicensePayload) -> CheckResponse {
+    let plan_type = payload.l_type.plan_type().to_string();
+    let is_trial = matches!(payload.l_type, LicenseType::Trial);
+    CheckResponse {
+        valid: true,
+        latest_version: env!("CARGO_PKG_VERSION").to_string(),
+        download_url: None,
+        download_urls: None,
+        message: Some(format!("{} license is active.", plan_type)),
+        quota: None,
+        max_quota: payload.max_hosts,
+        plan_type: Some(plan_type.clone()),
+        is_trial: Some(is_trial),
+        trial_expires_at: if is_trial { payload.expires_at } else { None },
+        api_enabled: Some(!is_trial),
+        resource_details_enabled: Some(!is_trial),
+        customer_email: Some(payload.user.clone()),
+        license_started_at: None,
+        first_purchase_at: None,
+        latest_purchase_at: None,
+        purchase_count: None,
+        latest_order_ref: Some(payload.id.clone()),
+        latest_order_amount: None,
+        latest_order_plan: Some(plan_type),
+        latest_order_status: Some("active".to_string()),
+        order_history: None,
+    }
 }
 
 #[derive(Clone)]
@@ -282,30 +324,7 @@ async fn check_online_status_impl(
         }
     }
 
-    let result = Ok(CheckResponse {
-        valid: true,
-        latest_version: env!("CARGO_PKG_VERSION").to_string(),
-        download_url: None,
-        download_urls: None,
-        message: Some("Community mode local check.".to_string()),
-        quota: None,
-        max_quota: None,
-        plan_type: Some("community".to_string()),
-        is_trial: Some(false),
-        trial_expires_at: None,
-        api_enabled: Some(true),
-        resource_details_enabled: Some(true),
-        customer_email: None,
-        license_started_at: None,
-        first_purchase_at: None,
-        latest_purchase_at: None,
-        purchase_count: None,
-        latest_order_ref: None,
-        latest_order_amount: None,
-        latest_order_plan: None,
-        latest_order_status: None,
-        order_history: None,
-    });
+    let result = verify_license(normalized_key).map(|payload| status_from_payload(&payload));
     let ttl_secs = if result.is_ok() {
         ONLINE_STATUS_SUCCESS_CACHE_TTL_SECS
     } else {
@@ -334,10 +353,12 @@ pub async fn start_trial(
     _machine_id: &str,
 ) -> Result<StartTrialResponse, String> {
     Ok(StartTrialResponse {
-        status: Some("community".to_string()),
-        license_key: format!("community-local-{}", Utc::now().timestamp()),
+        status: Some("unavailable".to_string()),
+        license_key: String::new(),
         trial_expires_at: None,
-        message: Some("Community mode local activation.".to_string()),
+        message: Some(
+            "Trial activation is not available in the commercial-only build.".to_string(),
+        ),
     })
 }
 

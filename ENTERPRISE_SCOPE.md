@@ -3,6 +3,12 @@
 ## Positioning
 Enterprise is the centralized control and compliance layer.
 
+## Current Status
+
+Enterprise remains planned only.
+
+This document describes the intended enterprise boundary, not a currently shipped centralized control plane on `main`.
+
 It is intended for organizations that need Cloud Waste Scanner to operate across identity, audit, and governance boundaries at scale.
 
 ## Included in Enterprise

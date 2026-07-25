@@ -3,11 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>v2.9.21: Local-First AI Runtime and Kubernetes GPU Governance | Cloud Waste Scanner</title>
-  <meta name="description" content="Cloud Waste Scanner v2.9.21 adds local-first AI runtime scans, Kubernetes GPU capacity summaries, and governance report APIs for cost control.">
+  <title>v2.9.21: Local GPU and Kubernetes Waste Signals</title>
+  <meta name="description" content="GPU and Kubernetes waste is expensive, but the useful evidence is usually split between runtime tools, cluster objects, and the monthly bill.">
   <link rel="icon" href="../assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/blog/ai-runtime-k8s-gpu-governance-v2-9-21">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="v2.9.21: Local GPU and Kubernetes Waste Signals">
+  <meta property="og:description" content="GPU and Kubernetes waste is expensive, but the useful evidence is usually split between runtime tools, cluster objects, and the monthly bill.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/blog/ai-runtime-k8s-gpu-governance-v2-9-21">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="v2.9.21: Local GPU and Kubernetes Waste Signals">
+  <meta name="twitter:description" content="GPU and Kubernetes waste is expensive, but the useful evidence is usually split between runtime tools, cluster objects, and the monthly bill.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
   <link rel="stylesheet" href="../styles.css">
   <script defer src="../js/blog-toc.js"></script>
+  <script defer src="../js/article-enhance.js"></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script id="cws-jsonld" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "v2.9.21: Local GPU and Kubernetes Waste Signals",
+  "description": "GPU and Kubernetes waste is expensive, but the useful evidence is usually split between runtime tools, cluster objects, and the monthly bill.",
+  "url": "https://cloud-waste-scanner.com/blog/ai-runtime-k8s-gpu-governance-v2-9-21",
+  "image": "https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp",
+  "author": {
+    "@type": "Organization",
+    "name": "Cloud Waste Scanner"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Cloud Waste Scanner",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloud-waste-scanner.com/assets/product-icon.svg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloud-waste-scanner.com/blog/ai-runtime-k8s-gpu-governance-v2-9-21"
+  },
+  "datePublished": "2026-05-15",
+  "dateModified": "2026-07-25"
+}
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -26,88 +72,62 @@
       </section>
     </aside>
     <article class="article">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../blog.html">Blog</a><span aria-hidden="true">/</span><span>v2.9.21: Local GPU and Kubernetes Waste Signals</span></nav>
+    
       <div class="eyebrow">Product Updates</div>
-      <h1>v2.9.21: Local-First AI Runtime and Kubernetes GPU Governance</h1>
-      <p class="lead">Cloud Waste Scanner v2.9.21 adds local-first AI runtime scans, Kubernetes GPU capacity summaries, and governance report APIs for cost control.</p>
+      <h1>v2.9.21: Local GPU and Kubernetes Waste Signals</h1>
+      <p class="lead">GPU and Kubernetes waste is expensive, but the useful evidence is usually split between runtime tools, cluster objects, and the monthly bill.</p>
       <div class="meta-line">2026-05-15 · Product Updates</div>
-      <div class="article-body" data-article-body><div>
-<div>
-<p>New Scan Surface</p>
-<p>Kubernetes inventory and findings</p>
-<p>Pods, nodes, workloads, services, PVs, PVCs, governance summaries, and action plans.</p>
-</div>
-<div>
-<p>Trust Boundary</p>
-<p>Local kubectl, read-only permissions</p>
-<p>Kubeconfig and scan output stay on the operator machine. CWS does not require a hosted cluster collector.</p>
-</div>
-<div>
-<p>Operator Value</p>
-<p>Find cloud waste behind containers</p>
-<p>Surface orphan PVs, underused node baselines, risky LoadBalancer services, and owner gaps.</p>
-</div>
-</div>
-
+      <div class="article-body" data-article-body>
 <div data-blog-body>
-<h2>Why this release matters now</h2>
-<p>For most teams running AI workloads, GPU spend is now one of the fastest-growing cost lines. The operational problem is not only price. The harder problem is evidence: many teams can see invoice growth, but cannot quickly prove where GPU waste is happening, who owns it, and which actions are safe.</p>
-<p>v2.9.21 addresses that gap with a local-first workflow built for operators. Instead of relying on a hosted collector, Cloud Waste Scanner can now read local runtime signals and Kubernetes GPU allocation signals, then return concrete findings and recommendations for execution.</p>
+<p>A team can look at the cloud bill and know GPU spend is climbing. That does not mean they know which node, pod, volume, or workload should be changed. The missing piece is usually not another dashboard. It is a short, local evidence trail that an operator can trust.</p>
 
-<h2>What shipped in v2.9.21</h2>
+<h2>What changed in this release</h2>
+<p>v2.9.21 adds two scan paths that are meant to be used together:</p>
 <ul>
-<li>Local AI runtime scan support for NVIDIA and AMD runtime paths.</li>
-<li>Kubernetes GPU summary endpoint to compare node allocatable GPUs against pod requests and limits.</li>
-<li>AI governance report output for weekly execution, ownership review, and closure tracking.</li>
+<li><strong>Local AI device scan:</strong> checks local NVIDIA and AMD runtime signals for idle or inefficient GPU use.</li>
+<li><strong>Kubernetes GPU summary:</strong> compares node GPU capacity with pod requests and limits, so reserved capacity is easier to explain.</li>
 </ul>
+<p>The release also adds report output that is easier to hand to a platform or FinOps review: what was found, where it came from, and what should be checked before action.</p>
 
-<h2>What new problems you can solve</h2>
-<p>This release is designed for the common "invoice shock to action" path in AI infrastructure:</p>
+<h2>Why we built it this way</h2>
+<p>GPU waste often hides behind container scheduling. A node can look busy while expensive capacity is reserved by the wrong workload. A persistent volume can outlive the job that created it. A LoadBalancer service can stay up after the team that needed it moved on.</p>
+<p>Cloud Waste Scanner now reads more of that context without asking you to install a hosted collector. It uses local runtime checks and read-only Kubernetes access, then keeps the scan output on the operator machine unless you export it yourself.</p>
+
+<h2>What to look for first</h2>
 <ul>
-<li>Find idle GPU windows where devices are allocated but underutilized.</li>
-<li>Detect memory-stranded patterns where GPU memory pressure does not match compute usage.</li>
-<li>Surface request-limit drift in Kubernetes workloads that reserve expensive GPU capacity without sustained demand.</li>
-<li>Turn findings into an operator-ready governance report instead of ad-hoc screenshots and manual notes.</li>
+<li>GPU devices that are allocated but show little useful activity.</li>
+<li>Pods with GPU requests or limits that do not match actual usage patterns.</li>
+<li>Persistent volumes and claims that look disconnected from active work.</li>
+<li>Services and ownership gaps that make cleanup hard to approve.</li>
 </ul>
+<p>The point is not to auto-delete anything. The point is to get from "the AI bill is too high" to a reviewable list of specific resources.</p>
 
-<h2>Operator benefits and expected outcomes</h2>
-<ul>
-<li>Faster triage: local runtime evidence reduces time from cost alert to actionable diagnosis.</li>
-<li>Safer change decisions: capacity and usage context are presented together before rightsizing or scheduling changes.</li>
-<li>Stronger accountability: findings can be grouped into weekly review queues for platform and FinOps owners.</li>
-<li>Better repeatability: teams can use the same API outputs in dashboards, runbooks, and automation workflows.</li>
-</ul>
-
-<h2>How to use it in the UI</h2>
-<p>In the current product desktop app, the previous AI analyst entry is now replaced by an execution-oriented scan workflow.</p>
+<h2>How to run the scan</h2>
 <ol>
-<li>Open <strong>AI Device Scan</strong> from the left navigation.</li>
-<li>Click <strong>Run AI Device Scan</strong> to collect local GPU runtime findings.</li>
-<li>Review returned findings for idle, stranded, and efficiency signals.</li>
-<li>Open related scan results for cleanup planning and owner assignment.</li>
+<li>Open <strong>AI Device Scan</strong> in the desktop app.</li>
+<li>Run the local device scan to collect GPU runtime evidence.</li>
+<li>If you are reviewing a Kubernetes environment, run the Kubernetes inventory scan as well.</li>
+<li>Compare runtime findings with pod requests, limits, volumes, and service exposure.</li>
+<li>Export the report for the weekly platform or cost review.</li>
 </ol>
-<p>You can also run this from the main scan wizard, where AI device utilization scan is enabled as a first-class scan option.</p>
 
-<h2>How to use it through Local API</h2>
-<p>For automation and integrations, v2.9.21 extends the local API surface:</p>
+<h2>Local API additions</h2>
+<p>For teams that already automate reviews, the same data is available through the local API:</p>
 <ul>
 <li><code>GET /v1/ai/devices</code>: list detected local runtime devices.</li>
-<li><code>POST /v1/ai/scans</code>: trigger local AI runtime scan.</li>
-<li><code>GET /v1/ai/findings</code>: retrieve AI runtime findings.</li>
-<li><code>GET /v1/ai/recommendations</code>: retrieve recommendations mapped to findings.</li>
-<li><code>GET /v1/k8s/gpu-summary</code>: retrieve cluster-level GPU allocatable/request/limit summary.</li>
-<li><code>GET /v1/reports/ai-governance</code>: retrieve governance-oriented report output.</li>
+<li><code>POST /v1/ai/scans</code>: start a local AI device scan.</li>
+<li><code>GET /v1/ai/findings</code>: read AI runtime findings.</li>
+<li><code>GET /v1/ai/recommendations</code>: read recommendations linked to findings.</li>
+<li><code>GET /v1/k8s/gpu-summary</code>: compare GPU capacity, requests, and limits.</li>
+<li><code>GET /v1/reports/ai-governance</code>: generate a review-oriented report.</li>
 </ul>
-<p>Recommended execution pattern: trigger scan, collect findings, append k8s summary context, then publish a weekly governance report for review and closure tracking.</p>
 
-<h2>Trust boundary and data handling</h2>
-<p>CWS remains local-first in this release. Runtime probes and Kubernetes reads execute in your environment. Credentials and raw outputs do not need to leave your machine unless you intentionally export or forward them.</p>
+<h2>Trust boundary</h2>
+<p>The scan uses local execution and read-only access. Your kubeconfig, runtime signals, and scan results do not need to leave your environment. If a report is shared, that is an operator decision, not a requirement of the scan.</p>
 
-<h3>FinOps Execution Insight</h3>
-<ul>
-<li>Because GPU waste is high-cost and bursty, local evidence speed directly improves decision quality.</li>
-<li>Because Kubernetes reservations can mask true pressure, allocation context must be paired with runtime findings.</li>
-<li>Because cleanup fails without ownership, governance report outputs should be integrated into weekly operating cadence.</li>
-</ul>
+<h2>Bottom line</h2>
+<p>This release is for teams that need a practical first pass on GPU and Kubernetes waste. It will not replace a capacity planning process, but it should make the first review faster and less speculative.</p>
 </div></div>
       <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
     </article>
@@ -122,5 +142,6 @@
       <div><h3>Legal</h3><div class="footer-links"><a href="../license.html">License</a><a href="../security.html">Security</a><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms</a></div></div>
     </div>
   </footer>
+  <script src="../js/share-links.js" defer></script>
 </body>
 </html>

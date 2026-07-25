@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Cloud Waste Playbooks - Cloud Waste Scanner</title>
+    <meta name="description" content="Use Cloud Waste Scanner playbooks to move from first findings to safe cleanup fast across AWS, Azure, GCP, and more.">
+    <link href="styles.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body class="bg-white text-slate-600 antialiased selection:bg-indigo-100 selection:text-indigo-700">
+
+    <header>
+        <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                        <img src="logo.png" class="h-8 w-8" alt="Logo">
+                        <span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span>
+                    </a>
+                    <div class="hidden md:flex gap-8 items-center text-sm font-medium text-slate-600">
+                        <a href="index.html" class="hover:text-indigo-600 transition-colors">Home</a>
+                        <a href="index.html#features" class="hover:text-indigo-600 transition-colors">Features</a>
+                        <a href="roadmap.html" class="hover:text-indigo-600 transition-colors">Roadmap</a>
+                        <a href="enterprise.html" class="hover:text-indigo-600 transition-colors">Enterprise</a>
+                        <a href="security.html" class="hover:text-indigo-600 transition-colors">Security</a>
+                        <a href="blog.html" class="hover:text-indigo-600 transition-colors">Blog</a>
+                        <a href="help.html" class="hover:text-indigo-600 transition-colors">Help</a>
+                    </div>
+                    <a href="index.html#download" class="hidden md:inline-flex items-center justify-center px-5 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-lg hover:shadow-indigo-500/30">
+                        Start First Scan
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 pt-32 pb-24">
+        <div class="text-center mb-20">
+            <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider mb-4 inline-block">Fast Action Playbooks</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6">Go from first finding to safe action faster.</h1>
+            <p class="text-xl text-slate-500 max-w-3xl mx-auto">Use these guides after your first scan identifies where the waste is. They are designed to shorten the path from discovery to owner-ready cleanup steps.</p>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="index.html#download" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors">Run Your First Scan</a>
+                <a href="help.html" class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition-colors">Open Quick Start Guide</a>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-12">
+    
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    AWS
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/aws-ebs-volumes-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unattached EBS Volumes
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-snapshots-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old EBS Snapshots
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-elastic-ips-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unassociated Elastic IPs
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-idle-ec2-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle EC2 Instances
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-rightsizing-ec2-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Oversized EC2 Instances
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-load-balancers-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unused Application Load Balancers
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-nat-gateways-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle NAT Gateways
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-s3-buckets-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            S3 Buckets without Lifecycle Policies
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-rds-instances-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle RDS Instances
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-stopped-rds-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Stopped RDS Instances
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-old-amis-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old AMI Images
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/aws-underutilized-ebs-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Underutilized EBS Volumes
+                        </a>
+                    </li>
+            </ul></div>
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    Azure
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/azure-managed-disks-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unattached Managed Disks
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-public-ips-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unassociated Public IPs
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-snapshots-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old Disk Snapshots
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-idle-vms-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle Virtual Machines
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-nics-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Orphaned Network Interfaces
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-app-service-plans-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Empty App Service Plans
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-sql-databases-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle SQL Databases
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/azure-blob-containers-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Blob Containers without Lifecycle Policies
+                        </a>
+                    </li>
+            </ul></div>
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    GCP
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/gcp-persistent-disks-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Orphaned Persistent Disks
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/gcp-external-ips-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unused External IP Addresses
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/gcp-idle-vms-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle Compute Engine Instances
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/gcp-snapshots-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old Disk Snapshots
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/gcp-storage-buckets-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Cloud Storage Buckets without Lifecycle Policies
+                        </a>
+                    </li>
+            </ul></div>
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    Alibaba Cloud
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/alibaba-cloud-ecs-disks-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Orphaned ECS Disks
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/alibaba-cloud-eips-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unattached Elastic IPs
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/alibaba-cloud-oss-buckets-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Empty OSS Buckets
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/alibaba-cloud-snapshots-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old ECS Snapshots
+                        </a>
+                    </li>
+            </ul></div>
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    Vultr
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/vultr-instances-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Stopped Instances (Still Billing)
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/vultr-blocks-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unattached Block Storage
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/vultr-snapshots-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old Snapshots
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/vultr-reserved-ips-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unused Reserved IPs
+                        </a>
+                    </li>
+            </ul></div>
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    DigitalOcean
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/digitalocean-droplets-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Idle Droplets
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/digitalocean-volumes-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unattached Volumes
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/digitalocean-load-balancers-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Unused Load Balancers
+                        </a>
+                    </li>
+            </ul></div>
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                    Cloudflare
+                </h2>
+                <ul class="space-y-3">
+        
+                    <li>
+                        <a href="solutions/cloudflare-dns-records-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Stale DNS Records
+                        </a>
+                    </li>
+            
+                    <li>
+                        <a href="solutions/cloudflare-r2-buckets-cleanup.html" class="text-slate-600 hover:text-indigo-600 hover:underline transition-colors flex items-center gap-2 text-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            Old R2 Buckets
+                        </a>
+                    </li>
+            </ul></div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-100 py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" class="h-6 w-6 grayscale opacity-50" alt="Logo">
+                <p class="text-sm text-slate-500">&copy; 2017-2026 Cloud Waste Scanner</p>
+            </div>
+            <div class="flex space-x-8 text-sm font-medium text-slate-500">
+                <a href="privacy.html" class="hover:text-slate-900 transition-colors">Privacy Policy</a>
+                <a href="recover.html" class="hover:text-slate-900 transition-colors">Lost License?</a>
+                <a href="terms.html" class="hover:text-slate-900 transition-colors">Terms of Service</a>
+                <a href="mailto:ken@upp.ltd" class="hover:text-slate-900 transition-colors">Contact Support</a>
+                <a href="solutions.html" class="hover:text-slate-900 transition-colors">Use Cases</a>
+                <a href="help.html" class="hover:text-slate-900 transition-colors">Help Center</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
+    

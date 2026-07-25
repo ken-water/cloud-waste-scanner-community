@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="t d">
+  <title id="t">Selection matrix local-first versus SaaS</title>
+  <desc id="d">Decision matrix comparing local-first, SaaS and hybrid governance choices by trust boundary, execution speed, and reporting depth.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8fbff"/><stop offset="100%" stop-color="#eef3ff"/></linearGradient>
+    <linearGradient id="head" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0a66c2"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+  </defs>
+
+  <rect width="1700" height="980" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1620" height="900" rx="28" fill="#fff" stroke="#dbeafe" stroke-width="2"/>
+  <rect x="70" y="64" width="1560" height="84" rx="18" fill="url(#head)"/>
+  <text x="100" y="116" font-size="34" font-family="Segoe UI,Arial,sans-serif" font-weight="700" fill="#fff">Selection Matrix: Local-First vs SaaS vs Hybrid</text>
+
+  <g filter="url(#shadow)">
+    <rect x="120" y="200" width="1460" height="640" rx="20" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="120" y="200" width="1460" height="90" rx="20" fill="#f8fafc"/>
+  </g>
+
+  <line x1="120" y1="360" x2="1580" y2="360" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="120" y1="520" x2="1580" y2="520" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="120" y1="680" x2="1580" y2="680" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="420" y1="200" x2="420" y2="840" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="810" y1="200" x2="810" y2="840" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="1200" y1="200" x2="1200" y2="840" stroke="#e2e8f0" stroke-width="2"/>
+
+  <text x="170" y="255" font-size="22" font-family="Segoe UI,Arial,sans-serif" font-weight="700" fill="#0f172a">Criteria</text>
+  <text x="470" y="255" font-size="22" font-family="Segoe UI,Arial,sans-serif" font-weight="700" fill="#0f172a">Local-First</text>
+  <text x="860" y="255" font-size="22" font-family="Segoe UI,Arial,sans-serif" font-weight="700" fill="#0f172a">SaaS Platform</text>
+  <text x="1260" y="255" font-size="22" font-family="Segoe UI,Arial,sans-serif" font-weight="700" fill="#0f172a">Hybrid</text>
+
+  <text x="150" y="320" font-size="20" font-family="Segoe UI,Arial,sans-serif" fill="#0f172a" font-weight="700">
+    <tspan x="150" dy="0">Custody boundary</tspan>
+    <tspan x="150" dy="30" font-weight="400">Where metadata and credentials are processed.</tspan>
+  </text>
+  <text x="450" y="320" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="450" dy="0">Strong fit for boundary-sensitive teams;</tspan>
+    <tspan x="450" dy="26">operator-controlled custody.</tspan>
+  </text>
+  <text x="840" y="320" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="840" dy="0">Requires vendor custody acceptance</tspan>
+    <tspan x="840" dy="26">and formal review.</tspan>
+  </text>
+  <text x="1230" y="320" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="1230" dy="0">Strategic split: SaaS for attribution,</tspan>
+    <tspan x="1230" dy="26">local for sensitive execution.</tspan>
+  </text>
+
+  <text x="150" y="480" font-size="20" font-family="Segoe UI,Arial,sans-serif" fill="#0f172a" font-weight="700">
+    <tspan x="150" dy="0">Execution latency</tspan>
+    <tspan x="150" dy="30" font-weight="400">Speed from finding to closure action.</tspan>
+  </text>
+  <text x="450" y="480" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="450" dy="0">Fast for weekly owner-based</tspan>
+    <tspan x="450" dy="26">closure workflows.</tspan>
+  </text>
+  <text x="840" y="480" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="840" dy="0">Strong for strategic analysis; action</tspan>
+    <tspan x="840" dy="26">latency depends on process chain.</tspan>
+  </text>
+  <text x="1230" y="480" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="1230" dy="0">Can optimize both with strict KPI</tspan>
+    <tspan x="1230" dy="26">semantic alignment.</tspan>
+  </text>
+
+  <text x="150" y="640" font-size="20" font-family="Segoe UI,Arial,sans-serif" fill="#0f172a" font-weight="700">
+    <tspan x="150" dy="0">Reporting depth</tspan>
+    <tspan x="150" dy="30" font-weight="400">Executive analytics vs action-grade evidence.</tspan>
+  </text>
+  <text x="450" y="640" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="450" dy="0">High action-grade evidence and</tspan>
+    <tspan x="450" dy="26">technical traceability.</tspan>
+  </text>
+  <text x="840" y="640" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="840" dy="0">High macro attribution and</tspan>
+    <tspan x="840" dy="26">executive narrative strength.</tspan>
+  </text>
+  <text x="1230" y="640" font-size="18" font-family="Segoe UI,Arial,sans-serif" fill="#334155">
+    <tspan x="1230" dy="0">Best when teams maintain shared</tspan>
+    <tspan x="1230" dy="26">metric contracts.</tspan>
+  </text>
+</svg>

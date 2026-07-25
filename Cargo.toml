@@ -11,4 +11,4 @@ resolver = "2"
 version = "0.1.0"
 edition = "2021"
 authors = ["ken <ken@upp.ltd>"]
-license = "MIT"
+license-file = "LICENSE"

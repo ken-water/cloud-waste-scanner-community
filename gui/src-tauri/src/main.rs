@@ -52,9 +52,8 @@ use base64::Engine as _;
 use chrono::{TimeZone, Utc};
 use futures_util::StreamExt;
 use hmac::{Hmac, Mac};
-use license::LicenseType;
 use license_runtime::{
-    fetch_runtime_license_policy, persist_runtime_plan_type_from_status, read_runtime_plan_type,
+    persist_runtime_plan_type_from_status, read_runtime_plan_type, read_trial_expires_at,
     resolve_effective_license_key_from_text,
 };
 use local_api_runtime::{list_schedules_sorted, prepare_job_queue_for_new_scan, remove_schedule};
@@ -99,7 +98,7 @@ use runtime_helpers::{
     normalize_channel_min_savings_for_storage, normalize_channel_trigger_mode_for_storage,
     normalize_enqueue_error_message, normalize_transport_error_detail,
     parse_notification_channel_email_recipients, resolve_effective_notification_trigger_mode,
-    summarize_error_text, summarize_for_trial, trial_gate_message, validate_scan_request,
+    summarize_error_text, validate_scan_request,
 };
 use scan_runtime::{
     build_aws_local_profile_map, compact_scan_error, filter_cloud_profiles_by_selection,
@@ -1893,6 +1892,14 @@ async fn enqueue_scan_job(
     payload: ApiScanRequest,
     trigger_source: Option<String>,
 ) -> Result<ApiScanAccepted, String> {
+    let app_state = state.app_handle.state::<AppState>();
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !payload.demo_mode.unwrap_or(false)
+        && !local_scan_entitled_for_runtime_plan(runtime_plan.as_deref())
+    {
+        return Err(trial_expired_gate_message());
+    }
+
     validate_scan_request(&payload)?;
 
     let demo_mode = payload.demo_mode.unwrap_or(false);
@@ -3477,8 +3484,18 @@ async fn probe_ai_devices() -> Result<(String, Vec<ai_runtime::AiDeviceSnapshot>
 fn schedule_gate_error() -> ApiError {
     api_error(
         StatusCode::FORBIDDEN,
-        "Scheduled audits belong to the Team governance execution layer. Enterprise includes the same scheduling capability plus centralized identity and audit controls.",
+        "Scheduled audits require an active paid Cloud Waste Scanner license.",
     )
+}
+
+fn paid_governance_gate_message() -> String {
+    "A paid Cloud Waste Scanner license unlocks org structure, owner directory, lifecycle workflow, and handoff coordination."
+        .to_string()
+}
+
+fn paid_audit_log_gate_message() -> String {
+    "A paid Cloud Waste Scanner license unlocks the audit log for operator accountability and compliance review."
+        .to_string()
 }
 
 fn entitlements_for_runtime_plan(plan: Option<&str>) -> runtime_helpers::RuntimeEntitlements {
@@ -3497,6 +3514,15 @@ fn runtime_capability_snapshot_for_plan(
         .unwrap_or_else(|| "community".to_string());
     let is_trial = normalized.eq_ignore_ascii_case("trial");
     build_runtime_capability_snapshot(&normalized, is_trial)
+}
+
+fn local_scan_entitled_for_runtime_plan(plan: Option<&str>) -> bool {
+    entitlements_for_runtime_plan(plan).local_scan
+}
+
+fn trial_expired_gate_message() -> String {
+    "Your 7-day trial has ended. Activate a Monthly, Yearly, or Lifetime license to continue scanning."
+        .to_string()
 }
 
 fn schedule_entitled_for_runtime_plan(plan: Option<&str>) -> bool {
@@ -3562,7 +3588,7 @@ async fn ensure_governance_team_workspace(state: &AppState) -> Result<(), ApiErr
     } else {
         Err(api_error(
             StatusCode::FORBIDDEN,
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls.",
+            &paid_governance_gate_message(),
         ))
     }
 }
@@ -3718,17 +3744,43 @@ async fn read_api_settings_license(
     state: &LocalApiState,
     _conn: &sqlx::Pool<sqlx::Sqlite>,
 ) -> serde_json::Value {
+    let app_state = state.app_handle.state::<AppState>();
     let key = load_license_file(state.app_handle.clone()).unwrap_or_default();
+    let parsed = if key.trim().is_empty() {
+        None
+    } else {
+        license::verify_license(key.trim()).ok()
+    };
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path)
+        .await
+        .unwrap_or_else(|| "trial".to_string());
+    let plan_type = parsed
+        .as_ref()
+        .map(|payload| payload.l_type.plan_type())
+        .unwrap_or(runtime_plan.as_str());
+    let is_trial = plan_type == "trial";
+    let trial_expires_at = if matches!(plan_type, "trial" | "trial_expired") {
+        read_trial_expires_at(&app_state.db_path).await
+    } else {
+        None
+    };
+    let entitlements = entitlements_for_runtime_plan(Some(plan_type));
     serde_json::json!({
         "has_local_license": !key.trim().is_empty(),
-        "plan_type": "community",
-        "is_trial": false,
-        "trial_expires_at": null,
+        "plan_type": plan_type,
+        "is_trial": is_trial,
+        "trial_expires_at": trial_expires_at,
         "quota": null,
-        "max_quota": null,
-        "api_enabled": true,
-        "resource_details_enabled": true,
-        "message": "Community mode: local execution without remote license checks."
+        "max_quota": parsed.as_ref().and_then(|payload| payload.max_hosts),
+        "api_enabled": entitlements.local_api,
+        "resource_details_enabled": entitlements.resource_details,
+        "message": if parsed.is_some() {
+            "Paid license is active."
+        } else if plan_type == "trial" {
+            "7-day trial is active."
+        } else {
+            "Trial has ended. Activate a paid license."
+        }
     })
 }
 
@@ -8234,38 +8286,18 @@ fn validate_license_key(key: String) -> Result<license::LicensePayload, String> 
 #[tauri::command]
 async fn check_license_status(
     app_handle: tauri::AppHandle,
-    _key: String,
+    key: String,
 ) -> Result<license::CheckResponse, String> {
     let app_state = app_handle.state::<AppState>();
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
-    let status = license::CheckResponse {
-        valid: true,
-        latest_version: env!("CARGO_PKG_VERSION").to_string(),
-        download_url: None,
-        download_urls: None,
-        message: Some(
-            "Community edition runs fully local. Remote license checks are disabled.".to_string(),
-        ),
-        quota: None,
-        max_quota: None,
-        plan_type: Some("community".to_string()),
-        is_trial: Some(false),
-        trial_expires_at: None,
-        api_enabled: Some(true),
-        resource_details_enabled: Some(true),
-        customer_email: None,
-        license_started_at: None,
-        first_purchase_at: None,
-        latest_purchase_at: None,
-        purchase_count: None,
-        latest_order_ref: None,
-        latest_order_amount: None,
-        latest_order_plan: None,
-        latest_order_status: None,
-        order_history: None,
-    };
+    let trimmed = key.trim();
+    if trimmed.is_empty() {
+        return Err("License key is required.".to_string());
+    }
+    let payload = license::verify_license(trimmed)?;
+    let status = license::status_from_payload(&payload);
     persist_runtime_plan_type_from_status(&conn, &status).await;
     Ok(status)
 }
@@ -8279,21 +8311,19 @@ async fn start_trial_license(
     let conn = db::init_db(&app_state.db_path)
         .await
         .map_err(|e| e.to_string())?;
-    let local_key = format!(
-        "community-local-{}",
-        Uuid::new_v4().to_string().replace('-', "")
-    );
-    save_license_file(app_handle.clone(), local_key)?;
+    let _local_key = Uuid::new_v4().to_string().replace('-', "");
     let status = license::CheckResponse {
-        valid: true,
+        valid: false,
         latest_version: env!("CARGO_PKG_VERSION").to_string(),
         download_url: None,
         download_urls: None,
-        message: Some("Community mode is active.".to_string()),
+        message: Some(
+            "Trial activation is not available in the commercial-only build.".to_string(),
+        ),
         quota: None,
         max_quota: None,
-        plan_type: Some("community".to_string()),
-        is_trial: Some(false),
+        plan_type: Some("trial".to_string()),
+        is_trial: Some(true),
         trial_expires_at: None,
         api_enabled: Some(true),
         resource_details_enabled: Some(true),
@@ -8311,12 +8341,14 @@ async fn start_trial_license(
     persist_runtime_plan_type_from_status(&conn, &status).await;
 
     Ok(TrialStartResult {
-        status: "community".to_string(),
-        plan_type: "community".to_string(),
+        status: "unavailable".to_string(),
+        plan_type: "trial".to_string(),
         trial_expires_at: None,
         quota: None,
         max_quota: None,
-        message: Some("Community mode is active.".to_string()),
+        message: Some(
+            "Trial activation is not available in the commercial-only build.".to_string(),
+        ),
     })
 }
 
@@ -8873,7 +8905,7 @@ async fn get_audit_logs(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !audit_log_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err("Audit Log belongs to the Enterprise centralized control layer for operator accountability, identity, and compliance review.".to_string());
+        return Err(paid_audit_log_gate_message());
     }
 
     let conn = db::init_db(&app_state.db_path)
@@ -8893,7 +8925,7 @@ async fn clear_audit_logs(app_handle: tauri::AppHandle) -> Result<(), String> {
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !audit_log_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err("Audit Log belongs to the Enterprise centralized control layer for operator accountability, identity, and compliance review.".to_string());
+        return Err(paid_audit_log_gate_message());
     }
 
     let conn = db::init_db(&app_state.db_path)
@@ -11475,9 +11507,15 @@ async fn get_runtime_capability_snapshot(
 ) -> Result<runtime_helpers::RuntimeCapabilitySnapshot, String> {
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
-    Ok(runtime_capability_snapshot_for_plan(
-        runtime_plan.as_deref(),
-    ))
+    let mut snapshot = runtime_capability_snapshot_for_plan(runtime_plan.as_deref());
+    if matches!(snapshot.plan_type.as_str(), "trial" | "trial_expired") {
+        let now = now_unix_ts();
+        snapshot.trial_expires_at = read_trial_expires_at(&app_state.db_path).await;
+        snapshot.trial_days_remaining = snapshot
+            .trial_expires_at
+            .map(|expires_at| ((expires_at - now).max(0) + 86_399) / 86_400);
+    }
+    Ok(snapshot)
 }
 
 #[tauri::command]
@@ -11785,6 +11823,11 @@ async fn run_scan(
             .await
             .map_err(|e| e.to_string())?;
         return Ok(demo_results);
+    }
+
+    let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
+    if !local_scan_entitled_for_runtime_plan(runtime_plan.as_deref()) {
+        return Err(trial_expired_gate_message());
     }
 
     let start_instant = std::time::Instant::now(); // Start performance timer
@@ -20629,7 +20672,7 @@ async fn confirm_cleanup(
         Some("trial")
     ) {
         return Err(
-            "Community mode requires explicit local confirmation before resource remediation."
+            "Local safety mode requires explicit confirmation before resource remediation."
                 .to_string(),
         );
     }
@@ -22336,7 +22379,7 @@ async fn get_scan_history(
         }
 
         return Err(
-            "Community mode keeps historical detailed findings local when scan history is enabled."
+            "Unlicensed mode keeps historical detailed findings local when scan history is enabled."
                 .to_string(),
         );
     }
@@ -22611,10 +22654,7 @@ async fn list_finding_lifecycle_records(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22714,10 +22754,7 @@ async fn upsert_finding_owner_record(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22772,10 +22809,7 @@ async fn list_finding_owner_records(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22799,10 +22833,7 @@ async fn upsert_org_unit_record(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22835,10 +22866,7 @@ async fn list_org_unit_records(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22862,10 +22890,7 @@ async fn assign_finding_owner_record(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22925,10 +22950,7 @@ async fn deactivate_finding_owner_record(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -22972,10 +22994,7 @@ async fn get_org_unit_lifecycle_summary(
     let app_state = app_handle.state::<AppState>();
     let runtime_plan = read_runtime_plan_type(&app_state.db_path).await;
     if !team_workspace_entitled_for_runtime_plan(runtime_plan.as_deref()) {
-        return Err(
-            "Team unlocks org structure, owner directory, lifecycle workflow, and handoff coordination. Enterprise includes the same governance execution layer plus centralized identity and audit controls."
-                .to_string(),
-        );
+        return Err(paid_governance_gate_message());
     }
     let conn = db::init_db(&app_state.db_path)
         .await
@@ -24046,14 +24065,17 @@ mod tests {
         assert!(!schedule_entitled_for_runtime_plan(None));
         assert!(!audit_log_entitled_for_runtime_plan(None));
 
-        assert!(!schedule_entitled_for_runtime_plan(Some("trial")));
-        assert!(!audit_log_entitled_for_runtime_plan(Some("trial")));
+        assert!(schedule_entitled_for_runtime_plan(Some("trial")));
+        assert!(audit_log_entitled_for_runtime_plan(Some("trial")));
+
+        assert!(!schedule_entitled_for_runtime_plan(Some("trial_expired")));
+        assert!(!audit_log_entitled_for_runtime_plan(Some("trial_expired")));
 
         assert!(schedule_entitled_for_runtime_plan(Some("monthly")));
-        assert!(!audit_log_entitled_for_runtime_plan(Some("monthly")));
+        assert!(audit_log_entitled_for_runtime_plan(Some("monthly")));
 
         assert!(schedule_entitled_for_runtime_plan(Some("yearly")));
-        assert!(!audit_log_entitled_for_runtime_plan(Some("yearly")));
+        assert!(audit_log_entitled_for_runtime_plan(Some("yearly")));
 
         assert!(schedule_entitled_for_runtime_plan(Some("enterprise")));
         assert!(audit_log_entitled_for_runtime_plan(Some("enterprise")));
@@ -24063,8 +24085,8 @@ mod tests {
     fn schedule_gate_message_mentions_required_editions() {
         let err = schedule_gate_error();
         let message = err.1 .0["error"].as_str().unwrap_or_default();
-        assert!(message.contains("Team"));
-        assert!(message.contains("Enterprise"));
+        assert!(message.contains("paid"));
+        assert!(message.contains("license"));
     }
 
     #[test]

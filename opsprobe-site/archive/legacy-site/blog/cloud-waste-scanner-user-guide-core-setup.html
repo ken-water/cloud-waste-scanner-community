@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cost Optimization Tools: Core Setup in 30 Minutes | CWS</title>
+    <meta name="description" content="Step-by-step core setup for Cloud Waste Scanner: account onboarding, proxy checks, notifications, and first local-first scan readiness.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/cloud-waste-scanner-user-guide-core-setup.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cloud Cost Optimization Tools: Core Setup in 30 Minutes | CWS">
+    <meta property="og:description" content="Step-by-step core setup for Cloud Waste Scanner: account onboarding, proxy checks, notifications, and first local-first scan readiness.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/cloud-waste-scanner-user-guide-core-setup.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/product-guide-part7-2026/part7-cover-core-setup.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Cost Optimization Tools: Core Setup in 30 Minutes | CWS">
+    <meta name="twitter:description" content="Step-by-step core setup for Cloud Waste Scanner: account onboarding, proxy checks, notifications, and first local-first scan readiness.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/product-guide-part7-2026/part7-cover-core-setup.webp">
+
+    <meta name="featured-image" content="images/product-guide-part7-2026/part7-cover-core-setup.webp">
+    <link rel="stylesheet" href="../styles.css?v=1.16.68.0">
+    
+    
+    <style type="text/css">@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/greek/wght/normal.woff2);unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.2.8/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/greek/wght/normal.woff2);unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.2.8/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/greek/wght/normal.woff2);unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:500;src:url(/cf-fonts/v/inter/5.2.8/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/greek/wght/normal.woff2);unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.2.8/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/greek/wght/normal.woff2);unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/latin-ext/wght/normal.woff2);unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.2.8/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}</style>
+    <script defer src="../js/alpine.min.js"></script>
+    <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/cloud-waste-scanner-user-guide-core-setup.html",
+      "headline": "Cloud Cost Optimization Tools: Core Setup in 30 Minutes | CWS",
+      "description": "Step-by-step core setup for Cloud Waste Scanner: account onboarding, proxy checks, notifications, and first local-first scan readiness.",
+      "datePublished": "2026-03-09",
+      "dateModified": "2026-03-09",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/product-guide-part7-2026/part7-cover-core-setup.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/cloud-waste-scanner-user-guide-core-setup.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Cloud Cost Optimization Tools: Core Setup in 30 Minutes | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/cloud-waste-scanner-user-guide-core-setup.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I run this guide safely in a local-first workflow?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use read-only credentials, run Test Connection first, execute one scoped scan, and export evidence for owner assignment."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I troubleshoot scan and API errors?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the Documentation troubleshooting flow, API Errors reference, and provider credential guidance to isolate connection and permission issues."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does CWS upload cloud credentials to remote servers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. CWS is local-first and keeps credentials and scan outputs on the operator side."
+      }
+    }
+  ]
+}
+    </script>
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="blog-shell">
+        <article class="blog-main min-w-0">
+            <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                                <div class="blog-breadcrumb justify-center">
+                    <a href="../pricing.html">Docs</a>
+                    <span class="blog-divider-dot">/</span>
+                    <a href="../blog-series.html#user-guide">User Guide</a>
+                    <span class="blog-divider-dot">/</span>
+                    <span>Core Setup in 30 Minutes for Cloud Cost Optimization Tools</span>
+                </div>
+                <a href="../blog-series.html#user-guide" class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-indigo-600 uppercase bg-indigo-50 rounded-full hover:bg-indigo-100 transition-colors">
+                    Product Guide Series - Part 7
+                </a>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
+                    Cloud Waste Scanner User Guide Part 7: Core Setup in 30 Minutes for Cloud Cost Optimization Tools
+                </h1>
+                <p class="text-xl text-slate-600 leading-relaxed">
+                    Follow these steps in order: account, proxy, notification, first scan, findings action, and report export.
+                </p>
+                <div class="blog-meta-row mt-5">
+                    <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">J</span>
+                    <span>By <strong>Jerry</strong></span>
+                    <span>&bull;</span>
+                    <time datetime="2026-03-09">March 9, 2026</time>
+                    <span class="blog-reading-time">Reading time: 3 min</span></div>
+            </header>
+
+            <div class="mb-10 grid gap-4 md:grid-cols-3">
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Goal</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">One usable setup session</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">You should finish with a connected account, one tested route, and one exported result.</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Approach</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">Task-only guide</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">This page keeps theory out of the way and focuses on what to click and validate.</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Result</p>
+                    <p class="mt-2 text-lg font-bold text-slate-900">A repeatable baseline</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Once this path is stable, you can repeat it across more accounts without guesswork.</p>
+                </div>
+            </div>
+
+            <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+                <p class="lead text-2xl text-slate-600 mb-8">
+                    This guide is task-only. No theory, no extra setup paths. Start from Step 0 and stop at Step 7.
+                </p>
+                
+
+                <section id="quick-start" class="mt-8 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-6">
+                    <h2 class="m-0 text-2xl font-bold text-indigo-900">Quick Start Steps</h2>
+                    <ol class="mt-4 list-decimal space-y-2 pl-6 text-lg text-indigo-900">
+                        <li>Open the guide workflow in Cloud Waste Scanner and keep scope minimal for first validation.</li>
+                        <li>Run connection validation first, then execute one controlled scan cycle.</li>
+                        <li>Export local evidence and assign owners for the next weekly closure loop.</li>
+                    </ol>
+                    <p class="mt-4 text-base leading-7 text-indigo-900">Cloud Waste Scanner runs entirely in your local environment. Your cloud credentials and scan results never leave your machine.</p>
+                </section>
+
+                <p id="seo-keyword-context" class="mt-4 text-base leading-7 text-slate-600">Teams evaluating cloud cost optimization tools usually operationalize this flow with cloud cost optimization for small business and no agent cloud cost optimization. This guide keeps cloud cost optimization tools practical for weekly execution without adding control-plane friction.</p>
+
+<p>
+                    If you are evaluating cloud cost optimization tools, this is the fastest way to run a real setup session.
+                    It also gives your team a practical baseline when comparing cloud governance tools and FinOps tools.
+                </p>
+                <p>
+                    Most teams do not need more features on day one from cloud cost optimization tools. They need one clean setup path they can finish without second-guessing every screen.
+                </p>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-cover-core-setup.webp" alt="Cloud Waste Scanner dashboard after initial setup." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Target state: dashboard visible, account connected, and first scan ready.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 0: Prepare inputs (2 minutes)</h2>
+                <ol>
+                    <li>One cloud account credential set (read-only preferred for first run).</li>
+                    <li>Proxy endpoint (only if your network requires it).</li>
+                    <li>One notification destination your team already uses.</li>
+                </ol>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 1: Add and validate your first cloud account (5 minutes)</h2>
+                <ol>
+                    <li>Open <strong>Settings</strong> &rarr; <strong>Cloud Accounts</strong>.</li>
+                    <li>Click <strong>Add Account</strong>.</li>
+                    <li>Fill provider, account name, region/profile, and credentials.</li>
+                    <li>Save the account, then click <strong>Test Connection</strong> inside account details.</li>
+                </ol>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-step1-cloud-account.webp" alt="Edit Account panel showing credentials and the Test Connection action." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Complete one account end-to-end first, including the connection test.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 2: Configure proxy policy when required (3 minutes)</h2>
+                <ol>
+                    <li>Open <strong>Settings</strong> &rarr; <strong>Proxies</strong>.</li>
+                    <li>Set default proxy mode, or add a named proxy profile.</li>
+                    <li>Run <strong>Test Proxy</strong> and continue only after it passes.</li>
+                </ol>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-step2-proxy-profile.webp" alt="Proxy policies page with default mode and named proxy profiles." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Lock proxy settings before the first production scan in restricted networks.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 3: Create one notification channel and send a test (3 minutes)</h2>
+                <ol>
+                    <li>Open <strong>Settings</strong> &rarr; <strong>Notifications</strong>.</li>
+                    <li>Create one channel your team already uses.</li>
+                    <li>Click <strong>Send Test Notification</strong>, then save after successful test.</li>
+                </ol>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-step3-notification-channel.webp" alt="Notification channel form with trigger policy and test notification result." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Keep one working channel first; add more channels after the baseline setup is done.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 4: Confirm account list and run first scan (5-10 minutes)</h2>
+                <ol>
+                    <li>Open scan wizard and select 1-2 accounts for the first run.</li>
+                    <li>Start scan from the main screen.</li>
+                    <li>Wait for the Scan Result page and verify findings are populated.</li>
+                </ol>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-step4-scan-wizard-target.webp" alt="Scan wizard target step with account selection before launching scan." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Keep scope small on the first run so results arrive quickly and are easy to review.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 5: Handle findings with two actions (5 minutes)</h2>
+                <ol>
+                    <li>Select high-impact findings first.</li>
+                    <li>Use <strong>Generate Plan</strong> for items that should move into review or controlled execution.</li>
+                    <li>Use <strong>Ignore</strong> for items already processed outside the app or intentionally left out of scope.</li>
+                </ol>
+
+                <p>
+                    Keep the first session simple. The point is to prove that findings can move from discovery into a team workflow without confusing extra states.
+                </p>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 6: Export evidence (2 minutes)</h2>
+                <ol>
+                    <li>Export <strong>PDF</strong> for management review.</li>
+                    <li>Export <strong>CSV</strong> for engineering follow-up.</li>
+                    <li>Store both files with scan date in the filename.</li>
+                </ol>
+
+                <p>
+                    If the report will be discussed in a meeting, enable checklist columns in the PDF export so owners can record decisions in the same document.
+                </p>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-step6-export-report.webp" alt="Export workflow for report output after scan." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Export right after the first scan while context is still fresh.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Step 7: Final check (1 minute)</h2>
+                <ul>
+                    <li>At least one account tested successfully.</li>
+                    <li>Proxy applied and re-verified (if required).</li>
+                    <li>First scan completed with findings shown.</li>
+                    <li>At least three findings reviewed, ignored, or moved into plan generation.</li>
+                    <li>PDF or CSV exported.</li>
+                </ul>
+
+                <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/product-guide-part7-2026/part7-checklist-final.webp" alt="Final checklist concept image to close the setup flow." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">
+                        Use this final checklist before rolling the same setup to more accounts.
+                    </figcaption>
+                </figure>
+
+                <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next in the series</h2>
+                <section class="blog-series-note not-prose">
+                    <p>Part 8 focuses on multi-account naming, routing, and scan-result handling so larger environments stay organized.</p>
+                    <p class="mt-3">
+                        Browse all posts: <a href="../blog.html">Cloud Waste Scanner Blog</a>.
+                        Read this series: <a href="../blog-series.html#user-guide">Product Guide Series</a>.
+                    </p>
+                </section>
+            </div>
+
+                <section id="troubleshooting-api-errors" class="mt-8 rounded-2xl border border-amber-200 bg-amber-50/70 p-6">
+                    <h2 class="m-0 text-2xl font-bold text-amber-900">Troubleshooting and API Errors</h2>
+                    <p class="mt-4 text-lg text-slate-700">If setup or scan validation fails, use a fixed triage order so your team can resolve issues without guessing.</p>
+                    <ul class="mt-4 space-y-2 text-lg text-slate-700">
+                        <li>Start with <a href="../documentation.html#troubleshooting" class="text-indigo-600 hover:underline">Troubleshooting</a> for staged checks and recovery flow.</li>
+                        <li>Review <a href="../api-errors.html" class="text-indigo-600 hover:underline">API Errors</a> to map provider responses to next actions.</li>
+                        <li>Verify scope and mode in <a href="../provider-credentials.html" class="text-indigo-600 hover:underline">Provider Credentials</a> before rerunning scans.</li>
+                    </ul>
+                </section>
+
+                <section id="finops-execution-insight" class="mt-8 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-6">
+                    <h2 class="m-0 text-2xl font-bold text-indigo-900">FinOps Execution Insight</h2>
+                    <ul class="mt-4 space-y-2 text-lg text-indigo-900">
+                        <li>Treat each scan as an operating loop: validate inputs, run once, export evidence, and assign owners.</li>
+                        <li>Prioritize findings your team can close this week, not the longest possible list.</li>
+                        <li>Keep evidence local and review-ready so engineering, finance, and management can align fast.</li>
+                    </ul>
+                </section>
+
+                <section id="when-to-use-cws-vs-others" class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                    <h2 class="m-0 text-2xl font-bold text-slate-900">When to Use CWS vs. Other Approaches</h2>
+                    <p class="mt-4 text-lg text-slate-700">Use Cloud Waste Scanner when you need local-first credential control, deep waste visibility across storage/network/database, and exportable operator evidence. Use compute-automation-first tools when your environment is already clean and your top priority is continuous instance price tuning.</p>
+                    <p class="mt-4 text-base text-slate-600">For a complementary perspective, see <a href="industry-intelligence-spotio-vs-local-first-cws.html" class="text-indigo-600 hover:underline">Spot.io vs Local-First CWS</a>.</p>
+                </section>
+
+
+                <section id="declarative-conclusions" class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+                    <h2 class="m-0 text-2xl font-bold text-slate-900">Declarative Conclusions</h2>
+                    <ul class="mt-4 space-y-2 text-lg text-slate-700">
+                        <li>CWS is a local-first scanner, meaning credentials and scan outputs remain on your machine by default.</li>
+                        <li>Cloud waste is usually an ownership and review-rhythm failure, not just a pricing failure.</li>
+                        <li>A repeatable FinOps loop needs cloud asset inventory plus exportable evidence, not dashboard-only visibility.</li>
+                    </ul>
+                </section>
+
+                <section id="execution-links" class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                    <h2 class="m-0 text-2xl font-bold text-slate-900">Execution Paths</h2>
+                    <p class="mt-4 text-base text-slate-600">Continue with related guides or move directly to evaluation and procurement steps.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <a href="industry-intelligence-spotio-vs-local-first-cws.html" class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors">Industry Comparison</a>
+                        <a href="cloud-cost-story-p5-the-ghost-resources-nobody-owned.html" class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:border-slate-400 hover:bg-slate-50 transition-colors">Incident Story</a>
+                        <a href="../pricing.html" class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors">View Pricing</a>
+                        <a href="../sample-report.html" class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-700 hover:border-indigo-300 hover:bg-indigo-100 transition-colors">View Sample Report</a>
+                    </div>
+                </section>
+
+<div class="cws-cta-panel mt-10">
+                <div class="cws-cta-inner text-center">
+                    <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                    <h3 class="cws-cta-title mt-4">Run Your First 30-Minute Setup</h3>
+                    <div class="cws-cta-actions cws-cta-actions-inline">
+                        <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">
+                            Download Trial
+                        </a>
+                        <a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">
+                            View Pricing
+                        </a>
+                    </div>
+                    <p class="cws-cta-copy mx-auto mt-3 mb-0">Save your first $1,000 before the next billing cycle.</p>
+                </div>
+            </div>
+        </article>
+        <aside class="blog-sidebar space-y-6">
+            <section class="blog-sidebar-card" data-blog-toc-card>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                <div class="space-y-1" data-blog-toc></div>
+            </section>
+            <section class="blog-security-note">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Security Note</p>
+                <p class="text-base font-semibold leading-7 text-slate-900">This workflow is designed around a local runtime boundary.</p>
+                <p class="text-sm leading-7 text-slate-600">Cloud credentials stay on the operator machine while scans, exports, and execution review stay inside the same control path.</p>
+            </section>
+        </aside>
+        </div>
+        </section>
+    </main>
+
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/lightbox.js" defer></script>
+    <script src="../js/share-links.js?v=2.6.38.0" defer></script>
+</body>
+</html>

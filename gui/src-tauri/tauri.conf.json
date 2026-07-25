@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "CloudWasteScanner",
-  "version" : "3.1.0",
+  "version" : "3.1.1",
   "identifier": "com.cloud-waste-scanner.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -20,6 +20,7 @@
         "minWidth": 1280,
         "minHeight": 800,
         "resizable": true,
+        "theme": "Dark",
         "title": "Cloud Waste Scanner Community",
         "width": 1200,
         "height": 800

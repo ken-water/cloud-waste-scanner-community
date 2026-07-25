@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Whitepaper P3: Performance, Reliability, Rollout</title>
+    <meta name="description" content="Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns: technical architecture guidance for Cloud Waste Scanner data models.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Tech Whitepaper P3: Performance, Reliability, Rollout">
+    <meta property="og:description" content="Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns: technical architecture guidance for Cloud Waste Scanner data models.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/images/tech-whitepaper-cover.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tech Whitepaper P3: Performance, Reliability, Rollout">
+    <meta name="twitter:description" content="Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns: technical architecture guidance for Cloud Waste Scanner data models.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/tech-whitepaper-cover.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html",
+      "headline": "Tech Whitepaper P3: Performance, Reliability, Rollout",
+      "description": "Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns: technical architecture guidance for Cloud Waste Scanner data models.",
+      "datePublished": "2026-03-18",
+      "dateModified": "2026-03-18",
+      "author": {
+        "@type": "Person",
+        "name": "Jerry"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/images/whitepapers/performance-reliability.svg"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Tech Whitepaper P3: Performance, Reliability, Rollout",
+          "item": "https://cloud-waste-scanner.com/blog/technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+<header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+<main class="pt-24 pb-16">
+    <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="blog-shell">
+            <article class="blog-main min-w-0">
+                <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                    <div class="blog-breadcrumb justify-center"><a href="../whitepapers.html">Whitepapers</a><span class="blog-divider-dot">/</span><a href="../blog-series.html?series=whitepaper-series#whitepaper-series">Whitepaper Series</a><span class="blog-divider-dot">/</span><span>Technical Part 3</span></div>
+                    <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-blue-700 uppercase bg-blue-50 rounded-full">Technical Whitepaper Â· v1.0 Â· 2026-03</span>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Cloud Cost Optimization for DevOps: Performance, Reliability, and Rollout Patterns</h1>
+                    <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Part 3 covers throughput strategy, provider-safe rate handling, resilience behavior, and restricted-network rollout patterns.</p>
+                    <div class="blog-meta-row mt-5"><span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-blue-100 text-blue-700 font-bold">J</span><span>By <strong>Jerry</strong></span><span>&bull;</span><time datetime="2026-03-18">Mar 18, 2026</time><span class="blog-reading-time">Reading time: 8 min</span></div>
+                </header>
+                <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+<section class="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5 mb-8">
+<p class="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500 mb-2">Technical Whitepaper Series</p>
+<p class="text-base text-slate-700 mb-3">Read in order for full context: architecture -&gt; data model -&gt; performance -&gt; quality gates -&gt; platform roadmap.</p>
+<div class="flex flex-wrap gap-2 text-sm font-semibold">
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part1-engine-architecture-and-component-boundaries.html">Part 1</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part3-performance-reliability-and-rollout-patterns.html">Part 3</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>
+<a class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 hover:border-slate-400" href="technical-whitepaper-local-first-part5-rust-tauri-runtime-tradeoffs-and-platform-roadmap.html">Part 5</a>
+</div>
+</section>
+
+<p class="lead text-2xl text-slate-600 mb-8">Part 2 established deterministic findings. Part 3 asks the operational question: does that model still hold when scans run at scale, under API quotas, through proxies, and during partial failure conditions?</p>
+<p>This chapter focuses on cloud cost optimization for devops teams that need repeatable scans, not one-off benchmark numbers, while still integrating with cloud cost management software and cloud cost reporting automation workflows.</p>
+<p>When cloud cost optimization for devops is treated as a weekly operating loop, throughput tuning, reliability controls, and rollout guardrails become directly auditable.</p>
+
+<h2 id="chapter-continuity" class="text-3xl font-bold text-slate-900 mt-10 mb-4">From model integrity to runtime integrity</h2>
+<p>In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>, we required deterministic policy behavior. This chapter focuses on runtime behavior that preserves that determinism under stress. In <a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>, we map those runtime expectations to explicit QA and release gates.</p>
+
+<h2 id="perf-budget" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Performance budget: what âfast enoughâ means in cloud governance</h2>
+<p>For governance tooling, speed is constrained by two external realities: provider rate limits and network variability. "Fast" is not peak request burst; "fast" is stable completion of a full review cycle without triggering throttling storms or producing unreliable partial output.</p>
+<p>We treat performance as a budgeted system:</p>
+<ul>
+<li>API request concurrency per provider/account segment.</li>
+<li>Retry and backoff windows by error class.</li>
+<li>Scan timeout ceilings to prevent indefinite hangs in restricted paths.</li>
+<li>Degraded-mode output rules when a subset of providers fails.</li>
+</ul>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/performance-reliability.svg" alt="Performance and reliability model with concurrency controls, rate-limit strategy, and restricted-network rollout guidance." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure 3-1. Throughput and reliability control model used by local-first scans.</figcaption>
+</figure>
+<p>Figure 3-1 is the operating baseline for this chapter: throughput is budgeted by provider-aware concurrency, reliability is enforced by explicit failure classes, and rollout expands only after constrained-path verification.</p>
+<p>In other words, throughput, reliability, and rollout are one control loop rather than three independent tuning knobs.</p>
+
+<h2 id="throttle" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Throttling-safe concurrency strategy</h2>
+<p>Cloud APIs are not homogeneous. One provider endpoint might allow aggressive pagination while another enforces strict request windows. Instead of one global concurrency number, CWS uses provider-aware pacing and adaptive backoff based on observed error patterns.</p>
+<p>Operationally this means:</p>
+<ul>
+<li>Concurrency is set to preserve completion probability, not benchmark screenshots.</li>
+<li>Rate-limit events are classified separately from transport failures and permission failures.</li>
+<li>Backoff policy is predictable and visible, so operators can explain slower scans without guessing.</li>
+</ul>
+<p>This discipline prevents the classic anti-pattern where a tool appears fast in small test accounts but collapses under enterprise account fan-out.</p>
+
+<h2 id="reliability" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Reliability model: partial failure without silent data corruption</h2>
+<p>Reliability in this context means preserving decision quality when failures are partial. If one provider or region times out, the engine should still return valid findings for reachable scope and mark missing segments explicitly.</p>
+<ul>
+<li><strong>Stage/reason classification:</strong> failures carry structured context (for example: proxy_connect, target_connect, config_validate).</li>
+<li><strong>Partial-result mode:</strong> completed scopes are emitted with clear gaps, not silently dropped.</li>
+<li><strong>Retry policy:</strong> transient transport failures are retried; deterministic config failures are surfaced immediately.</li>
+<li><strong>Operator diagnostics:</strong> logs and UI surfaces map failure class to next action.</li>
+</ul>
+<p>This avoids a common governance risk: teams acting on an incomplete scan while believing it was complete.</p>
+
+<h2 id="restricted-network" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Restricted-network rollout patterns</h2>
+<p>Enterprise environments often require explicit egress control, proxy segmentation, and audited route decisions. The product supports this by separating scan path and notification path, allowing operators to align each channel with policy.</p>
+<figure class="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<img src="../images/whitepapers/tech-part3-rollout-decision-ladder.svg" alt="Rollout decision ladder for constrained networks and throttling-safe expansion." class="w-full h-auto" loading="lazy" decoding="async">
+<figcaption class="px-5 py-3 text-sm text-slate-500">Figure T3-2. Rollout decision ladder: pilot scope, guard rails, degraded mode, and expansion decisions.</figcaption>
+</figure>
+<p>Practical rollout pattern:</p>
+<ol>
+<li>Validate local API runtime and token flow.</li>
+<li>Validate proxy reachability to provider endpoints in scope.</li>
+<li>Run small-scope baseline scan with explicit account subset.</li>
+<li>Expand scope gradually while monitoring rate-limit and timeout classes.</li>
+<li>Lock a repeatable profile for weekly governance review.</li>
+</ol>
+<p>That progression is slower than one-click full-scope scans, but it dramatically reduces false negatives and rollout rollback cycles.</p>
+
+<h2 id="case-study" class="text-3xl font-bold text-slate-900 mt-10 mb-4">5. Case study: scan stability beats burst speed</h2>
+<p>In one internal validation path, a high-concurrency test produced shorter elapsed time on first run but generated unstable retry storms and inconsistent completion in later runs. A lower concurrency setting increased median elapsed time but produced deterministic completion and cleaner failure diagnostics. For governance workflows, the second profile is the one that scales operationally.</p>
+<p>Why this matters to business outcomes: review meetings depend on trusted evidence at a known cadence. A faster-but-erratic scan is operationally more expensive than a slower predictable scan because teams lose confidence in findings and re-run jobs manually.</p>
+
+<h2 id="zero-agent" class="text-3xl font-bold text-slate-900 mt-10 mb-4">6. Zero-agent runtime implications</h2>
+<p>Zero-agent architecture removes cloud-side deployment overhead and reduces the risk surface of long-lived in-cloud collectors. The tradeoff is that endpoint hardening and runtime governance are now clearly customer-side responsibilities. This is an explicit design choice, not an omission.</p>
+<p>Operational implications include:</p>
+<ul>
+<li>Endpoint patching and local credential hygiene remain mandatory.</li>
+<li>Proxy and route policy become first-class rollout controls.</li>
+<li>Execution evidence must include runtime context for audits.</li>
+</ul>
+
+<h2 id="measurement" class="text-3xl font-bold text-slate-900 mt-10 mb-4">7. Measurement and evidence discipline</h2>
+<p>Performance claims should be tied to repeatable method, not headline numbers. Our baseline method records scope size, provider mix, network policy profile, timeout/retry parameters, and completion status classes. This is enough to compare profiles honestly without pretending there is one universal scan speed.</p>
+<p>For external technical review, report these metrics together:</p>
+<ul>
+<li>Scope size (accounts/projects and resource families).</li>
+<li>Completion ratio per provider.</li>
+<li>Rate-limit and timeout incidence by stage/reason.</li>
+<li>Median and p95 scan duration under fixed profile.</li>
+</ul>
+
+
+<h2 id="rollout-playbook-appendix" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Rollout playbook appendix: repeatable sequence for constrained environments</h2>
+<p>Many rollout failures are sequence failures, not software failures. Teams start with full scope, hit proxy gaps, trigger provider throttling, then conclude the tool is unstable. A stable sequence is more reliable: start narrow, confirm transport assumptions, then expand scope with measurable control points. For practical rollout we recommend a five-phase ladder.</p>
+<p><strong>Phase 1: Runtime sanity.</strong> Validate local API health, token behavior, and baseline logging before any provider scan. If local runtime checks fail, provider debugging is wasted effort.</p>
+<p><strong>Phase 2: Network path validation.</strong> Validate proxy and direct routes per provider group. Record route policy explicitly. Mixed environments often require one path for provider APIs and another for notifications.</p>
+<p><strong>Phase 3: Pilot scope.</strong> Scan a small, representative account group that includes at least one expected finding category (for example idle compute or unattached storage). This confirms end-to-end evidence generation.</p>
+<p><strong>Phase 4: Controlled expansion.</strong> Increase account scope gradually while monitoring stage/reason failure distribution and scan completion ratio. Do not increase scope and concurrency simultaneously; that masks root causes.</p>
+<p><strong>Phase 5: Governance lock-in.</strong> Once behavior is stable, freeze a baseline profile for weekly operations. Changes to concurrency or timeout should follow the same change protocol as policy updates.</p>
+<p>For reliability, record an operations baseline after each phase: scope size, completion ratio, median duration, top failure classes, and remediation notes. This baseline history becomes invaluable when incidents occur months later. Without it, teams rely on memory and anecdote.</p>
+<p>Another practical point is communication: report degraded scans as degraded, not failed or successful. A degraded scan can still provide useful findings if missing scope is explicit. This distinction helps stakeholders make informed decisions instead of all-or-nothing reactions.</p>
+<p>Lastly, avoid "hero tuning" by a single operator. Every runtime profile should be reproducible by another team member with the same documented configuration. If only one person can keep scans stable, reliability is fragile regardless of software quality.</p>
+
+
+
+<h2 id="runtime-faq" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Implementation FAQ: performance and reliability operations</h2>
+<p><strong>Q: Should we always increase concurrency to reduce scan time?</strong> No. Increase only when completion ratio and failure-class distribution remain stable. Faster scans with unstable completion are usually a net loss for weekly governance.</p>
+<p><strong>Q: How do we classify timeout incidents quickly?</strong> Use stage/reason grouping first: transport path issue, target endpoint issue, or configuration issue. This narrows remediation faster than provider-by-provider guessing.</p>
+<p><strong>Q: When should we mark a run degraded instead of failed?</strong> Mark degraded when a subset of scope completed with valid evidence and missing scope is explicit. Mark failed when core evidence integrity is compromised or completion is too low for safe decision-making.</p>
+<p><strong>Q: How do we prevent repeated rollout regressions?</strong> Keep a baseline profile artifact and require explicit approval for runtime parameter changes. Most regressions come from silent profile drift rather than code defects.</p>
+<p><strong>Q: What do technical buyers care about most here?</strong> Predictable completion and explainable failure handling. Buyers accept slower scans when they can trust outputs and recovery paths.</p>
+
+
+<h2 id="runtime-field-notes" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Field notes: reliability patterns from rollout practice</h2>
+<p>In constrained environments, the most common false diagnosis is confusing connectivity success with scan success. A health check can pass while deep scan calls fail against region-specific or service-specific endpoints. Teams should test representative endpoints during pilot, not only a single status route. Another pattern is timeout inflation as a substitute for root-cause analysis. Raising timeouts can hide route misconfiguration and extend incident duration. Prefer stage/reason triage first, then adjust timeout and concurrency with measured intent.</p>
+<p>A practical operating pattern is "one change per run" during rollout: change either scope, network route, concurrency, or timeout, but not multiple dimensions at once. This keeps cause-and-effect clear and dramatically shortens stabilization time.</p>
+
+<h2 id="data-sources" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Data sources for this chapter</h2>
+<ul>
+<li><a href="../documentation.html#troubleshooting-flow">Troubleshooting flow</a> and <a href="../blog/network-proxy-setup-restricted-environments.html">Restricted network guide</a> for stage/reason failure taxonomy.</li>
+<li><code>scripts/local_stack_check.sh</code> and local validation flow for runtime baseline checks.</li>
+<li><a href="../api-playbooks.html">API Playbooks</a> for controlled rollout and export workflows.</li>
+</ul>
+
+<h2 id="next-part" class="text-3xl font-bold text-slate-900 mt-10 mb-4">Next: from runtime behavior to delivery governance</h2>
+<p><a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a> explains how these runtime expectations are encoded into release gates, audit artifacts, and coverage governance.</p>
+</div>
+                <div class="cws-cta-panel mt-16"><div class="cws-cta-inner text-center"><div class="cws-cta-kicker mx-auto">Technical Evaluation Workflow</div><h3 class="cws-cta-title mt-4">Validate this control path in your own environment</h3><p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p><div class="cws-cta-actions cws-cta-actions-inline"><a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a><a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a></div></div></div>
+            </article>
+            <aside class="blog-sidebar space-y-6"><section class="blog-sidebar-card" data-blog-toc-card><p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p><div class="space-y-1" data-blog-toc></div></section></aside>
+        </div>
+    </section>
+</main>
+<footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

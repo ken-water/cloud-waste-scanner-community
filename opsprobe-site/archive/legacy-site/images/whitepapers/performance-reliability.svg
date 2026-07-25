@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040" role="img" aria-labelledby="t d">
+<title id="t">Performance and Reliability Model</title>
+<desc id="d">Technical Whitepaper Part 3 · Throughput with provider-safe guardrails.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fbff"/>
+    <stop offset="100%" stop-color="#eef3ff"/>
+  </linearGradient>
+  <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#0a66c2"/>
+    <stop offset="100%" stop-color="#3b82f6"/>
+  </linearGradient>
+  <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.12"/>
+  </filter>
+  <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+    <polygon points="0,0 8,3 0,6" fill="#1d4ed8"/>
+  </marker>
+</defs>
+<rect width="1800" height="1040" fill="url(#bg)"/>
+<rect x="40" y="40" width="1720" height="960" rx="28" fill="#ffffff" stroke="#dbeafe" stroke-width="2"/>
+<rect x="70" y="64" width="1660" height="84" rx="18" fill="url(#titleGrad)"/>
+<text x="96" y="118" font-size="34" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" fill="#ffffff">Performance and Reliability Model</text>
+<g filter="url(#softShadow)"><rect x="90" y="210" width="520" height="320" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="90" y="210" width="8" height="320" rx="8" fill="#2563eb"/>
+<foreignObject x="114" y="228" width="480" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Concurrency Control</div></foreignObject>
+<foreignObject x="114" y="282" width="480" height="236"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">• Parallel workers by provider/account batch<br/>• Dynamic pacing by response and throttle signals<br/>• Retry with backoff for transient failures<br/>• Partial-result preservation on provider degradation</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="650" y="210" width="520" height="320" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="650" y="210" width="8" height="320" rx="8" fill="#0ea5e9"/>
+<foreignObject x="674" y="228" width="480" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Rate-Limit Strategy</div></foreignObject>
+<foreignObject x="674" y="282" width="480" height="236"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">• Respect provider API quotas<br/>• Avoid burst patterns that trigger throttling storms<br/>• Favor stable completion over peak benchmark speed<br/>• Surface stage/reason diagnostics to operators</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="1210" y="210" width="500" height="320" rx="16" fill="#0b1220" stroke="#334155" stroke-width="2"/></g>
+<rect x="1210" y="210" width="8" height="320" rx="8" fill="#60a5fa"/>
+<foreignObject x="1234" y="228" width="460" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#e2e8f0;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Zero-Agent Runtime</div></foreignObject>
+<foreignObject x="1234" y="282" width="460" height="236"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#cbd5e1;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">• No cloud-side agent required<br/>• No sidecar deployment in target accounts<br/>• Execution from operator-controlled environment<br/>• Evidence generated where teams operate</div></foreignObject>
+<g filter="url(#softShadow)"><rect x="90" y="580" width="1620" height="340" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/></g>
+<rect x="90" y="580" width="8" height="340" rx="8" fill="#1d4ed8"/>
+<foreignObject x="114" y="598" width="1580" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:23px;font-weight:700;line-height:1.2;color:#0f172a;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;">Restricted-Network Rollout Pattern</div></foreignObject>
+<foreignObject x="114" y="652" width="1580" height="256"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Inter, Segoe UI, Arial, sans-serif;font-size:20px;font-weight:500;line-height:1.35;color:#334155;display:block;word-break:break-word;overflow-wrap:anywhere;overflow:hidden;">1) Define outbound-only policy for provider endpoints.<br/>2) Route via approved proxy profiles when direct egress is blocked.<br/>3) Keep local API exposure explicit (loopback default, LAN only if controlled).<br/>4) Validate paths with staged diagnostics before rollout expansion.<br/>Result: secure, auditable operation in enterprise network constraints.</div></foreignObject>
+<path d="M 610,370 Q 630,370 650,370" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1170,370 Q 1190,370 1210,370" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+<path d="M 1220,530 Q 1180,560 1150,580" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowHead)"/>
+</svg>

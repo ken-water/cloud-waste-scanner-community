@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CWS Pro v1.0: What We Actually Shipped</title>
+    <meta name="description" content="Cloud Waste Scanner Pro v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/v1-launch.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="CWS Pro v1.0: What We Actually Shipped">
+    <meta property="og:description" content="Cloud Waste Scanner Pro v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/v1-launch.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/dashboard.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CWS Pro v1.0: What We Actually Shipped">
+    <meta name="twitter:description" content="Cloud Waste Scanner Pro v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/dashboard.webp">
+
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/v1-launch.html",
+      "headline": "CWS Pro v1.0: What We Actually Shipped",
+      "description": "Cloud Waste Scanner Pro v1.0 ships deep scans across AWS, Azure, GCP, Alibaba, and DigitalOcean with local-first credentials",
+      "datePublished": "2026-01-27",
+      "dateModified": "2026-01-27",
+      "author": {
+        "@type": "Person",
+        "name": "Ken"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/dashboard.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/v1-launch.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "CWS Pro v1.0: What We Actually Shipped",
+          "item": "https://cloud-waste-scanner.com/blog/v1-launch.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+
+                    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="blog-shell">
+        <article class="blog-main min-w-0">
+        <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                            <div class="blog-breadcrumb justify-center">
+                    <a href="../pricing.html">Docs</a>
+                    <span class="blog-divider-dot">/</span>
+                    <a href="../company.html">Release Notes</a>
+                    <span class="blog-divider-dot">/</span>
+                    <span>Cloud Waste Scanner Pro v1.0: What We Actually Shipped</span>
+                </div>
+                <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-emerald-700 uppercase bg-emerald-50 rounded-full">Announcement</span>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Cloud Waste Scanner Pro v1.0: What We Actually Shipped</h1>
+            <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">The first release was built around three non-negotiables: visibility that shows real waste, actions that slow operators down before deletion, and a local-first boundary for credentials.</p>
+            <div class="blog-meta-row mt-5">
+                <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold">K</span>
+                <span>By <strong>Ken</strong></span>
+                <span>&bull;</span>
+                <time datetime="2026-01-27">Jan 27, 2026</time>
+                <span class="blog-reading-time">Reading time: 2 min</span></div>
+        </header>
+
+        <div class="mb-10 grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Visibility</p>
+                <p class="mt-2 text-lg font-bold text-slate-900">A review surface, not a raw console dump</p>
+                <p class="mt-2 text-sm leading-6 text-slate-600">The product started with the goal of making waste visible fast enough for weekly review.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Action</p>
+                <p class="mt-2 text-lg font-bold text-slate-900">Selection before cleanup</p>
+                <p class="mt-2 text-sm leading-6 text-slate-600">Operators review findings first and only then decide what is safe to act on.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Trust boundary</p>
+                <p class="mt-2 text-lg font-bold text-slate-900">Credentials stay local</p>
+                <p class="mt-2 text-sm leading-6 text-slate-600">The first release was already designed so cloud keys would not become hosted vendor inventory.</p>
+            </div>
+        </div>
+
+        <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+            <p class="lead text-2xl text-slate-600 mb-8">The first release bar was shaped by a near miss in a cleanup log review: better visibility, safer actions, and no credential upload.</p>
+            <p>Cloud bills rarely explode in one shot. They leak through forgotten resources, oversized machines, and cleanup paths that nobody quite trusts. v1.0 was built for teams stuck between heavyweight SaaS and brittle internal scripts.</p>
+
+            <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. Visibility: surface the waste that usually stays buried</h2>
+            <p>The initial monitor design focused on speed of comprehension. Operators needed a page that would show which resources looked quiet, which looked healthy, and where to start the review.</p>
+            <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/dashboard.webp" alt="Cloud Waste Scanner dashboard from the first release." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">The first dashboard was built to help teams spot waste candidates without reading three provider consoles side by side.</figcaption>
+                </figure>
+            <p>From the start, the product leaned toward behavior-based review. The goal was to find resources that were technically alive and financially pointless.</p>
+
+            <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Action: review before anything destructive happens</h2>
+            <p>Finding waste is only half the job. Cleanup is where trust breaks. v1.0 therefore used a two-step path: scan first, review the candidate list, then expose the cleanup action only after the operator had made an explicit selection.</p>
+            <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/scan-results.webp" alt="Scan results page with cleanup review path." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">A unified result list made it possible to review before acting.</figcaption>
+                </figure>
+
+            <h2 class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Coverage and custody: one app, local credentials</h2>
+            <p>Multi-cloud complexity was already obvious, so the first release supported multiple providers from one app. Just as important, credentials stayed on the device. The product was not built around uploading keys to a vendor-managed backend.</p>
+            <figure class="blog-shot">
+                    <div class="blog-shot-frame">
+                        <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                        <div class="blog-shot-media">
+                    <img src="images/settings.webp" alt="Cloud account settings in the first Cloud Waste Scanner Pro release." class="w-full rounded-2xl border border-slate-200">
+                        </div>
+                    </div>
+                    <figcaption class="text-sm text-slate-500 mt-3 text-center">Cloud account setup was designed around local custody from day one.</figcaption>
+                </figure>
+            <p>For how this baseline expanded in later releases, continue with <a href="v2-launch-global.html" class="text-indigo-600 hover:underline">v2 Launch Global</a> and the operations refinement in <a href="customer-first-shipping-feedback-loop.html" class="text-indigo-600 hover:underline">Customer-First Shipping Feedback Loop</a>.</p>
+        </div>
+<div class="cws-cta-panel mt-16">
+                <div class="cws-cta-inner text-center">
+            <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                <h3 class="cws-cta-title mt-4">See how the original product thesis still holds up</h3>
+            <p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p>
+            <div class="cws-cta-actions cws-cta-actions-inline">
+                <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a>
+                <a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a>
+            </div>
+        </div>
+            </div>
+        </article>
+        <aside class="blog-sidebar space-y-6">
+            <section class="blog-sidebar-card" data-blog-toc-card>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                <div class="space-y-1" data-blog-toc></div>
+            </section>
+            <section class="blog-security-note">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Reading Note</p>
+                <p class="text-base font-semibold leading-7 text-slate-900">This article now follows the shared blog review layout.</p>
+                <p class="text-sm leading-7 text-slate-600">Use the right-side index to jump between sections instead of scanning the full page manually.</p>
+            </section>
+        </aside>
+        </div>
+        </section>
+</main>
+
+
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+    <script src="../js/lightbox.js" defer></script>
+    <script src="../js/share-links.js?v=2.6.38.0" defer></script>
+</body>
+</html>

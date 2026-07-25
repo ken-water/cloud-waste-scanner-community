@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cost Management Software Story: Prices Jumped | CWS</title>
+    <meta name="description" content="Incident Series Part 3: after a sudden cloud price hike, Jack, Rose, and Jerry use local-first evidence to recover margin before budget lock.">
+    <link rel="canonical" href="https://cloud-waste-scanner.com/blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cloud Cost Management Software Story: Prices Jumped | CWS">
+    <meta property="og:description" content="Incident Series Part 3: after a sudden cloud price hike, Jack, Rose, and Jerry use local-first evidence to recover margin before budget lock.">
+    <meta property="og:url" content="https://cloud-waste-scanner.com/blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html">
+    <meta property="og:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part3-2026/price-hike-shock.webp">
+    <meta property="og:site_name" content="Cloud Waste Scanner">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Cost Management Software Story: Prices Jumped | CWS">
+    <meta name="twitter:description" content="Incident Series Part 3: after a sudden cloud price hike, Jack, Rose, and Jerry use local-first evidence to recover margin before budget lock.">
+    <meta name="twitter:image" content="https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part3-2026/price-hike-shock.webp">
+
+    <meta name="featured-image" content="images/cloud-bill-stories-part3-2026/price-hike-shock.webp">
+    <link href="../styles.css?v=1.16.68.0" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../logo.png">
+    <script defer src="../js/blog-toc.js"></script>
+    <script src="../js/lightbox.js" defer></script><!-- CWS_BLOG_SCHEMA:BEGIN -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://cloud-waste-scanner.com/blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html",
+      "headline": "Cloud Cost Management Software Story: Prices Jumped | CWS",
+      "description": "Incident Series Part 3: after a sudden cloud price hike, Jack, Rose, and Jerry use local-first evidence to recover margin before budget lock.",
+      "datePublished": "2026-03-20",
+      "dateModified": "2026-03-20",
+      "author": {
+        "@type": "Person",
+        "name": "Rose"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Cloud Waste Scanner",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://cloud-waste-scanner.com/logo.png"
+        }
+      },
+      "image": [
+        "https://cloud-waste-scanner.com/blog/images/cloud-bill-stories-part3-2026/price-hike-shock.webp"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cloud-waste-scanner.com/blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://cloud-waste-scanner.com/blog.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Cloud Cost Management Software Story: Prices Jumped | CWS",
+          "item": "https://cloud-waste-scanner.com/blog/when-cloud-prices-go-up-we-found-lost-profit-in-15-minutes.html"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+<!-- CWS_BLOG_SCHEMA:END -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What should teams do first after a sudden cloud price hike?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run a fast local-first audit to isolate recoverable waste before changing architecture or purchase commitments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can local-first scanning still provide finance-ready outputs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Teams can export PDF and structured findings for finance review while keeping cloud credentials on their own side."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which resource classes usually offset price hikes fastest?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zombie snapshots, idle public network paths, and forgotten premium disks are often the fastest sources of recoverable spend."
+      }
+    }
+  ]
+}
+    </script>
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XFEVKW2GG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3XFEVKW2GG');
+    </script>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-700">
+    <header>
+<nav class="sticky top-0 md:fixed md:top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<a class="flex items-center gap-2 hover:opacity-80 transition-opacity" href="../index.html"><img alt="Logo" class="h-8 w-8" src="../logo.png"/><span class="font-bold text-slate-900 text-lg tracking-tight">CloudWaste Scanner</span></a>
+<div class="hidden md:flex gap-8 items-center text-base font-medium text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a></div>
+<a class="cws-mobile-nav-inline cws-btn-primary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Get Skills</a>
+<div class="hidden md:flex items-center gap-2"><a class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors" href="../download/">Download App</a><a class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 transition-colors" href="https://github.com/ken-water/cloud-waste-scanner-community/releases/latest/download/skills-generic.tar.gz">Download Skills</a></div>
+</div>
+<div class="cws-mobile-nav-row md:hidden border-t border-slate-100 py-2"><div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap no-scrollbar text-sm font-semibold text-slate-600"><a class="hover:text-indigo-600 transition-colors" href="../index.html">Home</a><a class="hover:text-indigo-600 transition-colors" href="../pricing.html">Pricing</a><a class="hover:text-indigo-600 transition-colors" href="../sample-report.html">Sample Report</a><a class="hover:text-indigo-600 transition-colors" href="../security.html">Security</a><a class="hover:text-indigo-600 transition-colors" href="../skills.html">Skills</a><a class="hover:text-indigo-600 transition-colors" href="../download/">App</a></div></div>
+</div>
+</nav>
+</header>
+
+    <main class="pt-24 pb-16">
+        <section class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="blog-shell">
+                <article class="blog-main min-w-0">
+                    <header class="blog-hero-card mb-10 px-6 py-8 md:px-10 md:py-10 text-center">
+                        <div class="blog-breadcrumb justify-center">
+                            <a href="../blog.html">Blog</a>
+                            <span class="blog-divider-dot">/</span>
+                            <a href="../blog-series.html#incident-series">Incident Series</a>
+                            <span class="blog-divider-dot">/</span>
+                            <span>Part 3</span>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 mt-4 mb-4 text-xs font-semibold tracking-wider text-rose-700 uppercase bg-rose-50 rounded-full">Incident Series</span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Cloud Cost Management Software Story Part 3: The Night Cloud Prices Jumped and Profit Came Back in 15 Minutes</h1>
+                        <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">Alibaba Cloud announced a price hike at 2 AM. Jack and Rose had budget panic, Jerry launched CWS locally, and the team turned stress into evidence before sunrise.</p>
+                        <div class="blog-meta-row mt-5">
+                            <span class="w-10 h-10 rounded-full border-2 border-white shadow-sm inline-flex items-center justify-center bg-rose-100 text-rose-600 font-bold">R</span>
+                            <span>By <strong>Rose</strong></span>
+                            <span>&bull;</span>
+                            <time datetime="2026-03-20">Mar 20, 2026</time>
+                            <span class="blog-reading-time">Reading time: 6 min</span>
+                        </div>
+                    </header>
+
+                    <div class="mb-10 grid gap-4 md:grid-cols-3">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">02:00 alert</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">Price hike email hit like a fire drill</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Jack saw the forecast: just cloud inflation could wipe out a quarter of net profit.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">No waiting room</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">SaaS reports were too slow for this week</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Rose needed budget evidence in 48 hours, not another dashboard promised for next Monday.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">15-minute verdict</p>
+                            <p class="mt-2 text-lg font-bold text-slate-900">CWS found recoverable spend before dawn</p>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Jerry turned a panic meeting into a cleanup plan with PDF evidence and ownership-ready findings.</p>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-slate prose-xl mx-auto max-w-none text-xl leading-relaxed text-slate-700" data-blog-body>
+                        <p class="lead text-2xl text-slate-600 mb-8">This is the chapter where cloud pricing went up, sleep went down, and a 15-minute local-first scan saved the budget review from becoming a blame review.</p>
+
+                        <h2 id="two-am-price-hike" class="text-3xl font-bold text-slate-900 mt-10 mb-4">1. 2 AM in Hangzhou: the price hike email nobody wanted</h2>
+                        <p>The office was still bright at 2 AM. Jack, the CTO, stared at an Alibaba Cloud adjustment notice with the facial expression normally reserved for production outages and surprise audits.</p>
+                        <p>He opened the quarterly forecast. If the company did nothing, cloud cost growth alone would consume nearly three months of net profit. In his words: this was no longer optimization; this was infrastructure tax with extra formatting.</p>
+                        <p>Rose, the finance lead, had already reviewed multiple hosted FinOps tools. Her verdict was practical and painful: security review would block broad IAM delegation, and most external platforms needed one to two days to refresh and model data. The final budget draft was due in less than 48 hours.</p>
+                        <p>At that moment, waiting for someone else's dashboard was the one thing they could not afford.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part3-2026/price-hike-shock.webp" alt="Jack and Rose looking stressed after a sudden cloud price-hike notice before budget review." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">The price update arrived first. Coffee and jokes arrived second.</figcaption>
+                        </figure>
+
+                        <h2 id="jerry-pressed-scan" class="text-3xl font-bold text-slate-900 mt-10 mb-4">2. Jerry's rule: do not panic, run local scan first</h2>
+                        <p>Jerry, the automation veteran, walked in, heard the summary, and gave the shortest operational plan in company history: "Do not guess. Scan."</p>
+                        <p>He opened Cloud Waste Scanner in local-first mode. No credential custody handoff, no external control plane, no "please wait while we sync your org." The team kept control of keys, data, and timing.</p>
+                        <p>CWS started parallel ingestion across provider APIs and regions. While the rest of the floor was still arguing about "big picture strategy," Jerry was already generating the only thing the meeting truly needed: traceable evidence.</p>
+                        <p>Rose later joked that this was the first budget emergency where the loudest sound in the room was not people, but the scan progress bar.</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part3-2026/jerry-local-scan.webp" alt="Jerry using Cloud Waste Scanner locally while Jack and Rose monitor fast scan progress." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">When the deadline is brutal, local-first speed beats slide decks.</figcaption>
+                        </figure>
+
+                        <h2 id="fifteen-minute-verdict" class="text-3xl font-bold text-slate-900 mt-10 mb-4">3. Fifteen minutes later: the report everyone could act on</h2>
+                        <p>Before anyone had time to open a second spreadsheet, CWS produced a PDF evidence pack and structured findings. This was not "you may consider optimizing." This was "these resources are charging right now, with ownership-ready proof."</p>
+                        <p>Top findings from the first scan pass:</p>
+                        <ul>
+                            <li><strong>Zombie snapshots:</strong> historical artifacts still billed long after project owners changed teams.</li>
+                            <li><strong>Idle public bandwidth paths:</strong> load balancers and public IPs charging quietly with no meaningful traffic.</li>
+                            <li><strong>Forgotten premium disks:</strong> high-performance storage left attached to nothing but invoices.</li>
+                        </ul>
+                        <p>Rose recalculated using the new unit prices. Recoverable waste from those categories alone was enough to offset the price increase impact. Translation for executives: same revenue target, less panic.</p>
+                        <p>Jack's post-incident summary was simple: "Last year we waited days for recommendations. Tonight we got an audit trail in 15 minutes."</p>
+                        <figure class="blog-shot">
+                            <div class="blog-shot-frame">
+                                <div class="blog-shot-bar"><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span><span class="blog-shot-dot"></span></div>
+                                <div class="blog-shot-media">
+                                    <img src="images/cloud-bill-stories-part3-2026/team-reclaimed-profit.webp" alt="Jack, Rose, and Jerry reviewing findings with relief after identifying reclaimable cloud spend." class="w-full rounded-2xl border border-slate-200" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <figcaption class="text-sm text-slate-500 mt-3 text-center">From price-hike anxiety to "we can work with this" in one scan cycle.</figcaption>
+                        </figure>
+
+                        <h2 id="why-this-story-helps-buyers" class="text-3xl font-bold text-slate-900 mt-10 mb-4">4. Why this story works for technical buyers</h2>
+                        <p>When cloud prices move, teams do not need inspirational slogans. They need speed, evidence, and a trust model they can defend in audit review.</p>
+                        <p>This is where a <strong>local-first cloud governance workflow</strong> helps: no external credential custody, no delayed model refresh, and no ambiguity about where the data lives.</p>
+                        <p>For teams comparing options under time pressure, this is the practical difference between generic cloud governance tools and a workflow tuned for immediate operator action.</p>
+                        <p>The same incident also shows why a privacy first cloud cost tool matters in procurement conversations: finance can move fast without widening credential exposure.</p>
+                        <p>It also changes team dynamics. Finance gets evidence in business language. Engineering gets resource-level proof and action lists. Operations gets a repeatable weekly loop instead of one-off heroics.</p>
+                        <p>If your cloud vendor raises prices next quarter, the fastest way to protect margin is not to debate harder. It is to find and reclaim what you already pay for but no longer need.</p>
+                        <p>Read the first two chapters if you want the full sequence from first bill shock to continuous operating rhythm: <a href="boss-saw-the-cloud-bill-and-asked-if-i-was-secretly-mining.html">Cloud Cost Story: The Boss and the Surprise Bill</a> and <a href="march-rain-disappearing-coins.html">Cloud Cost Story P2: March Rain and Missing Coins</a>.</p>
+                    </div>
+
+                    <section id="ai-summary" class="mt-10 rounded-2xl border border-indigo-200 bg-indigo-50 p-6">
+                        <h2 class="m-0 text-2xl font-bold text-indigo-900">AI Summary for FinOps Architects</h2>
+                        <ul class="mt-4 space-y-2 text-base leading-7 text-slate-700">
+                            <li>When vendor prices jump, the fastest margin defense is reclaiming waste already in your estate.</li>
+                            <li>Local-first scanning reduced time-to-evidence under hard budget deadlines.</li>
+                            <li>Finance and engineering aligned faster because both teams reviewed one shared evidence packet.</li>
+                        </ul>
+                    </section>
+
+                    <section id="faq" class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Frequently Asked Questions</h2>
+                        <div class="mt-4 space-y-4 text-base leading-7 text-slate-700">
+                            <div>
+                                <p class="font-semibold text-slate-900">What should teams do first after a sudden cloud price hike?</p>
+                                <p>Run a fast local-first audit to isolate recoverable waste before changing architecture or purchase commitments.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">Can local-first scanning still provide finance-ready outputs?</p>
+                                <p>Yes. Teams can export PDF and structured findings for finance review while keeping cloud credentials on their own side.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-900">Which resource classes usually offset price hikes fastest?</p>
+                                <p>Zombie snapshots, idle public network paths, and forgotten premium disks are often the fastest sources of recoverable spend.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="cws-cta-panel mt-16">
+                        <div class="cws-cta-inner text-center">
+                            <div class="cws-cta-kicker mx-auto">Try Cloud Waste Scanner</div>
+                            <h3 class="cws-cta-title mt-4">Run the same review path without sending cloud credentials to anyone</h3>
+                            <p class="cws-cta-copy mx-auto mt-4 mb-6">Save your first $1,000 before the next billing cycle.</p>
+                            <div class="cws-cta-actions cws-cta-actions-inline">
+                                <a href="https://dl.cloud-waste-scanner.com/api/download/latest" class="cws-cta-btn cws-cta-btn-primary">Download Trial</a>
+                                <a href="../pricing.html" class="cws-cta-btn cws-cta-btn-secondary">View Pricing</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="blog-sidebar space-y-6">
+                    <section class="blog-sidebar-card" data-blog-toc-card>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 mb-3">On This Page</p>
+                        <div class="space-y-1" data-blog-toc></div>
+                    </section>
+                    <section class="blog-security-note">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#0a66c2]">Story Note</p>
+                        <p class="text-base font-semibold leading-7 text-slate-900">Names are fictional. Operating pain is real.</p>
+                        <p class="text-sm leading-7 text-slate-600">This series is written from patterns seen in real cloud cost incidents: hidden network resources, delayed detection, and manual cleanup fatigue.</p>
+                    </section>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-100/50 border-t border-slate-200 py-12">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+<div class="cws-footer-layout grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+<div class="cws-footer-brand pt-1 lg:col-span-1 lg:pr-8 lg:border-r lg:border-slate-200">
+<div class="flex items-center gap-2">
+<img alt="Logo" class="h-6 w-6" src="../logo.png"/>
+<p class="text-sm text-slate-500">Â© Cloud Waste Scanner</p>
+</div>
+<p class="mt-2 max-w-xs text-sm sm:text-base lg:text-lg font-bold leading-snug text-[#0a66c2]">Empowering society through <br class="hidden lg:block"/>technical innovation.</p>
+<p class="mt-3 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">2026 Firm AI.Cloud</p>
+<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+<p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">About Us</p>
+<p class="mt-1 text-xs leading-5 text-slate-600">Cloud Waste Scanner is built by SRE and DevOps operators to give SMB teams local-first cloud governance with verifiable evidence outputs.</p>
+</div>
+</div>
+<div class="cws-footer-sections grid grid-cols-1 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-5 gap-x-8 gap-y-6 text-sm md:text-base font-medium text-slate-500">
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Product</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../index.html">Home</a>
+<a class="block hover:text-slate-900 transition-colors" href="../download/">Download</a>
+<a class="block hover:text-slate-900 transition-colors" href="../pricing.html">Pricing</a>
+<a class="block hover:text-slate-900 transition-colors" href="../sample-report.html">Sample Report</a>
+<a class="block hover:text-slate-900 transition-colors" href="../roadmap.html">Roadmap</a>
+<a class="block hover:text-slate-900 transition-colors" href="../company.html">Company</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Docs Center</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html">Docs</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#start-here">Start Here</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#scan-governance">Scan &amp; Governance</a>
+<a class="block hover:text-slate-900 transition-colors" href="../providers.html">Providers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../provider-credentials.html">Provider Credentials</a>
+<a class="block hover:text-slate-900 transition-colors" href="../documentation.html#troubleshooting-faq">Troubleshooting</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">API &amp; Automation</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../api-center.html">API Overview</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-reference.html">API Reference</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-token-guide.html">API Token Guide</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-errors.html">API Errors</a>
+<a class="block hover:text-slate-900 transition-colors" href="../api-playbooks.html">API Playbooks</a>
+<a class="block hover:text-slate-900 transition-colors" href="../playbooks.html">Playbooks</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Learn</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../blog.html">Blog</a>
+<a class="block hover:text-slate-900 transition-colors" href="../blog-series.html">Blog Series</a>
+<a class="block hover:text-slate-900 transition-colors" href="../whitepapers.html">Whitepapers</a>
+<a class="block hover:text-slate-900 transition-colors" href="../solutions.html">Solutions</a>
+<a class="block hover:text-slate-900 transition-colors" href="../metrics-definition.html">Metrics Definition</a>
+<a class="block hover:text-slate-900 transition-colors" href="../release-ledger.html">Release Ledger</a>
+<a class="block hover:text-slate-900 transition-colors" href="../search.html">Search</a>
+</div>
+</div>
+<div>
+<p class="text-sm md:text-base font-bold text-slate-600 mb-2">Support &amp; Trust</p>
+<div class="cws-footer-links space-y-2">
+<a class="block hover:text-slate-900 transition-colors" href="../faq.html">FAQ</a>
+<a class="block hover:text-slate-900 transition-colors" href="../security.html">Security</a>
+<a class="block hover:text-slate-900 transition-colors" href="../privacy.html">Privacy Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../cookie-policy.html">Cookie Policy</a>
+<a class="block hover:text-slate-900 transition-colors" href="../terms.html">Terms of Service</a>
+<a class="block hover:text-slate-900 transition-colors" href="../refund-policy.html">Refunds</a>
+<a class="block hover:text-slate-900 transition-colors" href="../feedback.html">Feedback</a>
+<a class="block hover:text-slate-900 transition-colors" href="mailto:service@cloud-waste-scanner.com">Contact Us</a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</footer>
+    <script src="../js/analytics.js" defer></script>
+    <script src="../js/lightbox.js" defer></script>
+    <script src="../js/share-links.js?v=2.6.39.0" defer></script>
+</body>
+</html>

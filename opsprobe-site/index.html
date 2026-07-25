@@ -6,8 +6,57 @@
   <title>Cloud Waste Scanner | Local-First Cloud Cost Recovery</title>
   <meta name="description" content="Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.">
   <link rel="icon" href="assets/product-icon.svg">
+  <link rel="canonical" href="https://cloud-waste-scanner.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cloud Waste Scanner">
+  <meta property="og:title" content="Cloud Waste Scanner | Local-First Cloud Cost Recovery">
+  <meta property="og:description" content="Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.">
+  <meta property="og:url" content="https://cloud-waste-scanner.com/">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cloud Waste Scanner | Local-First Cloud Cost Recovery">
+  <meta name="twitter:description" content="Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
+
+  <link rel="preload" as="image" href="images/scan-results.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <script src="js/site-config.js" defer></script>
+  <script defer src="/js/site-nav.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script id="cws-jsonld" type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "Cloud Waste Scanner",
+      "url": "https://cloud-waste-scanner.com/",
+      "logo": "https://cloud-waste-scanner.com/assets/product-icon.svg",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "service@cloud-waste-scanner.com",
+        "contactType": "customer support"
+      },
+      "@id": "https://cloud-waste-scanner.com/#organization"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Cloud Waste Scanner",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "url": "https://cloud-waste-scanner.com/",
+      "description": "Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.",
+      "image": "https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp",
+      "publisher": {
+        "@id": "https://cloud-waste-scanner.com/#organization"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <header class="nav">
@@ -23,8 +72,8 @@
       <div class="container hero-grid">
         <div>
           <div class="eyebrow">Local-first cloud cost recovery</div>
-          <h1>Find waste fast. Review savings with confidence.</h1>
-          <p class="lead">Run a local scan, see the clearest savings opportunities, and give your team a practical cleanup list.</p>
+          <h1>Find cloud waste fast. Review savings with evidence.</h1>
+          <p class="lead">Run a local scan, see the clearest savings opportunities, and give your team a cleanup list they can review.</p>
           <div class="inline-actions" style="margin-top:28px;">
             <a class="btn primary" href="download/">Download Free</a>
             <a class="btn" href="pricing.html">Public beta</a>
@@ -45,32 +94,68 @@
             </div>
             <span>Latest product view</span>
           </div>
-          <img class="screenshot" src="assets/dashboard-overview-1280.webp" alt="Cloud Waste Scanner dashboard preview">
+          <div class="screenshot-frame">
+            <img class="screenshot" src="images/scan-results.png" width="1493" height="893" fetchpriority="high" alt="Cloud Waste Scanner scan results with resource evidence and estimated savings">
+            <div class="hero-callouts" aria-label="Highlighted product evidence">
+              <span class="hero-callout hero-callout-a">Evidence first</span>
+              <span class="hero-callout hero-callout-b">Owner review</span>
+              <span class="hero-callout hero-callout-c">Export package</span>
+            </div>
+          </div>
+          <div class="hero-proof">
+            <span><strong>5</strong> findings selected</span>
+            <span><strong>¥786.96/mo</strong> estimated savings</span>
+            <span><strong>PDF/CSV</strong> evidence export</span>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <section class="trust-ribbon" aria-label="Product trust boundaries">
+      <div class="container trust-ribbon-inner">
+        <div><strong>Local-first</strong><span>Scan data and cloud credentials stay on the operator machine.</span></div>
+        <div><strong>Read-only first</strong><span>Findings are reviewed before any cleanup path is considered.</span></div>
+        <div><strong>Evidence export</strong><span>PDF and CSV packages help teams assign owners and decisions.</span></div>
+        <div><strong>Desktop beta</strong><span>Windows, Linux, and macOS builds are available during public beta.</span></div>
       </div>
     </section>
 
     <section class="section alt">
       <div class="container">
         <div class="section-title">
-          <h2>Start with the obvious waste.</h2>
-          <p>Most teams can find meaningful savings in the idle resources they already own.</p>
+          <h2>From scan to cleanup review.</h2>
+          <p>The product is designed around a short operating loop, not another hosted dashboard to babysit.</p>
         </div>
-        <div class="grid three" style="margin-top:28px;">
-          <article class="card dark">
-            <p class="eyebrow" style="background:rgba(255,255,255,0.08); color:#dbeafe; border-color:rgba(255,255,255,0.12);">1. Scan</p>
-            <h3>Start with one account</h3>
-            <p style="margin-top:12px;">Review idle compute, unattached storage, stale IPs, old snapshots, and other common waste signals.</p>
+        <div class="product-flow">
+          <article>
+            <span>01</span>
+            <h3>Connect one account</h3>
+            <p>Start with a small read-only scope so the first run is easy to verify and explain.</p>
+            <ul>
+              <li>Provider setup stays local</li>
+              <li>No hosted collector required</li>
+              <li>Proxy-friendly first run</li>
+            </ul>
           </article>
-          <article class="card dark">
-            <p class="eyebrow" style="background:rgba(255,255,255,0.08); color:#dbeafe; border-color:rgba(255,255,255,0.12);">2. Prioritize</p>
-            <h3>Prioritize what pays back first</h3>
-            <p style="margin-top:12px;">Rank findings by confidence, impact, and cleanup risk so operators can act without guesswork.</p>
+          <article>
+            <span>02</span>
+            <h3>Review the evidence</h3>
+            <p>Each finding should carry enough context for an operator to judge confidence, ownership, and risk.</p>
+            <ul>
+              <li>Idle compute and rightsizing signals</li>
+              <li>Unattached storage and stale snapshots</li>
+              <li>Network resources still billing</li>
+            </ul>
           </article>
-          <article class="card dark">
-            <p class="eyebrow" style="background:rgba(255,255,255,0.08); color:#dbeafe; border-color:rgba(255,255,255,0.12);">3. Handoff</p>
-            <h3>Share evidence, then decide</h3>
-            <p style="margin-top:12px;">Export findings and cleanup notes before any change is made.</p>
+          <article>
+            <span>03</span>
+            <h3>Hand off a decision list</h3>
+            <p>Export the short list to the team that owns the change, then close the loop after review.</p>
+            <ul>
+              <li>PDF and CSV exports</li>
+              <li>Cleanup review notes</li>
+              <li>Team-ready evidence package</li>
+            </ul>
           </article>
         </div>
       </div>
@@ -78,27 +163,18 @@
 
     <section class="section">
       <div class="container">
-        <div class="grid two">
-          <article class="card">
-            <div class="eyebrow">What you find</div>
-            <h3 style="margin-top:12px;">Common waste the scanner helps surface.</h3>
-            <ul>
-              <li>Idle virtual machines and underused compute.</li>
-              <li>Unattached disks, volumes, snapshots, and images.</li>
-              <li>Reserved IPs, load balancers, and stale network resources.</li>
-              <li>Storage and object buckets that need review.</li>
-            </ul>
-          </article>
-          <article class="card">
-            <div class="eyebrow">How it stays safe</div>
-            <h3 style="margin-top:12px;">Safe by default.</h3>
-            <ul>
-              <li>Read-only scanning as the default posture.</li>
-              <li>Cloud credentials stay on your machine.</li>
-              <li>Cleanup remains a deliberate team decision.</li>
-              <li>Reports preserve evidence for later review.</li>
-            </ul>
-          </article>
+        <div class="evidence-board">
+          <div>
+            <div class="eyebrow">What the scan should prove</div>
+            <h2>Clear findings beat bigger dashboards.</h2>
+            <p>The best first win is not a complex FinOps program. It is a short list of resources that are still costing money and can be reviewed with the right owner.</p>
+          </div>
+          <div class="evidence-table" role="list" aria-label="Example findings">
+            <div role="listitem"><span>Idle VM</span><strong>low utilization, owner required</strong></div>
+            <div role="listitem"><span>EBS Volume</span><strong>available, unattached, monthly cost visible</strong></div>
+            <div role="listitem"><span>Elastic IP</span><strong>unassociated, still billing</strong></div>
+            <div role="listitem"><span>Snapshot</span><strong>old backup candidate, review retention first</strong></div>
+          </div>
         </div>
       </div>
     </section>
@@ -106,28 +182,27 @@
     <section class="section alt">
       <div class="container">
         <div class="section-title">
-          <h2>Free public beta.</h2>
-          <p>Use the current desktop app for free while we collect first-scan feedback.</p>
+          <h2>Coverage for the first useful review.</h2>
+          <p>Start with common waste categories across the providers most teams already use.</p>
         </div>
-        <div class="grid three" style="margin-top:28px;">
-          <article class="card">
-            <p class="eyebrow">Download</p>
-            <div class="price"><strong>Free</strong><span class="cadence">public beta</span></div>
-            <p style="margin-top:14px;">Install locally and start with one account.</p>
-            <a class="btn primary" style="margin-top:18px;" href="download/">Download Free</a>
-          </article>
-          <article class="card">
-            <p class="eyebrow">Scan</p>
-            <div class="price"><strong>Read-only</strong><span class="cadence">local-first</span></div>
-            <p style="margin-top:14px;">Find obvious waste without sending credentials away.</p>
-            <a class="btn primary" style="margin-top:18px;" href="help.html">Read setup guide</a>
-          </article>
-          <article class="card">
-            <p class="eyebrow">Feedback</p>
-            <div class="price"><strong>Improve</strong><span class="cadence">the product</span></div>
-            <p style="margin-top:14px;">Tell us what blocked or helped the first useful scan.</p>
-            <a class="btn primary" style="margin-top:18px;" href="feedback.html">Send feedback</a>
-          </article>
+        <div class="coverage-grid">
+          <div><strong>AWS</strong><span>EC2, EBS, snapshots, RDS, S3, NAT, load balancers, Elastic IPs</span></div>
+          <div><strong>Azure</strong><span>Virtual machines, managed disks, public IPs, SQL, app plans, blob lifecycle</span></div>
+          <div><strong>GCP</strong><span>Compute Engine, persistent disks, external IPs, snapshots, storage buckets</span></div>
+          <div><strong>Kubernetes</strong><span>Persistent volumes, LoadBalancer services, node baselines, GPU reservations</span></div>
+          <div><strong>Cloudflare</strong><span>DNS review, stale records, R2 bucket hygiene</span></div>
+          <div><strong>DigitalOcean, Vultr, Alibaba</strong><span>Droplets, volumes, reserved IPs, snapshots, object storage</span></div>
+        </div>
+        <div class="final-cta">
+          <div>
+            <div class="eyebrow">Public beta</div>
+            <h2>Run one local review before the next bill closes.</h2>
+            <p>Download the desktop app, connect one account with read-only access, and export the first evidence package for your team.</p>
+          </div>
+          <div class="inline-actions">
+            <a class="btn primary" href="download/">Download Free</a>
+            <a class="btn" href="solutions.html">Browse playbooks</a>
+          </div>
         </div>
       </div>
     </section>

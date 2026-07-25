@@ -1,6 +1,8 @@
-import { Suspense, lazy, useState, useEffect } from "react";
+import { Suspense, lazy, useRef, useState, useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { invoke } from "@tauri-apps/api/core";
+import { persistRuntimePlanToStorage, type RuntimeCapabilitySnapshot } from "./lib/edition";
+import { CheckCircle2, Download, Lock, MonitorCheck } from "lucide-react";
 
 const Dashboard = lazy(() => import("./components/Dashboard").then((mod) => ({ default: mod.Dashboard })));
 const MonitorScreen = lazy(() => import("./components/MonitorScreen").then((mod) => ({ default: mod.MonitorScreen })));
@@ -22,6 +24,7 @@ function App() {
   const [activeTabParams, setActiveTabParams] = useState<any>(null);
   const [isCompactDesktop, setIsCompactDesktop] = useState(false);
   const [isBelowRecommendedWidth, setIsBelowRecommendedWidth] = useState(false);
+  const mainRef = useRef<HTMLElement | null>(null);
 
   const normalizeTab = (tab: string) => {
     switch (tab) {
@@ -50,12 +53,20 @@ function App() {
       invoke("track_event", { event: "app_view_tab", meta: { tab: activeTab } }).catch(console.error);
   }, [activeTab]);
 
+  useEffect(() => {
+      mainRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [activeTab]);
+
   const handleNavigate = (tab: string, params?: any) => {
       setActiveTab(normalizeTab(tab));
       setActiveTabParams(params ?? null);
   };
 
   useEffect(() => {
+      invoke<RuntimeCapabilitySnapshot>("get_runtime_capability_snapshot")
+        .then((snapshot) => persistRuntimePlanToStorage(snapshot.plan_type))
+        .catch(console.error);
+
       // Apply theme and font size on mount
       const theme = localStorage.getItem("theme") || "dark";
       if (theme === 'dark') {
@@ -92,7 +103,23 @@ function App() {
         onTabChange={(tab) => handleNavigate(tab)}
       />
       
-      <main className="cws-app-main flex-1 overflow-auto bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+      <main ref={mainRef} className="cws-app-main flex-1 overflow-auto bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+        <div className="cws-topbar sticky top-0 z-30 border-b border-slate-200/80 bg-white/[0.92] px-5 py-3 shadow-sm backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/[0.86]">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Local workspace</p>
+              <p className="mt-1 truncate text-sm font-semibold text-slate-700 dark:text-slate-200">
+                Evidence review, owner handoff, and cleanup planning stay on this machine.
+              </p>
+            </div>
+            <div className="cws-topbar-signals flex flex-wrap items-center gap-2 text-xs font-semibold">
+              <span><Lock className="h-3.5 w-3.5" /> Read-only first</span>
+              <span><MonitorCheck className="h-3.5 w-3.5" /> Local scan state</span>
+              <span><Download className="h-3.5 w-3.5" /> PDF/CSV export</span>
+              <span><CheckCircle2 className="h-3.5 w-3.5" /> Review gates</span>
+            </div>
+          </div>
+        </div>
         {isBelowRecommendedWidth ? (
           <div className="cws-viewport-advisory border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs font-medium text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
             Best experience starts at 1200px width. Expand the window or switch to full-screen for dense audit workflows.
