@@ -1,11 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
   <title id="title">Cloud Waste Scanner logo</title>
-  <desc id="desc">A blue geometric head profile with a falling cost arrow.</desc>
-  <polygon fill="#2563EB" points="150,150 522,62 798,328 644,562 486,626 416,906 254,966 130,734 44,734 44,382"/>
-  <polygon fill="#3B82F6" points="150,150 522,62 536,318 350,488 44,382"/>
-  <polygon fill="#1D4ED8" points="254,966 130,734 450,734 416,906"/>
-  <polyline fill="none" stroke="#0F172A" stroke-linecap="round" stroke-linejoin="round" stroke-width="30" points="522,62 536,318 798,328 644,562 486,626 416,906"/>
-  <polyline fill="none" stroke="#0F172A" stroke-linecap="round" stroke-linejoin="round" stroke-width="30" points="536,318 350,488 486,626"/>
-  <path fill="none" stroke="#F8FAFC" stroke-linecap="round" stroke-linejoin="round" stroke-width="70" d="M420 390c62 54 123 90 182 106 49 13 98 15 146 4"/>
-  <path fill="none" stroke="#F8FAFC" stroke-linecap="round" stroke-linejoin="round" stroke-width="70" d="M660 438l88 62-70 90"/>
+  <desc id="desc">A blue cloud with a downward cost arrow.</desc>
+  <path fill="#2563EB" d="M309 704c-113 0-205-82-205-184 0-92 75-169 174-182 45-93 145-154 258-154 137 0 252 90 278 210 72 23 123 84 123 156 0 85-77 154-172 154H309Z"/>
+  <path fill="#3B82F6" d="M274 385c50-107 158-176 284-176 123 0 229 71 272 173-57-44-129-70-207-70-144 0-268 86-324 209-69 7-129 37-170 81-16-109 46-200 145-217Z" opacity=".62"/>
+  <path fill="#F8FAFC" d="M336 433l38-66 276 160-38 66Z"/>
+  <path fill="#F8FAFC" d="M714 610l-140 34 77-137Z"/>
+  <path fill="none" stroke="#0F172A" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" opacity=".2" d="M309 704c-113 0-205-82-205-184 0-92 75-169 174-182 45-93 145-154 258-154 137 0 252 90 278 210 72 23 123 84 123 156 0 85-77 154-172 154H309Z"/>
 </svg>
