@@ -3,21 +3,13 @@ import { getVersion } from "@tauri-apps/api/app";
 import appIcon from "../assets/cws-app-icon.svg";
 import {
   LayoutDashboard,
-  Building2,
   Database,
   Server,
   Cloud,
   Settings,
   History,
-  Activity,
   MessageSquare,
-  ClipboardList,
-  Bell,
-  Network,
-  Monitor,
-  FileText,
   LifeBuoy,
-  Bot,
   CircleDot,
 } from 'lucide-react';
 
@@ -42,40 +34,25 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
   
   const menuGroups = [
     {
-      title: 'Operations',
+      title: 'Scan',
       items: [
-        { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'overview', label: 'Scan Workspace', icon: LayoutDashboard },
         { id: 'current_findings', label: 'Scan Results', icon: Server },
         { id: 'resource_inventory', label: 'Resource Inventory', icon: Database },
         { id: 'history', label: 'Scan History', icon: History },
       ],
     },
     {
-      title: 'Analysis',
+      title: 'Set Up',
       items: [
-        { id: 'governance', label: 'Governance', icon: Building2 },
-        { id: 'health_metrics', label: 'Health Metrics', icon: Activity },
-        { id: 'ai_analyst', label: 'AI Device Scan', icon: Bot },
-      ],
-    },
-    {
-      title: 'Configuration',
-      items: [
-        { id: 'configuration', label: 'Configuration', icon: Settings },
         { id: 'accounts', label: 'Accounts', icon: Cloud },
-        { id: 'notifications', label: 'Notifications', icon: Bell },
-        { id: 'network_proxy', label: 'Proxy Profiles', icon: Network },
-        { id: 'ai_settings', label: 'AI Runtime Settings', icon: Bot },
-        { id: 'local_api', label: 'Local API', icon: Monitor },
-        { id: 'preferences', label: 'Preferences', icon: Settings },
+        { id: 'configuration', label: 'Settings', icon: Settings },
       ],
     },
     {
-      title: 'Support',
+      title: 'Help',
       items: [
         { id: 'support_center', label: 'Support Center', icon: LifeBuoy },
-        { id: 'audit_log', label: 'Audit Log', icon: ClipboardList },
-        { id: 'system_logs', label: 'System Logs', icon: FileText },
         { id: 'feedback', label: 'Feedback', icon: MessageSquare },
       ],
     },
@@ -90,17 +67,7 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
           </div>
           <div className="min-w-0">
             <span className="block truncate text-base font-bold tracking-tight text-slate-950 dark:text-white">Cloud Waste Scanner</span>
-            <span className="mt-0.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">Community workspace</span>
-          </div>
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-800 dark:bg-slate-900">
-            <span className="block font-bold text-slate-900 dark:text-white">Local</span>
-            <span className="text-slate-500 dark:text-slate-400">Data boundary</span>
-          </div>
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-2 dark:border-emerald-900/50 dark:bg-emerald-950/30">
-            <span className="block font-bold text-emerald-700 dark:text-emerald-300">Active</span>
-            <span className="text-emerald-700/80 dark:text-emerald-400">Review mode</span>
+            <span className="mt-0.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">Local scan workspace</span>
           </div>
         </div>
       </div>
@@ -140,13 +107,13 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
       <div className="border-t border-slate-200 p-4 dark:border-slate-800">
         <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 transition-colors duration-300">
           <div className="flex items-center justify-between gap-2">
-            <p className="font-bold text-slate-900 dark:text-slate-200">Community Edition</p>
+            <p className="font-bold text-slate-900 dark:text-slate-200">Local beta</p>
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
               <CircleDot className="h-3 w-3" /> Local
             </span>
           </div>
           <p className="mt-2 text-[11px] leading-5 text-slate-500 dark:text-slate-400">
-            Credentials, scan evidence, and exports remain operator-controlled.
+            Scan credentials, evidence, and exports stay on this machine.
           </p>
           <div className="mt-3 flex justify-between border-t border-slate-200 pt-2 dark:border-slate-800">
               <span>Version</span>

@@ -2,7 +2,7 @@ import { Suspense, lazy, useRef, useState, useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { invoke } from "@tauri-apps/api/core";
 import { persistRuntimePlanToStorage, type RuntimeCapabilitySnapshot } from "./lib/edition";
-import { CheckCircle2, Download, Lock, MonitorCheck } from "lucide-react";
+import { Download, Lock, MonitorCheck } from "lucide-react";
 
 const Dashboard = lazy(() => import("./components/Dashboard").then((mod) => ({ default: mod.Dashboard })));
 const MonitorScreen = lazy(() => import("./components/MonitorScreen").then((mod) => ({ default: mod.MonitorScreen })));
@@ -109,14 +109,13 @@ function App() {
             <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Local workspace</p>
               <p className="mt-1 truncate text-sm font-semibold text-slate-700 dark:text-slate-200">
-                Evidence review, owner handoff, and cleanup planning stay on this machine.
+                Run a scan, review the evidence, and export a short list.
               </p>
             </div>
             <div className="cws-topbar-signals flex flex-wrap items-center gap-2 text-xs font-semibold">
               <span><Lock className="h-3.5 w-3.5" /> Read-only first</span>
-              <span><MonitorCheck className="h-3.5 w-3.5" /> Local scan state</span>
+              <span><MonitorCheck className="h-3.5 w-3.5" /> Data stays local</span>
               <span><Download className="h-3.5 w-3.5" /> PDF/CSV export</span>
-              <span><CheckCircle2 className="h-3.5 w-3.5" /> Review gates</span>
             </div>
           </div>
         </div>

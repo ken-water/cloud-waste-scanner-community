@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const search = controls.querySelector("[data-blog-search]");
   const empty = document.querySelector(".blog-empty");
   const state = { category: "all", query: "" };
+  const backgroundCategories = new Set(["Whitepapers", "Industry Intelligence"]);
 
   cards.forEach((card) => {
     const category = card.querySelector(".eyebrow")?.textContent.trim() || "";
@@ -19,7 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let visible = 0;
 
     cards.forEach((card) => {
-      const categoryMatch = state.category === "all" || card.dataset.category === state.category;
+      const categoryMatch = state.category === "all"
+        ? !backgroundCategories.has(card.dataset.category)
+        : card.dataset.category === state.category;
       const queryMatch = !query || card.textContent.toLowerCase().includes(query);
       const show = categoryMatch && queryMatch;
       card.hidden = !show;

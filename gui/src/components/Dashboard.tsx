@@ -87,11 +87,6 @@ interface WastedResource {
   action_type?: string;
 }
 
-interface ResourceMetric {
-  status: string;
-  cpu_utilization?: number;
-}
-
 interface MonitorSnapshot {
   collected_at: number;
   total_resources: number;
@@ -110,20 +105,6 @@ interface GovernanceDailyPoint {
   findings: number;
   scan_runs: number;
   check_success_rate_pct: number;
-}
-
-interface GovernanceStatsResponse {
-  scorecard: {
-    scan_runs: number;
-    findings: number;
-    scan_check_success_rate_pct: number;
-    active_accounts: number;
-    scan_checks_failed: number;
-  };
-  daily?: GovernanceDailyPoint[];
-  error_taxonomy: {
-    categories: GovernanceErrorCategoryRow[];
-  };
 }
 
 interface CloudProfileSummary {
@@ -248,10 +229,10 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   const [stats, setStats] = useState<Stats>({ total_savings: 0, wasted_resource_count: 0, cleanup_count: 0, history: [] });
   const [dashboardWindowDays, setDashboardWindowDays] = useState<number>(30);
-  const [monitorSnapshots, setMonitorSnapshots] = useState<MonitorSnapshot[]>([]);
-  const [governanceDaily, setGovernanceDaily] = useState<GovernanceDailyPoint[]>([]);
-  const [governanceErrorCategories, setGovernanceErrorCategories] = useState<GovernanceErrorCategoryRow[]>([]);
-  const [monitorSummary, setMonitorSummary] = useState<MonitorSummary>({
+  const [monitorSnapshots] = useState<MonitorSnapshot[]>([]);
+  const [governanceDaily] = useState<GovernanceDailyPoint[]>([]);
+  const [governanceErrorCategories] = useState<GovernanceErrorCategoryRow[]>([]);
+  const [monitorSummary] = useState<MonitorSummary>({
     active: 0,
     total: 0,
     idle: 0,
@@ -259,7 +240,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     trendDelta: 0,
     lastCollectedAt: null,
   });
-  const [governanceSummary, setGovernanceSummary] = useState<GovernanceSummary>({
+  const [governanceSummary] = useState<GovernanceSummary>({
     scanRuns: 0,
     findings: 0,
     successRatePct: 0,
@@ -277,7 +258,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     apiTlsEnabled: true,
     apiBindHost: "0.0.0.0",
   });
-  const [aiSummary, setAiSummary] = useState<AiAnalystSummary | null>(null);
+  const [aiSummary] = useState<AiAnalystSummary | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [hasPreDemoBackup, setHasPreDemoBackup] = useState(false);
@@ -436,14 +417,10 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       return true;
   }
 
-  async function loadDashboardInsights(demo = false, windowDays = dashboardWindowDays) {
+  async function loadDashboardInsights(_demo = false, _windowDays = dashboardWindowDays) {
       setLoadingInsights(true);
       try {
           const [
-              metrics,
-              snapshots,
-              governance,
-              ai,
               clouds,
               awsProfiles,
               channels,
@@ -452,10 +429,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               apiTlsRaw,
               apiBindHostRaw,
           ] = await Promise.all([
-              invoke<ResourceMetric[]>("get_resource_metrics", { demoMode: demo }),
-              invoke<MonitorSnapshot[]>("get_monitor_snapshots", { demoMode: demo, windowDays }),
-              invoke<GovernanceStatsResponse>("get_governance_stats", { windowDays, demoMode: demo }),
-              invoke<AiAnalystSummary>("get_ai_analyst_summary", { windowDays }).catch(() => null as AiAnalystSummary | null),
               invoke<CloudProfileSummary[]>("list_cloud_profiles"),
               invoke<AwsProfileSummary[]>("list_aws_profiles"),
               invoke<NotificationChannelSummary[]>("list_notification_channels"),
@@ -464,54 +437,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               invoke<string>("get_setting", { key: "api_tls_enabled" }),
               invoke<string>("get_setting", { key: "api_bind_host" }),
           ]);
-
-          const metricRows = Array.isArray(metrics) ? metrics : [];
-          const snapshotRows = Array.isArray(snapshots) ? snapshots : [];
-          setMonitorSnapshots(snapshotRows);
-          const latestSnapshot = snapshotRows.length > 0 ? snapshotRows[snapshotRows.length - 1] : null;
-          const prevSnapshot = snapshotRows.length > 1 ? snapshotRows[snapshotRows.length - 2] : null;
-          const active = metricRows.filter((metric) => {
-              const status = (metric.status || "").toLowerCase();
-              return (
-                  status.includes("running")
-                  || status.includes("active")
-                  || status.includes("connected")
-                  || status.includes("configured")
-              );
-          }).length;
-          const idle = metricRows.filter((metric) => {
-              return typeof metric.cpu_utilization === "number" && metric.cpu_utilization < 2;
-          }).length;
-          const highLoad = metricRows.filter((metric) => {
-              return typeof metric.cpu_utilization === "number" && metric.cpu_utilization > 80;
-          }).length;
-          setMonitorSummary({
-              active,
-              total: latestSnapshot?.total_resources ?? metricRows.length,
-              idle: latestSnapshot?.idle_resources ?? idle,
-              highLoad: latestSnapshot?.high_load_resources ?? highLoad,
-              trendDelta: latestSnapshot && prevSnapshot
-                  ? latestSnapshot.total_resources - prevSnapshot.total_resources
-                  : 0,
-              lastCollectedAt: latestSnapshot?.collected_at ?? null,
-          });
-
-          const topErrorRows = (governance?.error_taxonomy?.categories || [])
-              .filter((item) => item.count > 0)
-              .sort((a, b) => b.count - a.count);
-          setGovernanceDaily(Array.isArray(governance?.daily) ? governance.daily : []);
-          setGovernanceErrorCategories(topErrorRows.slice(0, 6));
-          const topError = topErrorRows[0];
-          setGovernanceSummary({
-              scanRuns: governance?.scorecard?.scan_runs || 0,
-              findings: governance?.scorecard?.findings || 0,
-              successRatePct: governance?.scorecard?.scan_check_success_rate_pct || 0,
-              activeAccounts: governance?.scorecard?.active_accounts || 0,
-              failedChecks: governance?.scorecard?.scan_checks_failed || 0,
-              topErrorLabel: topError?.label || "No failures",
-              topErrorCount: topError?.count || 0,
-          });
-          setAiSummary(ai || null);
 
           const normalizedProxyMode = (proxyModeRaw || "none").trim().toLowerCase();
           const apiTlsNormalized = (apiTlsRaw || "").trim().toLowerCase();
@@ -529,10 +454,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           });
       } catch (e) {
           console.error("Failed to load dashboard insights", e);
-          setMonitorSnapshots([]);
-          setGovernanceDaily([]);
-          setGovernanceErrorCategories([]);
-          setAiSummary(null);
       } finally {
           setLoadingInsights(false);
       }
@@ -1082,8 +1003,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       </Modal>
 
       <PageHeader
-        title="Dashboard"
-        subtitle="Operating view across latest scan results, governance posture, and monitor signals."
+        title="Scan Workspace"
+        subtitle="Run one local scan, then review the short list of resources worth checking."
         icon={<Activity className="h-6 w-6" />}
         actions={
           <div className="flex flex-col items-end gap-2">
@@ -1137,19 +1058,19 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">What This Page Does</p>
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
-              Summarize the current operating picture before you drill into findings, inventory, governance, or runtime health.
+              Start a scan, then use this page to see the few numbers that tell you where to review next.
             </p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Recommended Flow</p>
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
-              Start a scan, review scan results, package exports for owners, then validate execution quality in Governance and Health Metrics.
+              Start a scan, review the findings, and export the evidence your team needs to make a decision.
             </p>
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Current Mode</p>
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
-              {isDemoMode ? "Demo mode is active." : "Live local state is active."} Insight window: {dashboardWindowDays} days. Edition: Community.
+              {isDemoMode ? "Demo mode is active." : "Live local state is active."} Review window: {dashboardWindowDays} days.
             </p>
           </div>
         </div>
@@ -1358,14 +1279,14 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Operating Workflow</h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Start here</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Use the product in this order when you need a clean handoff from discovery to review.
+              Keep the first pass small: scan, review, and export.
             </p>
           </div>
           <p className="text-xs uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Recommended order</p>
         </div>
-        <div className="mt-5 grid gap-4 xl:grid-cols-4">
+        <div className="mt-5 grid gap-4 xl:grid-cols-3">
           <button
             onClick={() => onNavigate("current_findings")}
             className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-white dark:border-slate-700 dark:bg-slate-900/40 dark:hover:border-indigo-500/40 dark:hover:bg-slate-900"
@@ -1376,7 +1297,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Step 1</p>
             <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">Review Scan Results</h3>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Inspect the latest scan results, select action candidates, and prepare PDF or CSV handoff.
+              Inspect the latest findings and keep only the resources that deserve a closer look.
             </p>
           </button>
 
@@ -1390,7 +1311,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Step 2</p>
             <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">Check Inventory</h3>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Confirm provider-level volume, estimated spend, and relative waste concentration before escalation.
+              Use inventory only when a finding needs provider, account, or resource context.
             </p>
           </button>
 
@@ -1404,21 +1325,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Step 3</p>
             <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">Reopen Scan History</h3>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Compare against prior runs, reopen packaged findings, and export a dated report for responsible owners.
-            </p>
-          </button>
-
-          <button
-            onClick={() => onNavigate("governance")}
-            className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-left transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-white dark:border-slate-700 dark:bg-slate-900/40 dark:hover:border-indigo-500/40 dark:hover:bg-slate-900"
-          >
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
-            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">Step 4</p>
-            <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">Track Governance</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Use governance trends to validate execution quality, recurring waste, and owner coverage over time.
+              Compare against a prior scan when you need to confirm whether the same waste is still there.
             </p>
           </button>
         </div>
@@ -1450,7 +1357,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+      <div className="hidden grid grid-cols-1 xl:grid-cols-4 gap-6">
         <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-80">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Health Metrics Trend ({dashboardWindowDays}d)</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Total, idle, and high-load resources over time.</p>
@@ -1551,7 +1458,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="hidden grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div
           onClick={() => onNavigate("health_metrics")}
           className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-lg cursor-pointer"

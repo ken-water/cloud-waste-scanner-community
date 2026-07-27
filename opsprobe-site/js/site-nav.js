@@ -4,6 +4,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!navInner || !navLinks || navInner.querySelector(".nav-menu-toggle")) return;
 
+  const primaryLinks = {
+    "/": "Home",
+    "/index.html": "Home",
+    "/help.html": "Guide",
+    "/blog.html": "Blog",
+  };
+
+  navLinks.querySelectorAll("a").forEach((link) => {
+    const path = new URL(link.href, window.location.href).pathname;
+    const label = primaryLinks[path];
+    if (!label) {
+      link.remove();
+      return;
+    }
+    link.textContent = label;
+  });
+
   const toggle = document.createElement("button");
   const navId = navLinks.id || "primary-navigation";
 
