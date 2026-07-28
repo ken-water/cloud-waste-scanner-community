@@ -2368,6 +2368,14 @@ code {
     position: static;
   }
 
+  .breadcrumbs > span:last-child:not([aria-hidden]) {
+    display: none;
+  }
+
+  .breadcrumbs > span[aria-hidden]:has(+ span:not([aria-hidden])) {
+    display: none;
+  }
+
   .api-sidebar {
     position: static;
   }
