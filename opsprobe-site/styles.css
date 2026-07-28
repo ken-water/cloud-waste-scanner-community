@@ -848,6 +848,41 @@ button.pill:hover {
   min-width: 170px;
 }
 
+.download-cta-panel {
+  display: grid;
+  gap: 16px;
+  min-width: 190px;
+}
+
+.download-beta-price {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  border-bottom: 1px solid rgba(182, 196, 216, 0.82);
+  padding: 0 2px 14px;
+  color: #53647a;
+}
+
+.download-beta-price span {
+  color: #087568;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.download-beta-price strong {
+  color: var(--ink);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.download-beta-price small {
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .download-quick-actions .btn {
   width: 100%;
   white-space: nowrap;
@@ -2248,6 +2283,11 @@ button.pill:hover {
   white-space: nowrap;
 }
 
+.footer-brand p {
+  margin-top: 14px;
+  max-width: 320px;
+}
+
 .feedback-form {
   display: grid;
   gap: 18px;
@@ -2539,6 +2579,15 @@ code {
     width: 100%;
   }
 
+  .download-cta-panel {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .download-beta-price {
+    justify-items: start;
+  }
+
   .download-card .inline-actions {
     display: grid;
     grid-template-columns: 1fr;
@@ -2644,6 +2693,10 @@ code {
 
   .article-layout .blog-sidebar {
     order: 2;
+  }
+
+  .help-layout .help-sidebar {
+    order: 0;
   }
 
   .article p,

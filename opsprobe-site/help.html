@@ -34,63 +34,79 @@
     </div>
   </header>
 
-  <main class="section">
-    <div class="container article">
-      <div class="eyebrow">Help Center</div>
-      <h1>Get from install to a useful scan.</h1>
-      <p class="lead">Start with one read-only account, verify connectivity, run a narrow scan, then export evidence before cleanup.</p>
+  <main class="section help-page">
+    <div class="container article-layout help-layout">
+      <aside class="blog-sidebar help-sidebar" aria-label="Help table of contents">
+        <section class="blog-sidebar-card">
+          <h2>In this guide</h2>
+          <nav class="toc-links">
+            <a class="toc-link" href="#first-scan">15-minute first scan</a>
+            <a class="toc-link" href="#provider-setup">Provider setup</a>
+            <a class="toc-link" href="#scan-policies">Scan policies</a>
+            <a class="toc-link" href="#network-proxy">Network and proxy</a>
+            <a class="toc-link" href="#cleanup-safety">Cleanup safety</a>
+            <a class="toc-link" href="#reporting">Reporting</a>
+            <a class="toc-link" href="#support">Support</a>
+          </nav>
+        </section>
+      </aside>
+      <article class="article">
+        <div class="eyebrow">Help Center</div>
+        <h1>Get from install to a useful scan.</h1>
+        <p class="lead">Start with one read-only account, verify connectivity, run a narrow scan, then export evidence before cleanup.</p>
 
-      <h2>15-minute first scan</h2>
-      <ol>
-        <li>Install the Windows, Linux, or macOS package from the download center.</li>
-        <li>Open Settings, add one cloud account, and use read-only access first.</li>
-        <li>Run Test Connection before scanning so credential and network issues are isolated.</li>
-        <li>Run a scoped scan for one account or region before broadening coverage.</li>
-        <li>Review high-confidence findings and export PDF or CSV evidence for handoff.</li>
-      </ol>
+        <h2 id="first-scan">15-minute first scan</h2>
+        <ol>
+          <li>Install the Windows, Linux, or macOS package from the download center.</li>
+          <li>Open Settings, add one cloud account, and use read-only access first.</li>
+          <li>Run Test Connection before scanning so credential and network issues are isolated.</li>
+          <li>Run a scoped scan for one account or region before broadening coverage.</li>
+          <li>Review high-confidence findings and export PDF or CSV evidence for handoff.</li>
+        </ol>
 
-      <h2 id="provider-setup">Provider setup</h2>
-      <p>Use least-privilege credentials for the first scan. Add write permissions only if your internal process explicitly approves cleanup actions.</p>
-      <ul>
-        <li><strong>AWS:</strong> Access Key ID, Secret Access Key, and default region. Start with read-only permissions such as Describe/List access.</li>
-        <li><strong>Azure:</strong> Subscription ID, Tenant ID, Client ID, and Client Secret from a service principal. Reader is enough for scan review.</li>
-        <li><strong>Google Cloud:</strong> Service account JSON with the relevant Compute and Monitoring API access enabled.</li>
-        <li><strong>Alibaba Cloud:</strong> AccessKey ID, AccessKey Secret, and target region for ECS, disks, snapshots, EIPs, and OSS review.</li>
-        <li><strong>DigitalOcean:</strong> API token with read scope for droplets, volumes, and load balancers.</li>
-        <li><strong>Cloudflare:</strong> API token scoped to the zones or accounts you want to inspect.</li>
-        <li><strong>Vultr:</strong> API key for instance, block storage, snapshot, and reserved IP review.</li>
-      </ul>
+        <h2 id="provider-setup">Provider setup</h2>
+        <p>Use least-privilege credentials for the first scan. Add write permissions only if your internal process explicitly approves cleanup actions.</p>
+        <ul>
+          <li><strong>AWS:</strong> Access Key ID, Secret Access Key, and default region. Start with read-only permissions such as Describe/List access.</li>
+          <li><strong>Azure:</strong> Subscription ID, Tenant ID, Client ID, and Client Secret from a service principal. Reader is enough for scan review.</li>
+          <li><strong>Google Cloud:</strong> Service account JSON with the relevant Compute and Monitoring API access enabled.</li>
+          <li><strong>Alibaba Cloud:</strong> AccessKey ID, AccessKey Secret, and target region for ECS, disks, snapshots, EIPs, and OSS review.</li>
+          <li><strong>DigitalOcean:</strong> API token with read scope for droplets, volumes, and load balancers.</li>
+          <li><strong>Cloudflare:</strong> API token scoped to the zones or accounts you want to inspect.</li>
+          <li><strong>Vultr:</strong> API key for instance, block storage, snapshot, and reserved IP review.</li>
+        </ul>
 
-      <h2>Scan policies</h2>
-      <p>Default policies are intended for a safe first pass. Tighten thresholds after you understand your environment.</p>
-      <ul>
-        <li>Idle days define how long a resource must remain unused before it is flagged.</li>
-        <li>CPU, network, and storage thresholds should match workload type and business seasonality.</li>
-        <li>Ignore rules should be used for intentional standby resources, regulated retention, or known exceptions.</li>
-      </ul>
+        <h2 id="scan-policies">Scan policies</h2>
+        <p>Default policies are intended for a safe first pass. Tighten thresholds after you understand your environment.</p>
+        <ul>
+          <li>Idle days define how long a resource must remain unused before it is flagged.</li>
+          <li>CPU, network, and storage thresholds should match workload type and business seasonality.</li>
+          <li>Ignore rules should be used for intentional standby resources, regulated retention, or known exceptions.</li>
+        </ul>
 
-      <h2>Network and proxy</h2>
-      <p>If your company uses a restricted network, configure the proxy before adding providers. Confirm DNS, TLS interception behavior, and endpoint reachability with Test Connection.</p>
-      <ul>
-        <li>Use system proxy where possible.</li>
-        <li>Use custom HTTP/HTTPS proxy only when the system route is not enough.</li>
-        <li>If scans fail but credentials are correct, check proxy authentication and allowed cloud API endpoints.</li>
-      </ul>
+        <h2 id="network-proxy">Network and proxy</h2>
+        <p>If your company uses a restricted network, configure the proxy before adding providers. Confirm DNS, TLS interception behavior, and endpoint reachability with Test Connection.</p>
+        <ul>
+          <li>Use system proxy where possible.</li>
+          <li>Use custom HTTP/HTTPS proxy only when the system route is not enough.</li>
+          <li>If scans fail but credentials are correct, check proxy authentication and allowed cloud API endpoints.</li>
+        </ul>
 
-      <h2>Cleanup safety</h2>
-      <p>The safest workflow is detect, review, export, approve, then clean up. Cloud Waste Scanner should not be treated as a blind delete button.</p>
-      <ul>
-        <li>Start read-only.</li>
-        <li>Review owner, age, tags, and usage evidence before action.</li>
-        <li>Export the evidence package before cleanup.</li>
-        <li>Keep rollback notes for resources that can affect production traffic.</li>
-      </ul>
+        <h2 id="cleanup-safety">Cleanup safety</h2>
+        <p>The safest workflow is detect, review, export, approve, then clean up. Cloud Waste Scanner should not be treated as a blind delete button.</p>
+        <ul>
+          <li>Start read-only.</li>
+          <li>Review owner, age, tags, and usage evidence before action.</li>
+          <li>Export the evidence package before cleanup.</li>
+          <li>Keep rollback notes for resources that can affect production traffic.</li>
+        </ul>
 
-      <h2>Reporting</h2>
-      <p>Use PDF for management review and CSV/JSON for engineering workflows. Keep the exported evidence attached to tickets or weekly governance notes so decisions can be audited later.</p>
+        <h2 id="reporting">Reporting</h2>
+        <p>Use PDF for management review and CSV/JSON for engineering workflows. Keep the exported evidence attached to tickets or weekly governance notes so decisions can be audited later.</p>
 
-      <h2>Support</h2>
-      <p>If download, beta access, license recovery, or provider setup fails, use the <a href="feedback.html">feedback and support form</a>. Include operating system, app version, provider, and the relevant error message.</p>
+        <h2 id="support">Support</h2>
+        <p>If download, beta access, license recovery, or provider setup fails, use the <a href="feedback.html">feedback and support form</a>. Include operating system, app version, provider, and the relevant error message.</p>
+      </article>
     </div>
   </main>
 
