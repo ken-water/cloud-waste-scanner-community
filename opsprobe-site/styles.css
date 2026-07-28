@@ -549,6 +549,10 @@ button.pill:hover {
   max-width: 760px;
 }
 
+.pricing-page .section-title {
+  max-width: none;
+}
+
 .section-title h1,
 .section-title h2 {
   font-size: clamp(32px, 4.4vw, 52px);
