@@ -27,6 +27,16 @@
   ],
   "redirects": [
     {
+      "source": "/files/CloudWasteScanner_3.1.1_universal.dmg",
+      "destination": "https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.1.1/target_universal-apple-darwin_release_bundle_dmg_CloudWasteScanner_3.1.1_universal.dmg",
+      "permanent": false
+    },
+    {
+      "source": "/download/files/CloudWasteScanner_3.1.1_universal.dmg",
+      "destination": "https://github.com/ken-water/cloud-waste-scanner-community/releases/download/v3.1.1/target_universal-apple-darwin_release_bundle_dmg_CloudWasteScanner_3.1.1_universal.dmg",
+      "permanent": false
+    },
+    {
       "source": "/files/(.*)",
       "destination": "/download/files/$1",
       "permanent": true

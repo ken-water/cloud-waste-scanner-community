@@ -24,6 +24,66 @@
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+  <script id="cws-jsonld" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "FAQPage",
+        "@id": "https://cloud-waste-scanner.com/help#webpage",
+        "url": "https://cloud-waste-scanner.com/help",
+        "name": "Help | Cloud Waste Scanner",
+        "description": "Quick start, provider setup, proxy, scan policy, reporting, and cleanup safety guidance for Cloud Waste Scanner.",
+        "isPartOf": {
+          "@id": "https://cloud-waste-scanner.com/#website"
+        },
+        "about": {
+          "@id": "https://cloud-waste-scanner.com/#software"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://cloud-waste-scanner.com/help#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://cloud-waste-scanner.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Get from install to the first useful scan.",
+            "item": "https://cloud-waste-scanner.com/help"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://cloud-waste-scanner.com/help#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How should I start with Cloud Waste Scanner?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Install the desktop app, add one read-only cloud account, test the connection, run a narrow scan, and export evidence before cleanup."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Cloud Waste Scanner require write access?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The recommended first scan uses least-privilege read-only access. Add write permissions only after your internal process approves cleanup actions."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header class="nav">
