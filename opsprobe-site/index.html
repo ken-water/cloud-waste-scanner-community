@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloud Waste Scanner | Local-First Cloud Cost Recovery</title>
-  <meta name="description" content="Run a local read-only scan, find cloud resources that still cost money, and export the evidence before cleanup.">
+  <title>Cloud Waste Scanner | Find Cloud Waste and Cut Costs Fast</title>
+  <meta name="description" content="Run a local read-only scan, find cloud resources wasting money, and get evidence your team can use to cut costs fast.">
   <link rel="icon" href="assets/product-icon.svg">
   <link rel="canonical" href="https://cloud-waste-scanner.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Cloud Waste Scanner">
-  <meta property="og:title" content="Cloud Waste Scanner | Local-First Cloud Cost Recovery">
-  <meta property="og:description" content="Run a local read-only scan, find cloud resources that still cost money, and export the evidence before cleanup.">
+  <meta property="og:title" content="Cloud Waste Scanner | Find Cloud Waste and Cut Costs Fast">
+  <meta property="og:description" content="Run a local read-only scan, find cloud resources wasting money, and get evidence your team can use to cut costs fast.">
   <meta property="og:url" content="https://cloud-waste-scanner.com/">
   <meta property="og:image" content="https://cloud-waste-scanner.com/images/scan-report-hero.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Cloud Waste Scanner | Local-First Cloud Cost Recovery">
-  <meta name="twitter:description" content="Run a local read-only scan, find cloud resources that still cost money, and export the evidence before cleanup.">
+  <meta name="twitter:title" content="Cloud Waste Scanner | Find Cloud Waste and Cut Costs Fast">
+  <meta name="twitter:description" content="Run a local read-only scan, find cloud resources wasting money, and get evidence your team can use to cut costs fast.">
   <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/scan-report-hero.webp">
 
   <link rel="stylesheet" href="styles.css">
@@ -34,6 +34,9 @@
       "name": "Cloud Waste Scanner",
       "url": "https://cloud-waste-scanner.com/",
       "logo": "https://cloud-waste-scanner.com/assets/product-icon.svg",
+      "sameAs": [
+        "https://github.com/ken-water/cloud-waste-scanner-community"
+      ],
       "contactPoint": {
         "@type": "ContactPoint",
         "email": "service@cloud-waste-scanner.com",
@@ -47,11 +50,41 @@
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Windows, macOS, Linux",
       "url": "https://cloud-waste-scanner.com/",
-      "description": "Run a local read-only scan, find cloud resources that still cost money, and export the evidence before cleanup.",
+      "description": "Cloud Waste Scanner runs local read-only scans to find cloud resources wasting money and produce evidence teams can use to cut costs fast.",
       "image": "https://cloud-waste-scanner.com/images/scan-report-hero.webp",
       "publisher": {
         "@id": "https://cloud-waste-scanner.com/#organization"
       }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://cloud-waste-scanner.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Cloud Waste Scanner?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cloud Waste Scanner is a local-first desktop app that runs read-only scans from your machine and finds cloud resources that may still be costing money. A first scan produces a short evidence list for cost-saving review."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Cloud Waste Scanner help teams cut cloud costs fast?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cloud Waste Scanner helps teams avoid manual console digging by surfacing likely savings candidates such as idle virtual machines, unattached disks, stale snapshots, unused IPs, and low-traffic network resources."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Cloud Waste Scanner send cloud credentials to a hosted collector?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The recommended workflow keeps cloud credentials on the operator machine and starts with read-only provider access. Scan evidence stays local unless the customer exports or shares it."
+          }
+        }
+      ]
     }
   ]
 }
@@ -71,8 +104,8 @@
       <div class="container hero-grid">
         <div>
           <div class="eyebrow">Local cloud waste scanner</div>
-          <h1>Find cloud waste. Keep the proof.</h1>
-          <p class="lead">Run one local, read-only scan. Get a short list your team can check before the next bill.</p>
+          <h1>Find cloud waste. Cut costs fast.</h1>
+          <p class="lead">Run one local, read-only scan. Get a short list of resources your team can review before the next bill.</p>
           <div class="inline-actions" style="margin-top:28px;">
             <a class="btn primary" href="download/">Download Free</a>
             <a class="btn" href="help.html">Read the first-scan guide</a>
@@ -115,6 +148,21 @@
         <div><strong>Read-only first</strong><span>Findings are reviewed before any cleanup path is considered.</span></div>
         <div><strong>Export evidence</strong><span>Send a PDF or CSV when someone asks for proof.</span></div>
         <div><strong>Desktop app</strong><span>Windows, Linux, and macOS builds are ready to try.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container answer-blocks" aria-label="Cloud Waste Scanner quick answers">
+        <article class="answer-block">
+          <div class="eyebrow">What is Cloud Waste Scanner?</div>
+          <h2>A local scanner for fast cloud cost cleanup.</h2>
+          <p>Cloud Waste Scanner is a desktop app that runs read-only scans from your machine and finds cloud resources that may still be costing money. It is built for teams that want a quick cost-saving review without sending cloud credentials to a hosted collector. A first scan produces a short evidence list with resource type, owner hints, usage signals, estimated savings, and exportable proof for cleanup review.</p>
+        </article>
+        <article class="answer-block">
+          <div class="eyebrow">What value does it deliver?</div>
+          <h2>It turns cost suspicion into a review list.</h2>
+          <p>The practical value is speed: instead of digging through every provider console, you can run one narrow scan and see which idle VMs, unattached disks, stale snapshots, unused IPs, or load balancers deserve attention first. The app does not promise blind deletion. It helps your team identify likely savings, confirm evidence, assign an owner, and act before the next billing cycle compounds the waste.</p>
+        </article>
       </div>
     </section>
 
