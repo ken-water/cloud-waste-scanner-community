@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Review and clean up Idle RDS Instances in AWS</title>
-  <meta name="description" content="Find and review Idle RDS Instances in AWS with local scan evidence before making cleanup decisions.">
+  <title>Review Idle RDS Instances in AWS</title>
+  <meta name="description" content="Review Idle RDS Instances in AWS with local scan evidence before cleanup.">
   <link rel="icon" href="../assets/product-icon.svg">
   <link rel="canonical" href="https://cloud-waste-scanner.com/solutions/aws-rds-instances-cleanup">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Cloud Waste Scanner">
-  <meta property="og:title" content="Review and clean up Idle RDS Instances in AWS">
-  <meta property="og:description" content="Find and review Idle RDS Instances in AWS with local scan evidence before making cleanup decisions.">
+  <meta property="og:title" content="Review Idle RDS Instances in AWS">
+  <meta property="og:description" content="Review Idle RDS Instances in AWS with local scan evidence before cleanup.">
   <meta property="og:url" content="https://cloud-waste-scanner.com/solutions/aws-rds-instances-cleanup">
   <meta property="og:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Review and clean up Idle RDS Instances in AWS">
-  <meta name="twitter:description" content="Find and review Idle RDS Instances in AWS with local scan evidence before making cleanup decisions.">
+  <meta name="twitter:title" content="Review Idle RDS Instances in AWS">
+  <meta name="twitter:description" content="Review Idle RDS Instances in AWS with local scan evidence before cleanup.">
   <meta name="twitter:image" content="https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp">
 
   <link rel="stylesheet" href="../styles.css">
@@ -47,7 +47,7 @@
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Review and clean up Idle RDS Instances in AWS",
+          "name": "Review Idle RDS Instances in AWS",
           "item": "https://cloud-waste-scanner.com/solutions/aws-rds-instances-cleanup"
         }
       ]
@@ -87,42 +87,41 @@
   </header>
   <main class="section">
   <div class="container article">
-    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../solutions.html">Solutions</a><span aria-hidden="true">/</span><span>Review and clean up Idle RDS Instances in AWS</span></nav>
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../solutions.html">Solutions</a><span aria-hidden="true">/</span><span>Review Idle RDS Instances in AWS</span></nav>
     <div class="eyebrow">Solution</div>
-    <h1>Review and clean up Idle RDS Instances in AWS</h1>
-    <p class="lead">Find and review Idle RDS Instances in AWS with local scan evidence before making cleanup decisions.</p>
+    <h1>Review Idle RDS Instances in AWS</h1>
+    <p class="lead">Review Idle RDS Instances in AWS with local scan evidence before cleanup.</p>
     <div class="article-body"><p>Idle RDS Instances can create recurring waste in AWS when ownership, usage, or lifecycle rules drift. Start with evidence, confirm the resource is no longer needed, and only then move to cleanup.</p>
 
-            <h2>Manual review path</h2>
-            <p>For a manual review:</p>
+            <h2>Manual console check</h2>
             <ol>
                 <li>Log in to the AWS Console.</li>
                 <li>Navigate to the Compute/Storage section.</li>
                 <li>Filter for resources with status "Available" or "Unattached".</li>
-                <li>Check the "Last Attached" date to ensure safety.</li>
+                <li>Check age, attachment state, and owner notes before taking action.</li>
                 <li>Review each candidate, confirm ownership and dependency risk, then clean it up through your normal change process.</li>
             </ol>
             <p>Repeating this for every region is tedious, and the risk is higher when there is no evidence trail.</p>
 
-            <h2>Local scan path</h2>
+            <h2>Local scan check</h2>
             <p>
-                <strong>Cloud Waste Scanner</strong> scans locally, groups likely Idle RDS Instances waste, and gives your team evidence to review before cleanup.
+                <strong>Cloud Waste Scanner</strong> scans locally and groups likely Idle RDS Instances waste for review.
             </p>
 
             <figure>
                 <img src="../images/scan-results.png" width="1493" height="893" loading="lazy" decoding="async" alt="Cloud Waste Scanner scan results view">
-                <figcaption>Review likely Idle RDS Instances waste with supporting scan evidence.</figcaption>
+                <figcaption>Review likely Idle RDS Instances waste with scan evidence.</figcaption>
             </figure>
 
-            <h3>Key Benefits</h3>
+            <h3>What this gives you</h3>
             <ul>
-                <li><strong>Evidence first:</strong> Review usage, ownership, and dependency signals before cleanup.</li>
-                <li><strong>Broad coverage:</strong> Scan multiple regions without changing console context.</li>
-                <li><strong>Local-first:</strong> Your AWS credentials stay on your machine.</li>
+                <li>Review usage, ownership, and dependency signals before cleanup.</li>
+                <li>Scan multiple regions without switching console context.</li>
+                <li>Your AWS credentials stay on your machine.</li>
             </ul>
 
             <div>
-                <h3>Review before cleanup</h3><p>Use local scan evidence to decide what is safe to change.</p><a href="../download/">Download App</a>
+                <h3>Review before cleanup</h3><p>Use the scan evidence to decide what is safe to change.</p><a href="../download/">Download App</a>
             
 
             <h2>Common review questions</h2>

@@ -86,7 +86,7 @@
 
                 <h3>Q: Integrating 15+ providers sounds brutal. What makes it hard in practice?</h3>
                 <p>
-                    <strong>A:</strong> The complexity is not just endpoint differences; it is identity and request semantics.
+                    <strong>A:</strong> The complexity is identity and request semantics, not only endpoint differences.
                 </p>
                 <p>
                     AWS SigV4, Azure OAuth2, and multiple vendor-specific HMAC variants all demand distinct signing flows. Some providers are close enough to look familiar, but different enough to break if canonicalization is even slightly off.
@@ -144,7 +144,7 @@ pub trait Scanner {
                     Good scanners should be fast, predictable, and polite to upstream APIs.
                 </p>
 
-                <h3>Q: What did this architecture unlock for the roadmap?</h3>
+                <h3>Q: What did this architecture make possible for the roadmap?</h3>
                 <p>
                     <strong>A:</strong> It gave us a foundation for safe automation.
                 </p>

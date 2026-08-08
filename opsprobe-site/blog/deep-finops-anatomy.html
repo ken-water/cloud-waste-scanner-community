@@ -91,7 +91,7 @@
 
             <h2>Case study 2: attached-but-dead storage</h2>
             <p>Unattached volumes are easy. The harder case is expensive storage that is technically still attached but no longer economically justified. Provisioned IOPS and premium disks can keep billing even when the instance they support is stopped or only used occasionally.</p>
-            <p>That means the question is not just whether storage is attached. The question is whether the attached workload still deserves that class of storage.</p>
+            <p>The real question is whether the attached workload still deserves that class of storage.</p>
 
             <h2>Why shallow checks miss both patterns</h2>
             <p>Single-resource checks only look at the object in front of them. Real cloud waste often sits in the relationship between objects: the gateway and the empty subnet, the expensive disk and the stopped instance, the load balancer and the service that no longer receives traffic.</p>
@@ -99,7 +99,7 @@
 
             <figure>
                 <img src="images/deep-dashboard.webp" alt="Dashboard view for mixed waste categories across cloud environments.">
-                <figcaption>A useful dashboard is one that helps operators connect categories of waste, not just list them.</figcaption>
+                <figcaption>A useful dashboard helps operators connect categories of waste instead of listing them in isolation.</figcaption>
             </figure>
 
             <h2>Breadth still matters</h2>
@@ -113,7 +113,7 @@
             <p>Deeper findings are only useful if the team can act on them with confidence. That is why execution plans matter. They turn a complicated result set into something reviewable: what will change, what the savings look like, and who can sign off.</p>
             <figure>
                 <img src="images/deep-scan-report.webp" alt="Execution plan PDF for cloud cleanup review and approval.">
-                <figcaption>The more complex the finding, the more valuable a reviewable report becomes.</figcaption>
+                <figcaption>The more complex the finding, the more useful a reviewable report becomes.</figcaption>
             </figure>
             <p>To apply this model in daily operations, pair this chapter with <a href="the-idle-fallacy.html">The Idle Fallacy</a> for policy design and <a href="local-first-finops.html">Local-First FinOps</a> for trust-boundary decisions.</p></div>
       <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>

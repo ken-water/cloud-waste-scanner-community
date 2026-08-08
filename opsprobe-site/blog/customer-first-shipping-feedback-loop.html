@@ -128,9 +128,9 @@
                     The practical gain is simple: fewer "works in one place, fails in another" mysteries. The routing decision now lives next to the resource that needs it.
                 </p>
 
-                <h2>Change set 2: Notification testing now reports actionable diagnostics</h2>
+                <h2>Change set 2: Notification testing now reports clear diagnostics</h2>
                 <p>
-                    Users reported two key pain points in notification testing. First, some errors disappeared too fast to read. Second, failure details were not always rich enough to separate proxy issues from endpoint formatting issues. We improved this path to keep failure diagnostics visible and actionable.
+                    Users reported two pain points in notification testing. First, some errors disappeared too fast to read. Second, failure details were not always rich enough to separate proxy issues from endpoint formatting issues. We improved this path to keep failure diagnostics visible and useful.
                 </p>
                 <p>
                     Test outputs now persist with technical context such as stage, reason, proxy mode, endpoint, HTTP status, latency, and method. This allows users to distinguish between:
@@ -182,7 +182,7 @@
                     This guardrail reduces a class of avoidable production confusion: users seeing updated server behavior while still running older clients that cannot represent the same state correctly.
                 </p>
                 <p>
-                    Reliability is not just code quality in one binary. Release choreography matters just as much.
+                    Reliability is bigger than code quality in one binary. Release choreography matters too.
                 </p>
 
                 <figure>
@@ -213,7 +213,7 @@
 
                 <h2>What this means for users in practical terms</h2>
                 <p>
-                    If you are running Cloud Waste Scanner in a real team, the recent improvements are designed to give you five concrete benefits:
+                    If you are running Cloud Waste Scanner in a real team, the recent improvements are built around five practical benefits:
                 </p>
                 <ul>
                     <li>Faster root-cause isolation when notification tests fail.</li>
@@ -235,7 +235,7 @@
                     <li>Classify whether the issue is data path, UX clarity, diagnostics depth, or release mismatch.</li>
                     <li>Fix the root behavior first, then improve surrounding communication.</li>
                     <li>Run targeted QA using real network and credential scenarios.</li>
-                    <li>Ship small versions with release notes that explain impact, not just code changes.</li>
+                    <li>Ship small versions with release notes that explain impact, not only code changes.</li>
                 </ul>
                 <p>
                     This is how we keep momentum without sacrificing reliability.

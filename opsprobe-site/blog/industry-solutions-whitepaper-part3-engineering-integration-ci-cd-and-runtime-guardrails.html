@@ -104,10 +104,10 @@
 <li><strong>Scheduled runtime scan:</strong> drift detection across real accounts after deployment activity.</li>
 <li><strong>Release closeout:</strong> evidence validation that high-risk findings have owners and planned resolution windows.</li>
 </ul>
-<p>This layered model prevents false certainty. PR checks catch obvious mistakes early, runtime scans catch environment reality, and closeout checks protect governance accountability.</p>
+<p>This layered model keeps teams honest. PR checks catch obvious mistakes early, runtime scans reflect the real account state, and closeout checks make sure findings are assigned before everyone moves on.</p>
 
 <h2 id="pipeline-gates">2) Pipeline gates that teams will not bypass</h2>
-<p>Pipeline gates fail when they are either too weak to matter or too heavy to tolerate. In cloud governance, sustainable gates are concise and deterministic. Recommended gate set:</p>
+<p>Pipeline gates fail when they are too weak to matter or too heavy to tolerate. In cloud governance, the gates that survive are short, deterministic, and easy to explain:</p>
 <ul>
 <li><strong>Tag completeness gate:</strong> owner, environment, and retention intent required for deployable resources.</li>
 <li><strong>Policy severity gate:</strong> block only high-confidence violations; warn on low-confidence heuristics.</li>
@@ -149,7 +149,7 @@
 
 <h2 id="rate-limit">6) Provider rate limits: operational engineering details</h2>
 <p>Rate-limit behavior is where many governance integrations fail silently. Teams configure high parallelism in test accounts, then encounter throttling in larger estates and assume the scanner is unreliable. The fix is not simply lowering concurrency. It is managing concurrency as a policy with feedback from real runtime behavior.</p>
-<p>A robust pattern is account-bucket scheduling: group accounts by change intensity and API sensitivity, then apply bounded worker pools per bucket. When transient throttling appears, backoff windows should widen only for affected buckets, not for the entire estate. This keeps throughput stable while preventing global slowdown.</p>
+<p>A sturdier pattern is account-bucket scheduling: group accounts by change intensity and API sensitivity, then apply bounded worker pools per bucket. When transient throttling appears, widen backoff only for the affected bucket. The rest of the scan should keep moving.</p>
 <p>Teams should also track retry inflation ratio as an operational metric. If retry volume rises without corresponding finding volume growth, capacity policy needs tuning before quality degrades.</p>
 
 <h2 id="change-failure">7) Change-failure handling and rollback confidence</h2>

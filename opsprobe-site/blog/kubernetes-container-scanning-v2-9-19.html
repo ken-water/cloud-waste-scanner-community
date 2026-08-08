@@ -98,13 +98,13 @@
 <tr><td>Nodes</td><td>Cluster nodes and capacity metadata</td><td>Review low-request utilization and managed node-pool baseline risks.</td></tr>
 <tr><td>Persistent storage</td><td>PersistentVolumes and PersistentVolumeClaims</td><td>Detect orphaned PVs and storage claims that survive application migrations.</td></tr>
 <tr><td>Services</td><td>ClusterIP, NodePort, LoadBalancer services</td><td>Flag public exposure and cost review candidates such as idle LoadBalancers.</td></tr>
-<tr><td>Governance outputs</td><td>Findings, summary, action plan, MCP tool payloads</td><td>Turn cluster evidence into a review queue, not just raw JSON.</td></tr>
+<tr><td>Governance outputs</td><td>Findings, summary, action plan, MCP tool payloads</td><td>Turn cluster evidence into a review queue instead of raw JSON.</td></tr>
 </tbody>
 </table>
 </div>
 
 <h2 id="why-local-first">Why we chose local kubectl instead of a hosted collector</h2>
-<p>There are powerful Kubernetes cost tools that deploy agents, exporters, or SaaS-connected collectors. Those tools can be valuable when the goal is continuous allocation, chargeback, or deep namespace economics. CWS is solving a different immediate problem: <strong>evidence-first waste discovery that respects the operator trust boundary</strong>.</p>
+<p>There are powerful Kubernetes cost tools that deploy agents, exporters, or SaaS-connected collectors. Those tools can help when the goal is continuous allocation, chargeback, or deep namespace economics. CWS is solving a different immediate problem: <strong>evidence-first waste discovery that respects the operator trust boundary</strong>.</p>
 
 <p>The v2.9.19 Kubernetes lane uses your local <code>kubectl</code> environment. That means:</p>
 <ul>
@@ -207,7 +207,7 @@ Content-Type: application/json
 <h2 id="current-boundaries">Current boundaries and what comes next</h2>
 <p>We should be explicit about the boundary. v2.9.19 uses local <code>kubectl</code>. It is not yet a direct kube-apiserver SDK client. It does not attempt to replace specialized allocation tools such as Kubecost or OpenCost for deep chargeback. It is focused on local-first evidence collection, waste review, and practical governance output.</p>
 
-<p>The next planned workflow work is about workflow, not just more scan calls:</p>
+<p>The next planned work is about workflow, not more scan calls:</p>
 <ul>
 <li>Shared owner queues for Kubernetes findings.</li>
 <li>Recurring closure history for platform teams.</li>

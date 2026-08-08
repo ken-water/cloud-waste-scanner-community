@@ -52,8 +52,8 @@
       </aside>
       <article class="article">
         <div class="eyebrow">Help Center</div>
-        <h1>Get from install to a useful scan.</h1>
-        <p class="lead">Start with one read-only account, verify connectivity, run a narrow scan, then export evidence before cleanup.</p>
+        <h1>Get from install to the first useful scan.</h1>
+        <p class="lead">Start with one read-only account. Test the connection, run a narrow scan, then export the evidence before anyone cleans up a resource.</p>
 
         <h2 id="first-scan">15-minute first scan</h2>
         <ol>
@@ -61,11 +61,11 @@
           <li>Open Settings, add one cloud account, and use read-only access first.</li>
           <li>Run Test Connection before scanning so credential and network issues are isolated.</li>
           <li>Run a scoped scan for one account or region before broadening coverage.</li>
-          <li>Review high-confidence findings and export PDF or CSV evidence for handoff.</li>
+          <li>Review the high-confidence findings and export PDF or CSV evidence for handoff.</li>
         </ol>
 
         <h2 id="provider-setup">Provider setup</h2>
-        <p>Use least-privilege credentials for the first scan. Add write permissions only if your internal process explicitly approves cleanup actions.</p>
+        <p>Use least-privilege credentials for the first scan. Add write permissions only after your internal process approves cleanup actions.</p>
         <ul>
           <li><strong>AWS:</strong> Access Key ID, Secret Access Key, and default region. Start with read-only permissions such as Describe/List access.</li>
           <li><strong>Azure:</strong> Subscription ID, Tenant ID, Client ID, and Client Secret from a service principal. Reader is enough for scan review.</li>
@@ -77,7 +77,7 @@
         </ul>
 
         <h2 id="scan-policies">Scan policies</h2>
-        <p>Default policies are intended for a safe first pass. Tighten thresholds after you understand your environment.</p>
+        <p>Default policies are meant for a safe first pass. Tighten thresholds after you understand your environment.</p>
         <ul>
           <li>Idle days define how long a resource must remain unused before it is flagged.</li>
           <li>CPU, network, and storage thresholds should match workload type and business seasonality.</li>
@@ -93,7 +93,7 @@
         </ul>
 
         <h2 id="cleanup-safety">Cleanup safety</h2>
-        <p>The safest workflow is detect, review, export, approve, then clean up. Cloud Waste Scanner should not be treated as a blind delete button.</p>
+        <p>The safe path is simple: detect, review, export, approve, then clean up. Do not treat Cloud Waste Scanner as a blind delete button.</p>
         <ul>
           <li>Start read-only.</li>
           <li>Review owner, age, tags, and usage evidence before action.</li>

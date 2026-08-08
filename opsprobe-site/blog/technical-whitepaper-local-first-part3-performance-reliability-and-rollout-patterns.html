@@ -90,9 +90,9 @@
 </div>
 </section>
 
-<p>Part 2 established deterministic findings. Part 3 asks the operational question: does that model still hold when scans run at scale, under API quotas, through proxies, and during partial failure conditions?</p>
+<p>Part 2 established deterministic findings. Part 3 asks the operational question: does that model still hold when scans run across larger estates, under API quotas, through proxies, and during partial failure conditions?</p>
 <p>This chapter focuses on repeatable scans under real operating pressure: API quotas, proxies, partial failures, and rollout timing.</p>
-<p>When scans run on a schedule, performance and reliability become part of the evidence trail, not just engineering hygiene.</p>
+<p>When scans run on a schedule, performance and reliability become part of the evidence trail.</p>
 
 <h2 id="chapter-continuity">From model integrity to runtime integrity</h2>
 <p>In <a href="technical-whitepaper-local-first-part2-findings-data-model-and-policy-evaluation.html">Part 2</a>, we required deterministic policy behavior. This chapter focuses on runtime behavior that preserves that determinism under stress. In <a href="technical-whitepaper-local-first-part4-quality-gates-auditability-and-delivery-discipline.html">Part 4</a>, we map those runtime expectations to explicit QA and release gates.</p>
@@ -150,7 +150,7 @@
 <p>That progression is slower than one-click full-scope scans, but it dramatically reduces false negatives and rollout rollback cycles.</p>
 
 <h2 id="case-study">5. Case study: scan stability beats burst speed</h2>
-<p>In one internal validation path, a high-concurrency test produced shorter elapsed time on first run but generated unstable retry storms and inconsistent completion in later runs. A lower concurrency setting increased median elapsed time but produced deterministic completion and cleaner failure diagnostics. For governance workflows, the second profile is the one that scales operationally.</p>
+<p>In one internal validation path, high concurrency finished the first run faster but created retry storms and inconsistent later runs. Lower concurrency took longer on average, but completion was steadier and failure diagnostics were cleaner. For governance work, the steadier profile is the one teams can operate.</p>
 <p>Why this matters to business outcomes: review meetings depend on trusted evidence at a known cadence. A faster-but-erratic scan is operationally more expensive than a slower predictable scan because teams lose confidence in findings and re-run jobs manually.</p>
 
 <h2 id="zero-agent">6. Zero-agent runtime implications</h2>
@@ -180,7 +180,7 @@
 <p><strong>Phase 3: Pilot scope.</strong> Scan a small, representative account group that includes at least one expected finding category (for example idle compute or unattached storage). This confirms end-to-end evidence generation.</p>
 <p><strong>Phase 4: Controlled expansion.</strong> Increase account scope gradually while monitoring stage/reason failure distribution and scan completion ratio. Do not increase scope and concurrency simultaneously; that masks root causes.</p>
 <p><strong>Phase 5: Governance lock-in.</strong> Once behavior is stable, freeze a baseline profile for weekly operations. Changes to concurrency or timeout should follow the same change protocol as policy updates.</p>
-<p>For reliability, record an operations baseline after each phase: scope size, completion ratio, median duration, top failure classes, and remediation notes. This baseline history becomes invaluable when incidents occur months later. Without it, teams rely on memory and anecdote.</p>
+<p>For reliability, record an operations baseline after each phase: scope size, completion ratio, median duration, top failure classes, and remediation notes. This baseline history becomes useful when incidents occur months later. Without it, teams rely on memory and anecdote.</p>
 <p>Another practical point is communication: report degraded scans as degraded, not failed or successful. A degraded scan can still provide useful findings if missing scope is explicit. This distinction helps stakeholders make informed decisions instead of all-or-nothing reactions.</p>
 <p>Lastly, avoid "hero tuning" by a single operator. Every runtime profile should be reproducible by another team member with the same documented configuration. If only one person can keep scans stable, reliability is fragile regardless of software quality.</p>
 

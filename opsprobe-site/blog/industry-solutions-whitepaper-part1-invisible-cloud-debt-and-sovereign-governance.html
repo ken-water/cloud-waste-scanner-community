@@ -107,13 +107,13 @@
 <h2 id="invisible-debt">1) The invisible debt model: where spend leaks survive</h2>
 <p>In field operations, cost drift rarely starts with one dramatic incident. It accumulates through small unresolved artifacts: unattached volumes after migration, idle load balancers after rollback, stale snapshots after failed cleanup windows, and forgotten IP allocations after test cutovers. None of these artifacts is hard to detect in isolation. The challenge is that each one lives in a different operational ownership lane.</p>
 <p>That is why monthly finance review and daily engineering review often tell different stories. Finance sees category movement. Engineering sees resource state. Without a shared evidence contract, both sides are correct and still unable to close the loop quickly. Over time, this gap becomes invisible debt: spend that is acknowledged but not operationally resolved.</p>
-<p>A resilient cloud governance framework should treat this as a systems problem with three design constraints. First, detection must be reproducible and explainable, not just numerically impressive. Second, ownership routing must be explicit, because unresolved ownership is the fastest route to recurring waste. Third, evidence must be audience-adapted: engineers need resource lineage, finance needs verified impact, management needs closure status with timeline confidence.</p>
+<p>A practical cloud governance framework needs three things to hold up in real work: repeatable detection, named ownership, and evidence each reviewer can use. Engineers need lineage. Finance needs verified impact. Managers need closure status and a believable timeline.</p>
 <figure>
 <img src="images/industry-solutions-whitepaper-2026/part1-invisible-debt-system-map.svg" alt="Invisible cloud debt map across discovery, ownership, evidence, and closure contracts." loading="lazy" decoding="async">
 <figcaption>Figure IS-1. Hidden debt accumulates when discovery is decoupled from ownership and evidence-to-action closure.</figcaption>
 </figure>
 <p>To validate this model, we reviewed 14 anonymized rollout windows across mixed AWS and Azure environments used by CWS design-partner teams between December 2025 and March 2026. The pattern was consistent: teams detected most low-hanging idle resources quickly, but the median closure cycle still exceeded one week when findings lacked a named owner and source evidence. In the subset where ownership and evidence were attached at creation time, median closure dropped to under three days. The absolute dollar impact varied by account size, but the process signal did not.</p>
-<p>These observations align with established external guidance. FinOps Foundation materials emphasize that visibility without accountability creates recurring optimization debt, while cloud-provider cost-optimization guidance repeatedly stresses ownership and lifecycle controls over one-off cleanup campaigns. In short: dashboards reveal the smoke, but ownership and evidence put out the fire.</p>
+<p>This matches the guidance teams already hear from FinOps and cloud-provider cost reviews: visibility does not fix much unless someone owns the next step. Dashboards can show where to look. Ownership and evidence decide whether the work closes.</p>
 
 <h2 id="sovereignty">2) Sovereignty by design: why boundary choice changes rollout speed</h2>
 <p>Many teams evaluate cloud tooling only on feature breadth. In practice, boundary choice is often a stronger predictor of deployment speed. If security review must evaluate broad third-party data custody before pilot start, rollout can stall long before technical merit is discussed. This is not a criticism of hosted platforms; it is an organizational reality in regulated and privacy-sensitive environments.</p>
@@ -134,7 +134,7 @@
 
 <h2 id="industry-playbooks">4) Industry playbooks: finance and engineering paths</h2>
 <p><strong>Financial and regulated environments.</strong> The primary risk is not only overspend; it is unverifiable action. A recommendation that cannot be traced to source context is often rejected, regardless of potential savings. In this environment, useful governance output includes actor ownership, evidence references, and a reversible action path. The fastest teams define a weekly decision window with explicit approver roles, instead of ad-hoc asynchronous approvals that silently decay.</p>
-<p><strong>Engineering-heavy product teams.</strong> The common failure mode is test-environment residue after release or rollback cycles. Here the right integration point is workflow-level, not just dashboard-level. Teams can schedule scoped scans around release windows, route findings to service owners, and require closure notes before sprint close. The goal is not to chase every low-cost artifact immediately; the goal is to prevent repeatable residue classes from surviving multiple release cycles.</p>
+<p><strong>Engineering-heavy product teams.</strong> Test residue often appears after releases, rollbacks, and short-lived environments. The useful place to catch it is the workflow: scan around release windows, route findings to service owners, and require closure notes before sprint close. The goal is not to chase every small artifact. It is to stop the same residue class from surviving release after release.</p>
 <p>Across both paths, the shared lesson is cadence discipline. Teams that improve quickly run a fixed loop: detect, triage, assign, verify, close, and report. Teams that struggle usually skip one of the middle steps, most often assignment clarity or verification evidence.</p>
 
 <h2 id="roadmap">5) FinOps maturity roadmap: discover, optimize, prevent</h2>
@@ -144,7 +144,7 @@
 <li><strong>Optimize:</strong> close recurring waste classes with owner-based execution.</li>
 <li><strong>Prevent:</strong> embed checks into delivery workflows so the same debt class does not regenerate at the same rate.</li>
 </ul>
-<p>The anti-pattern is trying to jump directly to prevention without stable discovery and closure discipline. Preventive controls built on weak evidence usually become noisy, then ignored. In mature teams, prevention is earned by proving that discovery and optimization outputs are already trusted and actionable.</p>
+<p>The common mistake is jumping to prevention before discovery and closure are trusted. Controls built on weak evidence become noisy. Once that happens, teams route around them.</p>
 <figure>
 <img src="images/industry-solutions-whitepaper-2026/part1-finops-maturity-ladder.svg" alt="FinOps maturity ladder from discover to optimize to prevent with closure and evidence gates." loading="lazy" decoding="async">
 <figcaption>Figure IS-2. Maturity ladder for cloud governance execution: discover, optimize, prevent, with evidence and ownership gates.</figcaption>
@@ -160,7 +160,7 @@
 <ul>
 <li>Define one evidence contract shared by finance and engineering.</li>
 <li>Run one fixed weekly cadence before scaling scope.</li>
-<li>Require owner assignment and due date for each actionable finding class.</li>
+<li>Require owner assignment and due date for each finding class.</li>
 <li>Track closure rate by class, not only total savings discovered.</li>
 <li>Document two explicit non-goals for quarter one to avoid governance sprawl.</li>
 </ul>
