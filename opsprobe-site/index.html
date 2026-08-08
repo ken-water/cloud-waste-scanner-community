@@ -12,11 +12,11 @@
   <meta property="og:title" content="Cloud Waste Scanner | Local-First Cloud Cost Recovery">
   <meta property="og:description" content="Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.">
   <meta property="og:url" content="https://cloud-waste-scanner.com/">
-  <meta property="og:image" content="https://cloud-waste-scanner.com/images/home-hero-dashboard.webp">
+  <meta property="og:image" content="https://cloud-waste-scanner.com/images/scan-report-hero.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Cloud Waste Scanner | Local-First Cloud Cost Recovery">
   <meta name="twitter:description" content="Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.">
-  <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/home-hero-dashboard.webp">
+  <meta name="twitter:image" content="https://cloud-waste-scanner.com/images/scan-report-hero.webp">
 
   <link rel="stylesheet" href="styles.css">
   <script src="js/site-config.js" defer></script>
@@ -48,7 +48,7 @@
       "operatingSystem": "Windows, macOS, Linux",
       "url": "https://cloud-waste-scanner.com/",
       "description": "Find idle, oversized, and forgotten cloud resources fast with a free public beta local-first scanner.",
-      "image": "https://cloud-waste-scanner.com/images/home-hero-dashboard.webp",
+      "image": "https://cloud-waste-scanner.com/images/scan-report-hero.webp",
       "publisher": {
         "@id": "https://cloud-waste-scanner.com/#organization"
       }
@@ -83,59 +83,27 @@
             <span class="pill">Keys stay local</span>
           </div>
         </div>
-        <div class="hero-card">
+        <div class="hero-card report-preview">
           <div class="window-bar">
             <div class="dot-row" aria-hidden="true">
               <span class="dot"></span>
               <span class="dot"></span>
               <span class="dot"></span>
             </div>
-            <span>Local scan preview</span>
+            <span>Real scan report</span>
           </div>
-          <div class="screenshot-frame product-preview" aria-label="Cloud Waste Scanner dashboard preview">
-            <aside class="preview-sidebar" aria-hidden="true">
-              <div class="preview-logo">CWS</div>
-              <span class="active">Dashboard</span>
-              <span>Scan</span>
-              <span>Resources</span>
-            </aside>
-            <div class="preview-main">
-              <div class="preview-topline">
-                <div>
-                  <strong>Dashboard</strong>
-                  <span>Review the latest local scan</span>
-                </div>
-                <em>Read-only scan</em>
-              </div>
-              <div class="preview-metrics">
-                <div><span>Estimated savings</span><strong>$1,083/mo</strong></div>
-                <div><span>Findings</span><strong>42</strong></div>
-                <div><span>Ready for review</span><strong>18</strong></div>
-              </div>
-              <div class="preview-content">
-                <div class="preview-chart">
-                  <div class="chart-head"><strong>Waste by category</strong><span>monthly</span></div>
-                  <div class="bars" aria-hidden="true">
-                    <span style="height:78%"></span>
-                    <span style="height:46%"></span>
-                    <span style="height:64%"></span>
-                    <span style="height:35%"></span>
-                    <span style="height:52%"></span>
-                  </div>
-                </div>
-                <div class="preview-findings">
-                  <div class="chart-head"><strong>Top findings</strong><span>evidence attached</span></div>
-                  <div class="finding-row"><b>Idle compute</b><span>$426/mo</span></div>
-                  <div class="finding-row"><b>Detached disks</b><span>$214/mo</span></div>
-                  <div class="finding-row"><b>Unused IPs</b><span>$87/mo</span></div>
-                </div>
-              </div>
-            </div>
+          <div class="report-summary" aria-label="Report summary">
+            <div><span>Total potential savings</span><strong>$1,611.75/mo</strong></div>
+            <div><span>Estimated CO2e reduction</span><strong>278.8 kg/mo</strong></div>
+            <div><span>Export format</span><strong>PDF / CSV</strong></div>
+          </div>
+          <div class="report-image-shell">
+            <img class="report-image" src="images/scan-report-hero.webp" alt="Real Cloud Waste Scanner report showing total potential savings, CO2e reduction, and a table of findings across AWS, Azure, GCP, Alibaba Cloud, Linode, DigitalOcean, and Oracle.">
           </div>
           <div class="hero-proof">
-            <span><strong>5</strong> findings selected</span>
-            <span><strong>$786.96/mo</strong> estimated savings</span>
-            <span><strong>PDF/CSV</strong> evidence export</span>
+            <span><strong>13</strong> resources listed</span>
+            <span><strong>$1,611.75/mo</strong> potential savings</span>
+            <span><strong>278.8 kg</strong> CO2e reduction</span>
           </div>
         </div>
       </div>
