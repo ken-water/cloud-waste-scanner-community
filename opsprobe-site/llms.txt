@@ -4,6 +4,14 @@ Cloud Waste Scanner is a local-first desktop app for finding cloud resources tha
 
 Maintained by Ken Rich. Last reviewed: 2026-08-12.
 
+## Access and usage intent
+
+- Public pages on cloud-waste-scanner.com may be crawled for search, AI answer retrieval, citation, and product understanding.
+- Public website content may be used to understand the product, pricing state, security model, documentation, and public blog guidance.
+- Public website content should not be treated as customer cloud data, customer scan output, private telemetry, or hosted credential material.
+- Cloud Waste Scanner does not require customer cloud credentials or scan exports to be sent to Cloud Waste Scanner servers for local scans.
+- For model training preferences beyond this guidance, follow robots.txt, applicable crawler-specific controls, and the access rules published on the site.
+
 ## Primary audience
 
 - Platform engineers and SREs who need a short list of resources to review before the next cloud bill.
