@@ -8,28 +8,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const lead = title?.nextElementSibling?.tagName === "P" ? title.nextElementSibling : null;
   const meta = article.querySelector(".meta-line");
   const articleBody = article.querySelector(".article-body");
+  const hasAnswerCard = Boolean(article.querySelector(".article-answer-card"));
   const headings = Array.from(articleBody?.querySelectorAll("h2") || [])
     .map((heading) => heading.textContent.trim())
     .filter(Boolean)
     .slice(0, 3);
 
-  if (!title || !lead || !meta || headings.length === 0) return;
+  if (!title || !lead || !meta) return;
 
-  const brief = document.createElement("section");
-  brief.className = "article-brief";
-  brief.setAttribute("aria-label", "Article summary");
-  brief.innerHTML = `
-    <div>
-      <span class="article-brief-label">Quick read</span>
-      <p>${lead.textContent.trim()}</p>
-    </div>
-    <div>
-      <span class="article-brief-label">What to look for</span>
-      <ul>${headings.map((heading) => `<li>${heading}</li>`).join("")}</ul>
-    </div>
-  `;
+  if (!hasAnswerCard && headings.length > 0) {
+    const brief = document.createElement("section");
+    brief.className = "article-brief";
+    brief.setAttribute("aria-label", "Article summary");
+    brief.innerHTML = `
+      <div>
+        <span class="article-brief-label">Quick read</span>
+        <p>${lead.textContent.trim()}</p>
+      </div>
+      <div>
+        <span class="article-brief-label">What to look for</span>
+        <ul>${headings.map((heading) => `<li>${heading}</li>`).join("")}</ul>
+      </div>
+    `;
 
-  meta.insertAdjacentElement("afterend", brief);
+    meta.insertAdjacentElement("afterend", brief);
+  }
 
   const cta = article.querySelector(".article-cta");
   if (cta && !article.querySelector(".article-next-step")) {

@@ -35,8 +35,14 @@
   "url": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19",
   "image": "https://cloud-waste-scanner.com/assets/dashboard-overview-1280.webp",
   "author": {
-    "@type": "Organization",
-    "name": "Cloud Waste Scanner"
+    "@type": "Person",
+    "name": "Ken Rich",
+    "jobTitle": "Cloud Waste Scanner product lead",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Cloud Waste Scanner",
+      "url": "https://cloud-waste-scanner.com/"
+    }
   },
   "publisher": {
     "@type": "Organization",
@@ -51,7 +57,41 @@
     "@id": "https://cloud-waste-scanner.com/blog/kubernetes-container-scanning-v2-9-19"
   },
   "datePublished": "2026-04-28",
-  "dateModified": "2026-07-25"
+  "dateModified": "2026-08-12",
+  "reviewedBy": {
+    "@type": "Person",
+    "name": "Ken Rich",
+    "jobTitle": "Cloud Waste Scanner product lead",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Cloud Waste Scanner",
+      "url": "https://cloud-waste-scanner.com/"
+    }
+  },
+  "about": [
+    {
+      "@type": "Thing",
+      "name": "cloud cost optimization"
+    },
+    {
+      "@type": "Thing",
+      "name": "cloud waste detection"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Cloud Waste Scanner",
+      "url": "https://cloud-waste-scanner.com/"
+    }
+  ],
+  "keywords": [
+    "Cloud Waste Scanner",
+    "cloud waste scanner",
+    "cloud cost optimization",
+    "FinOps",
+    "local-first cloud scanning",
+    "read-only cloud scan",
+    "cloud savings candidates"
+  ]
 }
   </script>
 </head>
@@ -78,6 +118,7 @@
       <h1>v2.9.19: Kubernetes Scans Without a Cluster Agent</h1>
       <p class="lead">v2.9.19 added Kubernetes scanning without asking teams to install a cluster agent or hosted collector.</p>
       <div class="meta-line">2026-04-28 · Product Updates</div>
+      <div class="article-byline">By <strong>Ken Rich</strong><span>Updated 2026-08-12</span><span>Reviewed for local-first cloud cost guidance</span></div>
       <div class="article-body" data-article-body><p>Container platforms changed how teams ship software, but they did not make waste disappear. In many environments, Kubernetes simply moved cloud waste behind a scheduler, a namespace, or a storage claim.</p>
 
 <p>That is the reason v2.9.19 matters. Cloud Waste Scanner now supports <strong>local-first Kubernetes and container waste scanning</strong>. The implementation is deliberately practical: it runs through local <code>kubectl</code>, uses the kubeconfig and context you choose, keeps data on your machine, and returns evidence that an operator can review without installing a SaaS collector inside the cluster.</p>
