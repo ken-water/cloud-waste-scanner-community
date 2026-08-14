@@ -41,8 +41,18 @@
     "worksFor": {
       "@type": "Organization",
       "name": "Cloud Waste Scanner",
-      "url": "https://cloud-waste-scanner.com/"
-    }
+      "url": "https://cloud-waste-scanner.com/",
+      "sameAs": [
+        "https://github.com/ken-water/cloud-waste-scanner-community",
+        "https://github.com/ken-water",
+        "https://github.com/sponsors/ken-water"
+      ],
+      "@id": "https://cloud-waste-scanner.com/#organization"
+    },
+    "sameAs": [
+      "https://github.com/ken-water",
+      "https://github.com/sponsors/ken-water"
+    ]
   },
   "publisher": {
     "@type": "Organization",
@@ -50,7 +60,14 @@
     "logo": {
       "@type": "ImageObject",
       "url": "https://cloud-waste-scanner.com/assets/product-icon.svg"
-    }
+    },
+    "sameAs": [
+      "https://github.com/ken-water/cloud-waste-scanner-community",
+      "https://github.com/ken-water",
+      "https://github.com/sponsors/ken-water"
+    ],
+    "url": "https://cloud-waste-scanner.com/",
+    "@id": "https://cloud-waste-scanner.com/#organization"
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -65,8 +82,18 @@
     "worksFor": {
       "@type": "Organization",
       "name": "Cloud Waste Scanner",
-      "url": "https://cloud-waste-scanner.com/"
-    }
+      "url": "https://cloud-waste-scanner.com/",
+      "sameAs": [
+        "https://github.com/ken-water/cloud-waste-scanner-community",
+        "https://github.com/ken-water",
+        "https://github.com/sponsors/ken-water"
+      ],
+      "@id": "https://cloud-waste-scanner.com/#organization"
+    },
+    "sameAs": [
+      "https://github.com/ken-water",
+      "https://github.com/sponsors/ken-water"
+    ]
   },
   "about": [
     {
@@ -119,6 +146,11 @@
       <p class="lead">This part defines what Cloud Waste Scanner touches, what stays local, and which assumptions matter for security review.</p>
       <div class="meta-line">2026-03-18 · Whitepapers</div>
       <div class="article-byline">By <strong>Ken Rich</strong><span>Updated 2026-08-12</span><span>Reviewed for local-first cloud cost guidance</span></div>
+      <section class="article-answer-card" aria-label="Quick answer">
+        <span>Quick answer</span>
+        <h2>What is the Cloud Waste Scanner trust boundary?</h2>
+        <p>Cloud Waste Scanner keeps the cost scan inside the customer boundary. The desktop app runs on the operator machine, uses customer-controlled provider credentials, calls cloud APIs directly, and writes findings and exports locally unless the customer chooses to share them. Hosted website, download, payment, and licensing services are outside the scan path. That split helps security teams approve a fast read-only cost review without giving a vendor control plane custody of cloud credentials or raw scan output.</p>
+      </section>
       <div class="article-body" data-article-body><section>
 <p>Security Whitepaper Series</p>
 <p>Read in order: trust boundary -> control matrix -> verification -> token hardening -> transport and auditability.</p>
@@ -236,7 +268,7 @@
 <a href="../security.html" download>Download Security Review Checklist</a>
 </div>
 </section></div>
-      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+      <div class="card article-cta"><h3>Bring "Threat Model and Trust Boundary" into a security review.</h3><p>Run the scan locally and use the export to answer the Threat Model and Trust Boundary questions without moving credentials into a hosted scanner.</p><a class="btn primary" href="../download/">Download App</a></div>
     </article>
   </div>
 </main>

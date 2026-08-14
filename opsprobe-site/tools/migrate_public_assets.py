@@ -350,7 +350,7 @@ def generate_blog_articles() -> list[dict[str, str]]:
       <p class="lead">{html.escape(description)}</p>
       <div class="meta-line">{html.escape(date)} · {html.escape(category)}</div>
       <div class="article-body" data-article-body>{body}</div>
-      <div class="card article-cta"><h3>Run the same review locally.</h3><p>Use Cloud Waste Scanner to scan locally, review evidence, and export findings for your team.</p><a class="btn primary" href="../download/">Download App</a></div>
+      <div class="card article-cta"><h3>Try the scan with your own cloud account.</h3><p>Start read-only, review the evidence, and decide which cost-saving candidates are worth handing to owners.</p><a class="btn primary" href="../download/">Download App</a></div>
     </article>
   </div>
 </main>"""

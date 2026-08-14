@@ -25,42 +25,63 @@
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
   <script id="cws-jsonld" type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "@id": "https://cloud-waste-scanner.com/terms#webpage",
-        "url": "https://cloud-waste-scanner.com/terms",
-        "name": "Terms | Cloud Waste Scanner",
-        "description": "Terms for using the Cloud Waste Scanner public beta, including acceptable use, licensing, support, warranty, and liability limits.",
-        "isPartOf": {
-          "@id": "https://cloud-waste-scanner.com/#website"
-        },
-        "about": {
-          "@id": "https://cloud-waste-scanner.com/#software"
-        }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://cloud-waste-scanner.com/terms#webpage",
+      "url": "https://cloud-waste-scanner.com/terms",
+      "name": "Terms | Cloud Waste Scanner",
+      "description": "Terms for using the Cloud Waste Scanner public beta, including acceptable use, licensing, support, warranty, and liability limits.",
+      "isPartOf": {
+        "@id": "https://cloud-waste-scanner.com/#website"
       },
-      {
-        "@type": "BreadcrumbList",
-        "@id": "https://cloud-waste-scanner.com/terms#breadcrumb",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://cloud-waste-scanner.com/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Terms for using the Cloud Waste Scanner public beta.",
-            "item": "https://cloud-waste-scanner.com/terms"
-          }
-        ]
+      "about": {
+        "@id": "https://cloud-waste-scanner.com/#software"
       }
-    ]
-  }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://cloud-waste-scanner.com/terms#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cloud-waste-scanner.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Terms for using the Cloud Waste Scanner public beta.",
+          "item": "https://cloud-waste-scanner.com/terms"
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://cloud-waste-scanner.com/#organization",
+      "name": "Cloud Waste Scanner",
+      "url": "https://cloud-waste-scanner.com/",
+      "logo": "https://cloud-waste-scanner.com/assets/product-icon.svg",
+      "sameAs": [
+        "https://github.com/ken-water/cloud-waste-scanner-community",
+        "https://github.com/ken-water",
+        "https://github.com/sponsors/ken-water"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://cloud-waste-scanner.com/#website",
+      "url": "https://cloud-waste-scanner.com/",
+      "name": "Cloud Waste Scanner",
+      "publisher": {
+        "@id": "https://cloud-waste-scanner.com/#organization"
+      }
+    }
+  ]
+}
   </script>
 </head>
 <body>
