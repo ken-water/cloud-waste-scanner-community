@@ -33,7 +33,7 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
   const [includeKubernetes, setIncludeKubernetes] = useState(false);
   const [kubeconfigPath, setKubeconfigPath] = useState("~/.kube/config");
   const [kubeContext, setKubeContext] = useState("");
-  const [includeAiRuntime, setIncludeAiRuntime] = useState(true);
+  const [includeAiRuntime, setIncludeAiRuntime] = useState(false);
   
   // Config
   const [timeout, setTimeout] = useState(10);
@@ -52,7 +52,7 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
       setIncludeKubernetes(false);
       setKubeconfigPath("~/.kube/config");
       setKubeContext("");
-      setIncludeAiRuntime(true);
+      setIncludeAiRuntime(false);
       setError(null);
     }
   }, [isOpen]);
@@ -259,51 +259,19 @@ export function ScanWizard({ isOpen, onClose, onScanComplete, demoMode = false }
                     )}
                 </div>
                 {!demoMode && (
-                    <div
-                        onClick={() => {
-                            setError(null);
-                            setIncludeKubernetes(!includeKubernetes);
-                        }}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between group ${includeKubernetes ? 'border-emerald-600 bg-emerald-50/60 dark:bg-emerald-900/20' : 'border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-slate-600'}`}
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className={`p-3 rounded-lg ${includeKubernetes ? 'bg-emerald-100 text-emerald-700 dark:text-emerald-300' : 'bg-slate-100 text-slate-500'}`}>
-                                <Cloud className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <p className="font-bold text-slate-900 dark:text-white">Kubernetes Local Cluster</p>
-                                <p className="text-base text-slate-500">Read-only kubectl scan for nodes, workloads, PV/PVC, and services.</p>
-                            </div>
-                        </div>
-                        {includeKubernetes && <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />}
-                    </div>
-                )}
-                {!demoMode && (
-                    <div
-                        onClick={() => {
-                            setError(null);
-                            setIncludeAiRuntime(!includeAiRuntime);
-                        }}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between group ${includeAiRuntime ? 'border-violet-600 bg-violet-50/60 dark:bg-violet-900/20' : 'border-slate-100 dark:border-slate-700 hover:border-violet-200 dark:hover:border-slate-600'}`}
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className={`p-3 rounded-lg ${includeAiRuntime ? 'bg-violet-100 text-violet-700 dark:text-violet-300' : 'bg-slate-100 text-slate-500'}`}>
-                                <Zap className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <p className="font-bold text-slate-900 dark:text-white">AI Device Utilization Scan</p>
-                                <p className="text-base text-slate-500">Local GPU runtime scan for idle, memory stranded, and power-efficiency signals.</p>
-                            </div>
-                        </div>
-                        {includeAiRuntime && <Check className="w-5 h-5 text-violet-600 dark:text-violet-400" />}
+                    <div className="rounded-xl border border-teal-200 bg-teal-50/70 p-4 dark:border-teal-500/30 dark:bg-teal-500/10">
+                        <p className="text-sm font-semibold text-teal-900 dark:text-teal-100">Recommended first pass</p>
+                        <p className="mt-1 text-sm leading-6 text-teal-800 dark:text-teal-200">
+                            Start with one AWS account. Kubernetes and AI runtime scans remain available as separate advanced workflows after the first cloud result.
+                        </p>
                     </div>
                 )}
                 <button 
                     onClick={goToConfigure}
-                    disabled={selectedIds.length === 0 && !includeKubernetes && !includeAiRuntime}
+                    disabled={selectedIds.length === 0 && !includeKubernetes}
                     className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold flex items-center justify-center hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 >
-                    Next Step {(selectedIds.length > 0 || includeKubernetes || includeAiRuntime) && `(${selectedIds.length + (includeKubernetes ? 1 : 0) + (includeAiRuntime ? 1 : 0)})`} <ChevronRight className="w-5 h-5 ml-1" />
+                    Configure first scan {selectedIds.length > 0 && `(${selectedIds.length})`} <ChevronRight className="w-5 h-5 ml-1" />
                 </button>
             </div>
         )}

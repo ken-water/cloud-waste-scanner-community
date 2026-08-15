@@ -36,14 +36,14 @@ export function Sidebar({ currentTab, onTabChange }: SidebarProps) {
     {
       title: 'Scan',
       items: [
-        { id: 'overview', label: 'Scan Workspace', icon: LayoutDashboard },
+        { id: 'overview', label: 'First Scan', icon: LayoutDashboard },
         { id: 'current_findings', label: 'Scan Results', icon: Server },
         { id: 'resource_inventory', label: 'Resource Inventory', icon: Database },
         { id: 'history', label: 'Scan History', icon: History },
       ],
     },
     {
-      title: 'Set Up',
+      title: 'Connect',
       items: [
         { id: 'accounts', label: 'Accounts', icon: Cloud },
         { id: 'configuration', label: 'Settings', icon: Settings },

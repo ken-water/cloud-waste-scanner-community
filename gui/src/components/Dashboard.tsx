@@ -6,7 +6,6 @@ import {
   Trash2,
   AlertTriangle,
   Play,
-  TestTube,
   Download,
   TrendingUp,
   CheckCircle,
@@ -14,11 +13,13 @@ import {
   ShieldCheck,
   Bell,
   Network,
+  Cloud,
   Server,
   Database,
   History,
   ClipboardList,
   Bot,
+  Plus,
 } from "lucide-react";
 import { Modal } from "./Modal";
 import { ScanWizard } from "./ScanWizard";
@@ -928,6 +929,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           label: `${profile.name} (${profile.protocol}://${profile.host}:${profile.port})`,
       })),
   ];
+  const hasScanData =
+      stats.wasted_resource_count > 0 ||
+      stats.total_savings > 0 ||
+      stats.cleanup_count > 0 ||
+      stats.history.length > 0;
 
   return (
     <div className="p-8 space-y-8 bg-slate-50 dark:bg-slate-900 min-h-screen text-left transition-colors duration-300">
@@ -1026,24 +1032,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 </button>
               ))}
               <button
-                onClick={handleResetData}
-                className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-              >
-                {resetButtonLabel}
-              </button>
-              <button
-                onClick={() => handleScan(true)}
-                className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50 dark:border-emerald-700/70 dark:bg-emerald-900/30 dark:text-emerald-200 dark:hover:bg-emerald-800/40"
-              >
-                <TestTube className="h-4 w-4" />
-                Try Demo
-              </button>
-              <button
                 onClick={() => handleScan(false)}
                 className="inline-flex min-w-[156px] items-center justify-center gap-2 rounded-lg border border-indigo-500 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
               >
                 <Play className="h-4 w-4" />
-                Start Cloud Scan
+                Start AWS Scan
               </button>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[520px] text-right">
@@ -1052,6 +1045,60 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           </div>
         }
       />
+
+      {!hasScanData && (
+        <section className="overflow-hidden rounded-2xl border border-teal-200 bg-white shadow-sm dark:border-teal-500/30 dark:bg-slate-800">
+          <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="border-b border-slate-200 p-6 dark:border-slate-700 lg:border-b-0 lg:border-r">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300">
+                  <Cloud className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700 dark:text-teal-300">First useful result</p>
+                  <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Find your first AWS savings candidates.</h2>
+                </div>
+              </div>
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+                Start with one AWS account and read-only access. The first scan is meant to return a short list you can verify, assign, and act on before the next bill.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  onClick={() => onNavigate("accounts")}
+                  className="inline-flex items-center gap-2 rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-800"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add AWS account
+                </button>
+                <button
+                  onClick={() => handleScan(false)}
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                  <Play className="h-4 w-4" />
+                  Start scan
+                </button>
+              </div>
+            </div>
+            <div className="bg-slate-50 p-6 dark:bg-slate-900/40">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">The first pass</p>
+              <ol className="mt-4 space-y-4">
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-800 dark:bg-teal-500/20 dark:text-teal-200">1</span>
+                  <span className="text-sm leading-6 text-slate-700 dark:text-slate-200">Connect one AWS account.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-800 dark:bg-teal-500/20 dark:text-teal-200">2</span>
+                  <span className="text-sm leading-6 text-slate-700 dark:text-slate-200">Run a read-only scan with a narrow scope.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-800 dark:bg-teal-500/20 dark:text-teal-200">3</span>
+                  <span className="text-sm leading-6 text-slate-700 dark:text-slate-200">Review the short list and export evidence.</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="grid gap-4 md:grid-cols-3">
@@ -1072,6 +1119,12 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-200">
               {isDemoMode ? "Demo mode is active." : "Live local state is active."} Review window: {dashboardWindowDays} days.
             </p>
+            <button
+              onClick={handleResetData}
+              className="mt-3 text-xs font-semibold text-slate-500 underline decoration-slate-300 underline-offset-4 transition-colors hover:text-rose-600 dark:text-slate-400 dark:decoration-slate-600 dark:hover:text-rose-300"
+            >
+              {resetButtonLabel}
+            </button>
           </div>
         </div>
       </div>

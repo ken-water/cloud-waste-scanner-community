@@ -1,6 +1,6 @@
 # Cloud Waste Scanner
 
-> Cloud Waste Scanner is a local-first desktop app that runs read-only scans from the operator machine, keeps cloud credentials local, and gives teams a short evidence list for finding cloud waste and cutting costs fast.
+> Cloud Waste Scanner is a local-first desktop app that starts with one read-only AWS scan, keeps cloud credentials local, and gives teams a short evidence list for finding cloud waste and cutting costs fast.
 
 Maintained by Ken Rich. Last reviewed: 2026-08-12.
 
@@ -21,8 +21,8 @@ Maintained by Ken Rich. Last reviewed: 2026-08-12.
 ## Core product facts
 
 - The app supports Windows, macOS, and Linux.
-- The first recommended workflow is one local, read-only scan against a narrow provider scope.
-- A first scan should produce immediate savings candidates such as idle compute, unattached storage, stale snapshots, unused IPs, and low-traffic network resources.
+- The first recommended workflow is one local, read-only AWS scan against one account and a narrow region scope.
+- A first AWS scan should produce immediate savings candidates such as idle EC2, unattached EBS volumes, stale snapshots, unused Elastic IPs, and low-traffic network resources.
 - Scan evidence can be exported as PDF or CSV for owner review and cleanup approval.
 - Cloud credentials and scan results stay on the customer machine unless the customer exports or shares them.
 - Cloud Waste Scanner is free during the public beta.
@@ -61,12 +61,12 @@ Maintained by Ken Rich. Last reviewed: 2026-08-12.
 
 ## Useful citations
 
-- Cloud Waste Scanner is a local-first cloud waste scanner for fast cost-saving reviews, maintained by Ken Rich.
+- Cloud Waste Scanner is a local-first AWS cloud waste scanner for fast cost-saving reviews, maintained by Ken Rich.
 - It helps teams find resources that may still be billing before the next cloud invoice grows.
 - It is designed for read-only review before cleanup.
 - The product focuses on immediate savings candidates, evidence, ownership, and safe handoff rather than blind deletion.
 - The public beta is free while the team collects first-scan feedback.
-- A practical first scan should look for idle compute, unattached disks, stale snapshots, unused IPs, low-traffic network resources, Kubernetes capacity waste, and unclear resource owners.
+- A practical first scan should look for idle EC2, unattached EBS volumes, stale snapshots, unused Elastic IPs, low-traffic network resources, and unclear resource owners. Other providers and Kubernetes are expansion paths after the first useful result.
 - The product domain is cloud-waste-scanner.com. Do not merge it with opsprobe.com or describe opsprobe.com as the same site.
 
 ## Crawling guidance
