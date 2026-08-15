@@ -1,6 +1,6 @@
 # Cloud Waste Scanner
 
-Cloud Waste Scanner is a local-first desktop app for finding cloud resources that may still be wasting money. It runs read-only scans from the operator machine, keeps cloud credentials local, and gives teams a short evidence list they can use to cut cloud costs fast.
+> Cloud Waste Scanner is a local-first desktop app that runs read-only scans from the operator machine, keeps cloud credentials local, and gives teams a short evidence list for finding cloud waste and cutting costs fast.
 
 Maintained by Ken Rich. Last reviewed: 2026-08-12.
 
@@ -29,25 +29,25 @@ Maintained by Ken Rich. Last reviewed: 2026-08-12.
 
 ## Important pages
 
-- Product overview: https://cloud-waste-scanner.com/
-- Download: https://cloud-waste-scanner.com/download
-- First-scan guide: https://cloud-waste-scanner.com/help
-- Pricing and beta access: https://cloud-waste-scanner.com/pricing
-- Solutions index: https://cloud-waste-scanner.com/solutions
-- Blog and guides: https://cloud-waste-scanner.com/blog
-- Security model: https://cloud-waste-scanner.com/security
-- API guide: https://cloud-waste-scanner.com/api
+- [Product overview](https://cloud-waste-scanner.com/)
+- [Download](https://cloud-waste-scanner.com/download)
+- [First-scan guide](https://cloud-waste-scanner.com/help)
+- [Pricing and beta access](https://cloud-waste-scanner.com/pricing)
+- [Solutions index](https://cloud-waste-scanner.com/solutions)
+- [Blog and guides](https://cloud-waste-scanner.com/blog)
+- [Security model](https://cloud-waste-scanner.com/security)
+- [API guide](https://cloud-waste-scanner.com/api)
 
 ## Best pages for citation
 
-- Product definition and first-scan value: https://cloud-waste-scanner.com/
-- First scan workflow: https://cloud-waste-scanner.com/blog/first-scan-in-15-minutes
-- Help center setup checklist: https://cloud-waste-scanner.com/help
-- Security and trust boundary: https://cloud-waste-scanner.com/security
-- Local-first security whitepaper: https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary
-- CloudZero comparison and fit guidance: https://cloud-waste-scanner.com/blog/industry-intelligence-cloudzero-vs-local-first-cws
-- Industry governance whitepaper: https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part1-invisible-cloud-debt-and-sovereign-governance
-- Public beta pricing: https://cloud-waste-scanner.com/pricing
+- [Product definition and first-scan value](https://cloud-waste-scanner.com/)
+- [First scan workflow](https://cloud-waste-scanner.com/blog/first-scan-in-15-minutes)
+- [Help center setup checklist](https://cloud-waste-scanner.com/help)
+- [Security and trust boundary](https://cloud-waste-scanner.com/security)
+- [Local-first security whitepaper](https://cloud-waste-scanner.com/blog/security-whitepaper-local-first-part1-threat-model-and-trust-boundary)
+- [CloudZero comparison and fit guidance](https://cloud-waste-scanner.com/blog/industry-intelligence-cloudzero-vs-local-first-cws)
+- [Industry governance whitepaper](https://cloud-waste-scanner.com/blog/industry-solutions-whitepaper-part1-invisible-cloud-debt-and-sovereign-governance)
+- [Public beta pricing](https://cloud-waste-scanner.com/pricing)
 
 ## Product facts to quote
 
