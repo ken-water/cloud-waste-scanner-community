@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page unavailable | Cloud Waste Scanner</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .error-page { min-height: 100vh; display: grid; place-items: center; padding: 32px 16px; }
+    .error-panel { width: min(620px, 100%); padding: clamp(28px, 6vw, 56px); border: 1px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); text-align: center; }
+    .error-code { margin: 0 0 12px; color: var(--blue); font-size: 72px; line-height: 1; font-weight: 800; letter-spacing: -0.04em; }
+    .error-panel h1 { margin: 0 0 14px; font-size: clamp(28px, 5vw, 42px); }
+    .error-panel p { margin: 0 auto 26px; max-width: 450px; color: var(--muted); font-size: 17px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <main class="error-page">
+    <section class="error-panel" aria-labelledby="error-title">
+      <p class="error-code" aria-hidden="true">403</p>
+      <h1 id="error-title">This page is not available here</h1>
+      <p>The address is valid, but this resource cannot be listed or accessed directly. Return to the Cloud Waste Scanner homepage to continue.</p>
+      <a class="btn primary" href="/">Back to Cloud Waste Scanner</a>
+    </section>
+  </main>
+</body>
+</html>

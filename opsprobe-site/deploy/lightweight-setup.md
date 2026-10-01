@@ -11,7 +11,7 @@ Use Nginx only.
 
 - `cloud-waste-scanner.com` or `www.cloud-waste-scanner.com` -> static site
 - `download.cloud-waste-scanner.com` or `dl.cloud-waste-scanner.com` -> static download site
-- `admin.cloud-waste-scanner.com` -> backend
+- `cloud-waste-scanner.com/admin/` -> backend UI
 - `api.cloud-waste-scanner.com` -> backend
 
 ## Backend env

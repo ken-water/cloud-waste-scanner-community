@@ -53,6 +53,8 @@ Recommended domain split:
 - `admin.cloud-waste-scanner.com` for the backend UI
 - `api.cloud-waste-scanner.com` for backend endpoints
 
+Open the management console at `https://cloud-waste-scanner.com/admin/`.
+
 Before publishing:
 
 - Keep public beta messaging aligned across `index.html`, `pricing.html`, `checkout.html`, `license.html`, and `recover.html`.

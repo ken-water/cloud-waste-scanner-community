@@ -6,7 +6,7 @@ This server can be used as the new origin if the public surface stays split by p
 
 - `cloud-waste-scanner.com` or `www.cloud-waste-scanner.com`: static marketing site
 - `download.cloud-waste-scanner.com` or `dl.cloud-waste-scanner.com`: optional static download mirror
-- `admin.cloud-waste-scanner.com`: backend/admin UI only
+- `/admin/` on `cloud-waste-scanner.com`: backend/admin UI only
 - `api.cloud-waste-scanner.com`: backend API only
 
 ## Why this matters
