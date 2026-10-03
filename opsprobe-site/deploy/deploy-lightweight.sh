@@ -64,7 +64,14 @@ test_nginx_config() {
   local tmpdir
   tmpdir="$(mktemp -d)"
   mkdir -p "$tmpdir/logs" "$tmpdir/client_body"
-  perl -pe 's/listen 80;/listen 18080;/g; s/listen \[::\]:80;/listen [::]:18080;/g' "$NGINX_SRC" > "$tmpdir/cws.conf"
+  perl -pe '
+    s/listen 80;/listen 18080;/g;
+    s/listen \[::\]:80;/listen [::]:18080;/g;
+    s/listen 443 ssl;/listen 18443;/g;
+    s/listen \[::\]:443 ssl;/listen [::]:18443;/g;
+    s#/var/log/nginx/cloud-waste-scanner\.access\.log#'"$tmpdir"'/logs/cws-access.log#g;
+    $_ = "" if /^\s*(ssl_certificate|ssl_certificate_key|ssl_dhparam|include \/etc\/letsencrypt\/)/;
+  ' "$NGINX_SRC" > "$tmpdir/cws.conf"
   cat > "$tmpdir/nginx.conf" <<EOF
 pid $tmpdir/nginx.pid;
 events {}
