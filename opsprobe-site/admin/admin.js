@@ -1,4 +1,6 @@
 const element = (id) => document.getElementById(id);
+const charts = new Map();
+const chartDefinitions = new Map();
 
 async function request(path, options = {}) {
   const response = await fetch(`/api/admin/${path}`, {
@@ -68,50 +70,76 @@ function reportingWindow() {
   };
 }
 
-function seriesPoints(values, width, height, left, top, bottom, max) {
-  const chartWidth = width - left - 12;
-  const chartHeight = height - top - bottom;
-  const denominator = Math.max(values.length - 1, 1);
-  return values.map((raw, index) => {
-    const x = left + (index / denominator) * chartWidth;
-    const y = top + chartHeight - (Number(raw || 0) / max) * chartHeight;
-    return [x, y];
-  });
-}
-
 function renderLineChart(target, labels, series) {
   const container = element(target);
+  chartDefinitions.set(target, { labels, series });
+  charts.get(target)?.destroy();
+  charts.delete(target);
   const normalized = series.map((item) => ({ ...item, values: (item.values || []).map(Number) }));
-  const max = Math.max(1, ...normalized.flatMap((item) => item.values));
   if (!labels?.length || normalized.every((item) => !item.values.some((value) => value > 0))) {
     container.innerHTML = empty("No human activity in this period.");
     return;
   }
-
-  const width = Math.max(320, Math.round(container.clientWidth || 900));
-  const height = width < 500 ? 240 : 280;
-  const left = 42;
-  const top = 14;
-  const bottom = 32;
-  const chartHeight = height - top - bottom;
-  const tickIndexes = [...new Set([0, Math.floor((labels.length - 1) / 2), labels.length - 1])];
-  const grids = [0, .25, .5, .75, 1].map((ratio) => {
-    const y = top + chartHeight * ratio;
-    const value = Math.round(max * (1 - ratio));
-    return `<line class="chart-grid" x1="${left}" y1="${y}" x2="${width - 12}" y2="${y}"/><text class="chart-label" x="${left - 8}" y="${y + 4}" text-anchor="end">${value}</text>`;
-  }).join("");
-  const paths = normalized.map((item) => {
-    const points = seriesPoints(item.values, width, height, left, top, bottom, max);
-    const line = points.map(([x, y], index) => `${index ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
-    const area = `${line} L${points.at(-1)[0].toFixed(1)},${height - bottom} L${points[0][0].toFixed(1)},${height - bottom} Z`;
-    return `<path class="chart-area" d="${area}" fill="${item.color}"/><path class="chart-line" d="${line}" stroke="${item.color}"/>`;
-  }).join("");
-  const ticks = tickIndexes.map((index) => {
-    const x = left + (index / Math.max(labels.length - 1, 1)) * (width - left - 12);
-    return `<text class="chart-label" x="${x}" y="${height - 8}" text-anchor="middle">${escapeHtml(String(labels[index] || "").slice(5))}</text>`;
-  }).join("");
   const description = normalized.map((item) => `${item.label}: ${item.values.reduce((sum, value) => sum + value, 0)}`).join("; ");
-  container.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(description)}">${grids}${paths}${ticks}</svg>`;
+  if (typeof Chart === "undefined") {
+    container.innerHTML = empty("The traffic chart could not be loaded.");
+    return;
+  }
+  if (container.offsetParent === null) {
+    container.innerHTML = "";
+    return;
+  }
+
+  container.innerHTML = '<canvas role="img"></canvas>';
+  const canvas = container.querySelector("canvas");
+  canvas.setAttribute("aria-label", description);
+  canvas.textContent = description;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const chart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: labels.map((label) => String(label || "")),
+      datasets: normalized.map((item) => ({
+        label: item.label,
+        data: item.values,
+        borderColor: item.color,
+        backgroundColor: item.fill,
+        borderWidth: 2.5,
+        pointRadius: labels.length > 45 ? 0 : 2.5,
+        pointHoverRadius: 5,
+        pointBackgroundColor: item.color,
+        tension: 0.3,
+        fill: false,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: reduceMotion ? false : { duration: 250 },
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#173f36",
+          padding: 12,
+          displayColors: true,
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: "#63706d", maxTicksLimit: 7, maxRotation: 0 },
+        },
+        y: {
+          beginAtZero: true,
+          suggestedMax: 1,
+          grid: { color: "#e8eeec" },
+          ticks: { color: "#63706d", precision: 0, padding: 8 },
+        },
+      },
+    },
+  });
+  charts.set(target, chart);
 }
 
 function renderRankList(target, rows) {
@@ -211,13 +239,13 @@ function renderDashboard(dashboard, content, logs) {
 
   const daily = dashboard.chart || {};
   renderLineChart("overview-trend", daily.labels || [], [
-    { label: "Page views", values: daily.views || daily.pageviews || [], color: "#0f7664" },
-    { label: "Visitors", values: daily.visitors || [], color: "#b96f0b" },
+    { label: "Page views", values: daily.views || daily.pageviews || [], color: "#0f7664", fill: "rgba(15, 118, 100, .12)" },
+    { label: "Visitors", values: daily.visitors || [], color: "#b96f0b", fill: "rgba(185, 111, 11, .12)" },
   ]);
   const hourly = dashboard.chart_24h || {};
   renderLineChart("traffic-hourly", hourly.labels || [], [
-    { label: "Page views", values: hourly.views || [], color: "#0f7664" },
-    { label: "Sessions", values: hourly.sessions || [], color: "#2563a6" },
+    { label: "Page views", values: hourly.views || [], color: "#0f7664", fill: "rgba(15, 118, 100, .12)" },
+    { label: "Sessions", values: hourly.sessions || [], color: "#2563a6", fill: "rgba(37, 99, 166, .12)" },
   ]);
 
   renderRankList("regions", dashboard.demographics?.region);
@@ -279,6 +307,15 @@ function selectTab(tab) {
     panel.classList.toggle("is-active", active);
     panel.hidden = !active;
   });
+  window.requestAnimationFrame(() => chartDefinitions.forEach((definition, target) => {
+    const container = element(target);
+    if (!container || container.offsetParent === null) return;
+    if (!charts.has(target)) {
+      renderLineChart(target, definition.labels, definition.series);
+      return;
+    }
+    charts.get(target).resize();
+  }));
 }
 
 element("login-form").addEventListener("submit", async (event) => {

@@ -6,6 +6,7 @@
     <title>Cloud Waste Scanner Admin</title>
     <link rel="icon" href="/assets/product-icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/admin/admin.css" />
+    <script defer src="/admin/chart.umd.min.js"></script>
     <script defer src="/admin/admin.js"></script>
   </head>
   <body>
@@ -70,7 +71,7 @@
                 <div><p class="eyebrow">Trend</p><h2>Daily human traffic</h2></div>
                 <div class="legend"><span><i class="views"></i>Page views</span><span><i class="visitors"></i>Visitors</span></div>
               </div>
-              <div id="overview-trend" class="chart" aria-live="polite"></div>
+              <div id="overview-trend" class="chart" aria-live="polite"><canvas role="img" aria-label="Daily page views and visitors"></canvas></div>
             </article>
             <article class="panel">
               <div class="panel-heading"><div><p class="eyebrow">Content</p><h2>Top pages</h2></div></div>
@@ -90,7 +91,7 @@
               <div><p class="eyebrow">Last 24 hours</p><h2>Hourly activity</h2></div>
               <div class="legend"><span><i class="views"></i>Page views</span><span><i class="sessions"></i>Sessions</span></div>
             </div>
-            <div id="traffic-hourly" class="chart" aria-live="polite"></div>
+            <div id="traffic-hourly" class="chart" aria-live="polite"><canvas role="img" aria-label="Hourly page views and sessions"></canvas></div>
           </article>
           <section class="three-column panel-spaced">
             <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Audience</p><h2>Countries</h2></div></div><div id="regions" class="rank-list"></div></article>
