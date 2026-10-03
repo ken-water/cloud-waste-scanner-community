@@ -1,1 +1,123 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CWS Admin</title><link rel="icon" href="/assets/product-icon.svg" type="image/svg+xml"><link rel="stylesheet" href="/admin/admin.css"><script defer src="/admin/admin.js"></script></head><body><main class="shell"><section id="login" class="panel login"><div class="brand"><img src="/assets/product-icon.svg" alt=""> <span>Cloud Waste Scanner</span></div><p class="eyebrow">Administrator access</p><h1>Site operations</h1><p class="muted">Review product activity, funnel signals, and governance data.</p><form id="login-form"><label>Username<input id="username" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><p id="login-error" class="error" role="alert"></p><button>Sign in</button></form></section><section id="dashboard" hidden><header class="header"><div><div class="brand"><img src="/assets/product-icon.svg" alt=""> <span>Cloud Waste Scanner</span></div><p class="eyebrow">Server-side operations</p><h1>Site overview</h1><p id="freshness" class="muted">Loading...</p></div><div class="actions"><select id="days"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select><button id="refresh">Refresh</button><button id="logout" class="secondary">Sign out</button></div></header><p id="dashboard-error" class="error" hidden></p><nav class="tabs" role="tablist" aria-label="Admin sections"><button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="traffic">Traffic</button><button class="tab" data-tab="funnel">Funnel</button><button class="tab" data-tab="governance">Governance</button></nav><section id="tab-overview" class="tab-panel active"><section id="metrics" class="metrics"></section><div class="grid"><article class="panel"><div class="panel-head"><div><p class="eyebrow">Traffic</p><h2>Daily activity</h2></div></div><div id="chart" class="chart"></div></article><article class="panel"><p class="eyebrow">Conversion</p><h2>Funnel</h2><div id="funnel-overview" class="funnel"></div></article></div></section><section id="tab-traffic" class="tab-panel" hidden><article class="panel"><p class="eyebrow">Traffic</p><h2>Daily activity</h2><div id="chart-traffic" class="chart"></div></article></section><section id="tab-funnel" class="tab-panel" hidden><article class="panel"><p class="eyebrow">Conversion</p><h2>Funnel</h2><div id="funnel" class="funnel"></div></article></section><section id="tab-governance" class="tab-panel" hidden><article class="panel"><p class="eyebrow">Governance</p><h2>Scan scorecard</h2><div id="governance" class="empty-state">No scan data is available for this period. Connect a scanner and complete a scan to populate governance metrics.</div></article></section></section></main></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud Waste Scanner Admin</title>
+    <link rel="icon" href="/assets/product-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/admin/admin.css" />
+    <script defer src="/admin/admin.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <main id="main" class="shell">
+      <section id="login" class="login-panel" aria-labelledby="login-title">
+        <a class="brand" href="/" aria-label="Back to Cloud Waste Scanner">
+          <img src="/assets/product-icon.svg" alt="" />
+          <span>Cloud Waste Scanner</span>
+        </a>
+        <p class="eyebrow">Administrator access</p>
+        <h1 id="login-title">Site operations</h1>
+        <p class="login-copy">Review human website traffic, content performance, conversion, and governance activity.</p>
+        <form id="login-form">
+          <label for="username">Username</label>
+          <input id="username" name="username" autocomplete="username" required />
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <p id="login-error" class="form-error" role="alert"></p>
+          <button id="login-button" type="submit">Sign in</button>
+        </form>
+      </section>
+
+      <section id="dashboard" hidden>
+        <header class="page-header">
+          <div>
+            <a class="brand" href="/" aria-label="Back to Cloud Waste Scanner">
+              <img src="/assets/product-icon.svg" alt="" />
+              <span>Cloud Waste Scanner</span>
+            </a>
+            <p class="eyebrow">Human traffic analytics</p>
+            <h1>Site overview</h1>
+            <p id="freshness" class="muted" aria-live="polite">Loading current data...</p>
+          </div>
+          <div class="toolbar">
+            <label for="days">Reporting period</label>
+            <select id="days">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="365">Last 365 days</option>
+            </select>
+            <button id="refresh" class="button-secondary" type="button">Refresh</button>
+            <button id="logout" class="button-secondary" type="button">Sign out</button>
+          </div>
+        </header>
+
+        <p id="dashboard-error" class="notice notice-error" role="alert" hidden></p>
+        <nav class="tabs" role="tablist" aria-label="Admin sections">
+          <button class="tab is-active" id="tab-overview" role="tab" aria-selected="true" aria-controls="panel-overview" data-tab="overview" type="button">Overview</button>
+          <button class="tab" id="tab-traffic" role="tab" aria-selected="false" aria-controls="panel-traffic" data-tab="traffic" type="button">Traffic</button>
+          <button class="tab" id="tab-content" role="tab" aria-selected="false" aria-controls="panel-content" data-tab="content" type="button">Content</button>
+          <button class="tab" id="tab-conversion" role="tab" aria-selected="false" aria-controls="panel-conversion" data-tab="conversion" type="button">Conversion</button>
+          <button class="tab" id="tab-governance" role="tab" aria-selected="false" aria-controls="panel-governance" data-tab="governance" type="button">Governance</button>
+        </nav>
+
+        <section class="tab-panel is-active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview">
+          <section id="overview-metrics" class="metrics" aria-label="Key metrics"></section>
+          <section class="content-grid">
+            <article class="panel panel-wide">
+              <div class="panel-heading">
+                <div><p class="eyebrow">Trend</p><h2>Daily human traffic</h2></div>
+                <div class="legend"><span><i class="views"></i>Page views</span><span><i class="visitors"></i>Visitors</span></div>
+              </div>
+              <div id="overview-trend" class="chart" aria-live="polite"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-heading"><div><p class="eyebrow">Content</p><h2>Top pages</h2></div></div>
+              <div id="overview-pages" class="table-wrap"></div>
+            </article>
+          </section>
+          <article class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Recent</p><h2>Human activity</h2></div><p class="muted">Automated clients and private addresses are excluded.</p></div>
+            <div id="overview-activity" class="table-wrap"></div>
+          </article>
+        </section>
+
+        <section class="tab-panel" id="panel-traffic" role="tabpanel" aria-labelledby="tab-traffic" data-panel="traffic" hidden>
+          <section id="traffic-metrics" class="metrics metrics-four" aria-label="Traffic quality metrics"></section>
+          <article class="panel">
+            <div class="panel-heading">
+              <div><p class="eyebrow">Last 24 hours</p><h2>Hourly activity</h2></div>
+              <div class="legend"><span><i class="views"></i>Page views</span><span><i class="sessions"></i>Sessions</span></div>
+            </div>
+            <div id="traffic-hourly" class="chart" aria-live="polite"></div>
+          </article>
+          <section class="three-column panel-spaced">
+            <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Audience</p><h2>Countries</h2></div></div><div id="regions" class="rank-list"></div></article>
+            <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Audience</p><h2>Browsers</h2></div></div><div id="browsers" class="rank-list"></div></article>
+            <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Audience</p><h2>Operating systems</h2></div></div><div id="operating-systems" class="rank-list"></div></article>
+          </section>
+        </section>
+
+        <section class="tab-panel" id="panel-content" role="tabpanel" aria-labelledby="tab-content" data-panel="content" hidden>
+          <section id="content-metrics" class="metrics metrics-one" aria-label="Content metrics"></section>
+          <article class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Content performance</p><h2>Pages visited by people</h2></div><p class="muted">Sorted by page views in the selected period.</p></div>
+            <div id="content-pages" class="table-wrap"></div>
+          </article>
+        </section>
+
+        <section class="tab-panel" id="panel-conversion" role="tabpanel" aria-labelledby="tab-conversion" data-panel="conversion" hidden>
+          <article class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">Website funnel</p><h2>From visit to purchase</h2></div><p class="muted">Each step uses filtered human activity.</p></div>
+            <div id="conversion-funnel" class="funnel" aria-live="polite"></div>
+          </article>
+        </section>
+
+        <section class="tab-panel" id="panel-governance" role="tabpanel" aria-labelledby="tab-governance" data-panel="governance" hidden>
+          <div id="governance-content"></div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

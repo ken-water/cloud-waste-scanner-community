@@ -46,28 +46,89 @@ fn overseas_country_predicate(country_expr: &str) -> String {
 }
 
 fn automated_traffic_predicate(meta_expr: &str) -> String {
+    let ua = format!("trim(lower(COALESCE({meta_expr} ->> 'ua', '')))");
     format!(
         "
         (
-            lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%headlesschrome%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE 'cloudwastescanner-qa/%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE 'cloudwastescanner-navcheck/%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE 'cws-health-check/%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%okhttp%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%curl/%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) = 'curl'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%python-requests%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%go-http-client%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%statuscake%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%uptimerobot%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%saashub%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%slackbot%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%telegrambot%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%crawler%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%spider%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '% bot%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE 'bot%'
-            OR lower(COALESCE({meta_expr} ->> 'ua', '')) LIKE '%bot/%'
+            {ua} IN ('', '-', 'null', 'undefined', 'curl', 'wget', 'node')
+            OR {ua} LIKE '%headlesschrome%'
+            OR {ua} LIKE 'cloudwastescanner-qa/%'
+            OR {ua} LIKE 'cloudwastescanner-navcheck/%'
+            OR {ua} LIKE 'cws-health-check/%'
+            OR {ua} LIKE '%opsprobe%'
+            OR {ua} LIKE '%okhttp%'
+            OR {ua} LIKE '%curl/%'
+            OR {ua} LIKE '%wget/%'
+            OR {ua} LIKE '%python-requests%'
+            OR {ua} LIKE 'python/%'
+            OR {ua} LIKE 'python-%'
+            OR {ua} LIKE '%urllib%'
+            OR {ua} LIKE '%httpx%'
+            OR {ua} LIKE '%aiohttp%'
+            OR {ua} LIKE '%go-http-client%'
+            OR {ua} LIKE '%fasthttp%'
+            OR {ua} LIKE 'req/v%'
+            OR {ua} LIKE '%node-fetch%'
+            OR {ua} LIKE 'node/%'
+            OR {ua} LIKE 'node.js/%'
+            OR {ua} LIKE '%undici%'
+            OR {ua} LIKE '%axios%'
+            OR {ua} LIKE 'java/%'
+            OR {ua} LIKE '%apache-httpclient%'
+            OR {ua} LIKE '%jakarta commons-httpclient%'
+            OR {ua} LIKE '%bot%'
+            OR {ua} LIKE '%crawler%'
+            OR {ua} LIKE '%spider%'
+            OR {ua} LIKE '%scraper%'
+            OR {ua} LIKE '%scrapy%'
+            OR {ua} LIKE '%slurp%'
+            OR {ua} LIKE '%ahrefs%'
+            OR {ua} LIKE '%semrush%'
+            OR {ua} LIKE '%dataforseo%'
+            OR {ua} LIKE '%seranking%'
+            OR {ua} LIKE '%anthropic%'
+            OR {ua} LIKE '%bytespider%'
+            OR {ua} LIKE '%cohere-ai%'
+            OR {ua} LIKE '%censys%'
+            OR {ua} LIKE '%nutch%'
+            OR {ua} LIKE '%cms-checker%'
+            OR {ua} LIKE '%webapp-mapper%'
+            OR {ua} LIKE '%zgrab%'
+            OR {ua} LIKE '%masscan%'
+            OR {ua} LIKE '%nmap%'
+            OR {ua} LIKE '%nuclei%'
+            OR {ua} LIKE '%nikto%'
+            OR {ua} LIKE '%sqlmap%'
+            OR {ua} LIKE '%palo alto networks%'
+            OR {ua} LIKE '%onyphe%'
+            OR {ua} LIKE '%netcraftsurveyagent%'
+            OR {ua} LIKE '%rootevidence%'
+            OR {ua} LIKE '%panscient%'
+            OR {ua} LIKE '%statuscake%'
+            OR {ua} LIKE '%uptimerobot%'
+            OR {ua} LIKE '%saashub%'
+            OR {ua} LIKE '%slackbot%'
+            OR {ua} LIKE '%telegrambot%'
+        )
+        "
+    )
+}
+
+fn non_public_ip_predicate(ip_expr: &str) -> String {
+    let ip = format!("lower(trim({}))", canonical_ip_expr(ip_expr));
+    format!(
+        "
+        (
+            {ip} IN ('0.0.0.0', '::', '::1')
+            OR {ip} ~ '^127\\.'
+            OR {ip} ~ '^10\\.'
+            OR {ip} ~ '^172\\.(1[6-9]|2[0-9]|3[01])\\.'
+            OR {ip} ~ '^192\\.168\\.'
+            OR {ip} ~ '^169\\.254\\.'
+            OR {ip} ~ '^f[cd][0-9a-f]{{2}}:'
+            OR {ip} ~ '^fe[89ab][0-9a-f]:'
+            OR {ip} ~ '^::ffff:(127|10|192\\.168|169\\.254)\\.'
+            OR {ip} ~ '^::ffff:172\\.(1[6-9]|2[0-9]|3[01])\\.'
         )
         "
     )
@@ -97,28 +158,15 @@ fn analytics_geo_filter(overseas_only: bool) -> String {
 
 fn analytics_automation_filter(meta_expr: &str, ip_expr: &str, exclude_automated: bool) -> String {
     if exclude_automated {
-        let canonical_ip = canonical_ip_expr(ip_expr);
-        let auto_ip_predicate = automated_traffic_predicate("auto.meta::jsonb");
-        let auto_canonical_ip = canonical_ip_expr("auto.ip_address");
         format!(
             "
-            AND (
-                ({canonical_ip}) = 'unknown'
-                AND NOT ({automation_predicate})
-                OR ({canonical_ip}) <> 'unknown'
-                AND ({canonical_ip}) NOT IN (
-                    SELECT DISTINCT {auto_canonical_ip}
-                    FROM analytics auto
-                    WHERE auto.created_at BETWEEN $1 AND $2
-                      AND {auto_ip_predicate}
-                      AND {auto_canonical_ip} <> 'unknown'
-                )
+            AND NOT (
+                {automation_predicate}
+                OR {non_public_ip_predicate}
             )
             ",
-            canonical_ip = canonical_ip,
-            auto_canonical_ip = auto_canonical_ip,
             automation_predicate = automated_traffic_predicate(meta_expr),
-            auto_ip_predicate = auto_ip_predicate
+            non_public_ip_predicate = non_public_ip_predicate(ip_expr)
         )
     } else {
         String::new()
@@ -210,7 +258,7 @@ pub async fn build_admin_content_payload(
         "SELECT COUNT(*)::bigint
          FROM analytics a
          {geo_join}
-         WHERE a.event_type IN ('page_view', 'api_download_latest', 'click_download')
+         WHERE a.event_type = 'page_view'
            AND a.created_at BETWEEN $1 AND $2
            {geo_filter}
            {automation_filter}
@@ -235,7 +283,7 @@ pub async fn build_admin_content_payload(
                 END AS raw_url
             FROM analytics a
             {geo_join}
-            WHERE a.event_type IN ('page_view', 'api_download_latest', 'click_download')
+            WHERE a.event_type = 'page_view'
               AND a.created_at BETWEEN $1 AND $2
               {geo_filter}
               {automation_filter}
@@ -302,7 +350,7 @@ pub async fn build_admin_content_payload(
                 FROM analytics a
                 {geo_join}
                 WHERE a.created_at BETWEEN $1 AND $2
-                  AND a.event_type IN ('page_view', 'page_leave', 'api_download_latest', 'click_download')
+                  AND a.event_type IN ('page_view', 'page_leave')
                   {geo_filter}
                   {automation_filter}
                   {proxy_backfill_filter}
@@ -328,7 +376,7 @@ pub async fn build_admin_content_payload(
             page_views AS (
                 SELECT created_at, session_key, CASE WHEN page = '' THEN '/' ELSE page END AS page
                 FROM event_norm
-                WHERE event_type IN ('page_view', 'api_download_latest', 'click_download')
+                WHERE event_type = 'page_view'
             ),
             session_pages AS (
                 SELECT session_key, page, ROW_NUMBER() OVER (PARTITION BY session_key ORDER BY created_at ASC) AS rn
@@ -647,7 +695,7 @@ pub async fn build_admin_content_payload(
                     END AS raw_url
                 FROM analytics a
                 LEFT JOIN geoip_cache g ON g.ip = {analytics_ip}
-                WHERE a.event_type IN ('page_view', 'api_download_latest', 'click_download')
+                WHERE a.event_type = 'page_view'
                   AND a.created_at BETWEEN $1 AND $2
                   {geo_filter}
                   {automation_filter}
@@ -764,7 +812,7 @@ pub async fn build_admin_content_summary_payload(
         "SELECT COUNT(*)::bigint
          FROM analytics a
          {geo_join}
-         WHERE a.event_type IN ('page_view', 'api_download_latest', 'click_download')
+         WHERE a.event_type = 'page_view'
            AND a.created_at BETWEEN $1 AND $2
            {geo_filter}
            {automation_filter}
@@ -789,7 +837,7 @@ pub async fn build_admin_content_summary_payload(
                 END AS raw_url
             FROM analytics a
             {geo_join}
-            WHERE a.event_type IN ('page_view', 'api_download_latest', 'click_download')
+            WHERE a.event_type = 'page_view'
               AND a.created_at BETWEEN $1 AND $2
               {geo_filter}
               {automation_filter}
@@ -857,7 +905,7 @@ pub async fn build_admin_content_summary_payload(
 mod tests {
     use super::{
         analytics_automation_filter, analytics_proxy_backfill_filter, automated_traffic_predicate,
-        proxy_backfill_predicate,
+        non_public_ip_predicate, proxy_backfill_predicate,
     };
 
     #[test]
@@ -875,7 +923,12 @@ mod tests {
         assert!(sql.contains("telegrambot"));
         assert!(sql.contains("cloudwastescanner-qa"));
         assert!(sql.contains("curl"));
-        assert!(sql.contains("NOT IN"));
+        assert!(sql.contains("wget"));
+        assert!(sql.contains("opsprobe"));
+        assert!(sql.contains("dataforseo"));
+        assert!(sql.contains("censys"));
+        assert!(sql.contains("AND NOT"));
+        assert!(!sql.contains("SELECT DISTINCT"));
     }
 
     #[test]
@@ -898,5 +951,9 @@ mod tests {
     fn base_predicates_keep_expected_dimensions() {
         let automation = automated_traffic_predicate("a.meta::jsonb");
         assert!(automation.contains("a.meta::jsonb ->> 'ua'"));
+        let private_ip = non_public_ip_predicate("a.ip_address");
+        assert!(private_ip.contains("127\\."));
+        assert!(private_ip.contains("192\\.168"));
+        assert!(private_ip.contains("::ffff"));
     }
 }
